@@ -115,7 +115,7 @@
         <a-card title="字段配置" class="field-config">
           <template #extra>
             <a-popconfirm
-              content="确定要同步最新数据表结构吗？同步后只要不点击确定保存，则不影响原有配置数据。"
+              content="是否确定同步最新数据表结构？同步后只要不点击确定保存，则不影响原有配置数据。"
               type="warning"
               @ok="handleRefresh(form.tableName)"
             >

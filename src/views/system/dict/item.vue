@@ -71,7 +71,7 @@
               <template #icon><icon-edit /></template>修改
             </a-button>
             <a-popconfirm
-              content="确定要删除当前选中的数据吗？"
+              content="是否确定删除该数据？"
               type="warning"
               @ok="handleDelete([record.id])"
             >

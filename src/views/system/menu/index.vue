@@ -170,7 +170,7 @@
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
-                content="确定要删除当前选中的数据吗？如果存在下级菜单则一并删除，此操作不能撤销！"
+                content="是否确定删除该数据？如果存在下级菜单则一并删除，此操作不能撤销！"
                 type="warning"
                 @ok="handleDelete([record.id])"
               >
@@ -499,7 +499,7 @@
         title: '警告',
         titleAlign: 'start',
         content:
-          '确定要删除当前选中的数据吗？如果存在下级菜单则一并删除，此操作不能撤销！',
+          '是否确定删除所选的数据？如果存在下级菜单则一并删除，此操作不能撤销！',
         hideCancel: false,
         onOk: () => {
           handleDelete(ids.value);

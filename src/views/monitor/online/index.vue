@@ -75,7 +75,7 @@
           >
             <template #cell="{ record }">
               <a-popconfirm
-                content="确定要强退该用户吗？"
+                content="是否确定强退该用户？"
                 type="warning"
                 @ok="handleKickout(record.token)"
               >

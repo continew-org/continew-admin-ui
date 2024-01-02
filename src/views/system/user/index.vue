@@ -229,7 +229,7 @@
                     <template #icon><icon-edit /></template>
                   </a-button>
                   <a-popconfirm
-                    content="确定要删除当前选中的数据吗？"
+                    content="是否确定删除该数据？"
                     type="warning"
                     @ok="handleDelete([record.id])"
                   >
@@ -244,7 +244,7 @@
                     </a-button>
                   </a-popconfirm>
                   <a-popconfirm
-                    content="确定要重置当前用户的密码吗？"
+                    content="是否确定重置当前用户的密码？"
                     type="warning"
                     @ok="handleResetPassword(record.id)"
                   >
@@ -775,7 +775,7 @@
       proxy.$modal.warning({
         title: '警告',
         titleAlign: 'start',
-        content: '确定要删除当前选中的数据吗？',
+        content: `是否确定删除所选的${ids.value.length}条数据？`,
         hideCancel: false,
         onOk: () => {
           handleDelete(ids.value);
