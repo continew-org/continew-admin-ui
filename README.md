@@ -6,17 +6,17 @@
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v2.3.0-%23ff3f59.svg" alt="Release" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/github/stars/Charles7c/continew-admin-ui?style=social" alt="GitHub stars" />
+<a href="https://github.com/Charles7c/continew-admin" target="_blank">
+<img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/github/forks/Charles7c/continew-admin-ui?style=social" alt="GitHub forks" />
+<a href="https://github.com/Charles7c/continew-admin" target="_blank">
+<img src="https://img.shields.io/github/forks/Charles7c/continew-admin?style=social" alt="GitHub forks" />
 </a>
-<a href="https://gitee.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://gitee.com/Charles7c/continew-admin-ui/badge/star.svg?theme=white" alt="Gitee stars" />
+<a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
+<img src="https://gitee.com/Charles7c/continew-admin/badge/star.svg?theme=white" alt="Gitee stars" />
 </a>
-<a href="https://gitee.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://gitee.com/Charles7c/continew-admin-ui/badge/fork.svg?theme=white" alt="Gitee forks" />
+<a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
+<img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/Vue-3.3.7-%236CB52D.svg" alt="Release" />
@@ -25,10 +25,10 @@
 <img src="https://img.shields.io/badge/Arco Design Vue-2.53.3-%236CB52D.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/Vite-4.5.1-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/TypeScript-5.3.3-%236CB52D.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/TypeScript-5.3.3-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/Vite-4.5.1-%236CB52D.svg" alt="Release" />
 </a>
 
 📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
@@ -43,8 +43,8 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 |       | 前端源码                                   | 后端源码                                |
 | ----- | -------------------------------------------- | ----------------------------------------- |
-| GitHub | https://github.com/Charles7c/continew-admin-ui | https://github.com/Charles7c/continew-admin |
-| Gitee | https://gitee.com/Charles7c/continew-admin-ui | https://gitee.com/Charles7c/continew-admin |
+| GitHub | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin) |
+| Gitee | [gitee.com/Charles7c/continew-admin-ui](https://gitee.com/Charles7c/continew-admin-ui) | [gitee.com/Charles7c/continew-admin](https://gitee.com/Charles7c/continew-admin) |
 
 ##  系统功能
 
@@ -172,8 +172,8 @@ continew-admin-ui
 
 感谢参与贡献的每一位小伙伴🥰
 
-<a href="https://github.com/Charles7c/continew-admin-ui/graphs/contributors">
-	<img src="https://contrib.rocks/image?repo=Charles7c/continew-admin-ui" />
+<a href="https://github.com/Charles7c/continew-admin/graphs/contributors">
+	<img src="https://contrib.rocks/image?repo=Charles7c/continew-admin" />
 </a>
 
 ### 特别鸣谢
@@ -182,7 +182,6 @@ continew-admin-ui
 - 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 [Gi Admin Pro](https://gitee.com/lin0716/gi-demo)，致敬各位作者为开源前端模板领域作出的贡献
   - e.g. 扩展于 Gi Admin Pro 项目开源的文件管理组件
-
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License
