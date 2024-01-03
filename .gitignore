@@ -12,6 +12,7 @@ selenium-debug.log
 
 # Editor directories and files
 .idea
+!.idea/icon.png
 .vscode
 *.suo
 *.ntvs*
