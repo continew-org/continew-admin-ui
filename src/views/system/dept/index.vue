@@ -10,7 +10,7 @@
             <a-form-item field="name" hide-label>
               <a-input
                 v-model="queryParams.name"
-                placeholder="输入部门名称搜索"
+                placeholder="输入名称搜索"
                 allow-clear
                 style="width: 150px"
                 @press-enter="handleQuery"
@@ -112,12 +112,12 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="部门名称">
+          <a-table-column title="名称">
             <template #cell="{ record }">
               <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
             </template>
           </a-table-column>
-          <a-table-column title="部门排序" align="center" data-index="sort" />
+          <a-table-column title="排序" align="center" data-index="sort" />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
               <a-switch
@@ -201,13 +201,13 @@
               :fallback-option="false"
             />
           </a-form-item>
-          <a-form-item label="部门名称" field="name">
-            <a-input v-model="form.name" placeholder="请输入部门名称" />
+          <a-form-item label="名称" field="name">
+            <a-input v-model="form.name" placeholder="请输入名称" />
           </a-form-item>
-          <a-form-item label="部门排序" field="sort">
+          <a-form-item label="排序" field="sort">
             <a-input-number
               v-model="form.sort"
-              placeholder="请输入部门排序"
+              placeholder="请输入排序"
               :min="1"
               mode="button"
             />
@@ -237,7 +237,7 @@
         @cancel="handleDetailCancel"
       >
         <a-descriptions :column="2" bordered size="large">
-          <a-descriptions-item label="部门名称">
+          <a-descriptions-item label="名称">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
@@ -260,7 +260,7 @@
               />
             </span>
           </a-descriptions-item>
-          <a-descriptions-item label="部门排序">
+          <a-descriptions-item label="排序">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>

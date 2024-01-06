@@ -50,7 +50,10 @@
                   />
                 </a-form-item>
                 <a-form-item field="createTime" hide-label>
-                  <date-range-picker v-model="queryParams.createTime" />
+                  <date-range-picker
+                    v-model="queryParams.createTime"
+                    style="width: 360px"
+                  />
                 </a-form-item>
                 <a-form-item hide-label>
                   <a-space>
@@ -147,14 +150,14 @@
           >
             <template #columns>
               <a-table-column title="ID" data-index="id" />
-              <a-table-column title="用户名" :width="120" ellipsis tooltip>
+              <a-table-column title="用户名" :width="100" ellipsis tooltip>
                 <template #cell="{ record }">
                   <a-link @click="toDetail(record.id)">{{
                     record.username
                   }}</a-link>
                 </template>
               </a-table-column>
-              <a-table-column title="昵称" data-index="nickname" :width="115" />
+              <a-table-column title="昵称" data-index="nickname" :width="115" ellipsis tooltip />
               <a-table-column title="性别" align="center">
                 <template #cell="{ record }">
                   <span v-if="record.gender === 1">男</span>
@@ -198,6 +201,7 @@
                   <a-tag v-else color="arcoblue">否</a-tag>
                 </template>
               </a-table-column>
+              <a-table-column title="描述" data-index="description" ellipsis tooltip />
               <a-table-column title="创建人/创建时间" :width="175">
                 <template #cell="{ record }">
                   {{ record.createUserString }}<br />

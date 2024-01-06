@@ -10,7 +10,7 @@
             <a-form-item field="name" hide-label>
               <a-input
                 v-model="queryParams.name"
-                placeholder="输入角色名称搜索"
+                placeholder="输入名称搜索"
                 allow-clear
                 style="width: 150px"
                 @press-enter="handleQuery"
@@ -117,18 +117,18 @@
       >
         <template #columns>
           <a-table-column title="ID" data-index="id" />
-          <a-table-column title="角色名称" :width="130">
+          <a-table-column title="名称" :width="130">
             <template #cell="{ record }">
               <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
             </template>
           </a-table-column>
-          <a-table-column title="角色编码" data-index="code" />
+          <a-table-column title="编码" data-index="code" />
           <a-table-column title="数据权限" :width="130">
             <template #cell="{ record }">
               <dict-tag :value="record.dataScope" :dict="data_scope_enum" />
             </template>
           </a-table-column>
-          <a-table-column title="角色排序" align="center" data-index="sort" />
+          <a-table-column title="排序" align="center" data-index="sort" />
           <a-table-column title="状态" align="center">
             <template #cell="{ record }">
               <a-switch
@@ -207,20 +207,20 @@
           </a-alert>
           <fieldset>
             <legend>基础信息</legend>
-            <a-form-item label="角色名称" field="name">
-              <a-input v-model="form.name" placeholder="请输入角色名称" />
+            <a-form-item label="名称" field="name">
+              <a-input v-model="form.name" placeholder="请输入名称" />
             </a-form-item>
             <a-form-item
-              label="角色编码"
+              label="编码"
               field="code"
               :disabled="form.disabled"
             >
-              <a-input v-model="form.code" placeholder="请输入角色编码" />
+              <a-input v-model="form.code" placeholder="请输入编码" />
             </a-form-item>
-            <a-form-item label="角色排序" field="sort">
+            <a-form-item label="排序" field="sort">
               <a-input-number
                 v-model="form.sort"
-                placeholder="请输入角色排序"
+                placeholder="请输入排序"
                 :min="1"
                 mode="button"
               />
@@ -327,13 +327,13 @@
       >
         <a-card title="基础信息" :bordered="false">
           <a-descriptions :column="2" bordered size="large">
-            <a-descriptions-item label="角色名称">
+            <a-descriptions-item label="名称">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>{{ dataDetail.name }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="角色编码">
+            <a-descriptions-item label="编码">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>

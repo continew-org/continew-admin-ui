@@ -12,7 +12,7 @@
                 <a-form-item field="name" hide-label>
                   <a-input
                     v-model="queryParams.name"
-                    placeholder="输入字典名称搜索"
+                    placeholder="输入名称搜索"
                     allow-clear
                     style="width: 150px"
                     @press-enter="handleQuery"
@@ -120,13 +120,13 @@
                 </template>
               </a-table-column>
               <a-table-column
-                title="字典名称"
+                title="名称"
                 data-index="name"
                 :width="100"
                 :body-cell-style="bodyCellStyle"
               />
               <a-table-column
-                title="字典编码"
+                title="编码"
                 data-index="code"
                 :body-cell-style="bodyCellStyle"
               />
@@ -193,13 +193,13 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="字典名称" field="name">
-            <a-input v-model="form.name" placeholder="请输入字典名称" />
+          <a-form-item label="名称" field="name">
+            <a-input v-model="form.name" placeholder="请输入名称" />
           </a-form-item>
-          <a-form-item label="字典编码" field="code">
+          <a-form-item label="编码" field="code">
             <a-input
               v-model="form.code"
-              placeholder="请输入字典编码"
+              placeholder="请输入编码"
               :disabled="form.isSystem"
             />
           </a-form-item>

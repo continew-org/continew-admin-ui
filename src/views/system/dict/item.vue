@@ -42,12 +42,12 @@
         <a-empty v-else>暂无数据</a-empty>
       </template>
       <template #columns>
-        <a-table-column title="字典标签" align="center">
+        <a-table-column title="标签" align="center">
           <template #cell="{ record }">
             <dict-tag :value="record.value" :dict="dataList" />
           </template>
         </a-table-column>
-        <a-table-column title="字典值" align="center" data-index="value" />
+        <a-table-column title="值" align="center" data-index="value" />
         <a-table-column title="排序" align="center" data-index="sort" />
         <a-table-column title="描述" data-index="description" />
         <a-table-column
@@ -102,25 +102,25 @@
       @cancel="handleCancel"
     >
       <a-form ref="formRef" :model="form" :rules="rules" size="large">
-        <a-form-item label="字典标签" field="label">
+        <a-form-item label="标签" field="label">
           <a-input
             v-model="form.label"
-            placeholder="请输入字典标签"
+            placeholder="请输入标签"
             :max-length="30"
           />
         </a-form-item>
-        <a-form-item label="字典值" field="value">
+        <a-form-item label="值" field="value">
           <a-input
             v-model="form.value"
-            placeholder="请输入字典值"
+            placeholder="请输入值"
             :max-length="30"
           />
         </a-form-item>
-        <a-form-item label="背景颜色" field="color">
+        <a-form-item label="标签颜色" field="color">
           <a-auto-complete
             v-model="form.color"
             :data="colors"
-            placeholder="请选择或输入背景颜色"
+            placeholder="请选择或输入标签颜色"
             :max-length="30"
             allow-clear
           >
