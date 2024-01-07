@@ -28,7 +28,6 @@
 </template>
 
 <script setup lang="ts">
-  import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
   import type { FormInstance, Modal } from '@arco-design/web-vue';
   import { FileItem, update } from '@/api/system/file';
 

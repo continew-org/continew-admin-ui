@@ -345,7 +345,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { TreeNodeData, TableData } from '@arco-design/web-vue';
   import {
     DataRecord,

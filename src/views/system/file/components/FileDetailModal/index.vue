@@ -31,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
   import { FileItem } from '@/api/system/file';
   import FileImg from '../../main/FileMain/FileImg.vue';
 

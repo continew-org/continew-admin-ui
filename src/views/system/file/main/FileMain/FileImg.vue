@@ -4,7 +4,6 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
   import { fileExtendNameIconMap, imageTypeList } from '@/constant/file';
   import type { FileItem } from '@/api/system/file';
   import SvgIcon from '@/components/svg-icon/index.vue';

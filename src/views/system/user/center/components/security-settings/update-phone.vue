@@ -109,7 +109,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
   import { BehaviorCaptchaReq, getSmsCaptcha } from '@/api/common/captcha';
   import { UserPhoneUpdateReq, updatePhone } from '@/api/system/user-center';

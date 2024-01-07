@@ -100,7 +100,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { DataRecord, ListParam, list, kickout } from '@/api/monitor/online';
   import { getToken } from '@/utils/auth';
   import checkPermission from '@/utils/permission';

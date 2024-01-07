@@ -340,7 +340,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
     DataRecord,
     ListParam,

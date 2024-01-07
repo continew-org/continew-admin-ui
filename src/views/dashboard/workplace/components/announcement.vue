@@ -80,7 +80,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref } from 'vue';
   import {
     DashboardAnnouncementRecord,
     listAnnouncement,

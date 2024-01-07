@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-  import { getCurrentInstance, ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
   import { useUserStore } from '@/store';
   import { useI18n } from 'vue-i18n';
   import { isLogin } from '@/utils/auth';

@@ -100,7 +100,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
   import { DashboardTotalRecord, getTotal } from '@/api/common/dashboard';
   import PvCountIcon from '@/assets/icons/png/popularity.png';
   import IpCountIcon from '@/assets/icons/png/same-city.png';

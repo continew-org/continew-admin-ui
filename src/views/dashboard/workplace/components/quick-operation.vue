@@ -22,8 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRouter } from 'vue-router';
-
   const router = useRouter();
   const links = [
     { text: '用户管理', icon: 'user', path: '/system/user' },

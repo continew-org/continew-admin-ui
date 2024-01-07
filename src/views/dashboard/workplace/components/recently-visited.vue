@@ -28,8 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
   import { DashboardRecentlyVisitedRecord } from '@/api/common/dashboard';
 
   const router = useRouter();

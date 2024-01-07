@@ -18,15 +18,17 @@ module.exports = {
     'node': true,
     'vue/setup-compiler-macros': true,
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['vue', '@typescript-eslint'],
   extends: [
     // Airbnb JavaScript Style Guide https://github.com/airbnb/javascript
     'airbnb-base',
+    'plugin:vue/vue3-essential', // vue3语法规则
     'plugin:@typescript-eslint/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:vue/vue3-recommended',
     'plugin:prettier/recommended',
+    './.eslintrc-auto-import.json',
   ],
   settings: {
     'import/resolver': {

@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue';
   import { LabelValueState } from '@/store/modules/dict/types';
 
   const props = defineProps({

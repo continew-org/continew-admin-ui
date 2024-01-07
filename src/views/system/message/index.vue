@@ -235,7 +235,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { DataRecord, ListParam, list, del, read } from '@/api/system/message';
 
   const { proxy } = getCurrentInstance() as any;

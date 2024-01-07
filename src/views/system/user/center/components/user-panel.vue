@@ -112,7 +112,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, getCurrentInstance } from 'vue';
   import { FileItem } from '@arco-design/web-vue';
   import { uploadAvatar, cropperOptions } from '@/api/system/user-center';
   import { useUserStore } from '@/store';

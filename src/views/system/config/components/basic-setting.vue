@@ -170,7 +170,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, reactive, toRefs } from 'vue';
   import { FileItem, RequestOption } from '@arco-design/web-vue';
   import {
     BasicConfigRecord,

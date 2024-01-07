@@ -10,7 +10,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, PropType } from 'vue';
   import { ShortcutType } from '@arco-design/web-vue';
   import dayjs from 'dayjs';
 

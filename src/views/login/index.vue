@@ -72,7 +72,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
   import { useAppStore } from '@/store';
   import useResponsive from '@/hooks/responsive';
   import { socialAuth } from '@/api/auth';

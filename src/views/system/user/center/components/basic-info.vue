@@ -52,7 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
   import { BasicInfoModel, updateBasicInfo } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';

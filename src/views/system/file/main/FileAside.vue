@@ -31,8 +31,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
   import { fileTypeList, type fileTypeListItem } from '@/constant/file';
 
   const route = useRoute();

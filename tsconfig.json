@@ -16,6 +16,6 @@
     "skipLibCheck": true,
     "allowJs": true
   },
-  "include": ["src/**/*", "src/**/*.vue"],
+  "include": ["src/**/*", "src/**/*.vue", "src/**/*.d.ts"],
   "exclude": ["node_modules"]
 }

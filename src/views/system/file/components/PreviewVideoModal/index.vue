@@ -14,7 +14,6 @@
 <script setup lang="ts">
   import Player from 'xgplayer';
   import type { FileItem } from '@/api/system/file';
-  import { nextTick, onMounted, ref } from 'vue';
 
   interface Props {
     fileInfo: FileItem;

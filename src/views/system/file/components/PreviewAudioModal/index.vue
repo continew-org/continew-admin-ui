@@ -29,7 +29,6 @@
 <script setup lang="ts">
   import { useDraggable, useWindowSize, useElementSize } from '@vueuse/core';
   import type { FileItem } from '@/api/system/file';
-  import { computed, onMounted, ref } from 'vue';
 
   interface Props {
     fileInfo: FileItem;

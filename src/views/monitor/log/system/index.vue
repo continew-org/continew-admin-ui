@@ -275,7 +275,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
   import { useClipboard } from '@vueuse/core';
   import {
     SystemLogParam,

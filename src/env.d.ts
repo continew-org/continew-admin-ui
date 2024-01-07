@@ -18,3 +18,17 @@ declare module '@kangc/v-md-editor/lib/plugins/copy-code/index';
 declare module '@kangc/v-md-editor/lib/plugins/todo-list/index';
 declare module 'highlight.js';
 declare module 'highlight.js/lib/languages/json';
+
+// for type re-export
+declare global {
+  // @ts-ignore
+  export type {
+    Component,
+    ComponentPublicInstance,
+    ComputedRef,
+    InjectionKey,
+    PropType,
+    Ref,
+    VNode,
+  } from 'vue';
+}

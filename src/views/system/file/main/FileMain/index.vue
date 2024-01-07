@@ -403,8 +403,6 @@
     del as delStorage,
   } from '@/api/system/storage';
   import { upload } from '@/api/common';
-  import { onBeforeRouteUpdate, useRoute } from 'vue-router';
-  import { getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
   import FileGrid from './FileGrid.vue';
   import FileList from './FileList.vue';
   import {

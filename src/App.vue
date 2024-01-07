@@ -6,7 +6,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue';
   import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
   import zhCN from '@arco-design/web-vue/es/locale/lang/zh-cn';
   import GlobalSetting from '@/components/global-setting/index.vue';

@@ -102,7 +102,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
   import { getMailCaptcha } from '@/api/common/captcha';
   import { UserEmailUpdateReq, updateEmail } from '@/api/system/user-center';

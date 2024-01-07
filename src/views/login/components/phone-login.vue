@@ -53,9 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
   import { ValidatedError } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
   import { PhoneLoginReq } from '@/api/auth';

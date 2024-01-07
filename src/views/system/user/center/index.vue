@@ -29,8 +29,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
   import UserPanel from './components/user-panel.vue';
   import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';

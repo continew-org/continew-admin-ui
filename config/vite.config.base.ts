@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import AutoImport from 'unplugin-auto-import/vite';
 import svgLoader from 'vite-svg-loader';
 // import configArcoStyleImportPlugin from './plugin/arcoStyleImport';
 
@@ -9,6 +10,15 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    AutoImport({
+      // 自动导入vue相关函数，如: ref、reactive、toRef等
+      imports: ['vue', 'vue-router'],
+      dts: 'src/auto-import.d.ts',
+      eslintrc: {
+        // 改为 true 用于生成 eslint 配置（生成后改回 false，避免重复生成消耗）
+        enabled: false,
+      },
+    }),
     svgLoader({ svgoConfig: {} }),
     // configArcoStyleImportPlugin(),
   ],
@@ -41,7 +51,7 @@ export default defineConfig({
       less: {
         modifyVars: {
           hack: `true; @import (reference) "${resolve(
-            'src/assets/style/breakpoint.less'
+            'src/assets/style/breakpoint.less',
           )}";`,
         },
         javascriptEnabled: true,

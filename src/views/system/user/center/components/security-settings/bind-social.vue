@@ -76,7 +76,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref } from 'vue';
   import {
     UserSocialBindRecord,
     listSocial,

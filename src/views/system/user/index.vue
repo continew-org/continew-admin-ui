@@ -514,7 +514,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
   import { TreeNodeData } from '@arco-design/web-vue';
   import {
     DataRecord,

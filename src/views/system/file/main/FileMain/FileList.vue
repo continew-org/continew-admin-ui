@@ -72,7 +72,6 @@
 <script setup lang="ts">
   import type { TableRowSelection } from '@arco-design/web-vue';
   import type { FileItem } from '@/api/system/file';
-  import { reactive } from 'vue';
   import FileImg from './FileImg.vue';
   import FileRightMenu from './FileRightMenu.vue';
 
