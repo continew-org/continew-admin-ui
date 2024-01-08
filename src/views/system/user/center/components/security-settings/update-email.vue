@@ -1,106 +1,3 @@
-<template>
-  <a-list-item-meta>
-    <template #avatar>
-      <a-typography-paragraph>
-        {{ $t('userCenter.securitySettings.email.label') }}
-      </a-typography-paragraph>
-    </template>
-    <template #description>
-      <div class="tip">
-        {{ $t('userCenter.securitySettings.email.tip') }}
-      </div>
-      <div class="content">
-        <a-typography-paragraph v-if="userStore.email">
-          {{ userStore.email }}
-        </a-typography-paragraph>
-        <a-typography-paragraph v-else class="tip">
-          {{ $t('userCenter.securitySettings.email.content') }}
-        </a-typography-paragraph>
-      </div>
-      <div class="operation">
-        <a-link
-          :title="$t('userCenter.securitySettings.button.update')"
-          @click="toUpdate"
-        >
-          {{ $t('userCenter.securitySettings.button.update') }}
-        </a-link>
-      </div>
-    </template>
-  </a-list-item-meta>
-
-  <a-modal
-    :title="$t('userCenter.securitySettings.updateEmail.modal.title')"
-    :visible="visible"
-    :mask-closable="false"
-    :esc-to-close="false"
-    @ok="handleUpdate"
-    @cancel="handleCancel"
-  >
-    <a-form ref="formRef" :model="form" :rules="rules" size="large">
-      <a-form-item
-        :label="
-          $t('userCenter.securitySettings.updateEmail.form.label.newEmail')
-        "
-        field="newEmail"
-      >
-        <a-input
-          v-model="form.newEmail"
-          :placeholder="
-            $t(
-              'userCenter.securitySettings.updateEmail.form.placeholder.newEmail'
-            )
-          "
-          allow-clear
-        />
-      </a-form-item>
-      <a-form-item
-        :label="
-          $t('userCenter.securitySettings.updateEmail.form.label.captcha')
-        "
-        field="captcha"
-      >
-        <a-input
-          v-model="form.captcha"
-          :placeholder="
-            $t('userCenter.securitySettings.form.placeholder.captcha')
-          "
-          :max-length="6"
-          allow-clear
-          style="width: 80%"
-        />
-        <a-button
-          :loading="captchaLoading"
-          type="primary"
-          :disabled="captchaDisable"
-          class="captcha-btn"
-          @click="handleSendCaptcha"
-        >
-          {{ captchaBtnName }}
-        </a-button>
-      </a-form-item>
-      <a-form-item
-        :label="
-          $t(
-            'userCenter.securitySettings.updateEmail.form.label.currentPassword'
-          )
-        "
-        field="currentPassword"
-      >
-        <a-input-password
-          v-model="form.currentPassword"
-          :placeholder="
-            $t(
-              'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword'
-            )
-          "
-          :max-length="32"
-          allow-clear
-        />
-      </a-form-item>
-    </a-form>
-  </a-modal>
-</template>
-
 <script lang="ts" setup>
   import { FieldRule } from '@arco-design/web-vue';
   import { getMailCaptcha } from '@/api/common/captcha';
@@ -240,6 +137,109 @@
     visible.value = true;
   };
 </script>
+
+<template>
+  <a-list-item-meta>
+    <template #avatar>
+      <a-typography-paragraph>
+        {{ $t('userCenter.securitySettings.email.label') }}
+      </a-typography-paragraph>
+    </template>
+    <template #description>
+      <div class="tip">
+        {{ $t('userCenter.securitySettings.email.tip') }}
+      </div>
+      <div class="content">
+        <a-typography-paragraph v-if="userStore.email">
+          {{ userStore.email }}
+        </a-typography-paragraph>
+        <a-typography-paragraph v-else class="tip">
+          {{ $t('userCenter.securitySettings.email.content') }}
+        </a-typography-paragraph>
+      </div>
+      <div class="operation">
+        <a-link
+          :title="$t('userCenter.securitySettings.button.update')"
+          @click="toUpdate"
+        >
+          {{ $t('userCenter.securitySettings.button.update') }}
+        </a-link>
+      </div>
+    </template>
+  </a-list-item-meta>
+
+  <a-modal
+    :title="$t('userCenter.securitySettings.updateEmail.modal.title')"
+    :visible="visible"
+    :mask-closable="false"
+    :esc-to-close="false"
+    @ok="handleUpdate"
+    @cancel="handleCancel"
+  >
+    <a-form ref="formRef" :model="form" :rules="rules" size="large">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updateEmail.form.label.newEmail')
+        "
+        field="newEmail"
+      >
+        <a-input
+          v-model="form.newEmail"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updateEmail.form.placeholder.newEmail'
+            )
+          "
+          allow-clear
+        />
+      </a-form-item>
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updateEmail.form.label.captcha')
+        "
+        field="captcha"
+      >
+        <a-input
+          v-model="form.captcha"
+          :placeholder="
+            $t('userCenter.securitySettings.form.placeholder.captcha')
+          "
+          :max-length="6"
+          allow-clear
+          style="width: 80%"
+        />
+        <a-button
+          :loading="captchaLoading"
+          type="primary"
+          :disabled="captchaDisable"
+          class="captcha-btn"
+          @click="handleSendCaptcha"
+        >
+          {{ captchaBtnName }}
+        </a-button>
+      </a-form-item>
+      <a-form-item
+        :label="
+          $t(
+            'userCenter.securitySettings.updateEmail.form.label.currentPassword'
+          )
+        "
+        field="currentPassword"
+      >
+        <a-input-password
+          v-model="form.currentPassword"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword'
+            )
+          "
+          :max-length="32"
+          allow-clear
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+</template>
 
 <style scoped lang="less">
   .captcha-btn {

@@ -1,9 +1,3 @@
-<template>
-  <a-spin :loading="loading" :tip="isLogin() ? $t('bind.ing') : $t('login.ing')">
-    <div></div>
-  </a-spin>
-</template>
-
 <script setup lang="ts">
   import { useUserStore } from '@/store';
   import { useI18n } from 'vue-i18n';
@@ -82,6 +76,15 @@
     handleSocialLogin();
   }
 </script>
+
+<template>
+  <a-spin
+    :loading="loading"
+    :tip="isLogin() ? $t('bind.ing') : $t('login.ing')"
+  >
+    <div></div>
+  </a-spin>
+</template>
 
 <script lang="ts">
   export default {

@@ -1,113 +1,3 @@
-<template>
-  <a-list-item-meta>
-    <template #avatar>
-      <a-typography-paragraph>
-        {{ $t('userCenter.securitySettings.phone.label') }}
-      </a-typography-paragraph>
-    </template>
-    <template #description>
-      <div class="tip">
-        {{ $t('userCenter.securitySettings.phone.tip') }}
-      </div>
-      <div class="content">
-        <a-typography-paragraph v-if="userStore.phone">
-          {{ userStore.phone }}
-        </a-typography-paragraph>
-        <a-typography-paragraph v-else class="tip">
-          {{ $t('userCenter.securitySettings.phone.content') }}
-        </a-typography-paragraph>
-      </div>
-      <div class="operation">
-        <a-link
-          :title="$t('userCenter.securitySettings.button.update')"
-          @click="toUpdate"
-        >
-          {{ $t('userCenter.securitySettings.button.update') }}
-        </a-link>
-      </div>
-    </template>
-  </a-list-item-meta>
-
-  <a-modal
-    :title="$t('userCenter.securitySettings.updatePhone.modal.title')"
-    :visible="visible"
-    :mask-closable="false"
-    :esc-to-close="false"
-    @ok="handleUpdate"
-    @cancel="handleCancel"
-  >
-    <a-form ref="formRef" :model="form" :rules="rules" size="large">
-      <a-form-item
-        :label="
-          $t('userCenter.securitySettings.updatePhone.form.label.newPhone')
-        "
-        field="newPhone"
-      >
-        <a-input
-          v-model="form.newPhone"
-          :placeholder="
-            $t(
-              'userCenter.securitySettings.updatePhone.form.placeholder.newPhone',
-            )
-          "
-          allow-clear
-        />
-      </a-form-item>
-      <a-form-item
-        :label="
-          $t('userCenter.securitySettings.updatePhone.form.label.captcha')
-        "
-        field="captcha"
-      >
-        <a-input
-          v-model="form.captcha"
-          :placeholder="
-            $t('userCenter.securitySettings.form.placeholder.captcha')
-          "
-          :max-length="4"
-          allow-clear
-          style="width: 80%"
-        />
-        <a-button
-          :loading="captchaLoading"
-          type="primary"
-          :disabled="captchaDisable"
-          class="captcha-btn"
-          @click="handleOpenBehaviorCaptcha"
-        >
-          {{ captchaBtnName }}
-        </a-button>
-      </a-form-item>
-      <a-form-item
-        :label="
-          $t(
-            'userCenter.securitySettings.updatePhone.form.label.currentPassword',
-          )
-        "
-        field="currentPassword"
-      >
-        <a-input-password
-          v-model="form.currentPassword"
-          :placeholder="
-            $t(
-              'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword',
-            )
-          "
-          :max-length="32"
-          allow-clear
-        />
-      </a-form-item>
-    </a-form>
-    <Verify
-      ref="verifyRef"
-      :mode="captchaMode"
-      :captcha-type="captchaType"
-      :img-size="{ width: '330px', height: '155px' }"
-      @success="handleSendCaptcha"
-    ></Verify>
-  </a-modal>
-</template>
-
 <script lang="ts" setup>
   import { FieldRule } from '@arco-design/web-vue';
   import { BehaviorCaptchaReq, getSmsCaptcha } from '@/api/common/captcha';
@@ -261,6 +151,116 @@
     visible.value = true;
   };
 </script>
+
+<template>
+  <a-list-item-meta>
+    <template #avatar>
+      <a-typography-paragraph>
+        {{ $t('userCenter.securitySettings.phone.label') }}
+      </a-typography-paragraph>
+    </template>
+    <template #description>
+      <div class="tip">
+        {{ $t('userCenter.securitySettings.phone.tip') }}
+      </div>
+      <div class="content">
+        <a-typography-paragraph v-if="userStore.phone">
+          {{ userStore.phone }}
+        </a-typography-paragraph>
+        <a-typography-paragraph v-else class="tip">
+          {{ $t('userCenter.securitySettings.phone.content') }}
+        </a-typography-paragraph>
+      </div>
+      <div class="operation">
+        <a-link
+          :title="$t('userCenter.securitySettings.button.update')"
+          @click="toUpdate"
+        >
+          {{ $t('userCenter.securitySettings.button.update') }}
+        </a-link>
+      </div>
+    </template>
+  </a-list-item-meta>
+
+  <a-modal
+    :title="$t('userCenter.securitySettings.updatePhone.modal.title')"
+    :visible="visible"
+    :mask-closable="false"
+    :esc-to-close="false"
+    @ok="handleUpdate"
+    @cancel="handleCancel"
+  >
+    <a-form ref="formRef" :model="form" :rules="rules" size="large">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updatePhone.form.label.newPhone')
+        "
+        field="newPhone"
+      >
+        <a-input
+          v-model="form.newPhone"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updatePhone.form.placeholder.newPhone',
+            )
+          "
+          allow-clear
+        />
+      </a-form-item>
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updatePhone.form.label.captcha')
+        "
+        field="captcha"
+      >
+        <a-input
+          v-model="form.captcha"
+          :placeholder="
+            $t('userCenter.securitySettings.form.placeholder.captcha')
+          "
+          :max-length="4"
+          allow-clear
+          style="width: 80%"
+        />
+        <a-button
+          :loading="captchaLoading"
+          type="primary"
+          :disabled="captchaDisable"
+          class="captcha-btn"
+          @click="handleOpenBehaviorCaptcha"
+        >
+          {{ captchaBtnName }}
+        </a-button>
+      </a-form-item>
+      <a-form-item
+        :label="
+          $t(
+            'userCenter.securitySettings.updatePhone.form.label.currentPassword',
+          )
+        "
+        field="currentPassword"
+      >
+        <a-input-password
+          v-model="form.currentPassword"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword',
+            )
+          "
+          :max-length="32"
+          allow-clear
+        />
+      </a-form-item>
+    </a-form>
+    <Verify
+      ref="verifyRef"
+      :mode="captchaMode"
+      :captcha-type="captchaType"
+      :img-size="{ width: '330px', height: '155px' }"
+      @success="handleSendCaptcha"
+    ></Verify>
+  </a-modal>
+</template>
 
 <style scoped lang="less">
   .captcha-btn {

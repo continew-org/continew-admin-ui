@@ -1,3 +1,22 @@
+<script setup lang="ts">
+  import GiOption from '@/components/gi-option/index.vue';
+  import GiOptionItem from '@/components/gi-option-item/index.vue';
+
+  interface Props {
+    showClassStyle?: boolean;
+  }
+
+  withDefaults(defineProps<Props>(), {
+    showClassStyle: true,
+  });
+
+  const emit = defineEmits(['click']);
+
+  const onClickItem = (mode: string) => {
+    emit('click', mode);
+  };
+</script>
+
 <template>
   <GiOption :class="{ option: showClassStyle }">
     <GiOptionItem v-permission="['system:file:update']" @click="onClickItem('rename')">
@@ -18,25 +37,6 @@
     </GiOptionItem>
   </GiOption>
 </template>
-
-<script setup lang="ts">
-  import GiOption from '@/components/gi-option/index.vue';
-  import GiOptionItem from '@/components/gi-option-item/index.vue';
-
-  interface Props {
-    showClassStyle?: boolean;
-  }
-
-  withDefaults(defineProps<Props>(), {
-    showClassStyle: true,
-  });
-
-  const emit = defineEmits(['click']);
-
-  const onClickItem = (mode: string) => {
-    emit('click', mode);
-  };
-</script>
 
 <style lang="less" scoped>
   .option {

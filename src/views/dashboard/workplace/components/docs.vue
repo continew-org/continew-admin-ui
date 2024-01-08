@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <a-card
     class="general-card"
@@ -69,8 +71,6 @@
     </a-row>
   </a-card>
 </template>
-
-<script setup lang="ts"></script>
 
 <style lang="less" scoped>
   .arco-card-body .arco-link {

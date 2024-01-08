@@ -1,60 +1,3 @@
-<template>
-  <div class="container">
-    <!-- 列表区域 -->
-    <a-table
-      ref="tableRef"
-      row-key="id"
-      :data="dataList"
-      :loading="loading"
-      :pagination="{
-        showTotal: true,
-        showPageSize: true,
-        total: total,
-        current: queryParams.page,
-      }"
-      :bordered="false"
-      column-resizable
-      stripe
-      size="large"
-      @page-change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    >
-      <template #columns>
-        <a-table-column title="序号">
-          <template #cell="{ rowIndex }">
-            {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
-          </template>
-        </a-table-column>
-        <a-table-column title="操作时间" data-index="createTime" />
-        <a-table-column title="操作内容" data-index="description" />
-        <a-table-column title="所属模块" data-index="module" />
-        <a-table-column title="操作状态" align="center">
-          <template #cell="{ record }">
-            <a-tag v-if="record.status === 1" color="green"
-              ><span class="circle pass" />成功</a-tag
-            >
-            <a-tooltip v-else :content="record.errorMsg">
-              <a-tag color="red" style="cursor: pointer">
-                <span class="circle fail" />失败
-              </a-tag>
-            </a-tooltip>
-          </template>
-        </a-table-column>
-        <a-table-column title="操作 IP" data-index="ip" />
-        <a-table-column title="操作地点" data-index="address" />
-        <a-table-column title="浏览器" data-index="browser" />
-      </template>
-      <template #pagination-left>
-        <a-tooltip content="刷新">
-          <div class="action-icon" @click="handleRefresh">
-            <icon-refresh size="18" />
-          </div>
-        </a-tooltip>
-      </template>
-    </a-table>
-  </div>
-</template>
-
 <script lang="ts" setup>
   import {
     OperationLogParam,
@@ -125,6 +68,63 @@
     getList();
   };
 </script>
+
+<template>
+  <div class="container">
+    <!-- 列表区域 -->
+    <a-table
+      ref="tableRef"
+      row-key="id"
+      :data="dataList"
+      :loading="loading"
+      :pagination="{
+        showTotal: true,
+        showPageSize: true,
+        total: total,
+        current: queryParams.page,
+      }"
+      :bordered="false"
+      column-resizable
+      stripe
+      size="large"
+      @page-change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
+    >
+      <template #columns>
+        <a-table-column title="序号">
+          <template #cell="{ rowIndex }">
+            {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+          </template>
+        </a-table-column>
+        <a-table-column title="操作时间" data-index="createTime" />
+        <a-table-column title="操作内容" data-index="description" />
+        <a-table-column title="所属模块" data-index="module" />
+        <a-table-column title="操作状态" align="center">
+          <template #cell="{ record }">
+            <a-tag v-if="record.status === 1" color="green"
+              ><span class="circle pass" />成功</a-tag
+            >
+            <a-tooltip v-else :content="record.errorMsg">
+              <a-tag color="red" style="cursor: pointer">
+                <span class="circle fail" />失败
+              </a-tag>
+            </a-tooltip>
+          </template>
+        </a-table-column>
+        <a-table-column title="操作 IP" data-index="ip" />
+        <a-table-column title="操作地点" data-index="address" />
+        <a-table-column title="浏览器" data-index="browser" />
+      </template>
+      <template #pagination-left>
+        <a-tooltip content="刷新">
+          <div class="action-icon" @click="handleRefresh">
+            <icon-refresh size="18" />
+          </div>
+        </a-tooltip>
+      </template>
+    </a-table>
+  </div>
+</template>
 
 <style scoped lang="less">
   .container {

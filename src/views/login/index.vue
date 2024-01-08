@@ -1,3 +1,30 @@
+<script lang="ts" setup>
+  import { useAppStore } from '@/store';
+  import useResponsive from '@/hooks/responsive';
+  import { socialAuth } from '@/api/auth';
+  import AccountLogin from './components/account-login.vue';
+  import PhoneLogin from './components/phone-login.vue';
+  import EmailLogin from './components/email-login.vue';
+
+  const appStore = useAppStore();
+  useResponsive(true);
+  const isEmailLogin = ref(false);
+
+  /**
+   * 第三方登录授权
+   *
+   * @param source 来源
+   */
+  const handleSocialAuth = async (source: string) => {
+    const { data } = await socialAuth(source);
+    window.location.href = data;
+  };
+
+  const toggleLoginMode = () => {
+    isEmailLogin.value = !isEmailLogin.value;
+  };
+</script>
+
 <template>
   <div class="root">
     <div class="header">
@@ -70,33 +97,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { useAppStore } from '@/store';
-  import useResponsive from '@/hooks/responsive';
-  import { socialAuth } from '@/api/auth';
-  import AccountLogin from './components/account-login.vue';
-  import PhoneLogin from './components/phone-login.vue';
-  import EmailLogin from './components/email-login.vue';
-
-  const appStore = useAppStore();
-  useResponsive(true);
-  const isEmailLogin = ref(false);
-
-  /**
-   * 第三方登录授权
-   *
-   * @param source 来源
-   */
-  const handleSocialAuth = async (source: string) => {
-    const { data } = await socialAuth(source);
-    window.location.href = data;
-  };
-
-  const toggleLoginMode = () => {
-    isEmailLogin.value = !isEmailLogin.value;
-  };
-</script>
 
 <style lang="less" scoped>
   .root {

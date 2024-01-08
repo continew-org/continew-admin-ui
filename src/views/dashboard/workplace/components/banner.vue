@@ -1,14 +1,3 @@
-<template>
-  <a-col class="banner">
-    <a-col :span="8">
-      <a-typography-title :heading="5" style="margin-top: 0">
-        {{ $t('workplace.welcome') }} {{ userInfo.nickname }}
-      </a-typography-title>
-    </a-col>
-    <a-divider class="panel-border" />
-  </a-col>
-</template>
-
 <script lang="ts" setup>
   import { useUserStore } from '@/store';
 
@@ -19,6 +8,17 @@
     };
   });
 </script>
+
+<template>
+  <a-col class="banner">
+    <a-col :span="8">
+      <a-typography-title :heading="5" style="margin-top: 0">
+        {{ $t('workplace.welcome') }} {{ userInfo.nickname }}
+      </a-typography-title>
+    </a-col>
+    <a-divider class="panel-border" />
+  </a-col>
+</template>
 
 <style scoped lang="less">
   .banner {

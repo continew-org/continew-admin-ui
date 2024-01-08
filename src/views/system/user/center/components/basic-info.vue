@@ -1,56 +1,3 @@
-<template>
-  <a-form
-    ref="formRef"
-    :model="form"
-    :rules="rules"
-    :label-col-props="{ span: 8 }"
-    :wrapper-col-props="{ span: 16 }"
-    size="large"
-    class="form"
-  >
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.username')"
-      disabled
-    >
-      <a-input
-        v-model="form.username"
-        :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
-        :max-length="64"
-      />
-    </a-form-item>
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.nickname')"
-      field="nickname"
-    >
-      <a-input
-        v-model="form.nickname"
-        :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
-        :max-length="30"
-      />
-    </a-form-item>
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.gender')"
-      field="gender"
-    >
-      <a-radio-group v-model="form.gender">
-        <a-radio :value="1">男</a-radio>
-        <a-radio :value="2">女</a-radio>
-        <a-radio :value="0" disabled>未知</a-radio>
-      </a-radio-group>
-    </a-form-item>
-    <a-form-item>
-      <a-space>
-        <a-button :loading="loading" type="primary" @click="handleSave">
-          {{ $t('userCenter.basicInfo.form.save') }}
-        </a-button>
-        <a-button @click="handleReset">
-          {{ $t('userCenter.basicInfo.form.reset') }}
-        </a-button>
-      </a-space>
-    </a-form-item>
-  </a-form>
-</template>
-
 <script lang="ts" setup>
   import { FieldRule } from '@arco-design/web-vue';
   import { BasicInfoModel, updateBasicInfo } from '@/api/system/user-center';
@@ -124,6 +71,59 @@
     proxy.$refs.formRef.resetFields();
   };
 </script>
+
+<template>
+  <a-form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+    :label-col-props="{ span: 8 }"
+    :wrapper-col-props="{ span: 16 }"
+    size="large"
+    class="form"
+  >
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.username')"
+      disabled
+    >
+      <a-input
+        v-model="form.username"
+        :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
+        :max-length="64"
+      />
+    </a-form-item>
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.nickname')"
+      field="nickname"
+    >
+      <a-input
+        v-model="form.nickname"
+        :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
+        :max-length="30"
+      />
+    </a-form-item>
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.gender')"
+      field="gender"
+    >
+      <a-radio-group v-model="form.gender">
+        <a-radio :value="1">男</a-radio>
+        <a-radio :value="2">女</a-radio>
+        <a-radio :value="0" disabled>未知</a-radio>
+      </a-radio-group>
+    </a-form-item>
+    <a-form-item>
+      <a-space>
+        <a-button :loading="loading" type="primary" @click="handleSave">
+          {{ $t('userCenter.basicInfo.form.save') }}
+        </a-button>
+        <a-button @click="handleReset">
+          {{ $t('userCenter.basicInfo.form.reset') }}
+        </a-button>
+      </a-space>
+    </a-form-item>
+  </a-form>
+</template>
 
 <style scoped lang="less">
   .form {

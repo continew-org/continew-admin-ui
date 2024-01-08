@@ -1,3 +1,55 @@
+<script lang="ts" setup>
+  import {
+    DashboardAnnouncementRecord,
+    listAnnouncement,
+  } from '@/api/common/dashboard';
+  import { DataRecord, get } from '@/api/system/announcement';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { announcement_type } = proxy.useDict('announcement_type');
+
+  const dataList = ref<DashboardAnnouncementRecord[]>([]);
+  const dataDetail = ref<DataRecord>({});
+  const detailLoading = ref(false);
+  const detailVisible = ref(false);
+
+  /**
+   * 查询公告列表
+   */
+  const getList = () => {
+    listAnnouncement().then((res) => {
+      dataList.value = res.data;
+    });
+  };
+  getList();
+
+  /**
+   * 查看详情
+   *
+   * @param id ID
+   */
+  const toDetail = async (id: number) => {
+    if (detailLoading.value) return;
+    detailLoading.value = true;
+    detailVisible.value = true;
+    get(id)
+      .then((res) => {
+        dataDetail.value = res.data;
+      })
+      .finally(() => {
+        detailLoading.value = false;
+      });
+  };
+
+  /**
+   * 关闭详情
+   */
+  const handleDetailCancel = () => {
+    detailVisible.value = false;
+    dataDetail.value = {};
+  };
+</script>
+
 <template>
   <a-card
     class="general-card"
@@ -78,58 +130,6 @@
     </a-modal>
   </a-card>
 </template>
-
-<script lang="ts" setup>
-  import {
-    DashboardAnnouncementRecord,
-    listAnnouncement,
-  } from '@/api/common/dashboard';
-  import { DataRecord, get } from '@/api/system/announcement';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { announcement_type } = proxy.useDict('announcement_type');
-
-  const dataList = ref<DashboardAnnouncementRecord[]>([]);
-  const dataDetail = ref<DataRecord>({});
-  const detailLoading = ref(false);
-  const detailVisible = ref(false);
-
-  /**
-   * 查询公告列表
-   */
-  const getList = () => {
-    listAnnouncement().then((res) => {
-      dataList.value = res.data;
-    });
-  };
-  getList();
-
-  /**
-   * 查看详情
-   *
-   * @param id ID
-   */
-  const toDetail = async (id: number) => {
-    if (detailLoading.value) return;
-    detailLoading.value = true;
-    detailVisible.value = true;
-    get(id)
-      .then((res) => {
-        dataDetail.value = res.data;
-      })
-      .finally(() => {
-        detailLoading.value = false;
-      });
-  };
-
-  /**
-   * 关闭详情
-   */
-  const handleDetailCancel = () => {
-    detailVisible.value = false;
-    dataDetail.value = {};
-  };
-</script>
 
 <style scoped lang="less">
   .item {

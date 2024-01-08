@@ -1,3 +1,30 @@
+<script setup lang="ts">
+  import { fileTypeList, type fileTypeListItem } from '@/constant/file';
+
+  const route = useRoute();
+  const router = useRouter();
+
+  const selectedKey = ref('0');
+
+  // 监听路由变化
+  watch(
+    () => route.query,
+    () => {
+      if (route.query.type) {
+        selectedKey.value = route.query.type as string;
+      }
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  // 点击事件
+  const onClickItem = (item: fileTypeListItem) => {
+    router.push({ name: 'File', query: { type: item.value } });
+  };
+</script>
+
 <template>
   <div>
     <a-card
@@ -29,33 +56,6 @@
     </a-card>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { fileTypeList, type fileTypeListItem } from '@/constant/file';
-
-  const route = useRoute();
-  const router = useRouter();
-
-  const selectedKey = ref('0');
-
-  // 监听路由变化
-  watch(
-    () => route.query,
-    () => {
-      if (route.query.type) {
-        selectedKey.value = route.query.type as string;
-      }
-    },
-    {
-      immediate: true,
-    },
-  );
-
-  // 点击事件
-  const onClickItem = (item: fileTypeListItem) => {
-    router.push({ name: 'File', query: { type: item.value } });
-  };
-</script>
 
 <style lang="less" scoped>
   :deep(.arco-card) {

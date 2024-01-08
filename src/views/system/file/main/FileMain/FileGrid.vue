@@ -1,3 +1,43 @@
+<script setup lang="ts">
+  import type { FileItem } from '@/api/system/file';
+  import FileImg from './FileImg.vue';
+  import FileRightMenu from './FileRightMenu.vue';
+
+  interface Props {
+    data?: FileItem[];
+    selectedFileIds?: string[];
+    isBatchMode?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    data: () => [], // 文件数据
+    selectedFileIds: () => [], // 批量模式下选中的文件id数组
+    isBatchMode: false, // 是否是批量模式
+  });
+
+  const emit = defineEmits(['click', 'check', 'rightMenuClick']);
+
+  // 文件名称带后缀
+  const getFileName = (item: FileItem) => {
+    return `${item.name}${item.extension ? `.${item.extension}` : ''}`;
+  };
+
+  // 点击事件
+  const handleClickFile = (item: FileItem) => {
+    emit('click', item);
+  };
+
+  // 选中事件
+  const handleCheckFile = (item: FileItem) => {
+    emit('check', item);
+  };
+
+  // 右键菜单点击事件
+  const handleRightMenuItemClick = (mode: string, item: FileItem) => {
+    emit('rightMenuClick', mode, item);
+  };
+</script>
+
 <template>
   <div class="file-grid">
     <a-grid
@@ -49,46 +89,6 @@
     </a-grid>
   </div>
 </template>
-
-<script setup lang="ts">
-  import type { FileItem } from '@/api/system/file';
-  import FileImg from './FileImg.vue';
-  import FileRightMenu from './FileRightMenu.vue';
-
-  interface Props {
-    data?: FileItem[];
-    selectedFileIds?: string[];
-    isBatchMode?: boolean;
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    data: () => [], // 文件数据
-    selectedFileIds: () => [], // 批量模式下选中的文件id数组
-    isBatchMode: false, // 是否是批量模式
-  });
-
-  const emit = defineEmits(['click', 'check', 'rightMenuClick']);
-
-  // 文件名称带后缀
-  const getFileName = (item: FileItem) => {
-    return `${item.name}${item.extension ? `.${item.extension}` : ''}`;
-  };
-
-  // 点击事件
-  const handleClickFile = (item: FileItem) => {
-    emit('click', item);
-  };
-
-  // 选中事件
-  const handleCheckFile = (item: FileItem) => {
-    emit('check', item);
-  };
-
-  // 右键菜单点击事件
-  const handleRightMenuItemClick = (mode: string, item: FileItem) => {
-    emit('rightMenuClick', mode, item);
-  };
-</script>
 
 <style lang="less" scoped>
   .file-grid {

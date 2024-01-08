@@ -1,3 +1,317 @@
+<script lang="ts" setup>
+  import { TreeNodeData, TableData } from '@arco-design/web-vue';
+  import {
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
+  } from '@/api/system/menu';
+  import { listMenuTree } from '@/api/common';
+  import checkPermission from '@/utils/permission';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
+
+  const dataList = ref<DataRecord[]>([]);
+  const ids = ref<Array<number>>([]);
+  const title = ref('');
+  const single = ref(true);
+  const multiple = ref(true);
+  const showQuery = ref(true);
+  const loading = ref(false);
+  const exportLoading = ref(false);
+  const expandAll = ref(false);
+  const visible = ref(false);
+  const showChooseIcon = ref(false);
+  const treeData = ref<TreeNodeData[]>();
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      title: undefined,
+      status: undefined,
+      sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
+    },
+    // 表单数据
+    form: {} as DataRecord,
+    // 表单验证规则
+    rules: {
+      title: [{ required: true, message: '请输入菜单标题' }],
+      path: [{ required: true, message: '请输入路由地址' }],
+      name: [{ required: true, message: '请输入组件名称' }],
+      component: [{ required: true, message: '请输入组件路径' }],
+      permission: [{ required: true, message: '请输入权限标识' }],
+      sort: [{ required: true, message: '请输入菜单排序' }],
+    },
+  });
+  const { queryParams, form, rules } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: ListParam = { ...queryParams.value }) => {
+    loading.value = true;
+    list(params)
+      .then((res) => {
+        dataList.value = res.data;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 打开新增对话框
+   */
+  const toAdd = () => {
+    reset();
+    listMenuTree({}).then((res) => {
+      treeData.value = res.data;
+    });
+    title.value = '新增菜单';
+    visible.value = true;
+  };
+
+  /**
+   * 打开修改对话框
+   *
+   * @param id ID
+   */
+  const toUpdate = (id: number) => {
+    reset();
+    listMenuTree({}).then((res) => {
+      treeData.value = res.data;
+    });
+
+    get(id).then((res) => {
+      form.value = res.data;
+      title.value = '修改菜单';
+      visible.value = true;
+    });
+  };
+
+  /**
+   * 重置表单
+   */
+  const reset = () => {
+    form.value = {
+      type: 1,
+      isExternal: false,
+      isCache: false,
+      isHidden: false,
+      sort: 999,
+    };
+    proxy.$refs.formRef?.resetFields();
+  };
+
+  /**
+   * 取消
+   */
+  const handleCancel = () => {
+    visible.value = false;
+    proxy.$refs.formRef.resetFields();
+  };
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        if (form.value.id !== undefined) {
+          update(form.value, form.value.id).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        } else {
+          add(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        }
+      }
+    });
+  };
+
+  /**
+   * 批量删除
+   */
+  const handleBatchDelete = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择要删除的数据');
+    } else {
+      proxy.$modal.warning({
+        title: '警告',
+        titleAlign: 'start',
+        content:
+          '是否确定删除所选的数据？如果存在下级菜单则一并删除，此操作不能撤销！',
+        hideCancel: false,
+        onOk: () => {
+          handleDelete(ids.value);
+        },
+      });
+    }
+  };
+
+  /**
+   * 删除
+   *
+   * @param ids ID 列表
+   */
+  const handleDelete = (ids: Array<number>) => {
+    del(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+      proxy.$refs.tableRef.selectAll(false);
+    });
+  };
+
+  /**
+   * 点击行选择器
+   */
+  const handleSelect = (rowKeys: any, rowKey: any, record: TableData) => {
+    if (rowKeys.find((key: any) => key === rowKey)) {
+      if (record.children) {
+        record.children.forEach((r) => {
+          proxy.$refs.tableRef.select(r.id);
+          rowKeys.push(r.id);
+          if (r.children) {
+            handleSelect(rowKeys, rowKey, r);
+          }
+        });
+      }
+    } else if (record.children) {
+      record.children.forEach((r) => {
+        rowKeys.splice(
+          rowKeys.findIndex((key: number | undefined) => key === r.id),
+          1,
+        );
+        proxy.$refs.tableRef.select(r.id, false);
+        if (r.children) {
+          handleSelect(rowKeys, rowKey, r);
+        }
+      });
+    }
+  };
+
+  /**
+   * 已选择的数据行发生改变
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
+    multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 导出
+   */
+  const handleExport = () => {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    proxy
+      .download('/system/menu/export', { ...queryParams.value }, '菜单数据')
+      .finally(() => {
+        exportLoading.value = false;
+      });
+  };
+
+  /**
+   * 展开/折叠
+   */
+  const handleExpandAll = () => {
+    expandAll.value = !expandAll.value;
+    proxy.$refs.tableRef.expandAll(expandAll.value);
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DataRecord) => {
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      update(record, record.id)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
+  };
+
+  /**
+   * 过滤菜单树
+   *
+   * @param searchValue 搜索值
+   * @param nodeData 节点值
+   */
+  const filterMenuTree = (searchValue: string, nodeData: TreeNodeData) => {
+    if (nodeData.title) {
+      return (
+        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+      );
+    }
+    return false;
+  };
+
+  /**
+   * 展示下拉图标
+   */
+  const showSelectIcon = () => {
+    proxy.$refs.iconSelectRef.reset();
+    showChooseIcon.value = true;
+  };
+
+  /**
+   * 选择图标
+   *
+   * @param name 图标名称
+   */
+  const selected = (name: string) => {
+    form.value.icon = name;
+    showChooseIcon.value = false;
+  };
+
+  const hideSelectIcon = () => {
+    showChooseIcon.value = false;
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    // eslint-disable-next-line vue/no-reserved-component-names
+    name: 'Menu',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.system', 'menu.system.menu.list']" />
@@ -343,319 +657,5 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { TreeNodeData, TableData } from '@arco-design/web-vue';
-  import {
-    DataRecord,
-    ListParam,
-    list,
-    get,
-    add,
-    update,
-    del,
-  } from '@/api/system/menu';
-  import { listMenuTree } from '@/api/common';
-  import checkPermission from '@/utils/permission';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
-
-  const dataList = ref<DataRecord[]>([]);
-  const ids = ref<Array<number>>([]);
-  const title = ref('');
-  const single = ref(true);
-  const multiple = ref(true);
-  const showQuery = ref(true);
-  const loading = ref(false);
-  const exportLoading = ref(false);
-  const expandAll = ref(false);
-  const visible = ref(false);
-  const showChooseIcon = ref(false);
-  const treeData = ref<TreeNodeData[]>();
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      title: undefined,
-      status: undefined,
-      sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
-    },
-    // 表单数据
-    form: {} as DataRecord,
-    // 表单验证规则
-    rules: {
-      title: [{ required: true, message: '请输入菜单标题' }],
-      path: [{ required: true, message: '请输入路由地址' }],
-      name: [{ required: true, message: '请输入组件名称' }],
-      component: [{ required: true, message: '请输入组件路径' }],
-      permission: [{ required: true, message: '请输入权限标识' }],
-      sort: [{ required: true, message: '请输入菜单排序' }],
-    },
-  });
-  const { queryParams, form, rules } = toRefs(data);
-
-  /**
-   * 查询列表
-   *
-   * @param params 查询参数
-   */
-  const getList = (params: ListParam = { ...queryParams.value }) => {
-    loading.value = true;
-    list(params)
-      .then((res) => {
-        dataList.value = res.data;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 打开新增对话框
-   */
-  const toAdd = () => {
-    reset();
-    listMenuTree({}).then((res) => {
-      treeData.value = res.data;
-    });
-    title.value = '新增菜单';
-    visible.value = true;
-  };
-
-  /**
-   * 打开修改对话框
-   *
-   * @param id ID
-   */
-  const toUpdate = (id: number) => {
-    reset();
-    listMenuTree({}).then((res) => {
-      treeData.value = res.data;
-    });
-
-    get(id).then((res) => {
-      form.value = res.data;
-      title.value = '修改菜单';
-      visible.value = true;
-    });
-  };
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    form.value = {
-      type: 1,
-      isExternal: false,
-      isCache: false,
-      isHidden: false,
-      sort: 999,
-    };
-    proxy.$refs.formRef?.resetFields();
-  };
-
-  /**
-   * 取消
-   */
-  const handleCancel = () => {
-    visible.value = false;
-    proxy.$refs.formRef.resetFields();
-  };
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        if (form.value.id !== undefined) {
-          update(form.value, form.value.id).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        } else {
-          add(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        }
-      }
-    });
-  };
-
-  /**
-   * 批量删除
-   */
-  const handleBatchDelete = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择要删除的数据');
-    } else {
-      proxy.$modal.warning({
-        title: '警告',
-        titleAlign: 'start',
-        content:
-          '是否确定删除所选的数据？如果存在下级菜单则一并删除，此操作不能撤销！',
-        hideCancel: false,
-        onOk: () => {
-          handleDelete(ids.value);
-        },
-      });
-    }
-  };
-
-  /**
-   * 删除
-   *
-   * @param ids ID 列表
-   */
-  const handleDelete = (ids: Array<number>) => {
-    del(ids).then((res) => {
-      proxy.$message.success(res.msg);
-      getList();
-      proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 点击行选择器
-   */
-  const handleSelect = (rowKeys: any, rowKey: any, record: TableData) => {
-    if (rowKeys.find((key: any) => key === rowKey)) {
-      if (record.children) {
-        record.children.forEach((r) => {
-          proxy.$refs.tableRef.select(r.id);
-          rowKeys.push(r.id);
-          if (r.children) {
-            handleSelect(rowKeys, rowKey, r);
-          }
-        });
-      }
-    } else if (record.children) {
-      record.children.forEach((r) => {
-        rowKeys.splice(
-          rowKeys.findIndex((key: number | undefined) => key === r.id),
-          1,
-        );
-        proxy.$refs.tableRef.select(r.id, false);
-        if (r.children) {
-          handleSelect(rowKeys, rowKey, r);
-        }
-      });
-    }
-  };
-
-  /**
-   * 已选择的数据行发生改变
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
-  };
-
-  /**
-   * 导出
-   */
-  const handleExport = () => {
-    if (exportLoading.value) return;
-    exportLoading.value = true;
-    proxy
-      .download('/system/menu/export', { ...queryParams.value }, '菜单数据')
-      .finally(() => {
-        exportLoading.value = false;
-      });
-  };
-
-  /**
-   * 展开/折叠
-   */
-  const handleExpandAll = () => {
-    expandAll.value = !expandAll.value;
-    proxy.$refs.tableRef.expandAll(expandAll.value);
-  };
-
-  /**
-   * 修改状态
-   *
-   * @param record 记录信息
-   */
-  const handleChangeStatus = (record: DataRecord) => {
-    if (record.id) {
-      const tip = record.status === 1 ? '启用' : '禁用';
-      update(record, record.id)
-        .then(() => {
-          proxy.$message.success(`${tip}成功`);
-        })
-        .catch(() => {
-          record.status = record.status === 1 ? 2 : 1;
-        });
-    }
-  };
-
-  /**
-   * 过滤菜单树
-   *
-   * @param searchValue 搜索值
-   * @param nodeData 节点值
-   */
-  const filterMenuTree = (searchValue: string, nodeData: TreeNodeData) => {
-    if (nodeData.title) {
-      return (
-        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
-      );
-    }
-    return false;
-  };
-
-  /**
-   * 展示下拉图标
-   */
-  const showSelectIcon = () => {
-    proxy.$refs.iconSelectRef.reset();
-    showChooseIcon.value = true;
-  };
-
-  /**
-   * 选择图标
-   *
-   * @param name 图标名称
-   */
-  const selected = (name: string) => {
-    form.value.icon = name;
-    showChooseIcon.value = false;
-  };
-
-  const hideSelectIcon = () => {
-    showChooseIcon.value = false;
-  };
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    // eslint-disable-next-line vue/no-reserved-component-names
-    name: 'Menu',
-  };
-</script>
 
 <style scoped lang="less"></style>

@@ -1,391 +1,3 @@
-<template>
-  <div class="file-main">
-    <a-row justify="space-between" class="row-operate">
-      <!-- 左侧区域 -->
-      <a-space wrap>
-        <a-form ref="queryRef" :model="queryParams" layout="inline">
-          <a-form-item hide-label>
-            <a-upload
-              v-permission="['system:file:upload']"
-              :show-file-list="false"
-              :custom-request="handleUpload"
-            >
-              <template #upload-button>
-                <a-button type="primary" shape="round">
-                  <template #icon><icon-upload /></template>
-                  <template #default>上传</template>
-                </a-button>
-              </template>
-            </a-upload>
-          </a-form-item>
-          <a-form-item field="name" hide-label>
-            <a-input
-              v-model="queryParams.name"
-              placeholder="输入文件名称搜索"
-              allow-clear
-              @press-enter="handleQuery"
-            />
-          </a-form-item>
-          <a-form-item hide-label>
-            <a-space>
-              <a-button type="primary" @click="handleQuery">
-                <template #icon><icon-search /></template>查询
-              </a-button>
-              <a-button @click="resetQuery">
-                <template #icon><icon-refresh /></template>重置
-              </a-button>
-            </a-space>
-          </a-form-item>
-        </a-form>
-      </a-space>
-
-      <!-- 右侧区域 -->
-      <a-space wrap>
-        <a-button
-          v-if="isBatchMode"
-          :disabled="!fileStore.selectedFileIds.length"
-          type="primary"
-          status="danger"
-          @click="handleMulDelete"
-          ><template #icon><icon-delete /></template
-        ></a-button>
-        <a-button
-          v-permission="['system:file:delete']"
-          type="primary"
-          @click="isBatchMode = !isBatchMode"
-        >
-          <template #icon><icon-select-all /></template>
-          <template #default>{{
-            isBatchMode ? '取消批量' : '批量操作'
-          }}</template>
-        </a-button>
-        <a-button-group>
-          <a-tooltip content="视图" position="bottom">
-            <a-button @click="fileStore.changeViewMode">
-              <template #icon>
-                <icon-apps v-if="fileStore.viewMode === 'grid'" />
-                <icon-list v-else />
-              </template>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip content="配置存储库" position="bottom">
-            <a-button
-              v-permission="['system:storage:list']"
-              @click="handleConfig"
-            >
-              <template #icon>
-                <icon-settings />
-              </template>
-            </a-button>
-          </a-tooltip>
-        </a-button-group>
-      </a-space>
-    </a-row>
-
-    <!-- 文件列表-宫格模式 -->
-    <a-spin class="file-wrap" :loading="loading">
-      <FileGrid
-        v-show="fileList.length && fileStore.viewMode == 'grid'"
-        :data="fileList"
-        :is-batch-mode="isBatchMode"
-        :selected-file-ids="fileStore.selectedFileIds"
-        @click="handleClickFile"
-        @check="handleCheckFile"
-        @right-menu-click="handleRightMenuClick"
-      ></FileGrid>
-
-      <!-- 文件列表-列表模式 -->
-      <FileList
-        v-show="fileList.length && fileStore.viewMode == 'list'"
-        :data="fileList"
-        :is-batch-mode="isBatchMode"
-        @click="handleClickFile"
-        @right-menu-click="handleRightMenuClick"
-      ></FileList>
-
-      <a-empty v-show="!fileList.length"></a-empty>
-    </a-spin>
-
-    <!-- 配置存储库 -->
-    <a-drawer
-      title="配置存储库"
-      :visible="storageVisible"
-      :width="1070"
-      :mask-closable="false"
-      :esc-to-close="false"
-      unmount-on-close
-      render-to-body
-      :footer="false"
-      @cancel="handleCancelConfig"
-    >
-      <!-- 操作栏 -->
-      <div class="header-operation" style="margin-bottom: 16px">
-        <a-row>
-          <a-col :span="12">
-            <a-space>
-              <a-button
-                v-permission="['system:storage:add']"
-                type="primary"
-                @click="toAddStorage"
-              >
-                <template #icon><icon-plus /></template>新增
-              </a-button>
-              <a-button
-                v-permission="['system:storage:export']"
-                :loading="exportStorageLoading"
-                type="primary"
-                status="warning"
-                @click="handleStorageExport"
-              >
-                <template #icon><icon-download /></template>导出
-              </a-button>
-            </a-space>
-          </a-col>
-        </a-row>
-      </div>
-      <a-table
-        row-key="id"
-        :data="storageList"
-        :loading="storageLoading"
-        :bordered="false"
-        :pagination="{
-          showTotal: true,
-          showPageSize: true,
-          total: totalStorage,
-          current: storageQueryParams.page,
-        }"
-        size="large"
-        column-resizable
-        stripe
-        @page-change="handleStoragePageChange"
-        @page-size-change="handleStoragePageSizeChange"
-      >
-        <template #columns>
-          <a-table-column title="名称" :width="135">
-            <template #cell="{ record }">
-              {{ record.name }}
-              <a-tag v-if="record.isDefault" color="arcoblue">默认</a-tag>
-            </template>
-          </a-table-column>
-          <a-table-column title="编码" data-index="code" />
-          <a-table-column title="类型" align="center">
-            <template #cell="{ record }">
-              <dict-tag :value="record.type" :dict="storage_type_enum" />
-            </template>
-          </a-table-column>
-          <a-table-column
-            title="访问密钥"
-            data-index="accessKey"
-            ellipsis
-            tooltip
-          />
-          <a-table-column
-            title="终端节点"
-            data-index="endpoint"
-            ellipsis
-            tooltip
-          />
-          <a-table-column
-            title="桶名称"
-            data-index="bucketName"
-            ellipsis
-            tooltip
-          />
-          <a-table-column title="域名" data-index="domain" ellipsis tooltip />
-          <a-table-column title="状态" align="center">
-            <template #cell="{ record }">
-              <a-switch
-                v-model="record.status"
-                :checked-value="1"
-                :unchecked-value="2"
-                :disabled="!checkPermission(['system:storage:update'])"
-                @change="handleStorageChangeStatus(record)"
-              />
-            </template>
-          </a-table-column>
-          <a-table-column
-            title="描述"
-            data-index="description"
-            ellipsis
-            tooltip
-          />
-          <a-table-column
-            v-if="
-              checkPermission([
-                'system:storage:update',
-                'system:storage:delete',
-              ])
-            "
-            title="操作"
-            align="center"
-            fixed="right"
-            :width="90"
-          >
-            <template #cell="{ record }">
-              <a-button
-                v-permission="['system:storage:update']"
-                type="text"
-                size="small"
-                title="修改"
-                @click="toUpdateStorage(record.id)"
-              >
-                <template #icon><icon-edit /></template>
-              </a-button>
-              <a-popconfirm
-                content="是否确定删除该数据？"
-                type="warning"
-                @ok="handleDeleteStorage([record.id])"
-              >
-                <a-button
-                  v-permission="['system:storage:delete']"
-                  type="text"
-                  size="small"
-                  :title="record.isDefault ? '默认存储库不能删除' : '删除'"
-                  :disabled="record.disabled"
-                >
-                  <template #icon><icon-delete /></template>
-                </a-button>
-              </a-popconfirm>
-            </template>
-          </a-table-column>
-        </template>
-      </a-table>
-    </a-drawer>
-    <!-- 表单区域 -->
-    <a-modal
-      :title="storageFormTitle"
-      :visible="storageFormVisible"
-      :width="580"
-      :mask-closable="false"
-      :esc-to-close="false"
-      unmount-on-close
-      render-to-body
-      @ok="handleStorageFormOk"
-      @cancel="handleStorageFormCancel"
-    >
-      <a-form
-        ref="storageFormRef"
-        :model="storageForm"
-        :rules="storageRules"
-        size="large"
-        :label-col-style="{ width: '84px' }"
-        layout="inline"
-      >
-        <a-form-item label="名称" field="name">
-          <a-input
-            v-model="storageForm.name"
-            placeholder="请输入名称"
-            style="width: 162px"
-          />
-        </a-form-item>
-        <a-form-item label="编码" field="code">
-          <a-input
-            v-model="storageForm.code"
-            placeholder="请输入编码"
-            style="width: 162px"
-          />
-        </a-form-item>
-        <a-form-item label="类型" field="type">
-          <a-select
-            v-model="storageForm.type"
-            :options="storage_type_enum"
-            placeholder="请选择存储类型"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item
-          v-if="storageForm.type === 1"
-          label="访问密钥"
-          field="accessKey"
-        >
-          <a-input
-            v-model="storageForm.accessKey"
-            placeholder="请输入访问密钥"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item
-          v-if="storageForm.type === 1"
-          label="私有密钥"
-          field="secretKey"
-        >
-          <a-input
-            v-model="storageForm.secretKey"
-            placeholder="请输入私有密钥"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item
-          v-if="storageForm.type === 1"
-          label="终端节点"
-          field="endpoint"
-        >
-          <a-input
-            v-model="storageForm.endpoint"
-            placeholder="请输入终端节点"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item label="桶名称" field="bucketName">
-          <a-input
-            v-model="storageForm.bucketName"
-            placeholder="请输入桶名称"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item v-if="storageForm.type === 1" label="域名" field="domain">
-          <a-input
-            v-model="storageForm.domain"
-            placeholder="请输入域名"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item
-          v-if="storageForm.type === 2"
-          label="域名"
-          field="domain"
-          :rules="[
-            {
-              required: true,
-              message: '请输入域名',
-            },
-          ]"
-        >
-          <a-input
-            v-model="storageForm.domain"
-            placeholder="请输入域名"
-            style="width: 416px"
-          />
-        </a-form-item>
-        <a-form-item label="排序" field="sort">
-          <a-input-number
-            v-model="storageForm.sort"
-            placeholder="请输入排序"
-            style="width: 416px"
-            :min="1"
-            mode="button"
-          />
-        </a-form-item>
-        <a-form-item label="描述" field="description">
-          <a-textarea
-            v-model="storageForm.description"
-            :max-length="200"
-            placeholder="请输入描述"
-            style="width: 416px"
-            :auto-size="{
-              minRows: 3,
-            }"
-            show-word-limit
-          />
-        </a-form-item>
-        <a-form-item label="默认存储" field="isDefault">
-          <a-switch v-model="storageForm.isDefault" type="round" />
-        </a-form-item>
-      </a-form>
-    </a-modal>
-  </div>
-</template>
-
 <script setup lang="ts">
   import { Modal, RequestOption } from '@arco-design/web-vue';
   import checkPermission from '@/utils/permission';
@@ -775,6 +387,394 @@
       });
   };
 </script>
+
+<template>
+  <div class="file-main">
+    <a-row justify="space-between" class="row-operate">
+      <!-- 左侧区域 -->
+      <a-space wrap>
+        <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form-item hide-label>
+            <a-upload
+              v-permission="['system:file:upload']"
+              :show-file-list="false"
+              :custom-request="handleUpload"
+            >
+              <template #upload-button>
+                <a-button type="primary" shape="round">
+                  <template #icon><icon-upload /></template>
+                  <template #default>上传</template>
+                </a-button>
+              </template>
+            </a-upload>
+          </a-form-item>
+          <a-form-item field="name" hide-label>
+            <a-input
+              v-model="queryParams.name"
+              placeholder="输入文件名称搜索"
+              allow-clear
+              @press-enter="handleQuery"
+            />
+          </a-form-item>
+          <a-form-item hide-label>
+            <a-space>
+              <a-button type="primary" @click="handleQuery">
+                <template #icon><icon-search /></template>查询
+              </a-button>
+              <a-button @click="resetQuery">
+                <template #icon><icon-refresh /></template>重置
+              </a-button>
+            </a-space>
+          </a-form-item>
+        </a-form>
+      </a-space>
+
+      <!-- 右侧区域 -->
+      <a-space wrap>
+        <a-button
+          v-if="isBatchMode"
+          :disabled="!fileStore.selectedFileIds.length"
+          type="primary"
+          status="danger"
+          @click="handleMulDelete"
+          ><template #icon><icon-delete /></template
+        ></a-button>
+        <a-button
+          v-permission="['system:file:delete']"
+          type="primary"
+          @click="isBatchMode = !isBatchMode"
+        >
+          <template #icon><icon-select-all /></template>
+          <template #default>{{
+            isBatchMode ? '取消批量' : '批量操作'
+          }}</template>
+        </a-button>
+        <a-button-group>
+          <a-tooltip content="视图" position="bottom">
+            <a-button @click="fileStore.changeViewMode">
+              <template #icon>
+                <icon-apps v-if="fileStore.viewMode === 'grid'" />
+                <icon-list v-else />
+              </template>
+            </a-button>
+          </a-tooltip>
+          <a-tooltip content="配置存储库" position="bottom">
+            <a-button
+              v-permission="['system:storage:list']"
+              @click="handleConfig"
+            >
+              <template #icon>
+                <icon-settings />
+              </template>
+            </a-button>
+          </a-tooltip>
+        </a-button-group>
+      </a-space>
+    </a-row>
+
+    <!-- 文件列表-宫格模式 -->
+    <a-spin class="file-wrap" :loading="loading">
+      <FileGrid
+        v-show="fileList.length && fileStore.viewMode == 'grid'"
+        :data="fileList"
+        :is-batch-mode="isBatchMode"
+        :selected-file-ids="fileStore.selectedFileIds"
+        @click="handleClickFile"
+        @check="handleCheckFile"
+        @right-menu-click="handleRightMenuClick"
+      ></FileGrid>
+
+      <!-- 文件列表-列表模式 -->
+      <FileList
+        v-show="fileList.length && fileStore.viewMode == 'list'"
+        :data="fileList"
+        :is-batch-mode="isBatchMode"
+        @click="handleClickFile"
+        @right-menu-click="handleRightMenuClick"
+      ></FileList>
+
+      <a-empty v-show="!fileList.length"></a-empty>
+    </a-spin>
+
+    <!-- 配置存储库 -->
+    <a-drawer
+      title="配置存储库"
+      :visible="storageVisible"
+      :width="1070"
+      :mask-closable="false"
+      :esc-to-close="false"
+      unmount-on-close
+      render-to-body
+      :footer="false"
+      @cancel="handleCancelConfig"
+    >
+      <!-- 操作栏 -->
+      <div class="header-operation" style="margin-bottom: 16px">
+        <a-row>
+          <a-col :span="12">
+            <a-space>
+              <a-button
+                v-permission="['system:storage:add']"
+                type="primary"
+                @click="toAddStorage"
+              >
+                <template #icon><icon-plus /></template>新增
+              </a-button>
+              <a-button
+                v-permission="['system:storage:export']"
+                :loading="exportStorageLoading"
+                type="primary"
+                status="warning"
+                @click="handleStorageExport"
+              >
+                <template #icon><icon-download /></template>导出
+              </a-button>
+            </a-space>
+          </a-col>
+        </a-row>
+      </div>
+      <a-table
+        row-key="id"
+        :data="storageList"
+        :loading="storageLoading"
+        :bordered="false"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: totalStorage,
+          current: storageQueryParams.page,
+        }"
+        size="large"
+        column-resizable
+        stripe
+        @page-change="handleStoragePageChange"
+        @page-size-change="handleStoragePageSizeChange"
+      >
+        <template #columns>
+          <a-table-column title="名称" :width="135">
+            <template #cell="{ record }">
+              {{ record.name }}
+              <a-tag v-if="record.isDefault" color="arcoblue">默认</a-tag>
+            </template>
+          </a-table-column>
+          <a-table-column title="编码" data-index="code" />
+          <a-table-column title="类型" align="center">
+            <template #cell="{ record }">
+              <dict-tag :value="record.type" :dict="storage_type_enum" />
+            </template>
+          </a-table-column>
+          <a-table-column
+            title="访问密钥"
+            data-index="accessKey"
+            ellipsis
+            tooltip
+          />
+          <a-table-column
+            title="终端节点"
+            data-index="endpoint"
+            ellipsis
+            tooltip
+          />
+          <a-table-column
+            title="桶名称"
+            data-index="bucketName"
+            ellipsis
+            tooltip
+          />
+          <a-table-column title="域名" data-index="domain" ellipsis tooltip />
+          <a-table-column title="状态" align="center">
+            <template #cell="{ record }">
+              <a-switch
+                v-model="record.status"
+                :checked-value="1"
+                :unchecked-value="2"
+                :disabled="!checkPermission(['system:storage:update'])"
+                @change="handleStorageChangeStatus(record)"
+              />
+            </template>
+          </a-table-column>
+          <a-table-column
+            title="描述"
+            data-index="description"
+            ellipsis
+            tooltip
+          />
+          <a-table-column
+            v-if="
+              checkPermission([
+                'system:storage:update',
+                'system:storage:delete',
+              ])
+            "
+            title="操作"
+            align="center"
+            fixed="right"
+            :width="90"
+          >
+            <template #cell="{ record }">
+              <a-button
+                v-permission="['system:storage:update']"
+                type="text"
+                size="small"
+                title="修改"
+                @click="toUpdateStorage(record.id)"
+              >
+                <template #icon><icon-edit /></template>
+              </a-button>
+              <a-popconfirm
+                content="是否确定删除该数据？"
+                type="warning"
+                @ok="handleDeleteStorage([record.id])"
+              >
+                <a-button
+                  v-permission="['system:storage:delete']"
+                  type="text"
+                  size="small"
+                  :title="record.isDefault ? '默认存储库不能删除' : '删除'"
+                  :disabled="record.disabled"
+                >
+                  <template #icon><icon-delete /></template>
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
+    </a-drawer>
+    <!-- 表单区域 -->
+    <a-modal
+      :title="storageFormTitle"
+      :visible="storageFormVisible"
+      :width="580"
+      :mask-closable="false"
+      :esc-to-close="false"
+      unmount-on-close
+      render-to-body
+      @ok="handleStorageFormOk"
+      @cancel="handleStorageFormCancel"
+    >
+      <a-form
+        ref="storageFormRef"
+        :model="storageForm"
+        :rules="storageRules"
+        size="large"
+        :label-col-style="{ width: '84px' }"
+        layout="inline"
+      >
+        <a-form-item label="名称" field="name">
+          <a-input
+            v-model="storageForm.name"
+            placeholder="请输入名称"
+            style="width: 162px"
+          />
+        </a-form-item>
+        <a-form-item label="编码" field="code">
+          <a-input
+            v-model="storageForm.code"
+            placeholder="请输入编码"
+            style="width: 162px"
+          />
+        </a-form-item>
+        <a-form-item label="类型" field="type">
+          <a-select
+            v-model="storageForm.type"
+            :options="storage_type_enum"
+            placeholder="请选择存储类型"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item
+          v-if="storageForm.type === 1"
+          label="访问密钥"
+          field="accessKey"
+        >
+          <a-input
+            v-model="storageForm.accessKey"
+            placeholder="请输入访问密钥"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item
+          v-if="storageForm.type === 1"
+          label="私有密钥"
+          field="secretKey"
+        >
+          <a-input
+            v-model="storageForm.secretKey"
+            placeholder="请输入私有密钥"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item
+          v-if="storageForm.type === 1"
+          label="终端节点"
+          field="endpoint"
+        >
+          <a-input
+            v-model="storageForm.endpoint"
+            placeholder="请输入终端节点"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item label="桶名称" field="bucketName">
+          <a-input
+            v-model="storageForm.bucketName"
+            placeholder="请输入桶名称"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item v-if="storageForm.type === 1" label="域名" field="domain">
+          <a-input
+            v-model="storageForm.domain"
+            placeholder="请输入域名"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item
+          v-if="storageForm.type === 2"
+          label="域名"
+          field="domain"
+          :rules="[
+            {
+              required: true,
+              message: '请输入域名',
+            },
+          ]"
+        >
+          <a-input
+            v-model="storageForm.domain"
+            placeholder="请输入域名"
+            style="width: 416px"
+          />
+        </a-form-item>
+        <a-form-item label="排序" field="sort">
+          <a-input-number
+            v-model="storageForm.sort"
+            placeholder="请输入排序"
+            style="width: 416px"
+            :min="1"
+            mode="button"
+          />
+        </a-form-item>
+        <a-form-item label="描述" field="description">
+          <a-textarea
+            v-model="storageForm.description"
+            :max-length="200"
+            placeholder="请输入描述"
+            style="width: 416px"
+            :auto-size="{
+              minRows: 3,
+            }"
+            show-word-limit
+          />
+        </a-form-item>
+        <a-form-item label="默认存储" field="isDefault">
+          <a-switch v-model="storageForm.isDefault" type="round" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </div>
+</template>
 
 <style lang="less" scoped>
   .file-main {

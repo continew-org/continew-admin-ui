@@ -1,3 +1,98 @@
+<script lang="ts" setup>
+  import { FileItem } from '@arco-design/web-vue';
+  import { uploadAvatar, cropperOptions } from '@/api/system/user-center';
+  import { useUserStore } from '@/store';
+  import getAvatar from '@/utils/avatar';
+  import { VueCropper } from 'vue-cropper';
+  import 'vue-cropper/dist/index.css';
+
+  const { proxy } = getCurrentInstance() as any;
+  const userStore = useUserStore();
+  const cropperRef = ref();
+  const visible = ref(false);
+  const previews: any = ref({});
+  const previewStyle: any = ref({});
+  const fileRef = ref(reactive({ name: 'avatar.png' }));
+  const avatar = {
+    uid: '-2',
+    name: 'avatar.png',
+    url: getAvatar(userStore.avatar, userStore.gender),
+  };
+  const avatarList = ref<FileItem[]>([avatar]);
+
+  const options: cropperOptions = reactive({
+    img: '',
+    autoCrop: true,
+    autoCropWidth: 160,
+    autoCropHeight: 160,
+    fixedBox: true,
+    fixed: true,
+    full: false,
+    centerBox: true,
+    canMove: true,
+    outputSize: 1,
+    outputType: 'png',
+  });
+
+  /**
+   * 上传前弹出裁剪框
+   *
+   * @param file 头像
+   */
+  const handleBeforeUpload = (file: File): boolean => {
+    fileRef.value = file;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      options.img = reader.result;
+    };
+    visible.value = true;
+    return false;
+  };
+
+  /**
+   * 关闭裁剪框
+   */
+  const handleCancel = () => {
+    fileRef.value = { name: '' };
+    options.img = '';
+    visible.value = false;
+  };
+
+  /**
+   * 上传头像
+   */
+  const handleUpload = () => {
+    cropperRef.value.getCropBlob((data: any) => {
+      const formData = new FormData();
+      formData.append('avatarFile', data, fileRef.value?.name);
+      uploadAvatar(formData).then((res) => {
+        userStore.avatar = res.data.avatar;
+        avatarList.value[0].url = getAvatar(res.data.avatar, undefined);
+        proxy.$message.success(res.msg);
+        handleCancel();
+      });
+    });
+  };
+
+  /**
+   * 实时预览
+   *
+   * @param data data 预览图像
+   */
+  const handleRealTime = (data: any) => {
+    previewStyle.value = {
+      width: `${data.w}px`,
+      height: `${data.h}px`,
+      overflow: 'hidden',
+      margin: '0',
+      zoom: 100 / data.h,
+      borderRadius: '50%',
+    };
+    previews.value = data;
+  };
+</script>
+
 <template>
   <a-card :bordered="false">
     <a-space :size="54">
@@ -110,101 +205,6 @@
     </a-space>
   </a-card>
 </template>
-
-<script lang="ts" setup>
-  import { FileItem } from '@arco-design/web-vue';
-  import { uploadAvatar, cropperOptions } from '@/api/system/user-center';
-  import { useUserStore } from '@/store';
-  import getAvatar from '@/utils/avatar';
-  import { VueCropper } from 'vue-cropper';
-  import 'vue-cropper/dist/index.css';
-
-  const { proxy } = getCurrentInstance() as any;
-  const userStore = useUserStore();
-  const cropperRef = ref();
-  const visible = ref(false);
-  const previews: any = ref({});
-  const previewStyle: any = ref({});
-  const fileRef = ref(reactive({ name: 'avatar.png' }));
-  const avatar = {
-    uid: '-2',
-    name: 'avatar.png',
-    url: getAvatar(userStore.avatar, userStore.gender),
-  };
-  const avatarList = ref<FileItem[]>([avatar]);
-
-  const options: cropperOptions = reactive({
-    img: '',
-    autoCrop: true,
-    autoCropWidth: 160,
-    autoCropHeight: 160,
-    fixedBox: true,
-    fixed: true,
-    full: false,
-    centerBox: true,
-    canMove: true,
-    outputSize: 1,
-    outputType: 'png',
-  });
-
-  /**
-   * 上传前弹出裁剪框
-   *
-   * @param file 头像
-   */
-  const handleBeforeUpload = (file: File): boolean => {
-    fileRef.value = file;
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      options.img = reader.result;
-    };
-    visible.value = true;
-    return false;
-  };
-
-  /**
-   * 关闭裁剪框
-   */
-  const handleCancel = () => {
-    fileRef.value = { name: '' };
-    options.img = '';
-    visible.value = false;
-  };
-
-  /**
-   * 上传头像
-   */
-  const handleUpload = () => {
-    cropperRef.value.getCropBlob((data: any) => {
-      const formData = new FormData();
-      formData.append('avatarFile', data, fileRef.value?.name);
-      uploadAvatar(formData).then((res) => {
-        userStore.avatar = res.data.avatar;
-        avatarList.value[0].url = getAvatar(res.data.avatar, undefined);
-        proxy.$message.success(res.msg);
-        handleCancel();
-      });
-    });
-  };
-
-  /**
-   * 实时预览
-   *
-   * @param data data 预览图像
-   */
-  const handleRealTime = (data: any) => {
-    previewStyle.value = {
-      width: `${data.w}px`,
-      height: `${data.h}px`,
-      overflow: 'hidden',
-      margin: '0',
-      zoom: 100 / data.h,
-      borderRadius: '50%',
-    };
-    previews.value = data;
-  };
-</script>
 
 <style scoped lang="less">
   .arco-card {

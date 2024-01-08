@@ -1,3 +1,10 @@
+<script setup lang="ts">
+  import FileAside from './main/FileAside.vue';
+  import FileMain from './main/FileMain/index.vue';
+
+  defineOptions({ name: 'FileIndex' });
+</script>
+
 <template>
   <div>
     <Breadcrumb :items="['menu.system', 'menu.system.file.list']" />
@@ -29,13 +36,6 @@
     </a-row>
   </div>
 </template>
-
-<script setup lang="ts">
-  import FileAside from './main/FileAside.vue';
-  import FileMain from './main/FileMain/index.vue';
-
-  defineOptions({ name: 'FileIndex' });
-</script>
 
 <style lang="less" scoped>
   .container-breadcrumb {

@@ -1,307 +1,3 @@
-<template>
-  <div class="app-container">
-    <Breadcrumb :items="['menu.system', 'menu.system.dept.list']" />
-    <a-card class="general-card" :title="$t('menu.system.dept.list')">
-      <!-- 头部区域 -->
-      <div class="header">
-        <!-- 搜索栏 -->
-        <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="name" hide-label>
-              <a-input
-                v-model="queryParams.name"
-                placeholder="输入名称搜索"
-                allow-clear
-                style="width: 150px"
-                @press-enter="handleQuery"
-              />
-            </a-form-item>
-            <a-form-item field="status" hide-label>
-              <a-select
-                v-model="queryParams.status"
-                :options="dis_enable_status_enum"
-                placeholder="状态搜索"
-                allow-clear
-                style="width: 150px"
-              />
-            </a-form-item>
-            <a-form-item hide-label>
-              <a-space>
-                <a-button type="primary" @click="handleQuery">
-                  <template #icon><icon-search /></template>查询
-                </a-button>
-                <a-button @click="resetQuery">
-                  <template #icon><icon-refresh /></template>重置
-                </a-button>
-              </a-space>
-            </a-form-item>
-          </a-form>
-        </div>
-        <!-- 操作栏 -->
-        <div class="header-operation">
-          <a-row>
-            <a-col :span="12">
-              <a-space>
-                <a-button
-                  v-permission="['system:dept:add']"
-                  type="primary"
-                  @click="toAdd"
-                >
-                  <template #icon><icon-plus /></template>新增
-                </a-button>
-                <a-button
-                  v-permission="['system:dept:update']"
-                  type="primary"
-                  status="success"
-                  :disabled="single"
-                  :title="single ? '请选择一条要修改的数据' : ''"
-                  @click="toUpdate(ids[0])"
-                >
-                  <template #icon><icon-edit /></template>修改
-                </a-button>
-                <a-button
-                  v-permission="['system:dept:delete']"
-                  type="primary"
-                  status="danger"
-                  :disabled="multiple"
-                  :title="multiple ? '请选择要删除的数据' : ''"
-                  @click="handleBatchDelete"
-                >
-                  <template #icon><icon-delete /></template>删除
-                </a-button>
-                <a-button
-                  v-permission="['system:dept:export']"
-                  :loading="exportLoading"
-                  type="primary"
-                  status="warning"
-                  @click="handleExport"
-                >
-                  <template #icon><icon-download /></template>导出
-                </a-button>
-              </a-space>
-            </a-col>
-            <a-col :span="12">
-              <right-toolbar
-                v-model:show-query="showQuery"
-                @refresh="getList"
-              />
-            </a-col>
-          </a-row>
-        </div>
-      </div>
-
-      <!-- 列表区域 -->
-      <a-table
-        ref="tableRef"
-        row-key="id"
-        :data="dataList"
-        :loading="loading"
-        :row-selection="{
-          type: 'checkbox',
-          showCheckedAll: true,
-          onlyCurrent: false,
-        }"
-        :pagination="false"
-        :bordered="false"
-        :default-expand-all-rows="true"
-        :hide-expand-button-on-empty="true"
-        column-resizable
-        stripe
-        size="large"
-        @select="handleSelect"
-        @selection-change="handleSelectionChange"
-      >
-        <template #columns>
-          <a-table-column title="名称">
-            <template #cell="{ record }">
-              <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
-            </template>
-          </a-table-column>
-          <a-table-column title="排序" align="center" data-index="sort" />
-          <a-table-column title="状态" align="center" data-index="status">
-            <template #cell="{ record }">
-              <a-switch
-                v-model="record.status"
-                :checked-value="1"
-                :unchecked-value="2"
-                :disabled="
-                  record.disabled || !checkPermission(['system:dept:update'])
-                "
-                @change="handleChangeStatus(record)"
-              />
-            </template>
-          </a-table-column>
-          <a-table-column title="系统内置" align="center">
-            <template #cell="{ record }">
-              <a-tag v-if="record.isSystem" color="red">是</a-tag>
-              <a-tag v-else color="arcoblue">否</a-tag>
-            </template>
-          </a-table-column>
-          <a-table-column title="描述" data-index="description" />
-          <a-table-column title="创建时间" data-index="createTime" />
-          <a-table-column
-            v-if="checkPermission(['system:dept:update', 'system:dept:delete'])"
-            title="操作"
-            align="center"
-          >
-            <template #cell="{ record }">
-              <a-button
-                v-permission="['system:dept:update']"
-                type="text"
-                size="small"
-                title="修改"
-                @click="toUpdate(record.id)"
-              >
-                <template #icon><icon-edit /></template>修改
-              </a-button>
-              <a-popconfirm
-                content="是否确定删除该数据？"
-                type="warning"
-                @ok="handleDelete([record.id])"
-              >
-                <a-button
-                  v-permission="['system:dept:delete']"
-                  type="text"
-                  size="small"
-                  :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-                  :disabled="record.disabled"
-                >
-                  <template #icon><icon-delete /></template>删除
-                </a-button>
-              </a-popconfirm>
-            </template>
-          </a-table-column>
-        </template>
-      </a-table>
-
-      <!-- 表单区域 -->
-      <a-modal
-        :title="title"
-        :visible="visible"
-        :mask-closable="false"
-        :esc-to-close="false"
-        unmount-on-close
-        render-to-body
-        @ok="handleOk"
-        @cancel="handleCancel"
-      >
-        <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item
-            label="上级部门"
-            field="parentId"
-            :disabled="form.disabled"
-          >
-            <a-tree-select
-              v-model="form.parentId"
-              :data="treeData"
-              placeholder="请选择上级部门"
-              allow-clear
-              allow-search
-              :filter-tree-node="filterDeptTree"
-              :fallback-option="false"
-            />
-          </a-form-item>
-          <a-form-item label="名称" field="name">
-            <a-input v-model="form.name" placeholder="请输入名称" />
-          </a-form-item>
-          <a-form-item label="排序" field="sort">
-            <a-input-number
-              v-model="form.sort"
-              placeholder="请输入排序"
-              :min="1"
-              mode="button"
-            />
-          </a-form-item>
-          <a-form-item label="描述" field="description">
-            <a-textarea
-              v-model="form.description"
-              :max-length="200"
-              placeholder="请输入描述"
-              :auto-size="{
-                minRows: 3,
-              }"
-              show-word-limit
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-
-      <!-- 详情区域 -->
-      <a-drawer
-        title="部门详情"
-        :visible="detailVisible"
-        :width="580"
-        :footer="false"
-        unmount-on-close
-        render-to-body
-        @cancel="handleDetailCancel"
-      >
-        <a-descriptions :column="2" bordered size="large">
-          <a-descriptions-item label="名称">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.name }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="上级部门">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.parentName || '无' }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="状态">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>
-              <dict-tag
-                :value="dataDetail.status"
-                :dict="dis_enable_status_enum"
-              />
-            </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="排序">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.sort }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.createUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.createTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.updateUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.updateTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="描述">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.description }}</span>
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-drawer>
-    </a-card>
-  </div>
-</template>
-
 <script lang="ts" setup>
   import { TreeNodeData, TableData } from '@arco-design/web-vue';
   import {
@@ -611,5 +307,309 @@
     name: 'Dept',
   };
 </script>
+
+<template>
+  <div class="app-container">
+    <Breadcrumb :items="['menu.system', 'menu.system.dept.list']" />
+    <a-card class="general-card" :title="$t('menu.system.dept.list')">
+      <!-- 头部区域 -->
+      <div class="header">
+        <!-- 搜索栏 -->
+        <div v-if="showQuery" class="header-query">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
+            <a-form-item field="name" hide-label>
+              <a-input
+                v-model="queryParams.name"
+                placeholder="输入名称搜索"
+                allow-clear
+                style="width: 150px"
+                @press-enter="handleQuery"
+              />
+            </a-form-item>
+            <a-form-item field="status" hide-label>
+              <a-select
+                v-model="queryParams.status"
+                :options="dis_enable_status_enum"
+                placeholder="状态搜索"
+                allow-clear
+                style="width: 150px"
+              />
+            </a-form-item>
+            <a-form-item hide-label>
+              <a-space>
+                <a-button type="primary" @click="handleQuery">
+                  <template #icon><icon-search /></template>查询
+                </a-button>
+                <a-button @click="resetQuery">
+                  <template #icon><icon-refresh /></template>重置
+                </a-button>
+              </a-space>
+            </a-form-item>
+          </a-form>
+        </div>
+        <!-- 操作栏 -->
+        <div class="header-operation">
+          <a-row>
+            <a-col :span="12">
+              <a-space>
+                <a-button
+                  v-permission="['system:dept:add']"
+                  type="primary"
+                  @click="toAdd"
+                >
+                  <template #icon><icon-plus /></template>新增
+                </a-button>
+                <a-button
+                  v-permission="['system:dept:update']"
+                  type="primary"
+                  status="success"
+                  :disabled="single"
+                  :title="single ? '请选择一条要修改的数据' : ''"
+                  @click="toUpdate(ids[0])"
+                >
+                  <template #icon><icon-edit /></template>修改
+                </a-button>
+                <a-button
+                  v-permission="['system:dept:delete']"
+                  type="primary"
+                  status="danger"
+                  :disabled="multiple"
+                  :title="multiple ? '请选择要删除的数据' : ''"
+                  @click="handleBatchDelete"
+                >
+                  <template #icon><icon-delete /></template>删除
+                </a-button>
+                <a-button
+                  v-permission="['system:dept:export']"
+                  :loading="exportLoading"
+                  type="primary"
+                  status="warning"
+                  @click="handleExport"
+                >
+                  <template #icon><icon-download /></template>导出
+                </a-button>
+              </a-space>
+            </a-col>
+            <a-col :span="12">
+              <right-toolbar
+                v-model:show-query="showQuery"
+                @refresh="getList"
+              />
+            </a-col>
+          </a-row>
+        </div>
+      </div>
+
+      <!-- 列表区域 -->
+      <a-table
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :loading="loading"
+        :row-selection="{
+          type: 'checkbox',
+          showCheckedAll: true,
+          onlyCurrent: false,
+        }"
+        :pagination="false"
+        :bordered="false"
+        :default-expand-all-rows="true"
+        :hide-expand-button-on-empty="true"
+        column-resizable
+        stripe
+        size="large"
+        @select="handleSelect"
+        @selection-change="handleSelectionChange"
+      >
+        <template #columns>
+          <a-table-column title="名称">
+            <template #cell="{ record }">
+              <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
+            </template>
+          </a-table-column>
+          <a-table-column title="排序" align="center" data-index="sort" />
+          <a-table-column title="状态" align="center" data-index="status">
+            <template #cell="{ record }">
+              <a-switch
+                v-model="record.status"
+                :checked-value="1"
+                :unchecked-value="2"
+                :disabled="
+                  record.disabled || !checkPermission(['system:dept:update'])
+                "
+                @change="handleChangeStatus(record)"
+              />
+            </template>
+          </a-table-column>
+          <a-table-column title="系统内置" align="center">
+            <template #cell="{ record }">
+              <a-tag v-if="record.isSystem" color="red">是</a-tag>
+              <a-tag v-else color="arcoblue">否</a-tag>
+            </template>
+          </a-table-column>
+          <a-table-column title="描述" data-index="description" />
+          <a-table-column title="创建时间" data-index="createTime" />
+          <a-table-column
+            v-if="checkPermission(['system:dept:update', 'system:dept:delete'])"
+            title="操作"
+            align="center"
+          >
+            <template #cell="{ record }">
+              <a-button
+                v-permission="['system:dept:update']"
+                type="text"
+                size="small"
+                title="修改"
+                @click="toUpdate(record.id)"
+              >
+                <template #icon><icon-edit /></template>修改
+              </a-button>
+              <a-popconfirm
+                content="是否确定删除该数据？"
+                type="warning"
+                @ok="handleDelete([record.id])"
+              >
+                <a-button
+                  v-permission="['system:dept:delete']"
+                  type="text"
+                  size="small"
+                  :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+                  :disabled="record.disabled"
+                >
+                  <template #icon><icon-delete /></template>删除
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
+
+      <!-- 表单区域 -->
+      <a-modal
+        :title="title"
+        :visible="visible"
+        :mask-closable="false"
+        :esc-to-close="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
+          <a-form-item
+            label="上级部门"
+            field="parentId"
+            :disabled="form.disabled"
+          >
+            <a-tree-select
+              v-model="form.parentId"
+              :data="treeData"
+              placeholder="请选择上级部门"
+              allow-clear
+              allow-search
+              :filter-tree-node="filterDeptTree"
+              :fallback-option="false"
+            />
+          </a-form-item>
+          <a-form-item label="名称" field="name">
+            <a-input v-model="form.name" placeholder="请输入名称" />
+          </a-form-item>
+          <a-form-item label="排序" field="sort">
+            <a-input-number
+              v-model="form.sort"
+              placeholder="请输入排序"
+              :min="1"
+              mode="button"
+            />
+          </a-form-item>
+          <a-form-item label="描述" field="description">
+            <a-textarea
+              v-model="form.description"
+              :max-length="200"
+              placeholder="请输入描述"
+              :auto-size="{
+                minRows: 3,
+              }"
+              show-word-limit
+            />
+          </a-form-item>
+        </a-form>
+      </a-modal>
+
+      <!-- 详情区域 -->
+      <a-drawer
+        title="部门详情"
+        :visible="detailVisible"
+        :width="580"
+        :footer="false"
+        unmount-on-close
+        render-to-body
+        @cancel="handleDetailCancel"
+      >
+        <a-descriptions :column="2" bordered size="large">
+          <a-descriptions-item label="名称">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.name }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="上级部门">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.parentName || '无' }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="状态">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>
+              <dict-tag
+                :value="dataDetail.status"
+                :dict="dis_enable_status_enum"
+              />
+            </span>
+          </a-descriptions-item>
+          <a-descriptions-item label="排序">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.sort }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="创建人">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.createUserString }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="创建时间">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.createTime }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="修改人">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.updateUserString }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="修改时间">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.updateTime }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="描述">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.description }}</span>
+          </a-descriptions-item>
+        </a-descriptions>
+      </a-drawer>
+    </a-card>
+  </div>
+</template>
 
 <style scoped lang="less"></style>

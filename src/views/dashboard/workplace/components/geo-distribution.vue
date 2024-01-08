@@ -1,20 +1,3 @@
-<template>
-  <a-spin :loading="loading" style="width: 100%">
-    <a-card
-      class="general-card"
-      :header-style="{ paddingBottom: '0' }"
-      :body-style="{
-        padding: '0 20px 15px 20px',
-      }"
-    >
-      <template #title>
-        {{ $t('workplace.geoDistribution') }}
-      </template>
-      <Chart height="480px" :option="chartOption" />
-    </a-card>
-  </a-spin>
-</template>
-
 <script lang="ts" setup>
   import useLoading from '@/hooks/loading';
   import useChartOption from '@/hooks/chart-option';
@@ -84,6 +67,23 @@
     };
   });
 </script>
+
+<template>
+  <a-spin :loading="loading" style="width: 100%">
+    <a-card
+      class="general-card"
+      :header-style="{ paddingBottom: '0' }"
+      :body-style="{
+        padding: '0 20px 15px 20px',
+      }"
+    >
+      <template #title>
+        {{ $t('workplace.geoDistribution') }}
+      </template>
+      <Chart height="480px" :option="chartOption" />
+    </a-card>
+  </a-spin>
+</template>
 
 <style scoped lang="less">
   .general-card {

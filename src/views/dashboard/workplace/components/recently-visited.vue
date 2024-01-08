@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+  import { DashboardRecentlyVisitedRecord } from '@/api/common/dashboard';
+
+  const router = useRouter();
+  const links = ref<DashboardRecentlyVisitedRecord[]>();
+
+  /**
+   * 加载最近访问菜单列表
+   */
+  onMounted(() => {
+    const recentlyVisitedList = window.localStorage.getItem('recently-visited');
+    if (recentlyVisitedList === null) {
+      links.value = [];
+    } else {
+      links.value = JSON.parse(recentlyVisitedList);
+    }
+  });
+</script>
+
 <template>
   <a-card
     class="general-card"
@@ -26,25 +45,6 @@
     </div>
   </a-card>
 </template>
-
-<script lang="ts" setup>
-  import { DashboardRecentlyVisitedRecord } from '@/api/common/dashboard';
-
-  const router = useRouter();
-  const links = ref<DashboardRecentlyVisitedRecord[]>();
-
-  /**
-   * 加载最近访问菜单列表
-   */
-  onMounted(() => {
-    const recentlyVisitedList = window.localStorage.getItem('recently-visited');
-    if (recentlyVisitedList === null) {
-      links.value = [];
-    } else {
-      links.value = JSON.parse(recentlyVisitedList);
-    }
-  });
-</script>
 
 <style lang="less" scoped>
   :deep(.arco-card-header-title) {

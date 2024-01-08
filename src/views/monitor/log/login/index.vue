@@ -1,88 +1,3 @@
-<template>
-  <div class="app-container">
-    <Breadcrumb :items="['menu.monitor', 'menu.log.login.list']" />
-    <a-card class="general-card" :title="$t('menu.log.login.list')">
-      <!-- 头部区域 -->
-      <div class="header">
-        <!-- 搜索栏 -->
-        <div class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="status" hide-label>
-              <a-select
-                v-model="queryParams.status"
-                :options="success_failure_status_enum"
-                placeholder="登录状态搜索"
-                allow-clear
-                style="width: 150px"
-              />
-            </a-form-item>
-            <a-form-item field="createTime" hide-label>
-              <date-range-picker v-model="queryParams.createTime" />
-            </a-form-item>
-            <a-form-item hide-label>
-              <a-space>
-                <a-button type="primary" @click="handleQuery">
-                  <template #icon><icon-search /></template>查询
-                </a-button>
-                <a-button @click="resetQuery">
-                  <template #icon><icon-refresh /></template>重置
-                </a-button>
-              </a-space>
-            </a-form-item>
-          </a-form>
-        </div>
-      </div>
-
-      <!-- 列表区域 -->
-      <a-table
-        ref="tableRef"
-        row-key="id"
-        :data="loginLogList"
-        :loading="loading"
-        :pagination="{
-          showTotal: true,
-          showPageSize: true,
-          total: total,
-          current: queryParams.page,
-        }"
-        :bordered="false"
-        column-resizable
-        stripe
-        size="large"
-        @page-change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-      >
-        <template #columns>
-          <a-table-column title="序号">
-            <template #cell="{ rowIndex }">
-              {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
-            </template>
-          </a-table-column>
-          <a-table-column title="用户昵称" data-index="createUserString" />
-          <a-table-column title="登录行为" data-index="description" />
-          <a-table-column title="登录状态" align="center">
-            <template #cell="{ record }">
-              <a-tag v-if="record.status === 1" color="green"
-                ><span class="circle pass" />成功</a-tag
-              >
-              <a-tooltip v-else :content="record.errorMsg">
-                <a-tag color="red" style="cursor: pointer">
-                  <span class="circle fail" />失败
-                </a-tag>
-              </a-tooltip>
-            </template>
-          </a-table-column>
-          <a-table-column title="登录 IP" data-index="ip" />
-          <a-table-column title="登录地点" data-index="address" />
-          <a-table-column title="浏览器" data-index="browser" />
-          <a-table-column title="终端系统" data-index="os" />
-          <a-table-column title="登录时间" data-index="createTime" />
-        </template>
-      </a-table>
-    </a-card>
-  </div>
-</template>
-
 <script lang="ts" setup>
   import {
     LoginLogParam,
@@ -170,5 +85,90 @@
     name: 'LoginLog',
   };
 </script>
+
+<template>
+  <div class="app-container">
+    <Breadcrumb :items="['menu.monitor', 'menu.log.login.list']" />
+    <a-card class="general-card" :title="$t('menu.log.login.list')">
+      <!-- 头部区域 -->
+      <div class="header">
+        <!-- 搜索栏 -->
+        <div class="header-query">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
+            <a-form-item field="status" hide-label>
+              <a-select
+                v-model="queryParams.status"
+                :options="success_failure_status_enum"
+                placeholder="登录状态搜索"
+                allow-clear
+                style="width: 150px"
+              />
+            </a-form-item>
+            <a-form-item field="createTime" hide-label>
+              <date-range-picker v-model="queryParams.createTime" />
+            </a-form-item>
+            <a-form-item hide-label>
+              <a-space>
+                <a-button type="primary" @click="handleQuery">
+                  <template #icon><icon-search /></template>查询
+                </a-button>
+                <a-button @click="resetQuery">
+                  <template #icon><icon-refresh /></template>重置
+                </a-button>
+              </a-space>
+            </a-form-item>
+          </a-form>
+        </div>
+      </div>
+
+      <!-- 列表区域 -->
+      <a-table
+        ref="tableRef"
+        row-key="id"
+        :data="loginLogList"
+        :loading="loading"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        :bordered="false"
+        column-resizable
+        stripe
+        size="large"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+      >
+        <template #columns>
+          <a-table-column title="序号">
+            <template #cell="{ rowIndex }">
+              {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+            </template>
+          </a-table-column>
+          <a-table-column title="用户昵称" data-index="createUserString" />
+          <a-table-column title="登录行为" data-index="description" />
+          <a-table-column title="登录状态" align="center">
+            <template #cell="{ record }">
+              <a-tag v-if="record.status === 1" color="green"
+                ><span class="circle pass" />成功</a-tag
+              >
+              <a-tooltip v-else :content="record.errorMsg">
+                <a-tag color="red" style="cursor: pointer">
+                  <span class="circle fail" />失败
+                </a-tag>
+              </a-tooltip>
+            </template>
+          </a-table-column>
+          <a-table-column title="登录 IP" data-index="ip" />
+          <a-table-column title="登录地点" data-index="address" />
+          <a-table-column title="浏览器" data-index="browser" />
+          <a-table-column title="终端系统" data-index="os" />
+          <a-table-column title="登录时间" data-index="createTime" />
+        </template>
+      </a-table>
+    </a-card>
+  </div>
+</template>
 
 <style scoped lang="less"></style>

@@ -1,32 +1,3 @@
-<template>
-  <a-modal
-    v-model:visible="visible"
-    title="重命名"
-    width="90%"
-    modal-animation-name="el-fade"
-    :modal-style="{ maxWidth: '500px' }"
-    @close="cancel"
-    @before-ok="save"
-  >
-    <a-row justify="center" align="center">
-      <a-form
-        ref="FormRef"
-        :model="form"
-        auto-label-width
-        :style="{ width: '80%' }"
-      >
-        <a-form-item
-          field="name"
-          label="文件名称"
-          :rules="[{ required: true, message: '请输入文件名称' }]"
-        >
-          <a-input v-model="form.name" placeholder="请输入文件名称" allow-clear />
-        </a-form-item>
-      </a-form>
-    </a-row>
-  </a-modal>
-</template>
-
 <script setup lang="ts">
   import type { FormInstance, Modal } from '@arco-design/web-vue';
   import { FileItem, update } from '@/api/system/file';
@@ -64,6 +35,35 @@
     return true;
   };
 </script>
+
+<template>
+  <a-modal
+    v-model:visible="visible"
+    title="重命名"
+    width="90%"
+    modal-animation-name="el-fade"
+    :modal-style="{ maxWidth: '500px' }"
+    @close="cancel"
+    @before-ok="save"
+  >
+    <a-row justify="center" align="center">
+      <a-form
+        ref="FormRef"
+        :model="form"
+        auto-label-width
+        :style="{ width: '80%' }"
+      >
+        <a-form-item
+          field="name"
+          label="文件名称"
+          :rules="[{ required: true, message: '请输入文件名称' }]"
+        >
+          <a-input v-model="form.name" placeholder="请输入文件名称" allow-clear />
+        </a-form-item>
+      </a-form>
+    </a-row>
+  </a-modal>
+</template>
 
 <style lang="less" scoped>
   .label {

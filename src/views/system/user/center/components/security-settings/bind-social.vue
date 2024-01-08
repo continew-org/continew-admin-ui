@@ -1,3 +1,69 @@
+<script lang="ts" setup>
+  import {
+    UserSocialBindRecord,
+    listSocial,
+    unbindSocial,
+  } from '@/api/system/user-center';
+  import { socialAuth } from '@/api/auth';
+
+  const { proxy } = getCurrentInstance() as any;
+  const socialBinds = ref<UserSocialBindRecord[]>([]);
+  const giteeSocial = ref<UserSocialBindRecord>();
+  const githubSocial = ref<UserSocialBindRecord>();
+
+  /**
+   * 查询绑定的第三方账号
+   */
+  const list = () => {
+    listSocial().then((res) => {
+      socialBinds.value = res.data;
+      giteeSocial.value = socialBinds.value.find(
+        (item) => item.source === 'GITEE'
+      );
+      githubSocial.value = socialBinds.value.find(
+        (item) => item.source === 'GITHUB'
+      );
+    });
+  };
+  list();
+
+  /**
+   * 绑定或解绑
+   *
+   * @param source 来源
+   * @param sourceDescription 来源描述
+   */
+  const handleBind = (source: string, sourceDescription: string) => {
+    const isBind = socialBinds.value.some((item) => item.source === source);
+    if (isBind) {
+      proxy.$modal.warning({
+        title: `确认解除和${sourceDescription}平台的三方账号绑定吗?`,
+        titleAlign: 'start',
+        content: '解除绑定后，将无法使用该第三方账户登录到此账号',
+        hideCancel: false,
+        onOk: () => {
+          unbindSocial(source).then((res) => {
+            list();
+            proxy.$message.success(res.msg);
+          });
+        },
+      });
+      return;
+    }
+    proxy.$modal.info({
+      title: '提示',
+      titleAlign: 'start',
+      content: `确认和${sourceDescription}平台的三方账号绑定吗?`,
+      hideCancel: false,
+      onOk: () => {
+        socialAuth(source).then((res) => {
+          window.location.href = res.data;
+        });
+      },
+    });
+  };
+</script>
+
 <template>
   <a-list-item-meta>
     <template #avatar>
@@ -74,72 +140,6 @@
     </template>
   </a-list-item-meta>
 </template>
-
-<script lang="ts" setup>
-  import {
-    UserSocialBindRecord,
-    listSocial,
-    unbindSocial,
-  } from '@/api/system/user-center';
-  import { socialAuth } from '@/api/auth';
-
-  const { proxy } = getCurrentInstance() as any;
-  const socialBinds = ref<UserSocialBindRecord[]>([]);
-  const giteeSocial = ref<UserSocialBindRecord>();
-  const githubSocial = ref<UserSocialBindRecord>();
-
-  /**
-   * 查询绑定的第三方账号
-   */
-  const list = () => {
-    listSocial().then((res) => {
-      socialBinds.value = res.data;
-      giteeSocial.value = socialBinds.value.find(
-        (item) => item.source === 'GITEE'
-      );
-      githubSocial.value = socialBinds.value.find(
-        (item) => item.source === 'GITHUB'
-      );
-    });
-  };
-  list();
-
-  /**
-   * 绑定或解绑
-   *
-   * @param source 来源
-   * @param sourceDescription 来源描述
-   */
-  const handleBind = (source: string, sourceDescription: string) => {
-    const isBind = socialBinds.value.some((item) => item.source === source);
-    if (isBind) {
-      proxy.$modal.warning({
-        title: `确认解除和${sourceDescription}平台的三方账号绑定吗?`,
-        titleAlign: 'start',
-        content: '解除绑定后，将无法使用该第三方账户登录到此账号',
-        hideCancel: false,
-        onOk: () => {
-          unbindSocial(source).then((res) => {
-            list();
-            proxy.$message.success(res.msg);
-          });
-        },
-      });
-      return;
-    }
-    proxy.$modal.info({
-      title: '提示',
-      titleAlign: 'start',
-      content: `确认和${sourceDescription}平台的三方账号绑定吗?`,
-      hideCancel: false,
-      onOk: () => {
-        socialAuth(source).then((res) => {
-          window.location.href = res.data;
-        });
-      },
-    });
-  };
-</script>
 
 <style scoped lang="less">
   :deep(.arco-link) {

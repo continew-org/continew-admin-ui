@@ -1,32 +1,3 @@
-<template>
-  <a-spin :loading="loading" style="width: 100%">
-    <a-card
-      class="general-card"
-      :header-style="{ paddingBottom: 0 }"
-      :body-style="{
-        paddingTop: '20px',
-      }"
-      :title="$t('workplace.accessTrend')"
-    >
-      <template #extra>
-        <a-radio-group
-          v-model:model-value="dateRange"
-          type="button"
-          @change="handleDateRangeChange as any"
-        >
-          <a-radio :value="7">
-            {{ $t('workplace.accessTrend.dateRange7') }}
-          </a-radio>
-          <a-radio :value="30">
-            {{ $t('workplace.accessTrend.dateRange30') }}
-          </a-radio>
-        </a-radio-group>
-      </template>
-      <Chart height="289px" :option="chartOption" />
-    </a-card>
-  </a-spin>
-</template>
-
 <script lang="ts" setup>
   import useLoading from '@/hooks/loading';
   import {
@@ -214,5 +185,34 @@
   };
   getList(30);
 </script>
+
+<template>
+  <a-spin :loading="loading" style="width: 100%">
+    <a-card
+      class="general-card"
+      :header-style="{ paddingBottom: 0 }"
+      :body-style="{
+        paddingTop: '20px',
+      }"
+      :title="$t('workplace.accessTrend')"
+    >
+      <template #extra>
+        <a-radio-group
+          v-model:model-value="dateRange"
+          type="button"
+          @change="handleDateRangeChange as any"
+        >
+          <a-radio :value="7">
+            {{ $t('workplace.accessTrend.dateRange7') }}
+          </a-radio>
+          <a-radio :value="30">
+            {{ $t('workplace.accessTrend.dateRange30') }}
+          </a-radio>
+        </a-radio-group>
+      </template>
+      <Chart height="289px" :option="chartOption" />
+    </a-card>
+  </a-spin>
+</template>
 
 <style scoped lang="less"></style>

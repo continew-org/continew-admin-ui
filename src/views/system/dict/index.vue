@@ -1,225 +1,3 @@
-<template>
-  <div class="app-container">
-    <Breadcrumb :items="['menu.system', 'menu.system.dict.list']" />
-    <a-card class="general-card" :title="$t('menu.system.dict.list')">
-      <a-row>
-        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-          <!-- 头部区域 -->
-          <div class="header">
-            <!-- 搜索栏 -->
-            <div v-if="showQuery" class="header-query">
-              <a-form ref="queryRef" :model="queryParams" layout="inline">
-                <a-form-item field="name" hide-label>
-                  <a-input
-                    v-model="queryParams.name"
-                    placeholder="输入名称搜索"
-                    allow-clear
-                    style="width: 150px"
-                    @press-enter="handleQuery"
-                  />
-                </a-form-item>
-                <a-form-item hide-label>
-                  <a-space>
-                    <a-button type="primary" @click="handleQuery">
-                      <template #icon><icon-search /></template>查询
-                    </a-button>
-                    <a-button @click="resetQuery">
-                      <template #icon><icon-refresh /></template>重置
-                    </a-button>
-                  </a-space>
-                </a-form-item>
-              </a-form>
-            </div>
-            <!-- 操作栏 -->
-            <div class="header-operation">
-              <a-row>
-                <a-col :span="12">
-                  <a-space>
-                    <a-button
-                      v-permission="['system:dict:add']"
-                      type="primary"
-                      @click="toAdd"
-                    >
-                      <template #icon><icon-plus /></template>新增
-                    </a-button>
-                    <a-button
-                      v-permission="['system:dict:update']"
-                      type="primary"
-                      status="success"
-                      :disabled="single"
-                      :title="single ? '请选择一条要修改的数据' : ''"
-                      @click="toUpdate(ids[0])"
-                    >
-                      <template #icon><icon-edit /></template>修改
-                    </a-button>
-                    <a-button
-                      v-permission="['system:dict:delete']"
-                      type="primary"
-                      status="danger"
-                      :disabled="multiple"
-                      :title="multiple ? '请选择要删除的数据' : ''"
-                      @click="handleBatchDelete"
-                    >
-                      <template #icon><icon-delete /></template>删除
-                    </a-button>
-                    <a-button
-                      v-permission="['system:dict:export']"
-                      :loading="exportLoading"
-                      type="primary"
-                      status="warning"
-                      @click="handleExport"
-                    >
-                      <template #icon><icon-download /></template>导出
-                    </a-button>
-                  </a-space>
-                </a-col>
-                <a-col :span="12">
-                  <right-toolbar
-                    v-model:show-query="showQuery"
-                    @refresh="handleQuery"
-                  />
-                </a-col>
-              </a-row>
-            </div>
-          </div>
-
-          <!-- 列表区域 -->
-          <a-table
-            ref="tableRef"
-            row-key="id"
-            :data="dataList"
-            :loading="loading"
-            :row-selection="{
-              type: 'checkbox',
-              showCheckedAll: true,
-              onlyCurrent: false,
-            }"
-            :pagination="{
-              showTotal: true,
-              showPageSize: true,
-              total: total,
-              current: queryParams.page,
-            }"
-            :bordered="false"
-            column-resizable
-            class="dictTable"
-            size="large"
-            @page-change="handlePageChange"
-            @page-size-change="handlePageSizeChange"
-            @selection-change="handleSelectionChange"
-            @row-click="handleSelect"
-          >
-            <template #columns>
-              <a-table-column
-                title="序号"
-                :width="60"
-                :body-cell-style="bodyCellStyle"
-              >
-                <template #cell="{ rowIndex }">
-                  {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
-                </template>
-              </a-table-column>
-              <a-table-column
-                title="名称"
-                data-index="name"
-                :width="100"
-                :body-cell-style="bodyCellStyle"
-              />
-              <a-table-column
-                title="编码"
-                data-index="code"
-                :body-cell-style="bodyCellStyle"
-              />
-              <a-table-column
-                title="描述"
-                data-index="description"
-                ellipsis
-                tooltip
-                :width="100"
-                :body-cell-style="bodyCellStyle"
-              />
-              <a-table-column
-                v-if="
-                  checkPermission(['system:dict:update', 'system:dict:delete'])
-                "
-                title="操作"
-                align="center"
-                :body-cell-style="bodyCellStyle"
-              >
-                <template #cell="{ record }">
-                  <a-button
-                    v-permission="['system:dict:update']"
-                    type="text"
-                    size="small"
-                    title="修改"
-                    @click="toUpdate(record.id)"
-                  >
-                    <template #icon><icon-edit /></template>修改
-                  </a-button>
-                  <a-popconfirm
-                    content="是否确定删除该数据？"
-                    type="warning"
-                    @ok="handleDelete([record.id])"
-                  >
-                    <a-button
-                      v-permission="['system:dict:delete']"
-                      type="text"
-                      size="small"
-                      :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-                      :disabled="record.isSystem"
-                    >
-                      <template #icon><icon-delete /></template>删除
-                    </a-button>
-                  </a-popconfirm>
-                </template>
-              </a-table-column>
-            </template>
-          </a-table>
-        </a-col>
-        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-          <dict-item ref="dictItemRef" :dict-id="dictId" />
-        </a-col>
-      </a-row>
-
-      <!-- 表单区域 -->
-      <a-modal
-        :title="title"
-        :visible="visible"
-        :mask-closable="false"
-        :esc-to-close="false"
-        unmount-on-close
-        render-to-body
-        @ok="handleOk"
-        @cancel="handleCancel"
-      >
-        <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="名称" field="name">
-            <a-input v-model="form.name" placeholder="请输入名称" />
-          </a-form-item>
-          <a-form-item label="编码" field="code">
-            <a-input
-              v-model="form.code"
-              placeholder="请输入编码"
-              :disabled="form.isSystem"
-            />
-          </a-form-item>
-          <a-form-item label="描述" field="description">
-            <a-textarea
-              v-model="form.description"
-              :max-length="200"
-              placeholder="请输入描述"
-              :auto-size="{
-                minRows: 3,
-              }"
-              show-word-limit
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-    </a-card>
-  </div>
-</template>
-
 <script lang="ts" setup>
   import { TableData } from '@arco-design/web-vue';
   import {
@@ -483,5 +261,227 @@
     name: 'Dict',
   };
 </script>
+
+<template>
+  <div class="app-container">
+    <Breadcrumb :items="['menu.system', 'menu.system.dict.list']" />
+    <a-card class="general-card" :title="$t('menu.system.dict.list')">
+      <a-row>
+        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <!-- 头部区域 -->
+          <div class="header">
+            <!-- 搜索栏 -->
+            <div v-if="showQuery" class="header-query">
+              <a-form ref="queryRef" :model="queryParams" layout="inline">
+                <a-form-item field="name" hide-label>
+                  <a-input
+                    v-model="queryParams.name"
+                    placeholder="输入名称搜索"
+                    allow-clear
+                    style="width: 150px"
+                    @press-enter="handleQuery"
+                  />
+                </a-form-item>
+                <a-form-item hide-label>
+                  <a-space>
+                    <a-button type="primary" @click="handleQuery">
+                      <template #icon><icon-search /></template>查询
+                    </a-button>
+                    <a-button @click="resetQuery">
+                      <template #icon><icon-refresh /></template>重置
+                    </a-button>
+                  </a-space>
+                </a-form-item>
+              </a-form>
+            </div>
+            <!-- 操作栏 -->
+            <div class="header-operation">
+              <a-row>
+                <a-col :span="12">
+                  <a-space>
+                    <a-button
+                      v-permission="['system:dict:add']"
+                      type="primary"
+                      @click="toAdd"
+                    >
+                      <template #icon><icon-plus /></template>新增
+                    </a-button>
+                    <a-button
+                      v-permission="['system:dict:update']"
+                      type="primary"
+                      status="success"
+                      :disabled="single"
+                      :title="single ? '请选择一条要修改的数据' : ''"
+                      @click="toUpdate(ids[0])"
+                    >
+                      <template #icon><icon-edit /></template>修改
+                    </a-button>
+                    <a-button
+                      v-permission="['system:dict:delete']"
+                      type="primary"
+                      status="danger"
+                      :disabled="multiple"
+                      :title="multiple ? '请选择要删除的数据' : ''"
+                      @click="handleBatchDelete"
+                    >
+                      <template #icon><icon-delete /></template>删除
+                    </a-button>
+                    <a-button
+                      v-permission="['system:dict:export']"
+                      :loading="exportLoading"
+                      type="primary"
+                      status="warning"
+                      @click="handleExport"
+                    >
+                      <template #icon><icon-download /></template>导出
+                    </a-button>
+                  </a-space>
+                </a-col>
+                <a-col :span="12">
+                  <right-toolbar
+                    v-model:show-query="showQuery"
+                    @refresh="handleQuery"
+                  />
+                </a-col>
+              </a-row>
+            </div>
+          </div>
+
+          <!-- 列表区域 -->
+          <a-table
+            ref="tableRef"
+            row-key="id"
+            :data="dataList"
+            :loading="loading"
+            :row-selection="{
+              type: 'checkbox',
+              showCheckedAll: true,
+              onlyCurrent: false,
+            }"
+            :pagination="{
+              showTotal: true,
+              showPageSize: true,
+              total: total,
+              current: queryParams.page,
+            }"
+            :bordered="false"
+            column-resizable
+            class="dictTable"
+            size="large"
+            @page-change="handlePageChange"
+            @page-size-change="handlePageSizeChange"
+            @selection-change="handleSelectionChange"
+            @row-click="handleSelect"
+          >
+            <template #columns>
+              <a-table-column
+                title="序号"
+                :width="60"
+                :body-cell-style="bodyCellStyle"
+              >
+                <template #cell="{ rowIndex }">
+                  {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="名称"
+                data-index="name"
+                :width="100"
+                :body-cell-style="bodyCellStyle"
+              />
+              <a-table-column
+                title="编码"
+                data-index="code"
+                :body-cell-style="bodyCellStyle"
+              />
+              <a-table-column
+                title="描述"
+                data-index="description"
+                ellipsis
+                tooltip
+                :width="100"
+                :body-cell-style="bodyCellStyle"
+              />
+              <a-table-column
+                v-if="
+                  checkPermission(['system:dict:update', 'system:dict:delete'])
+                "
+                title="操作"
+                align="center"
+                :body-cell-style="bodyCellStyle"
+              >
+                <template #cell="{ record }">
+                  <a-button
+                    v-permission="['system:dict:update']"
+                    type="text"
+                    size="small"
+                    title="修改"
+                    @click="toUpdate(record.id)"
+                  >
+                    <template #icon><icon-edit /></template>修改
+                  </a-button>
+                  <a-popconfirm
+                    content="是否确定删除该数据？"
+                    type="warning"
+                    @ok="handleDelete([record.id])"
+                  >
+                    <a-button
+                      v-permission="['system:dict:delete']"
+                      type="text"
+                      size="small"
+                      :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+                      :disabled="record.isSystem"
+                    >
+                      <template #icon><icon-delete /></template>删除
+                    </a-button>
+                  </a-popconfirm>
+                </template>
+              </a-table-column>
+            </template>
+          </a-table>
+        </a-col>
+        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <dict-item ref="dictItemRef" :dict-id="dictId" />
+        </a-col>
+      </a-row>
+
+      <!-- 表单区域 -->
+      <a-modal
+        :title="title"
+        :visible="visible"
+        :mask-closable="false"
+        :esc-to-close="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
+          <a-form-item label="名称" field="name">
+            <a-input v-model="form.name" placeholder="请输入名称" />
+          </a-form-item>
+          <a-form-item label="编码" field="code">
+            <a-input
+              v-model="form.code"
+              placeholder="请输入编码"
+              :disabled="form.isSystem"
+            />
+          </a-form-item>
+          <a-form-item label="描述" field="description">
+            <a-textarea
+              v-model="form.description"
+              :max-length="200"
+              placeholder="请输入描述"
+              :auto-size="{
+                minRows: 3,
+              }"
+              show-word-limit
+            />
+          </a-form-item>
+        </a-form>
+      </a-modal>
+    </a-card>
+  </div>
+</template>
 
 <style scoped lang="less"></style>

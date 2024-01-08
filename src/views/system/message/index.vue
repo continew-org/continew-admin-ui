@@ -1,3 +1,196 @@
+<script lang="ts" setup>
+  import { DataRecord, ListParam, list, del, read } from '@/api/system/message';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { message_type_enum } = proxy.useDict('message_type_enum');
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({
+    id: 0,
+    title: '',
+    content: '',
+    type: 1,
+    createUserString: '',
+    createTime: '',
+    isRead: false,
+    readTime: '',
+  });
+  const total = ref(0);
+  const ids = ref<Array<number>>([]);
+  const single = ref(true);
+  const multiple = ref(true);
+  const readMultiple = ref(true);
+  const showQuery = ref(true);
+  const loading = ref(false);
+  const detailVisible = ref(false);
+  const detailLoading = ref(false);
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      title: undefined,
+      type: undefined,
+      isRead: undefined,
+      page: 1,
+      size: 10,
+      sort: ['isRead,asc', 'createTime,desc'],
+    },
+  });
+  const { queryParams } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   */
+  const getList = (params: ListParam = { ...queryParams.value }) => {
+    loading.value = true;
+    list(params)
+      .then((res) => {
+        dataList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 查看详情
+   *
+   * @param record 记录信息
+   */
+  const toDetail = async (record: DataRecord) => {
+    detailVisible.value = true;
+    dataDetail.value = record;
+  };
+
+  /**
+   * 关闭详情
+   */
+  const handleDetailCancel = () => {
+    detailVisible.value = false;
+  };
+
+  /**
+   * 批量删除
+   */
+  const handleBatchDelete = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择要删除的数据');
+    } else {
+      proxy.$modal.warning({
+        title: '警告',
+        titleAlign: 'start',
+        content: `是否确定删除所选的${ids.value.length}条数据？`,
+        hideCancel: false,
+        onOk: () => {
+          handleDelete(ids.value);
+        },
+      });
+    }
+  };
+
+  /**
+   * 删除
+   *
+   * @param ids ID 列表
+   */
+  const handleDelete = (ids: Array<number>) => {
+    del(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+      proxy.$refs.tableRef.selectAll(false);
+    });
+  };
+
+  /**
+   * 批量将消息设置为已读
+   */
+  const handleBatchRedaMessage = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择数据');
+    } else {
+      handleReadMessage(ids.value);
+    }
+  };
+
+  /**
+   * 批量所以消息设置为已读
+   */
+  const handleAllRedaMessage = () => {
+    handleReadMessage([]);
+  };
+
+  /**
+   * 将消息设置为已读
+   *
+   * @param ids ID 列表
+   */
+  const handleReadMessage = (ids: Array<number>) => {
+    read(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+      proxy.$refs.tableRef.selectAll(false);
+    });
+  };
+
+  /**
+   * 已选择的数据行发生改变时触发
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    const unReadMessageList = dataList.value.filter(
+      (item) => rowKeys.indexOf(item.id) !== -1 && !item.isRead,
+    );
+    readMultiple.value = !unReadMessageList.length;
+    ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
+    multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'Message',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.system', 'menu.system.message.list']" />
@@ -233,198 +426,5 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { DataRecord, ListParam, list, del, read } from '@/api/system/message';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { message_type_enum } = proxy.useDict('message_type_enum');
-  const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({
-    id: 0,
-    title: '',
-    content: '',
-    type: 1,
-    createUserString: '',
-    createTime: '',
-    isRead: false,
-    readTime: '',
-  });
-  const total = ref(0);
-  const ids = ref<Array<number>>([]);
-  const single = ref(true);
-  const multiple = ref(true);
-  const readMultiple = ref(true);
-  const showQuery = ref(true);
-  const loading = ref(false);
-  const detailVisible = ref(false);
-  const detailLoading = ref(false);
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      title: undefined,
-      type: undefined,
-      isRead: undefined,
-      page: 1,
-      size: 10,
-      sort: ['isRead,asc', 'createTime,desc'],
-    },
-  });
-  const { queryParams } = toRefs(data);
-
-  /**
-   * 查询列表
-   *
-   */
-  const getList = (params: ListParam = { ...queryParams.value }) => {
-    loading.value = true;
-    list(params)
-      .then((res) => {
-        dataList.value = res.data.list;
-        total.value = res.data.total;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 查看详情
-   *
-   * @param record 记录信息
-   */
-  const toDetail = async (record: DataRecord) => {
-    detailVisible.value = true;
-    dataDetail.value = record;
-  };
-
-  /**
-   * 关闭详情
-   */
-  const handleDetailCancel = () => {
-    detailVisible.value = false;
-  };
-
-  /**
-   * 批量删除
-   */
-  const handleBatchDelete = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择要删除的数据');
-    } else {
-      proxy.$modal.warning({
-        title: '警告',
-        titleAlign: 'start',
-        content: `是否确定删除所选的${ids.value.length}条数据？`,
-        hideCancel: false,
-        onOk: () => {
-          handleDelete(ids.value);
-        },
-      });
-    }
-  };
-
-  /**
-   * 删除
-   *
-   * @param ids ID 列表
-   */
-  const handleDelete = (ids: Array<number>) => {
-    del(ids).then((res) => {
-      proxy.$message.success(res.msg);
-      getList();
-      proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 批量将消息设置为已读
-   */
-  const handleBatchRedaMessage = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择数据');
-    } else {
-      handleReadMessage(ids.value);
-    }
-  };
-
-  /**
-   * 批量所以消息设置为已读
-   */
-  const handleAllRedaMessage = () => {
-    handleReadMessage([]);
-  };
-
-  /**
-   * 将消息设置为已读
-   *
-   * @param ids ID 列表
-   */
-  const handleReadMessage = (ids: Array<number>) => {
-    read(ids).then((res) => {
-      proxy.$message.success(res.msg);
-      getList();
-      proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 已选择的数据行发生改变时触发
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    const unReadMessageList = dataList.value.filter(
-      (item) => rowKeys.indexOf(item.id) !== -1 && !item.isRead,
-    );
-    readMultiple.value = !unReadMessageList.length;
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
-  };
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
-   * 切换页码
-   *
-   * @param current 页码
-   */
-  const handlePageChange = (current: number) => {
-    queryParams.value.page = current;
-    getList();
-  };
-
-  /**
-   * 切换每页条数
-   *
-   * @param pageSize 每页条数
-   */
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.value.size = pageSize;
-    getList();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'Message',
-  };
-</script>
 
 <style scoped lang="less"></style>

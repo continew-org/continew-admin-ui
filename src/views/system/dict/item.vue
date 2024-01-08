@@ -1,173 +1,3 @@
-<template>
-  <div class="app-container">
-    <!-- 头部区域 -->
-    <div style="margin-bottom: 18px">
-      <a-row>
-        <a-col :span="18" />
-        <a-col :span="6" style="display: flex; justify-content: end">
-          <a-button
-            v-permission="['system:dictItem:add']"
-            type="primary"
-            :disabled="!dictId"
-            :title="!dictId ? '请先点击字典' : ''"
-            @click="toAdd"
-          >
-            <template #icon><icon-plus /></template>新增
-          </a-button>
-        </a-col>
-      </a-row>
-    </div>
-
-    <!-- 列表区域 -->
-    <a-table
-      ref="tableRef"
-      row-key="id"
-      :data="dictId ? dataList : []"
-      :loading="loading"
-      :pagination="{
-        showTotal: true,
-        showPageSize: true,
-        total: total,
-        current: queryParams.page,
-      }"
-      :bordered="false"
-      column-resizable
-      stripe
-      size="large"
-      @page-change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    >
-      <template #empty>
-        <a-empty v-if="!dictId">点击字典查看详情</a-empty>
-        <a-empty v-else>暂无数据</a-empty>
-      </template>
-      <template #columns>
-        <a-table-column title="标签" align="center">
-          <template #cell="{ record }">
-            <dict-tag :value="record.value" :dict="dataList" />
-          </template>
-        </a-table-column>
-        <a-table-column title="值" align="center" data-index="value" />
-        <a-table-column title="排序" align="center" data-index="sort" />
-        <a-table-column title="描述" data-index="description" />
-        <a-table-column
-          v-if="
-            checkPermission([
-              'system:dictItem:update',
-              'system:dictItem:delete',
-            ])
-          "
-          title="操作"
-          align="center"
-        >
-          <template #cell="{ record }">
-            <a-button
-              v-permission="['system:dictItem:update']"
-              type="text"
-              size="small"
-              title="修改"
-              @click="toUpdate(record.id)"
-            >
-              <template #icon><icon-edit /></template>修改
-            </a-button>
-            <a-popconfirm
-              content="是否确定删除该数据？"
-              type="warning"
-              @ok="handleDelete([record.id])"
-            >
-              <a-button
-                v-permission="['system:dictItem:delete']"
-                type="text"
-                size="small"
-                title="删除"
-                :disabled="record.disabled"
-              >
-                <template #icon><icon-delete /></template>删除
-              </a-button>
-            </a-popconfirm>
-          </template>
-        </a-table-column>
-      </template>
-    </a-table>
-
-    <!-- 表单区域 -->
-    <a-modal
-      :title="title"
-      :visible="visible"
-      :mask-closable="false"
-      :esc-to-close="false"
-      unmount-on-close
-      render-to-body
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <a-form ref="formRef" :model="form" :rules="rules" size="large">
-        <a-form-item label="标签" field="label">
-          <a-input
-            v-model="form.label"
-            placeholder="请输入标签"
-            :max-length="30"
-          />
-        </a-form-item>
-        <a-form-item label="值" field="value">
-          <a-input
-            v-model="form.value"
-            placeholder="请输入值"
-            :max-length="30"
-          />
-        </a-form-item>
-        <a-form-item label="标签颜色" field="color">
-          <a-auto-complete
-            v-model="form.color"
-            :data="colors"
-            placeholder="请选择或输入标签颜色"
-            :max-length="30"
-            allow-clear
-          >
-            <template #option="{ data }">
-              <a-tag v-if="data.value === 'primary'" color="arcoblue">{{
-                data.value
-              }}</a-tag>
-              <a-tag v-else-if="data.value === 'success'" color="green">{{
-                data.value
-              }}</a-tag>
-              <a-tag v-else-if="data.value === 'warning'" color="orangered">{{
-                data.value
-              }}</a-tag>
-              <a-tag v-else-if="data.value === 'error'" color="red">{{
-                data.value
-              }}</a-tag>
-              <a-tag v-else color="gray">{{ data.value }}</a-tag>
-            </template>
-            <template #suffix>
-              <color-picker v-model:pureColor="form.color" shape="circle" />
-            </template>
-          </a-auto-complete>
-        </a-form-item>
-        <a-form-item label="排序" field="sort">
-          <a-input-number
-            v-model="form.sort"
-            placeholder="请输入排序"
-            :min="1"
-            mode="button"
-          />
-        </a-form-item>
-        <a-form-item label="描述" field="description">
-          <a-textarea
-            v-model="form.description"
-            :max-length="200"
-            placeholder="请输入描述"
-            :auto-size="{
-              minRows: 3,
-            }"
-            show-word-limit
-          />
-        </a-form-item>
-      </a-form>
-    </a-modal>
-  </div>
-</template>
-
 <script lang="ts" setup>
   import {
     DataRecord,
@@ -337,6 +167,176 @@
     name: 'DictItem',
   };
 </script>
+
+<template>
+  <div class="app-container">
+    <!-- 头部区域 -->
+    <div style="margin-bottom: 18px">
+      <a-row>
+        <a-col :span="18" />
+        <a-col :span="6" style="display: flex; justify-content: end">
+          <a-button
+            v-permission="['system:dictItem:add']"
+            type="primary"
+            :disabled="!dictId"
+            :title="!dictId ? '请先点击字典' : ''"
+            @click="toAdd"
+          >
+            <template #icon><icon-plus /></template>新增
+          </a-button>
+        </a-col>
+      </a-row>
+    </div>
+
+    <!-- 列表区域 -->
+    <a-table
+      ref="tableRef"
+      row-key="id"
+      :data="dictId ? dataList : []"
+      :loading="loading"
+      :pagination="{
+        showTotal: true,
+        showPageSize: true,
+        total: total,
+        current: queryParams.page,
+      }"
+      :bordered="false"
+      column-resizable
+      stripe
+      size="large"
+      @page-change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
+    >
+      <template #empty>
+        <a-empty v-if="!dictId">点击字典查看详情</a-empty>
+        <a-empty v-else>暂无数据</a-empty>
+      </template>
+      <template #columns>
+        <a-table-column title="标签" align="center">
+          <template #cell="{ record }">
+            <dict-tag :value="record.value" :dict="dataList" />
+          </template>
+        </a-table-column>
+        <a-table-column title="值" align="center" data-index="value" />
+        <a-table-column title="排序" align="center" data-index="sort" />
+        <a-table-column title="描述" data-index="description" />
+        <a-table-column
+          v-if="
+            checkPermission([
+              'system:dictItem:update',
+              'system:dictItem:delete',
+            ])
+          "
+          title="操作"
+          align="center"
+        >
+          <template #cell="{ record }">
+            <a-button
+              v-permission="['system:dictItem:update']"
+              type="text"
+              size="small"
+              title="修改"
+              @click="toUpdate(record.id)"
+            >
+              <template #icon><icon-edit /></template>修改
+            </a-button>
+            <a-popconfirm
+              content="是否确定删除该数据？"
+              type="warning"
+              @ok="handleDelete([record.id])"
+            >
+              <a-button
+                v-permission="['system:dictItem:delete']"
+                type="text"
+                size="small"
+                title="删除"
+                :disabled="record.disabled"
+              >
+                <template #icon><icon-delete /></template>删除
+              </a-button>
+            </a-popconfirm>
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
+
+    <!-- 表单区域 -->
+    <a-modal
+      :title="title"
+      :visible="visible"
+      :mask-closable="false"
+      :esc-to-close="false"
+      unmount-on-close
+      render-to-body
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <a-form ref="formRef" :model="form" :rules="rules" size="large">
+        <a-form-item label="标签" field="label">
+          <a-input
+            v-model="form.label"
+            placeholder="请输入标签"
+            :max-length="30"
+          />
+        </a-form-item>
+        <a-form-item label="值" field="value">
+          <a-input
+            v-model="form.value"
+            placeholder="请输入值"
+            :max-length="30"
+          />
+        </a-form-item>
+        <a-form-item label="标签颜色" field="color">
+          <a-auto-complete
+            v-model="form.color"
+            :data="colors"
+            placeholder="请选择或输入标签颜色"
+            :max-length="30"
+            allow-clear
+          >
+            <template #option="{ data }">
+              <a-tag v-if="data.value === 'primary'" color="arcoblue">{{
+                data.value
+              }}</a-tag>
+              <a-tag v-else-if="data.value === 'success'" color="green">{{
+                data.value
+              }}</a-tag>
+              <a-tag v-else-if="data.value === 'warning'" color="orangered">{{
+                data.value
+              }}</a-tag>
+              <a-tag v-else-if="data.value === 'error'" color="red">{{
+                data.value
+              }}</a-tag>
+              <a-tag v-else color="gray">{{ data.value }}</a-tag>
+            </template>
+            <template #suffix>
+              <color-picker v-model:pureColor="form.color" shape="circle" />
+            </template>
+          </a-auto-complete>
+        </a-form-item>
+        <a-form-item label="排序" field="sort">
+          <a-input-number
+            v-model="form.sort"
+            placeholder="请输入排序"
+            :min="1"
+            mode="button"
+          />
+        </a-form-item>
+        <a-form-item label="描述" field="description">
+          <a-textarea
+            v-model="form.description"
+            :max-length="200"
+            placeholder="请输入描述"
+            :auto-size="{
+              minRows: 3,
+            }"
+            show-word-limit
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </div>
+</template>
 
 <style scoped lang="less">
   :deep(.vc-color-wrap) {

@@ -1,31 +1,3 @@
-<template>
-  <transition name="slide-dynamic-origin">
-    <div
-      v-show="visible"
-      ref="audioRef"
-      class="audio-preview-wrapper"
-      :style="audioStyle"
-    >
-      <section style="padding: 10px 14px 14px 14px">
-        <div ref="audioHeadRef" class="head">
-          <div class="name">
-            <icon-music :size="16" spin />
-            <span
-              >{{ props.fileInfo?.name }}.{{ props.fileInfo?.extension }}</span
-            >
-          </div>
-          <div class="close-icon" @click="close">
-            <icon-close :size="12" />
-          </div>
-        </div>
-
-        <!-- 音频组件 -->
-        <audio class="audio" :src="audioSrc" controls autoplay></audio>
-      </section>
-    </div>
-  </transition>
-</template>
-
 <script setup lang="ts">
   import { useDraggable, useWindowSize, useElementSize } from '@vueuse/core';
   import type { FileItem } from '@/api/system/file';
@@ -88,6 +60,34 @@
     props.onClose();
   };
 </script>
+
+<template>
+  <transition name="slide-dynamic-origin">
+    <div
+      v-show="visible"
+      ref="audioRef"
+      class="audio-preview-wrapper"
+      :style="audioStyle"
+    >
+      <section style="padding: 10px 14px 14px 14px">
+        <div ref="audioHeadRef" class="head">
+          <div class="name">
+            <icon-music :size="16" spin />
+            <span
+              >{{ props.fileInfo?.name }}.{{ props.fileInfo?.extension }}</span
+            >
+          </div>
+          <div class="close-icon" @click="close">
+            <icon-close :size="12" />
+          </div>
+        </div>
+
+        <!-- 音频组件 -->
+        <audio class="audio" :src="audioSrc" controls autoplay></audio>
+      </section>
+    </div>
+  </transition>
+</template>
 
 <style lang="less" scoped>
   .audio-preview-wrapper {

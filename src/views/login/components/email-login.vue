@@ -1,43 +1,3 @@
-<template>
-  <a-form
-    ref="formRef"
-    :model="form"
-    :rules="rules"
-    layout="vertical"
-    size="large"
-    class="login-form"
-    @submit="handleLogin"
-  >
-    <a-form-item field="email" hide-label>
-      <a-input
-        v-model="form.email"
-        :placeholder="$t('login.email.placeholder.email')"
-        allow-clear
-      />
-    </a-form-item>
-    <a-form-item field="captcha" hide-label>
-      <a-input
-        v-model="form.captcha"
-        :placeholder="$t('login.email.placeholder.captcha')"
-        :max-length="6"
-        allow-clear
-        style="flex: 1 1"
-      />
-      <a-button
-        class="captcha-btn"
-        :loading="captchaLoading"
-        :disabled="captchaDisable"
-        @click="handleSendCaptcha"
-      >
-        {{ captchaBtnName }}
-      </a-button>
-    </a-form-item>
-    <a-button class="btn" :loading="loading" type="primary" html-type="submit"
-      >{{ $t('login.button') }}
-    </a-button>
-  </a-form>
-</template>
-
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { ValidatedError } from '@arco-design/web-vue';
@@ -157,6 +117,46 @@
     }
   };
 </script>
+
+<template>
+  <a-form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+    layout="vertical"
+    size="large"
+    class="login-form"
+    @submit="handleLogin"
+  >
+    <a-form-item field="email" hide-label>
+      <a-input
+        v-model="form.email"
+        :placeholder="$t('login.email.placeholder.email')"
+        allow-clear
+      />
+    </a-form-item>
+    <a-form-item field="captcha" hide-label>
+      <a-input
+        v-model="form.captcha"
+        :placeholder="$t('login.email.placeholder.captcha')"
+        :max-length="6"
+        allow-clear
+        style="flex: 1 1"
+      />
+      <a-button
+        class="captcha-btn"
+        :loading="captchaLoading"
+        :disabled="captchaDisable"
+        @click="handleSendCaptcha"
+      >
+        {{ captchaBtnName }}
+      </a-button>
+    </a-form-item>
+    <a-button class="btn" :loading="loading" type="primary" html-type="submit"
+      >{{ $t('login.button') }}
+    </a-button>
+  </a-form>
+</template>
 
 <style lang="less" scoped>
   .login-form {

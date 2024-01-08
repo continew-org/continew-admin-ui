@@ -1,3 +1,255 @@
+<script lang="ts" setup>
+  import { useClipboard } from '@vueuse/core';
+  import { Codemirror } from 'vue-codemirror';
+  import { java } from '@codemirror/lang-java';
+  import { javascript } from '@codemirror/lang-javascript';
+
+  import {
+    TableRecord,
+    TableParam,
+    FieldConfigRecord,
+    GenConfigRecord,
+    listTable,
+    listFieldConfig,
+    getGenConfig,
+    GeneratorConfigRecord,
+    saveConfig,
+    GeneratePreviewRecord,
+    preview,
+    generate,
+  } from '@/api/tool/generator';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { form_type_enum, query_type_enum } = proxy.useDict(
+    'form_type_enum',
+    'query_type_enum',
+  );
+
+  const { copy, copied } = useClipboard();
+  const extensions = [java(), javascript()];
+  const tableList = ref<TableRecord[]>([]);
+  const fieldConfigList = ref<FieldConfigRecord[]>([]);
+  const total = ref(0);
+  const title = ref('');
+  const showQuery = ref(true);
+  const loading = ref(false);
+  const visible = ref(false);
+  const fieldConfigLoading = ref(false);
+  const copyCodeContent = ref();
+  const generatePreviewList = ref<GeneratePreviewRecord[]>([]);
+  const previewVisible = ref(false);
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      tableName: undefined,
+      page: 1,
+      size: 10,
+    },
+    // 表单数据
+    form: {} as GenConfigRecord,
+    // 代码生成配置数据
+    config: {} as GeneratorConfigRecord,
+    // 表单验证规则
+    rules: {
+      author: [{ required: true, message: '请输入作者名称' }],
+      moduleName: [{ required: true, message: '请输入所属模块' }],
+      packageName: [{ required: true, message: '请输入模块包名' }],
+      businessName: [{ required: true, message: '请输入业务名称' }],
+    },
+  });
+  const { queryParams, form, rules, config } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: TableParam = { ...queryParams.value }) => {
+    loading.value = true;
+    listTable(params)
+      .then((res) => {
+        tableList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 打开配置对话框
+   *
+   * @param tableName 表名称
+   */
+  const toConfig = (tableName: string) => {
+    let tableComment = tableList.value.filter(
+      (t) => t.tableName === tableName,
+    )[0].comment;
+    tableComment = tableComment ? `（${tableComment}）` : ' ';
+    title.value = `${tableName}${tableComment}配置`;
+    visible.value = true;
+    // 查询字段配置
+    getFieldConfig(tableName, false);
+    // 查询生成配置
+    getGenConfig(tableName).then((res) => {
+      form.value = res.data;
+      form.value.isOverride = false;
+    });
+  };
+
+  /**
+   * 同步
+   *
+   * @param tableName 表名称
+   */
+  const handleRefresh = (tableName: string) => {
+    getFieldConfig(tableName, true);
+  };
+
+  /**
+   * 查询字段配置
+   *
+   * @param tableName 表名称
+   * @param requireSync 是否需要同步
+   */
+  const getFieldConfig = (tableName: string, requireSync: boolean) => {
+    fieldConfigLoading.value = true;
+    listFieldConfig(tableName, requireSync)
+      .then((res) => {
+        fieldConfigList.value = res.data;
+      })
+      .finally(() => {
+        fieldConfigLoading.value = false;
+      });
+  };
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        config.value.fieldConfigs = fieldConfigList.value;
+        config.value.genConfig = form.value;
+        saveConfig(form.value.tableName, config.value).then((res) => {
+          handleCancel();
+          getList();
+          proxy.$message.success(res.msg);
+        });
+      }
+    });
+  };
+
+  /**
+   * 关闭配置
+   */
+  const handleCancel = () => {
+    visible.value = false;
+    proxy.$refs.formRef?.resetFields();
+    fieldConfigList.value = [];
+  };
+
+  /**
+   * 生成预览
+   *
+   * @param tableName 表名称
+   */
+  const handlePreview = (tableName: string) => {
+    preview(tableName).then((res) => {
+      generatePreviewList.value = res.data;
+      copyCodeContent.value = generatePreviewList.value[0].content;
+      previewVisible.value = true;
+    });
+  };
+
+  /**
+   * 关闭预览
+   */
+  const handlePreviewCancel = () => {
+    generatePreviewList.value = [];
+    copyCodeContent.value = '';
+    previewVisible.value = false;
+  };
+
+  /**
+   * 点击 Tab
+   *
+   * @param key Tab 键
+   */
+  const handleTabClick = (key: any) => {
+    copyCodeContent.value = generatePreviewList.value.filter(
+      (p) => p.fileName === key,
+    )[0].content;
+  };
+
+  /**
+   * 复制代码
+   *
+   */
+  const handleCopy = () => {
+    copy(copyCodeContent.value);
+  };
+  watch(copied, () => {
+    if (copied.value) {
+      proxy.$message.success('复制成功');
+    }
+  });
+
+  /**
+   * 生成代码
+   *
+   * @param tableName 表名称
+   */
+  const handleGenerate = (tableName: string) => {
+    generate(tableName).then((res) => {
+      proxy.$message.success(res.msg);
+    });
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'Generator',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.tool', 'menu.tool.generator.list']" />
@@ -313,258 +565,6 @@
     </a-modal>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { useClipboard } from '@vueuse/core';
-  import { Codemirror } from 'vue-codemirror';
-  import { java } from '@codemirror/lang-java';
-  import { javascript } from '@codemirror/lang-javascript';
-
-  import {
-    TableRecord,
-    TableParam,
-    FieldConfigRecord,
-    GenConfigRecord,
-    listTable,
-    listFieldConfig,
-    getGenConfig,
-    GeneratorConfigRecord,
-    saveConfig,
-    GeneratePreviewRecord,
-    preview,
-    generate,
-  } from '@/api/tool/generator';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { form_type_enum, query_type_enum } = proxy.useDict(
-    'form_type_enum',
-    'query_type_enum',
-  );
-
-  const { copy, copied } = useClipboard();
-  const extensions = [java(), javascript()];
-  const tableList = ref<TableRecord[]>([]);
-  const fieldConfigList = ref<FieldConfigRecord[]>([]);
-  const total = ref(0);
-  const title = ref('');
-  const showQuery = ref(true);
-  const loading = ref(false);
-  const visible = ref(false);
-  const fieldConfigLoading = ref(false);
-  const copyCodeContent = ref();
-  const generatePreviewList = ref<GeneratePreviewRecord[]>([]);
-  const previewVisible = ref(false);
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      tableName: undefined,
-      page: 1,
-      size: 10,
-    },
-    // 表单数据
-    form: {} as GenConfigRecord,
-    // 代码生成配置数据
-    config: {} as GeneratorConfigRecord,
-    // 表单验证规则
-    rules: {
-      author: [{ required: true, message: '请输入作者名称' }],
-      moduleName: [{ required: true, message: '请输入所属模块' }],
-      packageName: [{ required: true, message: '请输入模块包名' }],
-      businessName: [{ required: true, message: '请输入业务名称' }],
-    },
-  });
-  const { queryParams, form, rules, config } = toRefs(data);
-
-  /**
-   * 查询列表
-   *
-   * @param params 查询参数
-   */
-  const getList = (params: TableParam = { ...queryParams.value }) => {
-    loading.value = true;
-    listTable(params)
-      .then((res) => {
-        tableList.value = res.data.list;
-        total.value = res.data.total;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 打开配置对话框
-   *
-   * @param tableName 表名称
-   */
-  const toConfig = (tableName: string) => {
-    let tableComment = tableList.value.filter(
-      (t) => t.tableName === tableName,
-    )[0].comment;
-    tableComment = tableComment ? `（${tableComment}）` : ' ';
-    title.value = `${tableName}${tableComment}配置`;
-    visible.value = true;
-    // 查询字段配置
-    getFieldConfig(tableName, false);
-    // 查询生成配置
-    getGenConfig(tableName).then((res) => {
-      form.value = res.data;
-      form.value.isOverride = false;
-    });
-  };
-
-  /**
-   * 同步
-   *
-   * @param tableName 表名称
-   */
-  const handleRefresh = (tableName: string) => {
-    getFieldConfig(tableName, true);
-  };
-
-  /**
-   * 查询字段配置
-   *
-   * @param tableName 表名称
-   * @param requireSync 是否需要同步
-   */
-  const getFieldConfig = (tableName: string, requireSync: boolean) => {
-    fieldConfigLoading.value = true;
-    listFieldConfig(tableName, requireSync)
-      .then((res) => {
-        fieldConfigList.value = res.data;
-      })
-      .finally(() => {
-        fieldConfigLoading.value = false;
-      });
-  };
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        config.value.fieldConfigs = fieldConfigList.value;
-        config.value.genConfig = form.value;
-        saveConfig(form.value.tableName, config.value).then((res) => {
-          handleCancel();
-          getList();
-          proxy.$message.success(res.msg);
-        });
-      }
-    });
-  };
-
-  /**
-   * 关闭配置
-   */
-  const handleCancel = () => {
-    visible.value = false;
-    proxy.$refs.formRef?.resetFields();
-    fieldConfigList.value = [];
-  };
-
-  /**
-   * 生成预览
-   *
-   * @param tableName 表名称
-   */
-  const handlePreview = (tableName: string) => {
-    preview(tableName).then((res) => {
-      generatePreviewList.value = res.data;
-      copyCodeContent.value = generatePreviewList.value[0].content;
-      previewVisible.value = true;
-    });
-  };
-
-  /**
-   * 关闭预览
-   */
-  const handlePreviewCancel = () => {
-    generatePreviewList.value = [];
-    copyCodeContent.value = '';
-    previewVisible.value = false;
-  };
-
-  /**
-   * 点击 Tab
-   *
-   * @param key Tab 键
-   */
-  const handleTabClick = (key: any) => {
-    copyCodeContent.value = generatePreviewList.value.filter(
-      (p) => p.fileName === key,
-    )[0].content;
-  };
-
-  /**
-   * 复制代码
-   *
-   */
-  const handleCopy = () => {
-    copy(copyCodeContent.value);
-  };
-  watch(copied, () => {
-    if (copied.value) {
-      proxy.$message.success('复制成功');
-    }
-  });
-
-  /**
-   * 生成代码
-   *
-   * @param tableName 表名称
-   */
-  const handleGenerate = (tableName: string) => {
-    generate(tableName).then((res) => {
-      proxy.$message.success(res.msg);
-    });
-  };
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
-   * 切换页码
-   *
-   * @param current 页码
-   */
-  const handlePageChange = (current: number) => {
-    queryParams.value.page = current;
-    getList();
-  };
-
-  /**
-   * 切换每页条数
-   *
-   * @param pageSize 每页条数
-   */
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.value.size = pageSize;
-    getList();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'Generator',
-  };
-</script>
 
 <style scoped lang="less">
   :deep(.arco-tabs-content) {

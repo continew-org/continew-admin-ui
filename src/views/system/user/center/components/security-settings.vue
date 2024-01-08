@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+  import UpdatePwd from './security-settings/update-pwd.vue';
+  import UpdatePhone from './security-settings/update-phone.vue';
+  import UpdateEmail from './security-settings/update-email.vue';
+  import BindSocial from './security-settings/bind-social.vue';
+</script>
+
 <template>
   <a-list :bordered="false">
     <a-list-item>
@@ -14,13 +21,6 @@
     </a-list-item>
   </a-list>
 </template>
-
-<script lang="ts" setup>
-  import UpdatePwd from './security-settings/update-pwd.vue';
-  import UpdatePhone from './security-settings/update-phone.vue';
-  import UpdateEmail from './security-settings/update-email.vue';
-  import BindSocial from './security-settings/bind-social.vue';
-</script>
 
 <style scoped lang="less">
   :deep(.arco-list-item) {

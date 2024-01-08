@@ -1,8 +1,3 @@
-<template>
-  <img v-if="isImage" class="img" :src="props.data.url || ''" alt="" />
-  <SvgIcon v-else :icon-class="getFileImg" style="height: 100%; width: 100%" />
-</template>
-
 <script setup lang="ts">
   import { fileExtendNameIconMap, imageTypeList } from '@/constant/file';
   import type { FileItem } from '@/api/system/file';
@@ -34,6 +29,11 @@
     return fileExtendNameIconMap[props.data.extension.toLowerCase()] || '';
   });
 </script>
+
+<template>
+  <img v-if="isImage" class="img" :src="props.data.url || ''" alt="" />
+  <SvgIcon v-else :icon-class="getFileImg" style="height: 100%; width: 100%" />
+</template>
 
 <style lang="less" scoped>
   img {

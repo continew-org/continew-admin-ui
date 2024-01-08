@@ -1,174 +1,3 @@
-<template>
-  <a-form
-    ref="formRef"
-    layout="vertical"
-    :model="form"
-    :rules="rules"
-    size="large"
-    :disabled="!isEdit"
-  >
-    <a-list class="list-layout" :bordered="false">
-      <a-list-item>
-        <a-form-item class="image-item" hide-label field="favicon">
-          {{ siteFavicon?.name }}
-          <template #extra>
-            {{ siteFavicon?.description }}
-            <br />
-            <a-upload
-              :file-list="faviconFile ? [faviconFile] : []"
-              accept="image/*"
-              :show-file-list="false"
-              :custom-request="handleUploadFavicon"
-              @change="handleChangeFavicon"
-            >
-              <template #upload-button>
-                <div
-                  :class="`arco-upload-list-item${
-                    faviconFile && faviconFile.status === 'error'
-                      ? ' arco-upload-list-item-error'
-                      : ''
-                  }`"
-                >
-                  <div
-                    v-if="faviconFile && faviconFile.url"
-                    class="arco-upload-list-picture custom-upload-avatar favicon"
-                  >
-                    <img :src="faviconFile.url" alt="favicon" />
-                    <div
-                      v-if="isEdit"
-                      class="arco-upload-list-picture-mask favicon"
-                    >
-                      <IconEdit />
-                    </div>
-                  </div>
-                  <div v-else class="arco-upload-picture-card favicon">
-                    <div class="arco-upload-picture-card-text">
-                      <icon-upload />
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </a-upload>
-          </template>
-        </a-form-item>
-      </a-list-item>
-      <a-list-item>
-        <a-form-item class="image-item" hide-label field="site_logo">
-          {{ siteLogo?.name }}
-          <template #extra>
-            {{ siteLogo?.description }}
-            <br />
-            <a-upload
-              :file-list="logoFile ? [logoFile] : []"
-              accept="image/*"
-              :show-file-list="false"
-              :custom-request="handleUploadLogo"
-              @change="handleChangeLogo"
-            >
-              <template #upload-button>
-                <div
-                  :class="`arco-upload-list-item${
-                    logoFile && logoFile.status === 'error'
-                      ? ' arco-upload-list-item-error'
-                      : ''
-                  }`"
-                >
-                  <div
-                    v-if="logoFile && logoFile.url"
-                    class="arco-upload-list-picture custom-upload-avatar logo"
-                  >
-                    <img :src="logoFile.url" alt="Logo" />
-                    <div
-                      v-if="isEdit"
-                      class="arco-upload-list-picture-mask logo"
-                    >
-                      <IconEdit />
-                    </div>
-                  </div>
-                  <div v-else class="arco-upload-picture-card logo">
-                    <div class="arco-upload-picture-card-text">
-                      <icon-upload />
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </a-upload>
-          </template>
-        </a-form-item>
-      </a-list-item>
-      <a-list-item style="padding-top: 13px; border: none">
-        <a-form-item
-          class="input-item"
-          :label="siteTitle?.name"
-          field="site_title"
-        >
-          <a-input
-            v-model="form.site_title"
-            placeholder="请输入网站标题"
-            :max-length="18"
-          />
-        </a-form-item>
-        <a-form-item
-          class="input-item"
-          :label="siteCopyright?.name"
-          field="site_copyright"
-          tooltip="支持HTML标签"
-        >
-          <a-textarea
-            v-model="form.site_copyright"
-            placeholder="请输入版权信息"
-            :auto-size="{
-              minRows: 3,
-            }"
-            show-word-limit
-          />
-        </a-form-item>
-        <div style="margin-top: 20px">
-          <a-space>
-            <a-button
-              v-if="!isEdit"
-              v-permission="['system:config:reset']"
-              @click="toResetValue"
-            >
-              <template #icon><icon-undo /></template>恢复默认
-            </a-button>
-            <a-button
-              v-if="!isEdit"
-              v-permission="['system:config:update']"
-              type="primary"
-              @click="toEdit"
-            >
-              <template #icon><icon-edit /></template>修改
-            </a-button>
-            <a-button
-              v-if="isEdit"
-              v-permission="['system:config:update']"
-              type="primary"
-              @click="handleSave"
-            >
-              <template #icon><icon-save /></template>保存
-            </a-button>
-            <a-button
-              v-if="isEdit"
-              v-permission="['system:config:update']"
-              @click="reset"
-            >
-              <template #icon><icon-refresh /></template>重置
-            </a-button>
-            <a-button
-              v-if="isEdit"
-              v-permission="['system:config:update']"
-              @click="handleCancel"
-            >
-              <template #icon><icon-undo /></template>取消
-            </a-button>
-          </a-space>
-        </div>
-      </a-list-item>
-    </a-list>
-  </a-form>
-</template>
-
 <script lang="ts" setup>
   import { FileItem, RequestOption } from '@arco-design/web-vue';
   import {
@@ -398,6 +227,177 @@
     isEdit.value = true;
   };
 </script>
+
+<template>
+  <a-form
+    ref="formRef"
+    layout="vertical"
+    :model="form"
+    :rules="rules"
+    size="large"
+    :disabled="!isEdit"
+  >
+    <a-list class="list-layout" :bordered="false">
+      <a-list-item>
+        <a-form-item class="image-item" hide-label field="favicon">
+          {{ siteFavicon?.name }}
+          <template #extra>
+            {{ siteFavicon?.description }}
+            <br />
+            <a-upload
+              :file-list="faviconFile ? [faviconFile] : []"
+              accept="image/*"
+              :show-file-list="false"
+              :custom-request="handleUploadFavicon"
+              @change="handleChangeFavicon"
+            >
+              <template #upload-button>
+                <div
+                  :class="`arco-upload-list-item${
+                    faviconFile && faviconFile.status === 'error'
+                      ? ' arco-upload-list-item-error'
+                      : ''
+                  }`"
+                >
+                  <div
+                    v-if="faviconFile && faviconFile.url"
+                    class="arco-upload-list-picture custom-upload-avatar favicon"
+                  >
+                    <img :src="faviconFile.url" alt="favicon" />
+                    <div
+                      v-if="isEdit"
+                      class="arco-upload-list-picture-mask favicon"
+                    >
+                      <IconEdit />
+                    </div>
+                  </div>
+                  <div v-else class="arco-upload-picture-card favicon">
+                    <div class="arco-upload-picture-card-text">
+                      <icon-upload />
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </a-upload>
+          </template>
+        </a-form-item>
+      </a-list-item>
+      <a-list-item>
+        <a-form-item class="image-item" hide-label field="site_logo">
+          {{ siteLogo?.name }}
+          <template #extra>
+            {{ siteLogo?.description }}
+            <br />
+            <a-upload
+              :file-list="logoFile ? [logoFile] : []"
+              accept="image/*"
+              :show-file-list="false"
+              :custom-request="handleUploadLogo"
+              @change="handleChangeLogo"
+            >
+              <template #upload-button>
+                <div
+                  :class="`arco-upload-list-item${
+                    logoFile && logoFile.status === 'error'
+                      ? ' arco-upload-list-item-error'
+                      : ''
+                  }`"
+                >
+                  <div
+                    v-if="logoFile && logoFile.url"
+                    class="arco-upload-list-picture custom-upload-avatar logo"
+                  >
+                    <img :src="logoFile.url" alt="Logo" />
+                    <div
+                      v-if="isEdit"
+                      class="arco-upload-list-picture-mask logo"
+                    >
+                      <IconEdit />
+                    </div>
+                  </div>
+                  <div v-else class="arco-upload-picture-card logo">
+                    <div class="arco-upload-picture-card-text">
+                      <icon-upload />
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </a-upload>
+          </template>
+        </a-form-item>
+      </a-list-item>
+      <a-list-item style="padding-top: 13px; border: none">
+        <a-form-item
+          class="input-item"
+          :label="siteTitle?.name"
+          field="site_title"
+        >
+          <a-input
+            v-model="form.site_title"
+            placeholder="请输入网站标题"
+            :max-length="18"
+          />
+        </a-form-item>
+        <a-form-item
+          class="input-item"
+          :label="siteCopyright?.name"
+          field="site_copyright"
+          tooltip="支持HTML标签"
+        >
+          <a-textarea
+            v-model="form.site_copyright"
+            placeholder="请输入版权信息"
+            :auto-size="{
+              minRows: 3,
+            }"
+            show-word-limit
+          />
+        </a-form-item>
+        <div style="margin-top: 20px">
+          <a-space>
+            <a-button
+              v-if="!isEdit"
+              v-permission="['system:config:reset']"
+              @click="toResetValue"
+            >
+              <template #icon><icon-undo /></template>恢复默认
+            </a-button>
+            <a-button
+              v-if="!isEdit"
+              v-permission="['system:config:update']"
+              type="primary"
+              @click="toEdit"
+            >
+              <template #icon><icon-edit /></template>修改
+            </a-button>
+            <a-button
+              v-if="isEdit"
+              v-permission="['system:config:update']"
+              type="primary"
+              @click="handleSave"
+            >
+              <template #icon><icon-save /></template>保存
+            </a-button>
+            <a-button
+              v-if="isEdit"
+              v-permission="['system:config:update']"
+              @click="reset"
+            >
+              <template #icon><icon-refresh /></template>重置
+            </a-button>
+            <a-button
+              v-if="isEdit"
+              v-permission="['system:config:update']"
+              @click="handleCancel"
+            >
+              <template #icon><icon-undo /></template>取消
+            </a-button>
+          </a-space>
+        </div>
+      </a-list-item>
+    </a-list>
+  </a-form>
+</template>
 
 <style scoped lang="less">
   .logo {

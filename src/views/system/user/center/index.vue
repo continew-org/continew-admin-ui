@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+  import UserPanel from './components/user-panel.vue';
+  import BasicInfo from './components/basic-info.vue';
+  import SecuritySettings from './components/security-settings.vue';
+  import OperationLog from './components/operation-log.vue';
+
+  const route = useRoute();
+  const activeKey = ref('1');
+  const tab = route.query.tab as string;
+
+  onMounted(() => {
+    if (tab === 'security-setting') {
+      activeKey.value = '2';
+    }
+  });
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'UserCenter',
+  };
+</script>
+
 <template>
   <div class="container">
     <Breadcrumb :items="['menu.user.center']" />
@@ -27,29 +50,6 @@
     </a-row>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import UserPanel from './components/user-panel.vue';
-  import BasicInfo from './components/basic-info.vue';
-  import SecuritySettings from './components/security-settings.vue';
-  import OperationLog from './components/operation-log.vue';
-
-  const route = useRoute();
-  const activeKey = ref('1');
-  const tab = route.query.tab as string;
-
-  onMounted(() => {
-    if (tab === 'security-setting') {
-      activeKey.value = '2';
-    }
-  });
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'UserCenter',
-  };
-</script>
 
 <style scoped lang="less">
   .container {

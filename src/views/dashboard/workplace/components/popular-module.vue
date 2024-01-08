@@ -1,3 +1,28 @@
+<script lang="ts" setup>
+  import useLoading from '@/hooks/loading';
+  import { listPopularModule } from '@/api/common/dashboard';
+  import type { TableData } from '@arco-design/web-vue/es/table/interface';
+
+  const { loading, setLoading } = useLoading();
+  const dataList = ref<TableData[]>();
+
+  /**
+   * 查询热门模块列表
+   */
+  const getList = async () => {
+    try {
+      setLoading(true);
+      const { data } = await listPopularModule();
+      dataList.value = data;
+    } catch (err) {
+      // you can report use errorHandler or other
+    } finally {
+      setLoading(false);
+    }
+  };
+  getList();
+</script>
+
 <template>
   <a-spin :loading="loading" style="width: 100%">
     <a-card
@@ -59,31 +84,6 @@
     </a-card>
   </a-spin>
 </template>
-
-<script lang="ts" setup>
-  import useLoading from '@/hooks/loading';
-  import { listPopularModule } from '@/api/common/dashboard';
-  import type { TableData } from '@arco-design/web-vue/es/table/interface';
-
-  const { loading, setLoading } = useLoading();
-  const dataList = ref<TableData[]>();
-
-  /**
-   * 查询热门模块列表
-   */
-  const getList = async () => {
-    try {
-      setLoading(true);
-      const { data } = await listPopularModule();
-      dataList.value = data;
-    } catch (err) {
-      // you can report use errorHandler or other
-    } finally {
-      setLoading(false);
-    }
-  };
-  getList();
-</script>
 
 <style scoped lang="less">
   .general-card {

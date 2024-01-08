@@ -1,57 +1,3 @@
-<template>
-  <a-form
-    ref="formRef"
-    :model="form"
-    :rules="rules"
-    layout="vertical"
-    size="large"
-    class="login-form"
-    @submit="handleLogin"
-  >
-    <a-form-item field="phone" hide-label>
-      <a-select :options="['+86']" style="flex: 1 1" default-value="+86" />
-      <a-input
-        v-model="form.phone"
-        :placeholder="$t('login.phone.placeholder.phone')"
-        :max-length="11"
-        allow-clear
-      />
-    </a-form-item>
-    <a-form-item field="captcha" hide-label>
-      <a-input
-        v-model="form.captcha"
-        :placeholder="$t('login.phone.placeholder.captcha')"
-        :max-length="4"
-        allow-clear
-        style="flex: 1 1"
-      />
-      <a-button
-        class="captcha-btn"
-        :loading="captchaLoading"
-        :disabled="captchaDisable"
-        @click="handleOpenBehaviorCaptcha"
-      >
-        {{ captchaBtnName }}
-      </a-button>
-    </a-form-item>
-    <a-button
-      class="btn"
-      :loading="loading"
-      type="primary"
-      html-type="submit"
-      :disabled="captchaDisable"
-      >{{ $t('login.button') }}（演示不开放）
-    </a-button>
-  </a-form>
-  <Verify
-    ref="verifyRef"
-    :mode="captchaMode"
-    :captcha-type="captchaType"
-    :img-size="{ width: '330px', height: '155px' }"
-    @success="handleSendCaptcha"
-  ></Verify>
-</template>
-
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { ValidatedError } from '@arco-design/web-vue';
@@ -189,6 +135,60 @@
     }
   };
 </script>
+
+<template>
+  <a-form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+    layout="vertical"
+    size="large"
+    class="login-form"
+    @submit="handleLogin"
+  >
+    <a-form-item field="phone" hide-label>
+      <a-select :options="['+86']" style="flex: 1 1" default-value="+86" />
+      <a-input
+        v-model="form.phone"
+        :placeholder="$t('login.phone.placeholder.phone')"
+        :max-length="11"
+        allow-clear
+      />
+    </a-form-item>
+    <a-form-item field="captcha" hide-label>
+      <a-input
+        v-model="form.captcha"
+        :placeholder="$t('login.phone.placeholder.captcha')"
+        :max-length="4"
+        allow-clear
+        style="flex: 1 1"
+      />
+      <a-button
+        class="captcha-btn"
+        :loading="captchaLoading"
+        :disabled="captchaDisable"
+        @click="handleOpenBehaviorCaptcha"
+      >
+        {{ captchaBtnName }}
+      </a-button>
+    </a-form-item>
+    <a-button
+      class="btn"
+      :loading="loading"
+      type="primary"
+      html-type="submit"
+      :disabled="captchaDisable"
+      >{{ $t('login.button') }}（演示不开放）
+    </a-button>
+  </a-form>
+  <Verify
+    ref="verifyRef"
+    :mode="captchaMode"
+    :captcha-type="captchaType"
+    :img-size="{ width: '330px', height: '155px' }"
+    @success="handleSendCaptcha"
+  ></Verify>
+</template>
 
 <style lang="less" scoped>
   .login-form {

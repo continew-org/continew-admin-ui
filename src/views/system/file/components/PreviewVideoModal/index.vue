@@ -1,16 +1,3 @@
-<template>
-  <a-modal
-    v-model:visible="visible"
-    :title="title"
-    width="auto"
-    :footer="false"
-    draggable
-    @close="close"
-  >
-    <div id="videoId"></div>
-  </a-modal>
-</template>
-
 <script setup lang="ts">
   import Player from 'xgplayer';
   import type { FileItem } from '@/api/system/file';
@@ -46,3 +33,16 @@
     props.onClose();
   };
 </script>
+
+<template>
+  <a-modal
+    v-model:visible="visible"
+    :title="title"
+    width="auto"
+    :footer="false"
+    draggable
+    @close="close"
+  >
+    <div id="videoId"></div>
+  </a-modal>
+</template>

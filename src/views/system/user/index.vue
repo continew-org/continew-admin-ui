@@ -1,3 +1,424 @@
+<script lang="ts" setup>
+  import { TreeNodeData } from '@arco-design/web-vue';
+  import {
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
+    resetPassword,
+    updateUserRole,
+  } from '@/api/system/user';
+  import { listDeptTree, listRoleDict } from '@/api/common';
+  import { LabelValueState } from '@/store/modules/dict/types';
+  import getAvatar from '@/utils/avatar';
+  import checkPermission from '@/utils/permission';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
+
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({});
+  const total = ref(0);
+  const ids = ref<Array<number>>([]);
+  const title = ref('');
+  const single = ref(true);
+  const multiple = ref(true);
+  const showQuery = ref(true);
+  const loading = ref(false);
+  const detailLoading = ref(false);
+  const exportLoading = ref(false);
+  const visible = ref(false);
+  const userRoleVisible = ref(false);
+  const detailVisible = ref(false);
+  const deptLoading = ref(false);
+  const roleLoading = ref(false);
+  const deptOptions = ref<TreeNodeData[]>([]);
+  const roleOptions = ref<LabelValueState[]>([]);
+  const deptTree = ref<TreeNodeData[]>([]);
+  const deptName = ref('');
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      username: undefined,
+      status: undefined,
+      createTime: undefined,
+      deptId: undefined,
+      page: 1,
+      size: 10,
+      sort: ['createTime,desc'],
+    },
+    // 表单数据
+    form: {} as DataRecord,
+    // 表单验证规则
+    rules: {
+      username: [{ required: true, message: '请输入用户名' }],
+      nickname: [{ required: true, message: '请输入昵称' }],
+      deptId: [{ required: true, message: '请选择所属部门' }],
+      roleIds: [{ required: true, message: '请选择所属角色' }],
+    },
+  });
+  const { queryParams, form, rules } = toRefs(data);
+
+  /**
+   * 查询部门树
+   *
+   * @param name 名称
+   */
+  const getDeptTree = (name: string) => {
+    listDeptTree({ name }).then((res) => {
+      deptTree.value = res.data;
+      setTimeout(() => {
+        proxy.$refs.deptTreeRef.expandAll();
+      }, 0);
+    });
+  };
+  getDeptTree('');
+  watch(deptName, (val) => {
+    getDeptTree(val);
+  });
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: ListParam = { ...queryParams.value }) => {
+    loading.value = true;
+    list(params)
+      .then((res) => {
+        dataList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 打开新增对话框
+   */
+  const toAdd = () => {
+    reset();
+    getDeptOptions();
+    getRoleOptions();
+    title.value = '新增用户';
+    visible.value = true;
+  };
+
+  /**
+   * 打开修改对话框
+   *
+   * @param id ID
+   */
+  const toUpdate = (id: number) => {
+    reset();
+    getDeptOptions();
+    getRoleOptions();
+    get(id).then((res) => {
+      form.value = res.data;
+      title.value = '修改用户';
+      visible.value = true;
+    });
+  };
+
+  /**
+   * 打开分配角色对话框
+   *
+   * @param id ID
+   */
+  const toUpdateRole = (id: number) => {
+    reset();
+    getRoleOptions();
+    get(id).then((res) => {
+      form.value = res.data;
+      userRoleVisible.value = true;
+    });
+  };
+
+  /**
+   * 查询部门列表
+   */
+  const getDeptOptions = () => {
+    deptLoading.value = true;
+    listDeptTree({})
+      .then((res) => {
+        deptOptions.value = res.data;
+      })
+      .finally(() => {
+        deptLoading.value = false;
+      });
+  };
+
+  /**
+   * 查询角色列表
+   */
+  const getRoleOptions = () => {
+    roleLoading.value = true;
+    listRoleDict({})
+      .then((res) => {
+        roleOptions.value = res.data;
+      })
+      .finally(() => {
+        roleLoading.value = false;
+      });
+  };
+
+  /**
+   * 重置表单
+   */
+  const reset = () => {
+    form.value = {
+      gender: 1,
+    };
+    proxy.$refs.formRef?.resetFields();
+  };
+
+  /**
+   * 取消
+   */
+  const handleCancel = () => {
+    visible.value = false;
+    userRoleVisible.value = false;
+    proxy.$refs.formRef?.resetFields();
+    proxy.$refs.userRoleFormRef?.resetFields();
+  };
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        if (form.value.id !== undefined) {
+          update(form.value, form.value.id).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        } else {
+          add(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        }
+      }
+    });
+  };
+
+  /**
+   * 修改角色
+   */
+  const handleUpdateRole = () => {
+    proxy.$refs.userRoleFormRef.validate((valid: any) => {
+      if (!valid && form.value.id !== undefined) {
+        updateUserRole({ roleIds: form.value.roleIds }, form.value.id).then(
+          (res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          },
+        );
+      }
+    });
+  };
+
+  /**
+   * 查看详情
+   *
+   * @param id ID
+   */
+  const toDetail = async (id: number) => {
+    if (detailLoading.value) return;
+    detailLoading.value = true;
+    detailVisible.value = true;
+    get(id)
+      .then((res) => {
+        dataDetail.value = res.data;
+      })
+      .finally(() => {
+        detailLoading.value = false;
+      });
+  };
+
+  /**
+   * 关闭详情
+   */
+  const handleDetailCancel = () => {
+    detailVisible.value = false;
+  };
+
+  /**
+   * 批量删除
+   */
+  const handleBatchDelete = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择要删除的数据');
+    } else {
+      proxy.$modal.warning({
+        title: '警告',
+        titleAlign: 'start',
+        content: `是否确定删除所选的${ids.value.length}条数据？`,
+        hideCancel: false,
+        onOk: () => {
+          handleDelete(ids.value);
+        },
+      });
+    }
+  };
+
+  /**
+   * 删除
+   *
+   * @param ids ID 列表
+   */
+  const handleDelete = (ids: Array<number>) => {
+    del(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+      proxy.$refs.tableRef.selectAll(false);
+    });
+  };
+
+  /**
+   * 重置密码
+   *
+   * @param id ID
+   */
+  const handleResetPassword = (id: number) => {
+    resetPassword(id).then((res) => {
+      proxy.$message.success(res.msg);
+    });
+  };
+
+  /**
+   * 已选择的数据行发生改变时触发
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
+    multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 导出
+   */
+  const handleExport = () => {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    proxy
+      .download('/system/user/export', { ...queryParams.value }, '用户数据')
+      .finally(() => {
+        exportLoading.value = false;
+      });
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DataRecord) => {
+    const { id } = record;
+    if (id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      get(id)
+        .then((res) => {
+          res.data.status = record.status;
+          update(res.data, id)
+            .then(() => {
+              proxy.$message.success(`${tip}成功`);
+            })
+            .catch(() => {
+              record.status = record.status === 1 ? 2 : 1;
+            });
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
+  };
+
+  /**
+   * 过滤部门列表
+   *
+   * @param searchValue 搜索值
+   * @param nodeData 节点值
+   */
+  const filterDeptOptions = (searchValue: string, nodeData: TreeNodeData) => {
+    if (nodeData.title) {
+      return (
+        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+      );
+    }
+    return false;
+  };
+
+  /**
+   * 根据选中部门查询
+   *
+   * @param keys 选中节点 key
+   */
+  const handleSelectNode = (keys: Array<any>) => {
+    if (queryParams.value.deptId === keys[0]) {
+      queryParams.value.deptId = undefined;
+      // 如已选中，再次点击则取消选中
+      proxy.$refs.deptTreeRef.selectNode(keys, false);
+    } else {
+      queryParams.value.deptId = keys.length === 1 ? keys[0] : undefined;
+    }
+    handleQuery();
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'User',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.system', 'menu.system.user.list']" />
@@ -512,426 +933,5 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { TreeNodeData } from '@arco-design/web-vue';
-  import {
-    DataRecord,
-    ListParam,
-    list,
-    get,
-    add,
-    update,
-    del,
-    resetPassword,
-    updateUserRole,
-  } from '@/api/system/user';
-  import { listDeptTree, listRoleDict } from '@/api/common';
-  import { LabelValueState } from '@/store/modules/dict/types';
-  import getAvatar from '@/utils/avatar';
-  import checkPermission from '@/utils/permission';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
-
-  const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({});
-  const total = ref(0);
-  const ids = ref<Array<number>>([]);
-  const title = ref('');
-  const single = ref(true);
-  const multiple = ref(true);
-  const showQuery = ref(true);
-  const loading = ref(false);
-  const detailLoading = ref(false);
-  const exportLoading = ref(false);
-  const visible = ref(false);
-  const userRoleVisible = ref(false);
-  const detailVisible = ref(false);
-  const deptLoading = ref(false);
-  const roleLoading = ref(false);
-  const deptOptions = ref<TreeNodeData[]>([]);
-  const roleOptions = ref<LabelValueState[]>([]);
-  const deptTree = ref<TreeNodeData[]>([]);
-  const deptName = ref('');
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      username: undefined,
-      status: undefined,
-      createTime: undefined,
-      deptId: undefined,
-      page: 1,
-      size: 10,
-      sort: ['createTime,desc'],
-    },
-    // 表单数据
-    form: {} as DataRecord,
-    // 表单验证规则
-    rules: {
-      username: [{ required: true, message: '请输入用户名' }],
-      nickname: [{ required: true, message: '请输入昵称' }],
-      deptId: [{ required: true, message: '请选择所属部门' }],
-      roleIds: [{ required: true, message: '请选择所属角色' }],
-    },
-  });
-  const { queryParams, form, rules } = toRefs(data);
-
-  /**
-   * 查询部门树
-   *
-   * @param name 名称
-   */
-  const getDeptTree = (name: string) => {
-    listDeptTree({ name }).then((res) => {
-      deptTree.value = res.data;
-      setTimeout(() => {
-        proxy.$refs.deptTreeRef.expandAll();
-      }, 0);
-    });
-  };
-  getDeptTree('');
-  watch(deptName, (val) => {
-    getDeptTree(val);
-  });
-
-  /**
-   * 查询列表
-   *
-   * @param params 查询参数
-   */
-  const getList = (params: ListParam = { ...queryParams.value }) => {
-    loading.value = true;
-    list(params)
-      .then((res) => {
-        dataList.value = res.data.list;
-        total.value = res.data.total;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 打开新增对话框
-   */
-  const toAdd = () => {
-    reset();
-    getDeptOptions();
-    getRoleOptions();
-    title.value = '新增用户';
-    visible.value = true;
-  };
-
-  /**
-   * 打开修改对话框
-   *
-   * @param id ID
-   */
-  const toUpdate = (id: number) => {
-    reset();
-    getDeptOptions();
-    getRoleOptions();
-    get(id).then((res) => {
-      form.value = res.data;
-      title.value = '修改用户';
-      visible.value = true;
-    });
-  };
-
-  /**
-   * 打开分配角色对话框
-   *
-   * @param id ID
-   */
-  const toUpdateRole = (id: number) => {
-    reset();
-    getRoleOptions();
-    get(id).then((res) => {
-      form.value = res.data;
-      userRoleVisible.value = true;
-    });
-  };
-
-  /**
-   * 查询部门列表
-   */
-  const getDeptOptions = () => {
-    deptLoading.value = true;
-    listDeptTree({})
-      .then((res) => {
-        deptOptions.value = res.data;
-      })
-      .finally(() => {
-        deptLoading.value = false;
-      });
-  };
-
-  /**
-   * 查询角色列表
-   */
-  const getRoleOptions = () => {
-    roleLoading.value = true;
-    listRoleDict({})
-      .then((res) => {
-        roleOptions.value = res.data;
-      })
-      .finally(() => {
-        roleLoading.value = false;
-      });
-  };
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    form.value = {
-      gender: 1,
-    };
-    proxy.$refs.formRef?.resetFields();
-  };
-
-  /**
-   * 取消
-   */
-  const handleCancel = () => {
-    visible.value = false;
-    userRoleVisible.value = false;
-    proxy.$refs.formRef?.resetFields();
-    proxy.$refs.userRoleFormRef?.resetFields();
-  };
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        if (form.value.id !== undefined) {
-          update(form.value, form.value.id).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        } else {
-          add(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        }
-      }
-    });
-  };
-
-  /**
-   * 修改角色
-   */
-  const handleUpdateRole = () => {
-    proxy.$refs.userRoleFormRef.validate((valid: any) => {
-      if (!valid && form.value.id !== undefined) {
-        updateUserRole({ roleIds: form.value.roleIds }, form.value.id).then(
-          (res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          },
-        );
-      }
-    });
-  };
-
-  /**
-   * 查看详情
-   *
-   * @param id ID
-   */
-  const toDetail = async (id: number) => {
-    if (detailLoading.value) return;
-    detailLoading.value = true;
-    detailVisible.value = true;
-    get(id)
-      .then((res) => {
-        dataDetail.value = res.data;
-      })
-      .finally(() => {
-        detailLoading.value = false;
-      });
-  };
-
-  /**
-   * 关闭详情
-   */
-  const handleDetailCancel = () => {
-    detailVisible.value = false;
-  };
-
-  /**
-   * 批量删除
-   */
-  const handleBatchDelete = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择要删除的数据');
-    } else {
-      proxy.$modal.warning({
-        title: '警告',
-        titleAlign: 'start',
-        content: `是否确定删除所选的${ids.value.length}条数据？`,
-        hideCancel: false,
-        onOk: () => {
-          handleDelete(ids.value);
-        },
-      });
-    }
-  };
-
-  /**
-   * 删除
-   *
-   * @param ids ID 列表
-   */
-  const handleDelete = (ids: Array<number>) => {
-    del(ids).then((res) => {
-      proxy.$message.success(res.msg);
-      getList();
-      proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 重置密码
-   *
-   * @param id ID
-   */
-  const handleResetPassword = (id: number) => {
-    resetPassword(id).then((res) => {
-      proxy.$message.success(res.msg);
-    });
-  };
-
-  /**
-   * 已选择的数据行发生改变时触发
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
-  };
-
-  /**
-   * 导出
-   */
-  const handleExport = () => {
-    if (exportLoading.value) return;
-    exportLoading.value = true;
-    proxy
-      .download('/system/user/export', { ...queryParams.value }, '用户数据')
-      .finally(() => {
-        exportLoading.value = false;
-      });
-  };
-
-  /**
-   * 修改状态
-   *
-   * @param record 记录信息
-   */
-  const handleChangeStatus = (record: DataRecord) => {
-    const { id } = record;
-    if (id) {
-      const tip = record.status === 1 ? '启用' : '禁用';
-      get(id)
-        .then((res) => {
-          res.data.status = record.status;
-          update(res.data, id)
-            .then(() => {
-              proxy.$message.success(`${tip}成功`);
-            })
-            .catch(() => {
-              record.status = record.status === 1 ? 2 : 1;
-            });
-        })
-        .catch(() => {
-          record.status = record.status === 1 ? 2 : 1;
-        });
-    }
-  };
-
-  /**
-   * 过滤部门列表
-   *
-   * @param searchValue 搜索值
-   * @param nodeData 节点值
-   */
-  const filterDeptOptions = (searchValue: string, nodeData: TreeNodeData) => {
-    if (nodeData.title) {
-      return (
-        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
-      );
-    }
-    return false;
-  };
-
-  /**
-   * 根据选中部门查询
-   *
-   * @param keys 选中节点 key
-   */
-  const handleSelectNode = (keys: Array<any>) => {
-    if (queryParams.value.deptId === keys[0]) {
-      queryParams.value.deptId = undefined;
-      // 如已选中，再次点击则取消选中
-      proxy.$refs.deptTreeRef.selectNode(keys, false);
-    } else {
-      queryParams.value.deptId = keys.length === 1 ? keys[0] : undefined;
-    }
-    handleQuery();
-  };
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
-   * 切换页码
-   *
-   * @param current 页码
-   */
-  const handlePageChange = (current: number) => {
-    queryParams.value.page = current;
-    getList();
-  };
-
-  /**
-   * 切换每页条数
-   *
-   * @param pageSize 每页条数
-   */
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.value.size = pageSize;
-    getList();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'User',
-  };
-</script>
 
 <style scoped lang="less"></style>

@@ -1,3 +1,15 @@
+<script lang="ts" setup>
+  const router = useRouter();
+  const links = [
+    { text: '用户管理', icon: 'user', path: '/system/user' },
+    { text: '角色管理', icon: 'safe', path: '/system/role' },
+    { text: '部门管理', icon: 'user-group', path: '/system/dept' },
+    { text: '代码生成', icon: 'code', path: '/tool/generator' },
+    { text: '在线用户', icon: 'anonymity', path: '/monitor/online' },
+    { text: '操作日志', icon: 'history', path: '/monitor/log/operation' },
+  ];
+</script>
+
 <template>
   <a-card
     class="general-card"
@@ -20,17 +32,5 @@
     <a-divider class="split-line" style="margin: 0" />
   </a-card>
 </template>
-
-<script lang="ts" setup>
-  const router = useRouter();
-  const links = [
-    { text: '用户管理', icon: 'user', path: '/system/user' },
-    { text: '角色管理', icon: 'safe', path: '/system/role' },
-    { text: '部门管理', icon: 'user-group', path: '/system/dept' },
-    { text: '代码生成', icon: 'code', path: '/tool/generator' },
-    { text: '在线用户', icon: 'anonymity', path: '/monitor/online' },
-    { text: '操作日志', icon: 'history', path: '/monitor/log/operation' },
-  ];
-</script>
 
 <style scoped lang="less"></style>

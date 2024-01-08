@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+  const imageSrc = [
+    `https://doc.charles7c.top/qrcode.jpg?${new Date().getTime()}`,
+  ];
+</script>
+
 <template>
   <a-carousel
     indicator-type="slider"
@@ -16,9 +22,3 @@
     </a-carousel-item>
   </a-carousel>
 </template>
-
-<script lang="ts" setup>
-  const imageSrc = [
-    `https://doc.charles7c.top/qrcode.jpg?${new Date().getTime()}`,
-  ];
-</script>

@@ -1,3 +1,37 @@
+<script setup lang="ts">
+  import type { TableRowSelection } from '@arco-design/web-vue';
+  import type { FileItem } from '@/api/system/file';
+  import FileImg from './FileImg.vue';
+  import FileRightMenu from './FileRightMenu.vue';
+
+  interface Props {
+    data?: FileItem[];
+    isBatchMode?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    data: () => [], // 文件数据
+    isBatchMode: false, // 是否是批量模式
+  });
+
+  const rowSelection: TableRowSelection = reactive({
+    type: 'checkbox',
+    showCheckedAll: true,
+  });
+
+  const emit = defineEmits(['click', 'rightMenuClick']);
+
+  // 行点击事件
+  const handleRowClick = (row: FileItem) => {
+    emit('click', row);
+  };
+
+  // 右键菜单点击事件
+  const handleRightMenuItemClick = (mode: string, item: FileItem) => {
+    emit('rightMenuClick', mode, item);
+  };
+</script>
+
 <template>
   <div class="file-list">
     <a-table
@@ -68,40 +102,6 @@
     </a-table>
   </div>
 </template>
-
-<script setup lang="ts">
-  import type { TableRowSelection } from '@arco-design/web-vue';
-  import type { FileItem } from '@/api/system/file';
-  import FileImg from './FileImg.vue';
-  import FileRightMenu from './FileRightMenu.vue';
-
-  interface Props {
-    data?: FileItem[];
-    isBatchMode?: boolean;
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    data: () => [], // 文件数据
-    isBatchMode: false, // 是否是批量模式
-  });
-
-  const rowSelection: TableRowSelection = reactive({
-    type: 'checkbox',
-    showCheckedAll: true,
-  });
-
-  const emit = defineEmits(['click', 'rightMenuClick']);
-
-  // 行点击事件
-  const handleRowClick = (row: FileItem) => {
-    emit('click', row);
-  };
-
-  // 右键菜单点击事件
-  const handleRightMenuItemClick = (mode: string, item: FileItem) => {
-    emit('rightMenuClick', mode, item);
-  };
-</script>
 
 <style lang="scss">
   .more-option {

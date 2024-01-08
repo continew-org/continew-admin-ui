@@ -1,57 +1,3 @@
-<template>
-  <a-form
-    ref="formRef"
-    :model="form"
-    :rules="rules"
-    layout="vertical"
-    size="large"
-    class="login-form"
-    @submit="handleLogin"
-  >
-    <a-form-item field="username" hide-label>
-      <a-input
-        v-model="form.username"
-        :placeholder="$t('login.account.placeholder.username')"
-        :max-length="64"
-        allow-clear
-      />
-    </a-form-item>
-    <a-form-item field="password" hide-label>
-      <a-input-password
-        v-model="form.password"
-        :placeholder="$t('login.account.placeholder.password')"
-        :max-length="32"
-      />
-    </a-form-item>
-    <a-form-item field="captcha" hide-label>
-      <a-input
-        v-model="form.captcha"
-        :placeholder="$t('login.account.placeholder.captcha')"
-        :max-length="4"
-        allow-clear
-        style="flex: 1 1"
-      />
-      <img
-        :src="captchaImgBase64"
-        :alt="$t('login.captcha')"
-        class="captcha"
-        @click="getCaptcha"
-      />
-    </a-form-item>
-    <div class="remember-me">
-      <a-checkbox
-        :model-value="loginConfig.rememberMe"
-        @change="setRememberMe as any"
-      >
-        {{ $t('login.rememberMe') }}
-      </a-checkbox>
-    </div>
-    <a-button class="btn" :loading="loading" type="primary" html-type="submit"
-      >{{ $t('login.button') }}
-    </a-button>
-  </a-form>
-</template>
-
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { useStorage } from '@vueuse/core';
@@ -161,6 +107,60 @@
     loginConfig.value.rememberMe = value;
   };
 </script>
+
+<template>
+  <a-form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+    layout="vertical"
+    size="large"
+    class="login-form"
+    @submit="handleLogin"
+  >
+    <a-form-item field="username" hide-label>
+      <a-input
+        v-model="form.username"
+        :placeholder="$t('login.account.placeholder.username')"
+        :max-length="64"
+        allow-clear
+      />
+    </a-form-item>
+    <a-form-item field="password" hide-label>
+      <a-input-password
+        v-model="form.password"
+        :placeholder="$t('login.account.placeholder.password')"
+        :max-length="32"
+      />
+    </a-form-item>
+    <a-form-item field="captcha" hide-label>
+      <a-input
+        v-model="form.captcha"
+        :placeholder="$t('login.account.placeholder.captcha')"
+        :max-length="4"
+        allow-clear
+        style="flex: 1 1"
+      />
+      <img
+        :src="captchaImgBase64"
+        :alt="$t('login.captcha')"
+        class="captcha"
+        @click="getCaptcha"
+      />
+    </a-form-item>
+    <div class="remember-me">
+      <a-checkbox
+        :model-value="loginConfig.rememberMe"
+        @change="setRememberMe as any"
+      >
+        {{ $t('login.rememberMe') }}
+      </a-checkbox>
+    </div>
+    <a-button class="btn" :loading="loading" type="primary" html-type="submit"
+      >{{ $t('login.button') }}
+    </a-button>
+  </a-form>
+</template>
 
 <style lang="less" scoped>
   .login-form {

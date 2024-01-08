@@ -1,3 +1,31 @@
+<script lang="ts" setup>
+  import { DashboardTotalRecord, getTotal } from '@/api/common/dashboard';
+  import PvCountIcon from '@/assets/icons/png/popularity.png';
+  import IpCountIcon from '@/assets/icons/png/same-city.png';
+  import TodayPvCountIcon from '@/assets/icons/png/hot.png';
+  import NewPvFromYesterdayIcon from '@/assets/icons/png/data.png';
+
+  const totalData = ref<DashboardTotalRecord>({
+    pvCount: 0,
+    ipCount: 0,
+    todayPvCount: 0,
+    newPvFromYesterday: 0.0,
+  });
+
+  /**
+   * 查询总计信息
+   */
+  const getData = async () => {
+    try {
+      const { data } = await getTotal();
+      totalData.value = data;
+    } catch (err) {
+      // you can report use errorHandler or other
+    }
+  };
+  getData();
+</script>
+
 <template>
   <a-grid :cols="24" :row-gap="16" class="panel">
     <a-grid-item
@@ -98,34 +126,6 @@
     </a-grid-item>
   </a-grid>
 </template>
-
-<script lang="ts" setup>
-  import { DashboardTotalRecord, getTotal } from '@/api/common/dashboard';
-  import PvCountIcon from '@/assets/icons/png/popularity.png';
-  import IpCountIcon from '@/assets/icons/png/same-city.png';
-  import TodayPvCountIcon from '@/assets/icons/png/hot.png';
-  import NewPvFromYesterdayIcon from '@/assets/icons/png/data.png';
-
-  const totalData = ref<DashboardTotalRecord>({
-    pvCount: 0,
-    ipCount: 0,
-    todayPvCount: 0,
-    newPvFromYesterday: 0.0,
-  });
-
-  /**
-   * 查询总计信息
-   */
-  const getData = async () => {
-    try {
-      const { data } = await getTotal();
-      totalData.value = data;
-    } catch (err) {
-      // you can report use errorHandler or other
-    }
-  };
-  getData();
-</script>
 
 <style lang="less" scoped>
   .arco-grid.panel {

@@ -1,3 +1,421 @@
+<script lang="ts" setup>
+  import { TreeNodeData } from '@arco-design/web-vue';
+  import {
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
+  } from '@/api/system/role';
+  import { listMenuTree, listDeptTree } from '@/api/common';
+  import checkPermission from '@/utils/permission';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { data_scope_enum, dis_enable_status_enum } = proxy.useDict(
+    'data_scope_enum',
+    'dis_enable_status_enum',
+  );
+
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({});
+  const total = ref(0);
+  const ids = ref<Array<number>>([]);
+  const title = ref('');
+  const single = ref(true);
+  const multiple = ref(true);
+  const showQuery = ref(true);
+  const loading = ref(false);
+  const detailLoading = ref(false);
+  const exportLoading = ref(false);
+  const visible = ref(false);
+  const detailVisible = ref(false);
+  const menuLoading = ref(false);
+  const deptLoading = ref(false);
+  const menuOptions = ref<TreeNodeData[]>([]);
+  const deptOptions = ref<TreeNodeData[]>([]);
+  const menuExpandAll = ref(false);
+  const deptExpandAll = ref(true);
+  const menuCheckAll = ref(false);
+  const deptCheckAll = ref(false);
+  const menuCheckStrictly = ref(true);
+  const deptCheckStrictly = ref(true);
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      name: undefined,
+      status: undefined,
+      page: 1,
+      size: 10,
+      sort: ['createTime,desc'],
+    },
+    // 表单数据
+    form: {} as DataRecord,
+    // 表单验证规则
+    rules: {
+      name: [
+        { required: true, message: '请输入角色名称' },
+        {
+          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}$/,
+          message:
+            '长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线',
+        },
+      ],
+      code: [
+        { required: true, message: '请输入角色编码' },
+        {
+          match: /^[a-zA-Z][a-zA-Z0-9_]{1,29}$/,
+          message: '长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头',
+        },
+      ],
+      dataScope: [{ required: true, message: '请选择数据权限' }],
+    },
+  });
+  const { queryParams, form, rules } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: ListParam = { ...queryParams.value }) => {
+    loading.value = true;
+    list(params)
+      .then((res) => {
+        dataList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 打开新增对话框
+   */
+  const toAdd = () => {
+    reset();
+    getMenuTree();
+    title.value = '新增角色';
+    visible.value = true;
+    getDeptTree();
+  };
+
+  /**
+   * 打开修改对话框
+   *
+   * @param id ID
+   */
+  const toUpdate = (id: number) => {
+    reset();
+    menuCheckStrictly.value = false;
+    deptCheckStrictly.value = false;
+    getMenuTree();
+    getDeptTree();
+    get(id).then((res) => {
+      form.value = res.data;
+      title.value = '修改角色';
+      visible.value = true;
+    });
+  };
+
+  /**
+   * 查询菜单树
+   */
+  const getMenuTree = () => {
+    if (menuOptions.value.length <= 0) {
+      menuLoading.value = true;
+    }
+    listMenuTree({})
+      .then((res) => {
+        menuOptions.value = res.data;
+      })
+      .finally(() => {
+        menuLoading.value = false;
+      });
+  };
+
+  /**
+   * 查询部门树
+   */
+  const getDeptTree = () => {
+    if (deptOptions.value.length <= 0) {
+      deptLoading.value = true;
+    }
+    listDeptTree({})
+      .then((res) => {
+        deptOptions.value = res.data;
+      })
+      .finally(() => {
+        deptLoading.value = false;
+      });
+  };
+
+  /**
+   * 重置表单
+   */
+  const reset = () => {
+    menuExpandAll.value = false;
+    menuCheckAll.value = false;
+    menuCheckStrictly.value = true;
+    deptExpandAll.value = true;
+    deptCheckAll.value = false;
+    deptCheckStrictly.value = true;
+    proxy.$refs.menuRef?.expandAll(menuExpandAll.value);
+    proxy.$refs.deptRef?.expandAll(deptExpandAll.value);
+    form.value = {
+      dataScope: 4,
+      sort: 999,
+    };
+    proxy.$refs.formRef?.resetFields();
+  };
+
+  /**
+   * 取消
+   */
+  const handleCancel = () => {
+    visible.value = false;
+    proxy.$refs.formRef.resetFields();
+  };
+
+  /**
+   * 获取所有选中的菜单
+   */
+  const getMenuAllCheckedKeys = () => {
+    // 获取目前被选中的菜单
+    const checkedNodes = proxy.$refs.menuRef.getCheckedNodes();
+    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
+
+    // 获取半选中的菜单
+    const halfCheckedNodes = proxy.$refs.menuRef.getHalfCheckedNodes();
+    const halfCheckedKeys = halfCheckedNodes.map(
+      (item: TreeNodeData) => item.key,
+    );
+    // eslint-disable-next-line prefer-spread
+    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+    return checkedKeys;
+  };
+
+  /**
+   * 获取所有选中的部门
+   */
+  const getDeptAllCheckedKeys = () => {
+    if (!proxy.$refs.deptRef) {
+      return [];
+    }
+    // 获取目前被选中的部门
+    const checkedNodes = proxy.$refs.deptRef.getCheckedNodes();
+    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
+
+    // 获取半选中的部门
+    const halfCheckedNodes = proxy.$refs.deptRef.getHalfCheckedNodes();
+    const halfCheckedKeys = halfCheckedNodes.map(
+      (item: TreeNodeData) => item.key,
+    );
+    // eslint-disable-next-line prefer-spread
+    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+    return checkedKeys;
+  };
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        if (form.value.id !== undefined) {
+          form.value.menuIds = getMenuAllCheckedKeys();
+          form.value.deptIds = getDeptAllCheckedKeys();
+          update(form.value, form.value.id).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        } else {
+          form.value.menuIds = getMenuAllCheckedKeys();
+          form.value.deptIds = getDeptAllCheckedKeys();
+          add(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        }
+      }
+    });
+  };
+
+  /**
+   * 查看详情
+   *
+   * @param id ID
+   */
+  const toDetail = async (id: number) => {
+    if (detailLoading.value) return;
+    getMenuTree();
+    getDeptTree();
+    detailLoading.value = true;
+    detailVisible.value = true;
+    get(id)
+      .then((res) => {
+        dataDetail.value = res.data;
+      })
+      .finally(() => {
+        detailLoading.value = false;
+      });
+  };
+
+  /**
+   * 关闭详情
+   */
+  const handleDetailCancel = () => {
+    detailVisible.value = false;
+  };
+
+  /**
+   * 批量删除
+   */
+  const handleBatchDelete = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择要删除的数据');
+    } else {
+      proxy.$modal.warning({
+        title: '警告',
+        titleAlign: 'start',
+        content: `是否确定删除所选的${ids.value.length}条数据？`,
+        hideCancel: false,
+        onOk: () => {
+          handleDelete(ids.value);
+        },
+      });
+    }
+  };
+
+  /**
+   * 删除
+   *
+   * @param ids ID 列表
+   */
+  const handleDelete = (ids: Array<number>) => {
+    del(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+      proxy.$refs.tableRef.selectAll(false);
+    });
+  };
+
+  /**
+   * 已选择的数据行发生改变时触发
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
+    multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 导出
+   */
+  const handleExport = () => {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    proxy
+      .download('/system/role/export', { ...queryParams.value }, '角色数据')
+      .finally(() => {
+        exportLoading.value = false;
+      });
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DataRecord) => {
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      update(record, record.id)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
+  };
+
+  /**
+   * 展开/折叠
+   *
+   * @param type 类型（菜单/部门）
+   */
+  const handleExpandAll = (type: string) => {
+    if (type === 'menu') {
+      proxy.$refs.menuRef.expandAll(menuExpandAll.value);
+    } else if (type === 'dept') {
+      proxy.$refs.deptRef.expandAll(deptExpandAll.value);
+    }
+  };
+
+  /**
+   * 全选/全不选
+   *
+   * @param type 类型（菜单/部门）
+   */
+  const handleCheckAll = (type: string) => {
+    if (type === 'menu') {
+      proxy.$refs.menuRef.checkAll(menuCheckAll.value);
+    } else if (type === 'dept') {
+      proxy.$refs.deptRef.checkAll(deptCheckAll.value);
+    }
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'Role',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.system', 'menu.system.role.list']" />
@@ -420,423 +838,5 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import { TreeNodeData } from '@arco-design/web-vue';
-  import {
-    DataRecord,
-    ListParam,
-    list,
-    get,
-    add,
-    update,
-    del,
-  } from '@/api/system/role';
-  import { listMenuTree, listDeptTree } from '@/api/common';
-  import checkPermission from '@/utils/permission';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { data_scope_enum, dis_enable_status_enum } = proxy.useDict(
-    'data_scope_enum',
-    'dis_enable_status_enum',
-  );
-
-  const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({});
-  const total = ref(0);
-  const ids = ref<Array<number>>([]);
-  const title = ref('');
-  const single = ref(true);
-  const multiple = ref(true);
-  const showQuery = ref(true);
-  const loading = ref(false);
-  const detailLoading = ref(false);
-  const exportLoading = ref(false);
-  const visible = ref(false);
-  const detailVisible = ref(false);
-  const menuLoading = ref(false);
-  const deptLoading = ref(false);
-  const menuOptions = ref<TreeNodeData[]>([]);
-  const deptOptions = ref<TreeNodeData[]>([]);
-  const menuExpandAll = ref(false);
-  const deptExpandAll = ref(true);
-  const menuCheckAll = ref(false);
-  const deptCheckAll = ref(false);
-  const menuCheckStrictly = ref(true);
-  const deptCheckStrictly = ref(true);
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      name: undefined,
-      status: undefined,
-      page: 1,
-      size: 10,
-      sort: ['createTime,desc'],
-    },
-    // 表单数据
-    form: {} as DataRecord,
-    // 表单验证规则
-    rules: {
-      name: [
-        { required: true, message: '请输入角色名称' },
-        {
-          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}$/,
-          message:
-            '长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线',
-        },
-      ],
-      code: [
-        { required: true, message: '请输入角色编码' },
-        {
-          match: /^[a-zA-Z][a-zA-Z0-9_]{1,29}$/,
-          message: '长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头',
-        },
-      ],
-      dataScope: [{ required: true, message: '请选择数据权限' }],
-    },
-  });
-  const { queryParams, form, rules } = toRefs(data);
-
-  /**
-   * 查询列表
-   *
-   * @param params 查询参数
-   */
-  const getList = (params: ListParam = { ...queryParams.value }) => {
-    loading.value = true;
-    list(params)
-      .then((res) => {
-        dataList.value = res.data.list;
-        total.value = res.data.total;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 打开新增对话框
-   */
-  const toAdd = () => {
-    reset();
-    getMenuTree();
-    title.value = '新增角色';
-    visible.value = true;
-    getDeptTree();
-  };
-
-  /**
-   * 打开修改对话框
-   *
-   * @param id ID
-   */
-  const toUpdate = (id: number) => {
-    reset();
-    menuCheckStrictly.value = false;
-    deptCheckStrictly.value = false;
-    getMenuTree();
-    getDeptTree();
-    get(id).then((res) => {
-      form.value = res.data;
-      title.value = '修改角色';
-      visible.value = true;
-    });
-  };
-
-  /**
-   * 查询菜单树
-   */
-  const getMenuTree = () => {
-    if (menuOptions.value.length <= 0) {
-      menuLoading.value = true;
-    }
-    listMenuTree({})
-      .then((res) => {
-        menuOptions.value = res.data;
-      })
-      .finally(() => {
-        menuLoading.value = false;
-      });
-  };
-
-  /**
-   * 查询部门树
-   */
-  const getDeptTree = () => {
-    if (deptOptions.value.length <= 0) {
-      deptLoading.value = true;
-    }
-    listDeptTree({})
-      .then((res) => {
-        deptOptions.value = res.data;
-      })
-      .finally(() => {
-        deptLoading.value = false;
-      });
-  };
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    menuExpandAll.value = false;
-    menuCheckAll.value = false;
-    menuCheckStrictly.value = true;
-    deptExpandAll.value = true;
-    deptCheckAll.value = false;
-    deptCheckStrictly.value = true;
-    proxy.$refs.menuRef?.expandAll(menuExpandAll.value);
-    proxy.$refs.deptRef?.expandAll(deptExpandAll.value);
-    form.value = {
-      dataScope: 4,
-      sort: 999,
-    };
-    proxy.$refs.formRef?.resetFields();
-  };
-
-  /**
-   * 取消
-   */
-  const handleCancel = () => {
-    visible.value = false;
-    proxy.$refs.formRef.resetFields();
-  };
-
-  /**
-   * 获取所有选中的菜单
-   */
-  const getMenuAllCheckedKeys = () => {
-    // 获取目前被选中的菜单
-    const checkedNodes = proxy.$refs.menuRef.getCheckedNodes();
-    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
-
-    // 获取半选中的菜单
-    const halfCheckedNodes = proxy.$refs.menuRef.getHalfCheckedNodes();
-    const halfCheckedKeys = halfCheckedNodes.map(
-      (item: TreeNodeData) => item.key,
-    );
-    // eslint-disable-next-line prefer-spread
-    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-    return checkedKeys;
-  };
-
-  /**
-   * 获取所有选中的部门
-   */
-  const getDeptAllCheckedKeys = () => {
-    if (!proxy.$refs.deptRef) {
-      return [];
-    }
-    // 获取目前被选中的部门
-    const checkedNodes = proxy.$refs.deptRef.getCheckedNodes();
-    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
-
-    // 获取半选中的部门
-    const halfCheckedNodes = proxy.$refs.deptRef.getHalfCheckedNodes();
-    const halfCheckedKeys = halfCheckedNodes.map(
-      (item: TreeNodeData) => item.key,
-    );
-    // eslint-disable-next-line prefer-spread
-    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-    return checkedKeys;
-  };
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        if (form.value.id !== undefined) {
-          form.value.menuIds = getMenuAllCheckedKeys();
-          form.value.deptIds = getDeptAllCheckedKeys();
-          update(form.value, form.value.id).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        } else {
-          form.value.menuIds = getMenuAllCheckedKeys();
-          form.value.deptIds = getDeptAllCheckedKeys();
-          add(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        }
-      }
-    });
-  };
-
-  /**
-   * 查看详情
-   *
-   * @param id ID
-   */
-  const toDetail = async (id: number) => {
-    if (detailLoading.value) return;
-    getMenuTree();
-    getDeptTree();
-    detailLoading.value = true;
-    detailVisible.value = true;
-    get(id)
-      .then((res) => {
-        dataDetail.value = res.data;
-      })
-      .finally(() => {
-        detailLoading.value = false;
-      });
-  };
-
-  /**
-   * 关闭详情
-   */
-  const handleDetailCancel = () => {
-    detailVisible.value = false;
-  };
-
-  /**
-   * 批量删除
-   */
-  const handleBatchDelete = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择要删除的数据');
-    } else {
-      proxy.$modal.warning({
-        title: '警告',
-        titleAlign: 'start',
-        content: `是否确定删除所选的${ids.value.length}条数据？`,
-        hideCancel: false,
-        onOk: () => {
-          handleDelete(ids.value);
-        },
-      });
-    }
-  };
-
-  /**
-   * 删除
-   *
-   * @param ids ID 列表
-   */
-  const handleDelete = (ids: Array<number>) => {
-    del(ids).then((res) => {
-      proxy.$message.success(res.msg);
-      getList();
-      proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 已选择的数据行发生改变时触发
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
-  };
-
-  /**
-   * 导出
-   */
-  const handleExport = () => {
-    if (exportLoading.value) return;
-    exportLoading.value = true;
-    proxy
-      .download('/system/role/export', { ...queryParams.value }, '角色数据')
-      .finally(() => {
-        exportLoading.value = false;
-      });
-  };
-
-  /**
-   * 修改状态
-   *
-   * @param record 记录信息
-   */
-  const handleChangeStatus = (record: DataRecord) => {
-    if (record.id) {
-      const tip = record.status === 1 ? '启用' : '禁用';
-      update(record, record.id)
-        .then(() => {
-          proxy.$message.success(`${tip}成功`);
-        })
-        .catch(() => {
-          record.status = record.status === 1 ? 2 : 1;
-        });
-    }
-  };
-
-  /**
-   * 展开/折叠
-   *
-   * @param type 类型（菜单/部门）
-   */
-  const handleExpandAll = (type: string) => {
-    if (type === 'menu') {
-      proxy.$refs.menuRef.expandAll(menuExpandAll.value);
-    } else if (type === 'dept') {
-      proxy.$refs.deptRef.expandAll(deptExpandAll.value);
-    }
-  };
-
-  /**
-   * 全选/全不选
-   *
-   * @param type 类型（菜单/部门）
-   */
-  const handleCheckAll = (type: string) => {
-    if (type === 'menu') {
-      proxy.$refs.menuRef.checkAll(menuCheckAll.value);
-    } else if (type === 'dept') {
-      proxy.$refs.deptRef.checkAll(deptCheckAll.value);
-    }
-  };
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
-   * 切换页码
-   *
-   * @param current 页码
-   */
-  const handlePageChange = (current: number) => {
-    queryParams.value.page = current;
-    getList();
-  };
-
-  /**
-   * 切换每页条数
-   *
-   * @param pageSize 每页条数
-   */
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.value.size = pageSize;
-    getList();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'Role',
-  };
-</script>
 
 <style scoped lang="less"></style>

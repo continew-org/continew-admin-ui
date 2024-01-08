@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+  import BasicSetting from './components/basic-setting.vue';
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'Config',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.system', 'menu.system.config']" />
@@ -11,16 +21,6 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import BasicSetting from './components/basic-setting.vue';
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'Config',
-  };
-</script>
 
 <style scoped lang="less">
   :deep(.arco-tabs-content) {

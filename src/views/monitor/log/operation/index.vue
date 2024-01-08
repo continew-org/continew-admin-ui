@@ -1,3 +1,92 @@
+<script lang="ts" setup>
+  import {
+    OperationLogParam,
+    OperationLogRecord,
+    listOperationLog,
+  } from '@/api/monitor/log';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { success_failure_status_enum } = proxy.useDict(
+    'success_failure_status_enum'
+  );
+
+  const operationLogList = ref<OperationLogRecord[]>([]);
+  const total = ref(0);
+  const loading = ref(false);
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      description: undefined,
+      status: undefined,
+      createTime: undefined,
+      page: 1,
+      size: 10,
+      sort: ['createTime,desc'],
+    },
+  });
+  const { queryParams } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: OperationLogParam = { ...queryParams.value }) => {
+    loading.value = true;
+    listOperationLog(params)
+      .then((res) => {
+        operationLogList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  getList();
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'OperationLog',
+  };
+</script>
+
 <template>
   <div class="app-container">
     <Breadcrumb :items="['menu.monitor', 'menu.log.operation.list']" />
@@ -91,94 +180,5 @@
     </a-card>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import {
-    OperationLogParam,
-    OperationLogRecord,
-    listOperationLog,
-  } from '@/api/monitor/log';
-
-  const { proxy } = getCurrentInstance() as any;
-  const { success_failure_status_enum } = proxy.useDict(
-    'success_failure_status_enum'
-  );
-
-  const operationLogList = ref<OperationLogRecord[]>([]);
-  const total = ref(0);
-  const loading = ref(false);
-
-  const data = reactive({
-    // 查询参数
-    queryParams: {
-      description: undefined,
-      status: undefined,
-      createTime: undefined,
-      page: 1,
-      size: 10,
-      sort: ['createTime,desc'],
-    },
-  });
-  const { queryParams } = toRefs(data);
-
-  /**
-   * 查询列表
-   *
-   * @param params 查询参数
-   */
-  const getList = (params: OperationLogParam = { ...queryParams.value }) => {
-    loading.value = true;
-    listOperationLog(params)
-      .then((res) => {
-        operationLogList.value = res.data.list;
-        total.value = res.data.total;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
-  getList();
-
-  /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList();
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
-   * 切换页码
-   *
-   * @param current 页码
-   */
-  const handlePageChange = (current: number) => {
-    queryParams.value.page = current;
-    getList();
-  };
-
-  /**
-   * 切换每页条数
-   *
-   * @param pageSize 每页条数
-   */
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.value.size = pageSize;
-    getList();
-  };
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'OperationLog',
-  };
-</script>
 
 <style scoped lang="less"></style>

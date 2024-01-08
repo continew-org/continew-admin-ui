@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+  import Banner from './components/banner.vue';
+  import DataPanel from './components/data-panel.vue';
+  import ContentChart from './components/access-trend.vue';
+  import PopularModule from './components/popular-module.vue';
+  import CategoriesPercent from './components/geo-distribution.vue';
+  import RecentlyVisited from './components/recently-visited.vue';
+  import QuickOperation from './components/quick-operation.vue';
+  import Announcement from './components/announcement.vue';
+  import Carousel from './components/carousel.vue';
+  import Docs from './components/docs.vue';
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'Workplace', // If you want the include property of keep-alive to take effect, you must name the component
+  };
+</script>
+
 <template>
   <div class="container">
     <div class="left-side">
@@ -40,25 +59,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-  import Banner from './components/banner.vue';
-  import DataPanel from './components/data-panel.vue';
-  import ContentChart from './components/access-trend.vue';
-  import PopularModule from './components/popular-module.vue';
-  import CategoriesPercent from './components/geo-distribution.vue';
-  import RecentlyVisited from './components/recently-visited.vue';
-  import QuickOperation from './components/quick-operation.vue';
-  import Announcement from './components/announcement.vue';
-  import Carousel from './components/carousel.vue';
-  import Docs from './components/docs.vue';
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'Workplace', // If you want the include property of keep-alive to take effect, you must name the component
-  };
-</script>
 
 <style lang="less" scoped>
   .container {
