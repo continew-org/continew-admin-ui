@@ -37,26 +37,31 @@ module.exports = {
       },
     },
   },
+  /*
+   * 'off' 或 0：关闭规则
+   * 'warn' 或 1：打开的规则作为警告（不影响代码执行）
+   * 'error' 或 2：规则作为一个错误（代码不能执行，界面报错）
+   */
   rules: {
     'import/prefer-default-export': 'off',
-    'prettier/prettier': 1,
+    'prettier/prettier': 'warn',
     // Vue: Recommended rules to be closed or modify
-    'vue/require-default-prop': 0,
-    'vue/singleline-html-element-content-newline': 0,
-    'vue/max-attributes-per-line': 0,
+    'vue/require-default-prop': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/max-attributes-per-line': 'off',
     // Vue: Add extra rules
-    'vue/custom-event-name-casing': [2, 'camelCase'],
-    'vue/no-v-text': 1,
-    'vue/padding-line-between-blocks': 1,
-    'vue/require-direct-export': 1,
-    'vue/multi-word-component-names': 0,
+    'vue/custom-event-name-casing': ['error', 'camelCase'],
+    'vue/no-v-text': 'warn',
+    'vue/padding-line-between-blocks': 'warn',
+    'vue/require-direct-export': 'warn',
+    'vue/multi-word-component-names': 'off',
     // Allow @ts-ignore comment
-    '@typescript-eslint/ban-ts-comment': 0,
-    '@typescript-eslint/no-unused-vars': 1,
-    '@typescript-eslint/no-empty-function': 1,
-    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-explicit-any': 'off',
     'import/extensions': [
-      2,
+      'error',
       'ignorePackages',
       {
         js: 'never',
@@ -65,10 +70,10 @@ module.exports = {
         tsx: 'never',
       },
     ],
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'no-param-reassign': 0,
-    'prefer-regex-literals': 0,
-    'import/no-extraneous-dependencies': 0,
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-param-reassign': 'off',
+    'prefer-regex-literals': 'off',
+    'import/no-extraneous-dependencies': 'off',
     'camelcase': 'off',
   },
 };
