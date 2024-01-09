@@ -1,4 +1,4 @@
-# ContiNew UI
+# ContiNew Admin UI
 
 <a href="https://github.com/Charles7c/continew-admin-ui/blob/dev/LICENSE" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
@@ -35,9 +35,9 @@
 
 ## 简介
 
-基于 Arco Design Pro 前端模板开发的 ContiNew Admin 前端适配项目。
+ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，持续提供舒适的开发体验，依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续以最新流行技术栈构建，拥抱变化，迭代优化。依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、Liquibase、JustAuth、Easy Excel、Hutool、TypeScript、Vite4 等。
+当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、Liquibase、JustAuth、Easy Excel、Hutool、TypeScript、Vite4 等。
 
 ## 项目源码
 
@@ -51,7 +51,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > **Note**
 > 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://doc.charles7c.top/admin/intro/require.html#任务清单) 和 [更新日志](https://doc.charles7c.top/admin/other/changelog.html)。
 
-- 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
+- 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
 - 部门管理：可配置系统组织架构，树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
