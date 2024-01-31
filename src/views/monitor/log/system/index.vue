@@ -14,6 +14,7 @@
   const { copy, copied } = useClipboard();
   const systemLogList = ref<SystemLogRecord[]>([]);
   const systemLog = ref<SystemLogDetailRecord>({
+    traceId: '',
     requestUrl: '',
     requestMethod: '',
     requestHeaders: '',
@@ -35,6 +36,7 @@
   const data = reactive({
     // 查询参数
     queryParams: {
+      traceId: undefined,
       createTime: undefined,
       page: 1,
       size: 10,
@@ -332,6 +334,18 @@
                 <icon-copy
                   class="copy-btn"
                   @click="handleCopy(systemLog.requestUrl)"
+                />
+              </span>
+            </a-descriptions-item>
+            <a-descriptions-item label="Trace ID" :span="2">
+              <a-skeleton v-if="loading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>
+                {{ systemLog.traceId }}
+                <icon-copy
+                  class="copy-btn"
+                  @click="handleCopy(systemLog.traceId)"
                 />
               </span>
             </a-descriptions-item>

@@ -35,6 +35,7 @@ export interface SystemLogRecord extends LogRecord {
 }
 
 export interface SystemLogDetailRecord extends SystemLogRecord {
+  traceId: string;
   requestHeaders: string;
   requestBody: string;
   responseHeaders: string;

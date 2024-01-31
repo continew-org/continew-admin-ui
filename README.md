@@ -323,7 +323,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 ### 特别鸣谢
 
-- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
+- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://jb.gg/OpenSourceSupport" target="_blank">非商业开源软件开发授权</a> 
 - 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 [Gi Admin Pro](https://gitee.com/lin0716/gi-demo)，致敬各位作者为开源前端模板领域作出的贡献
   - e.g. 扩展于 Gi Admin Pro 项目开源的文件管理组件
