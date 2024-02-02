@@ -68,7 +68,7 @@
               callback(
                 t(
                   'userCenter.securitySettings.updatePwd.form.error.validator.rePassword'
-                )
+                ),
               );
             } else {
               callback();

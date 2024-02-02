@@ -15,6 +15,7 @@
   import { LabelValueState } from '@/store/modules/dict/types';
   import getAvatar from '@/utils/avatar';
   import checkPermission from '@/utils/permission';
+  import { encryptByRsa } from '@/utils/encrypt';
 
   const { proxy } = getCurrentInstance() as any;
   const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
@@ -31,6 +32,7 @@
   const detailLoading = ref(false);
   const exportLoading = ref(false);
   const visible = ref(false);
+  const resetPasswordVisible = ref(false);
   const userRoleVisible = ref(false);
   const detailVisible = ref(false);
   const deptLoading = ref(false);
@@ -57,6 +59,7 @@
     rules: {
       username: [{ required: true, message: '请输入用户名' }],
       nickname: [{ required: true, message: '请输入昵称' }],
+      password: [{ required: true, message: '请输入密码' }],
       deptId: [{ required: true, message: '请选择所属部门' }],
       roleIds: [{ required: true, message: '请选择所属角色' }],
     },
@@ -127,6 +130,17 @@
   };
 
   /**
+   * 打开重置密码对话框
+   *
+   * @param id ID
+   */
+  const toResetPassword = (id: number) => {
+    reset();
+    form.value.id = id;
+    resetPasswordVisible.value = true;
+  };
+
+  /**
    * 打开分配角色对话框
    *
    * @param id ID
@@ -183,8 +197,10 @@
    */
   const handleCancel = () => {
     visible.value = false;
+    resetPasswordVisible.value = false;
     userRoleVisible.value = false;
     proxy.$refs.formRef?.resetFields();
+    proxy.$refs.resetPasswordFormRef?.resetFields();
     proxy.$refs.userRoleFormRef?.resetFields();
   };
 
@@ -201,12 +217,38 @@
             proxy.$message.success(res.msg);
           });
         } else {
-          add(form.value).then((res) => {
+          const rawPassword = form.value.password;
+          if (rawPassword) {
+            form.value.password = encryptByRsa(rawPassword) || '';
+          }
+          add(form.value)
+            .then((res) => {
+              handleCancel();
+              getList();
+              proxy.$message.success(res.msg);
+            })
+            .catch(() => {
+              form.value.password = rawPassword;
+            });
+        }
+      }
+    });
+  };
+
+  /**
+   * 重置密码
+   */
+  const handleResetPassword = () => {
+    proxy.$refs.resetPasswordFormRef.validate((valid: any) => {
+      if (!valid && form.value.id !== undefined) {
+        const newPassword = form.value.password;
+        resetPassword({ newPassword: encryptByRsa(newPassword) }, form.value.id)
+          .then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
-          });
-        }
+          })
+          .catch();
       }
     });
   };
@@ -282,17 +324,6 @@
       proxy.$message.success(res.msg);
       getList();
       proxy.$refs.tableRef.selectAll(false);
-    });
-  };
-
-  /**
-   * 重置密码
-   *
-   * @param id ID
-   */
-  const handleResetPassword = (id: number) => {
-    resetPassword(id).then((res) => {
-      proxy.$message.success(res.msg);
     });
   };
 
@@ -578,7 +609,13 @@
                   }}</a-link>
                 </template>
               </a-table-column>
-              <a-table-column title="昵称" data-index="nickname" :width="115" ellipsis tooltip />
+              <a-table-column
+                title="昵称"
+                data-index="nickname"
+                :width="115"
+                ellipsis
+                tooltip
+              />
               <a-table-column title="性别" align="center">
                 <template #cell="{ record }">
                   <span v-if="record.gender === 1">男</span>
@@ -622,7 +659,12 @@
                   <a-tag v-else color="arcoblue">否</a-tag>
                 </template>
               </a-table-column>
-              <a-table-column title="描述" data-index="description" ellipsis tooltip />
+              <a-table-column
+                title="描述"
+                data-index="description"
+                ellipsis
+                tooltip
+              />
               <a-table-column title="创建人/创建时间" :width="175">
                 <template #cell="{ record }">
                   {{ record.createUserString }}<br />
@@ -668,22 +710,15 @@
                       <template #icon><icon-delete /></template>
                     </a-button>
                   </a-popconfirm>
-                  <a-popconfirm
-                    content="是否确定重置当前用户的密码？"
-                    type="warning"
-                    @ok="handleResetPassword(record.id)"
+                  <a-button
+                    v-permission="['system:user:password:reset']"
+                    type="text"
+                    size="small"
+                    title="重置密码"
+                    @click="toResetPassword(record.id)"
                   >
-                    <a-button
-                      v-permission="['system:user:password:reset']"
-                      type="text"
-                      size="small"
-                      title="重置密码"
-                    >
-                      <template #icon
-                        ><svg-icon icon-class="privacy"
-                      /></template>
-                    </a-button>
-                  </a-popconfirm>
+                    <template #icon><svg-icon icon-class="privacy" /></template>
+                  </a-button>
                   <a-button
                     v-permission="['system:user:role:update']"
                     type="text"
@@ -715,19 +750,11 @@
         @ok="handleOk"
         @cancel="handleCancel"
       >
-        <a-form
-          ref="formRef"
-          :model="form"
-          :rules="rules"
-          :label-col-style="{ width: '84px' }"
-          size="large"
-          layout="inline"
-        >
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
           <a-form-item label="用户名" field="username">
             <a-input
               v-model="form.username"
               placeholder="请输入用户名"
-              style="width: 162px"
               :max-length="64"
             />
           </a-form-item>
@@ -736,7 +763,13 @@
               v-model="form.nickname"
               placeholder="请输入昵称"
               :max-length="30"
-              style="width: 162px"
+            />
+          </a-form-item>
+          <a-form-item v-if="!form.id" label="密码" field="password">
+            <a-input-password
+              v-model="form.password"
+              placeholder="请输入密码"
+              :max-length="32"
             />
           </a-form-item>
           <a-form-item label="邮箱" field="email">
@@ -744,7 +777,6 @@
               v-model="form.email"
               placeholder="请输入邮箱"
               :max-length="255"
-              style="width: 162px"
             />
           </a-form-item>
           <a-form-item label="手机号码" field="phone">
@@ -752,11 +784,10 @@
               v-model="form.phone"
               placeholder="请输入手机号码"
               :max-length="15"
-              style="width: 162px"
             />
           </a-form-item>
           <a-form-item label="性别" field="gender">
-            <a-radio-group v-model="form.gender">
+            <a-radio-group v-model="form.gender" style="width: 197px">
               <a-radio :value="1">男</a-radio>
               <a-radio :value="2">女</a-radio>
               <a-radio :value="0" disabled>未知</a-radio>
@@ -770,7 +801,6 @@
               allow-clear
               allow-search
               :filter-tree-node="filterDeptOptions"
-              style="width: 431px"
             />
           </a-form-item>
           <a-form-item
@@ -786,7 +816,6 @@
               multiple
               allow-clear
               :allow-search="{ retainInputValue: true }"
-              style="width: 431px"
             />
           </a-form-item>
           <a-form-item label="描述" field="description">
@@ -798,7 +827,32 @@
                 minRows: 3,
               }"
               show-word-limit
-              style="width: 431px"
+            />
+          </a-form-item>
+        </a-form>
+      </a-modal>
+
+      <a-modal
+        title="重置密码"
+        :visible="resetPasswordVisible"
+        :mask-closable="false"
+        :esc-to-close="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleResetPassword"
+        @cancel="handleCancel"
+      >
+        <a-form
+          ref="resetPasswordFormRef"
+          :model="form"
+          :rules="rules"
+          size="large"
+        >
+          <a-form-item label="密码" field="password">
+            <a-input-password
+              v-model="form.password"
+              placeholder="请输入密码"
+              :max-length="32"
             />
           </a-form-item>
         </a-form>

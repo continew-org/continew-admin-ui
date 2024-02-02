@@ -6,6 +6,18 @@
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v2.4.0-%23ff3f59.svg" alt="Release" />
 </a>
+<a href="https://cn.vuejs.org/" target="_blank">
+<img src="https://img.shields.io/badge/Vue-3.3.7-%236CB52D.svg?logo=Vue.js" alt="Release" />
+</a>
+<a href="https://arco.design/vue/docs/start" target="_blank">
+<img src="https://img.shields.io/badge/Arco Design-2.53.3-%236CB52D.svg" alt="Release" />
+</a>
+<a href="https://ts.nodejs.cn/" target="_blank">
+<img src="https://img.shields.io/badge/TypeScript-5.3.3-%236CB52D.svg?logo=TypeScript&logoColor=FFF" alt="Release" />
+</a>
+<a href="https://cn.vitejs.dev/" target="_blank">
+<img src="https://img.shields.io/badge/Vite-4.5.1-%236CB52D.svg?logo=Vite&logoColor=FFF" alt="Release" />
+</a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
 </a>
@@ -17,18 +29,6 @@
 </a>
 <a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
-</a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/Vue-3.3.7-%236CB52D.svg" alt="Release" />
-</a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/Arco Design Vue-2.53.3-%236CB52D.svg" alt="Release" />
-</a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/TypeScript-5.3.3-%236CB52D.svg" alt="Release" />
-</a>
-<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/Vite-4.5.1-%236CB52D.svg" alt="Release" />
 </a>
 
 📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）

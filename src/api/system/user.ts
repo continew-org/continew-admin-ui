@@ -7,6 +7,7 @@ export interface DataRecord {
   id?: number;
   username?: string;
   nickname?: string;
+  password?: string;
   gender?: number;
   email?: string;
   phone?: string;
@@ -23,6 +24,10 @@ export interface DataRecord {
   roleIds?: Array<number>;
   roleNames?: Array<string>;
   disabled?: boolean;
+}
+
+export interface UserResetReq {
+  newPassword: string;
 }
 
 export interface ListParam {
@@ -64,8 +69,8 @@ export function del(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }
 
-export function resetPassword(id: number) {
-  return axios.patch(`${BASE_URL}/${id}/password`);
+export function resetPassword(req: UserResetReq, id: number) {
+  return axios.patch(`${BASE_URL}/${id}/password`, req);
 }
 
 export interface UpdateUserRoleReq {
