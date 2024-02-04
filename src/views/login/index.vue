@@ -124,7 +124,7 @@
         display: inline-block;
         margin-right: 4px;
         margin-left: 4px;
-        color: var(--color-text-1);
+        color: #1d2129;
         font-size: 24px;
         vertical-align: middle;
       }
@@ -189,16 +189,23 @@
             position: relative;
           }
           :deep(.arco-tabs-tab-title:hover) {
-            color: rgb(var(--primary-6));
+            color: rgb(22, 93, 255);
           }
           :deep(.arco-tabs-tab-title:before) {
             display: none;
           }
           :deep(.arco-tabs-tab) {
             margin: 0 30px 0 6px;
+            color: rgb(78, 89, 105);
           }
         }
 
+        :deep(.arco-checkbox-label) {
+          color: #1d2129;
+        }
+        :deep(.arco-select-view-single) {
+          color: #1d2129;
+        }
         .oauth {
           margin-top: 20px;
           padding: 0 5px;
@@ -207,6 +214,10 @@
             font-size: 12px;
             font-weight: 400;
             line-height: 20px;
+            background: #fff;
+          }
+          :deep(.arco-divider-horizontal) {
+            border-bottom: 1px solid rgb(229, 230, 235);
           }
           :deep(.arco-divider) {
             margin-bottom: 25px;
@@ -259,11 +270,11 @@
             }
             .mail:hover,
             .account:hover {
-              color: rgb(var(--primary-6));
+              color: rgb(22, 93, 255);
             }
             .mail svg:hover,
             .account svg:hover {
-              color: rgb(var(--primary-6));
+              color: rgb(22, 93, 255);
             }
           }
         }

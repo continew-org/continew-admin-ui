@@ -197,15 +197,18 @@
     margin-top: 16px;
     .arco-input-wrapper,
     :deep(.arco-select-view-single) {
-      background-color: var(--color-bg-white);
-      border: 1px solid var(--color-border-3);
+      background-color: #fff;
+      border: 1px solid #c9cdd4;
       height: 40px;
       border-radius: 4px;
       font-size: 13px;
     }
     .arco-input-wrapper.arco-input-error {
-      background-color: var(--color-danger-light-1);
-      border-color: var(--color-danger-light-4);
+      background-color: rgb(255, 236, 232);
+      border-color: rgb(249, 137, 129);
+    }
+    .arco-input-wrapper :deep(.arco-input) {
+      color: rgb(29, 33, 41);
     }
 
     .captcha-btn {
@@ -220,9 +223,14 @@
       border: 1px solid #dde2e9;
       color: #41464f;
     }
+    .arco-btn-secondary.arco-btn-disabled,
+    .arco-btn-secondary[type='submit'].arco-btn-disabled {
+      color: #c9cdd4;
+      background-color: rgb(247, 248, 250);
+    }
     .arco-btn-secondary:not(.arco-btn-disabled):hover {
       background-color: transparent;
-      border: 1px solid rgb(var(--primary-6));
+      border: 1px solid rgb(22, 93, 255);
     }
 
     .btn {
@@ -240,10 +248,11 @@
 
     .arco-btn-primary.arco-btn-disabled,
     .arco-btn-primary[type='submit'].arco-btn-disabled {
-      background-color: var(--color-neutral-4);
+      color: #fff;
+      background-color: rgb(201, 205, 212);
       box-shadow:
-        0 0 0 1px var(--color-neutral-4),
-        0 2px 1px rgba(0, 0, 0, 0.15);
+        0 0 0 1px rgb(201, 205, 212),
+        0 2px 1px #00000026;
     }
   }
 </style>

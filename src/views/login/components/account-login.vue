@@ -169,15 +169,18 @@
     margin-top: 16px;
     .arco-input-wrapper,
     :deep(.arco-select-view-single) {
-      background-color: var(--color-bg-white);
-      border: 1px solid var(--color-border-3);
+      background-color: #fff;
+      border: 1px solid #c9cdd4;
       height: 40px;
       border-radius: 4px;
       font-size: 13px;
     }
     .arco-input-wrapper.arco-input-error {
-      background-color: var(--color-danger-light-1);
-      border-color: var(--color-danger-light-4);
+      background-color: rgb(255, 236, 232);
+      border-color: rgb(249, 137, 129);
+    }
+    .arco-input-wrapper :deep(.arco-input) {
+      color: rgb(29, 33, 41);
     }
 
     .captcha {
