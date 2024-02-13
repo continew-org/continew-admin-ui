@@ -534,7 +534,11 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="ID" data-index="id" />
+          <a-table-column title="序号">
+            <template #cell="{ rowIndex }">
+              {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+            </template>
+          </a-table-column>
           <a-table-column title="名称" :width="130">
             <template #cell="{ record }">
               <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>

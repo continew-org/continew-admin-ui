@@ -601,7 +601,11 @@
             @selection-change="handleSelectionChange"
           >
             <template #columns>
-              <a-table-column title="ID" data-index="id" />
+              <a-table-column title="序号">
+                <template #cell="{ rowIndex }">
+                  {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+                </template>
+              </a-table-column>
               <a-table-column title="用户名" :width="100" ellipsis tooltip>
                 <template #cell="{ record }">
                   <a-link @click="toDetail(record.id)">{{
