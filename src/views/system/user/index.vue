@@ -3,6 +3,7 @@
   import {
     DataRecord,
     ListParam,
+    UserResetReq,
     list,
     get,
     add,
@@ -55,6 +56,7 @@
     },
     // 表单数据
     form: {} as DataRecord,
+    userResetReq: {} as UserResetReq,
     // 表单验证规则
     rules: {
       username: [{ required: true, message: '请输入用户名' }],
@@ -64,7 +66,7 @@
       roleIds: [{ required: true, message: '请选择所属角色' }],
     },
   });
-  const { queryParams, form, rules } = toRefs(data);
+  const { queryParams, form, userResetReq, rules } = toRefs(data);
 
   /**
    * 查询部门树
@@ -241,8 +243,11 @@
   const handleResetPassword = () => {
     proxy.$refs.resetPasswordFormRef.validate((valid: any) => {
       if (!valid && form.value.id !== undefined) {
-        const newPassword = form.value.password;
-        resetPassword({ newPassword: encryptByRsa(newPassword) }, form.value.id)
+        const rawPassword = form.value.password;
+        if (rawPassword) {
+          userResetReq.value.newPassword = encryptByRsa(rawPassword) || '';
+        }
+        resetPassword(userResetReq.value, form.value.id)
           .then((res) => {
             handleCancel();
             getList();
