@@ -1,3 +1,18 @@
+## v2.4.0 (2024-02-16)
+
+### ✨ 新特性
+
+* 系统日志详情新增 traceId 链路号显示 ([7359823](https://github.com/Charles7c/continew-admin-ui/commit/735982373a13889340970623bce544dafc574cdb))
+
+### 💎 功能优化
+
+- 取消用户默认密码，改为表单填写密码 ([e519d74](https://github.com/Charles7c/continew-admin-ui/commit/e519d746c92596d0b4a568aef26218b8c4c1e4f4)) ([dd1127e](https://github.com/Charles7c/continew-admin-ui/commit/dd1127e2b8ddfad70e67fca5502505fb269236cc))
+- 部分 ID 列 => 序号列 ([678aa92](https://github.com/Charles7c/continew-admin-ui/commit/678aa92457dc172a300e78e9523ab0fe50715947))
+
+### 🐛 问题修复
+
+- 修复暗黑模式下返回到登录页面时的部分样式错乱 ([65e564d](https://github.com/Charles7c/continew-admin-ui/commit/65e564dc67c06a18bc543d032d430718ae620cb9))
+
 ## v2.3.0 (2024-01-21)
 
 ### ✨ 新特性
