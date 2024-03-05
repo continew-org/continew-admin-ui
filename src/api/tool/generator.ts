@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 
-const BASE_URL = '/tool/generator';
+const BASE_URL = '/generator';
 
 export interface TableRecord {
   tableName: string;
