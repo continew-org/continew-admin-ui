@@ -449,22 +449,20 @@
             isBatchMode ? '取消批量' : '批量操作'
           }}</template>
         </a-button>
+        <a-button
+            v-permission="['system:storage:list']"
+            type="primary"
+            @click="handleConfig"
+        >
+          <template #icon><icon-settings /></template>
+          <template #default>配置存储库</template>
+        </a-button>
         <a-button-group>
           <a-tooltip content="视图" position="bottom">
             <a-button @click="fileStore.changeViewMode">
               <template #icon>
                 <icon-apps v-if="fileStore.viewMode === 'grid'" />
                 <icon-list v-else />
-              </template>
-            </a-button>
-          </a-tooltip>
-          <a-tooltip content="配置存储库" position="bottom">
-            <a-button
-              v-permission="['system:storage:list']"
-              @click="handleConfig"
-            >
-              <template #icon>
-                <icon-settings />
               </template>
             </a-button>
           </a-tooltip>
