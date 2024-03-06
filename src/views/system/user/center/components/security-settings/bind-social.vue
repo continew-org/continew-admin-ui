@@ -57,7 +57,7 @@
       hideCancel: false,
       onOk: () => {
         socialAuth(source).then((res) => {
-          window.location.href = res.data;
+          window.location.href = res.data.authorizeUrl;
         });
       },
     });

@@ -17,7 +17,7 @@
    */
   const handleSocialAuth = async (source: string) => {
     const { data } = await socialAuth(source);
-    window.location.href = data;
+    window.location.href = data.authorizeUrl;
   };
 
   const toggleLoginMode = () => {

@@ -121,7 +121,7 @@
       upload(formData)
         .then((res) => {
           onSuccess(res);
-          form.value.site_logo = res.data;
+          form.value.site_logo = res.data.url;
           proxy.$message.success(res.msg);
         })
         .catch((error) => {
@@ -156,7 +156,7 @@
       upload(formData)
         .then((res) => {
           onSuccess(res);
-          form.value.site_favicon = res.data;
+          form.value.site_favicon = res.data.url;
           proxy.$message.success(res.msg);
         })
         .catch((error) => {

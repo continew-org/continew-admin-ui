@@ -49,8 +49,12 @@ export function listRoute() {
   return axios.get<RouteRecordNormalized[]>(`${BASE_URL}/route`);
 }
 
+export interface SocialAuthAuthorizeResp {
+  authorizeUrl: string;
+}
+
 export function socialAuth(source: string) {
-  return axios.get<string>(`/oauth/${source}`);
+  return axios.get<SocialAuthAuthorizeResp>(`/oauth/${source}`);
 }
 
 export function socialLogin(source: string, req: any) {
