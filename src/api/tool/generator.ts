@@ -36,6 +36,7 @@ export interface FieldConfigRecord {
   columnType: string;
   fieldName: string;
   fieldType: string;
+  fieldSort: number;
   comment: string;
   isRequired: boolean;
   showInList: boolean;
