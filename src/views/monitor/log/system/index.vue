@@ -12,6 +12,7 @@
 
   const { proxy } = getCurrentInstance() as any;
   const { copy, copied } = useClipboard();
+  const queryFormRef = ref();
   const systemLogList = ref<SystemLogRecord[]>([]);
   const systemLog = ref<SystemLogDetailRecord>({
     traceId: '',
@@ -112,7 +113,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -151,7 +152,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <a-form-item field="createTime" hide-label>
               <date-range-picker v-model="queryParams.createTime" />
             </a-form-item>

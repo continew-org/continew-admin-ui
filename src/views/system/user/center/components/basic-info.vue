@@ -7,6 +7,7 @@
   const { proxy } = getCurrentInstance() as any;
 
   const { t } = useI18n();
+  const formRef = ref();
   const userStore = useUserStore();
   const loading = ref(false);
 
@@ -46,7 +47,7 @@
    */
   const handleSave = () => {
     if (loading.value) return;
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         loading.value = true;
         updateBasicInfo({
@@ -68,7 +69,7 @@
    * 重置
    */
   const handleReset = () => {
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
   };
 </script>
 

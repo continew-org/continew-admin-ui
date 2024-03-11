@@ -25,6 +25,8 @@
     'query_type_enum',
   );
 
+  const queryFormRef = ref();
+  const formRef = ref();
   const { copy, copied } = useClipboard();
   const extensions = [java(), javascript()];
   const tableList = ref<TableRecord[]>([]);
@@ -129,7 +131,7 @@
    * 确定
    */
   const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         config.value.fieldConfigs = fieldConfigList.value;
         config.value.genConfig = form.value;
@@ -147,7 +149,7 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef?.resetFields();
+    formRef.value.resetFields();
     fieldConfigList.value = [];
   };
 
@@ -219,7 +221,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -258,7 +260,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <a-form-item field="tableName" hide-label>
               <a-input
                 v-model="queryParams.tableName"

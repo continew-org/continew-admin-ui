@@ -28,6 +28,7 @@
   const { proxy } = getCurrentInstance() as any;
   const route = useRoute();
   const fileStore = useFileStore();
+  const queryFormRef = ref();
   const loading = ref(false);
   // 文件列表数据
   const fileList = ref<FileItem[]>([]);
@@ -212,7 +213,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -393,7 +394,7 @@
     <a-row justify="space-between" class="row-operate">
       <!-- 左侧区域 -->
       <a-space wrap>
-        <a-form ref="queryRef" :model="queryParams" layout="inline">
+        <a-form ref="queryFormRef" :model="queryParams" layout="inline">
           <a-form-item hide-label>
             <a-upload
               v-permission="['system:file:upload']"

@@ -17,6 +17,8 @@
     },
   });
   const { proxy } = getCurrentInstance() as any;
+  const formRef = ref();
+  const tableRef = ref();
   const dataList = ref<DataRecord[]>([]);
   const colors = ref(['primary', 'success', 'warning', 'error', 'default']);
   const total = ref(0);
@@ -95,7 +97,7 @@
       sort: 999,
       dictId: dictId.value,
     };
-    proxy.$refs.formRef?.resetFields();
+    formRef.value?.resetFields();
   };
 
   /**
@@ -103,14 +105,14 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
   };
 
   /**
    * 确定
    */
   const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
           update(form.value, form.value.id).then((res) => {

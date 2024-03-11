@@ -10,6 +10,7 @@
     'success_failure_status_enum',
   );
 
+  const queryFormRef = ref();
   const loginLogList = ref<LoginLogRecord[]>([]);
   const total = ref(0);
   const loading = ref(false);
@@ -55,7 +56,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -94,7 +95,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"

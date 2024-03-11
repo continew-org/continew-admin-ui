@@ -9,6 +9,7 @@
   const { t } = useI18n();
   const router = useRouter();
   const userStore = useUserStore();
+  const formRef = ref();
   const loading = ref(false);
   const captchaLoading = ref(false);
   const captchaDisable = ref(true);
@@ -43,7 +44,7 @@
    */
   const handleOpenBehaviorCaptcha = () => {
     if (captchaLoading.value) return;
-    proxy.$refs.formRef.validateField('phone', (valid: any) => {
+    formRef.value.validateField('phone', (valid: any) => {
       if (!valid) {
         proxy.$refs.verifyRef.show();
       }
@@ -65,7 +66,7 @@
    */
   const handleSendCaptcha = (captchaParam: BehaviorCaptchaReq) => {
     if (captchaLoading.value) return;
-    proxy.$refs.formRef.validateField('phone', (valid: any) => {
+    formRef.value.validateField('phone', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';

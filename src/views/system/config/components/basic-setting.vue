@@ -12,6 +12,7 @@
   import { useAppStore } from '@/store';
 
   const { proxy } = getCurrentInstance() as any;
+  const formRef = ref();
   const dataList = ref<DataRecord[]>([]);
   const isEdit = ref(false);
   const logoFile = ref<FileItem>({ uid: '-1' });
@@ -81,7 +82,7 @@
    * 保存
    */
   const handleSave = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         const optionList: DataRecord[] = Object.entries(form.value).map(
           (item) => {

@@ -15,6 +15,9 @@
   const { proxy } = getCurrentInstance() as any;
   const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
 
+  const queryFormRef = ref();
+  const formRef = ref();
+  const tableRef = ref();
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({});
   const ids = ref<Array<number>>([]);
@@ -64,7 +67,7 @@
       .then((res) => {
         dataList.value = res.data;
         setTimeout(() => {
-          proxy.$refs.tableRef.expandAll();
+          tableRef.value.expandAll();
         }, 0);
       })
       .finally(() => {
@@ -110,7 +113,7 @@
     form.value = {
       sort: 999,
     };
-    proxy.$refs.formRef?.resetFields();
+    formRef.value?.resetFields();
   };
 
   /**
@@ -118,14 +121,14 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
   };
 
   /**
    * 确定
    */
   const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
           update(form.value, form.value.id).then((res) => {
@@ -197,7 +200,7 @@
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
-      proxy.$refs.tableRef.selectAll(false);
+      tableRef.value.selectAll(false);
     });
   };
 
@@ -208,7 +211,7 @@
     if (rowKeys.find((key: any) => key === rowKey)) {
       if (record.children) {
         record.children.forEach((r) => {
-          proxy.$refs.tableRef.select(r.id);
+          tableRef.value.select(r.id);
           rowKeys.push(r.id);
           if (r.children) {
             handleSelect(rowKeys, rowKey, r);
@@ -221,7 +224,7 @@
           rowKeys.findIndex((key: number | undefined) => key === r.id),
           1,
         );
-        proxy.$refs.tableRef.select(r.id, false);
+        tableRef.value.select(r.id, false);
         if (r.children) {
           handleSelect(rowKeys, rowKey, r);
         }
@@ -297,7 +300,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 </script>
@@ -316,7 +319,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <a-form-item field="name" hide-label>
               <a-input
                 v-model="queryParams.name"

@@ -9,6 +9,7 @@
   const { t } = useI18n();
   const router = useRouter();
   const userStore = useUserStore();
+  const formRef = ref();
   const loading = ref(false);
   const captchaLoading = ref(false);
   const captchaDisable = ref(false);
@@ -47,7 +48,7 @@
    */
   const handleSendCaptcha = () => {
     if (captchaLoading.value) return;
-    proxy.$refs.formRef.validateField('email', (valid: any) => {
+    formRef.value.validateField('email', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';

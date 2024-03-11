@@ -3,6 +3,8 @@
 
   const { proxy } = getCurrentInstance() as any;
   const { message_type_enum } = proxy.useDict('message_type_enum');
+  const queryFormRef = ref();
+  const tableRef = ref();
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({
     id: 0,
@@ -99,7 +101,7 @@
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
-      proxy.$refs.tableRef.selectAll(false);
+      tableRef.value.selectAll(false);
     });
   };
 
@@ -130,7 +132,7 @@
     read(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
-      proxy.$refs.tableRef.selectAll(false);
+      tableRef.value.selectAll(false);
     });
   };
 
@@ -160,7 +162,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -199,7 +201,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <a-form-item field="title" hide-label>
               <a-input
                 v-model="queryParams.title"

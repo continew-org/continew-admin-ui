@@ -9,6 +9,7 @@
 
   const { t } = useI18n();
   const userStore = useUserStore();
+  const formRef = ref();
   const visible = ref(false);
 
   // 表单数据
@@ -84,14 +85,14 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
   };
 
   /**
    * 修改
    */
   const handleUpdate = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         updatePassword({
           oldPassword: encryptByRsa(form.oldPassword) || '',

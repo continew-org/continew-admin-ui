@@ -9,6 +9,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
   const userStore = useUserStore();
+  const formRef = ref();
   const captchaTime = ref(60);
   const captchaTimer = ref();
   const captchaLoading = ref(false);
@@ -72,7 +73,7 @@
    */
   const handleSendCaptcha = () => {
     if (captchaLoading.value) return;
-    proxy.$refs.formRef.validateField('newEmail', (valid: any) => {
+    formRef.value.validateField('newEmail', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'userCenter.securitySettings.captcha.ing';
@@ -107,7 +108,7 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
     resetCaptcha();
   };
 
@@ -115,7 +116,7 @@
    * 修改
    */
   const handleUpdate = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         updateEmail({
           newEmail: form.newEmail,
