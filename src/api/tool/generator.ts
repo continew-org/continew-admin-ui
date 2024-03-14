@@ -57,7 +57,6 @@ export interface GenConfigRecord {
   tableName: string;
   moduleName: string;
   packageName: string;
-  frontendPath: string;
   businessName: string;
   author: string;
   tablePrefix: string;
@@ -89,5 +88,9 @@ export function preview(tableName: string) {
 }
 
 export function generate(tableName: string) {
-  return axios.post(`${BASE_URL}/${tableName}`);
+  return axios.request({
+    url: `${BASE_URL}/${tableName}`,
+    method: 'post',
+    responseType: 'blob',
+  });
 }

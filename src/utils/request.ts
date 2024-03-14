@@ -46,6 +46,9 @@ axios.interceptors.response.use(
     ) {
       return response;
     }
+    if (response.config.responseType === 'blob') {
+      return response;
+    }
     const res = response.data;
     if (res.success) {
       return res;

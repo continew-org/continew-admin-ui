@@ -206,7 +206,26 @@
    */
   const handleGenerate = (tableName: string) => {
     generate(tableName).then((res) => {
-      proxy.$message.success(res.msg);
+      const contentDisposition = res.headers['content-disposition'];
+      const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
+      const result = pattern.exec(contentDisposition) || '';
+      // 对名字进行解码
+      const fileName = window.decodeURI(result[1]);
+      // 创建下载的链接
+      const blob = new Blob([res.data]);
+      const downloadElement = document.createElement('a');
+      const href = window.URL.createObjectURL(blob);
+      downloadElement.style.display = 'none';
+      downloadElement.href = href;
+      // 下载后文件名
+      downloadElement.download = fileName;
+      document.body.appendChild(downloadElement);
+      // 点击下载
+      downloadElement.click();
+      // 下载完成，移除元素
+      document.body.removeChild(downloadElement);
+      // 释放掉 blob 对象
+      window.URL.revokeObjectURL(href);
     });
   };
 
@@ -256,6 +275,9 @@
   <div class="app-container">
     <Breadcrumb :items="['menu.tool', 'menu.tool.generator.list']" />
     <a-card class="general-card" :title="$t('menu.tool.generator.list')">
+      <a-alert type="warning" style="margin-bottom: 15px">
+        默认已开启 Mock，下载/导出类操作会出现错误，例如：下载的文件无法打开，点击<a-link href="https://doc.charles7c.top/admin/other/faq.html#%E7%82%B9%E5%87%BB%E5%AF%BC%E5%87%BA%E6%8C%89%E9%92%AE%E6%8A%A5%E9%94%99">查看解决方法</a-link>
+      </a-alert>
       <!-- 头部区域 -->
       <div class="header">
         <!-- 搜索栏 -->
@@ -266,7 +288,7 @@
                 v-model="queryParams.tableName"
                 placeholder="输入表名称搜索"
                 allow-clear
-                style="width: 150px"
+                style="width: 230px"
                 @press-enter="handleQuery"
               />
             </a-form-item>
@@ -283,7 +305,6 @@
           </a-form>
         </div>
       </div>
-
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
@@ -503,12 +524,6 @@
                 placeholder="项目模块包名，例如：top.charles7c.continew.admin.system"
               />
             </a-form-item>
-            <a-form-item label="前端路径" field="frontendPath">
-              <a-input
-                v-model="form.frontendPath"
-                placeholder="前端项目 views 目录地址"
-              />
-            </a-form-item>
             <a-form-item label="去表前缀" field="tablePrefix">
               <a-input
                 v-model="form.tablePrefix"
@@ -528,8 +543,8 @@
     <!-- 生成预览区域 -->
     <a-modal
       :body-style="{
-      paddingTop: 0,
-    }"
+        paddingTop: 0,
+      }"
       title="生成预览"
       :visible="previewVisible"
       width="70%"
