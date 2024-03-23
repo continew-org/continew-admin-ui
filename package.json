@@ -1,7 +1,7 @@
 {
   "name": "continew-admin-ui",
   "description": "ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。",
-  "version": "2.5.0-SNAPSHOT",
+  "version": "2.5.0",
   "private": true,
   "author": "Charles7c",
   "license": "Apache-2.0",

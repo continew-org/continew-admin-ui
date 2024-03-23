@@ -1,3 +1,18 @@
+## v2.5.0 (2024-03-23)
+
+### ✨ 新特性
+
+* 新增代码批量生成功能 ([2353caf](https://github.com/Charles7c/continew-admin-ui/commit/2353caffa9ddfbf8c0f9657c1f2e89b14eff38db))
+
+### 💎 功能优化
+
+- 调整代码生成 API 地址 ([b4bb469](https://github.com/Charles7c/continew-admin-ui/commit/b4bb4693dfd694bcc5f10be32cf7d405af92367e))
+- 适配部分 API 响应格式调整为 kv 格式的变化 ([6f5c35e](https://github.com/Charles7c/continew-admin-ui/commit/6f5c35ea77b1e3880bca477ec027d074915341e8))
+- 调整文件管理配置存储库按钮风格 ([aeafc2e](https://github.com/Charles7c/continew-admin-ui/commit/aeafc2ece2012b53bfe8ff6c64fed9ad73f9d188))
+- 代码生成字段配置增加字段排序信息 ([e9d3865](https://github.com/Charles7c/continew-admin-ui/commit/e9d38658920f49e0bb0600e779621c44d388057e))
+- 优化部分 ref API 使用方式 ([e6fa9f6](https://github.com/Charles7c/continew-admin-ui/commit/e6fa9f60a927f639b8b7f6145982a395506b3150))
+- 重构代码生成功能，由指定路径生成模式调整为下载模式，更方便复杂场景 ([7792cd3](https://github.com/Charles7c/continew-admin-ui/commit/7792cd398f6c4a2d10187cb548ba687dc8f62c84))
+
 ## v2.4.0 (2024-02-16)
 
 ### ✨ 新特性
