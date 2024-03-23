@@ -10,6 +10,7 @@ export interface TableRecord {
   charset: string;
   createTime?: string;
   isConfiged: boolean;
+  disabled: boolean;
 }
 
 export interface TableParam {
@@ -87,9 +88,9 @@ export function preview(tableName: string) {
   return axios.get<GeneratePreviewRecord[]>(`${BASE_URL}/preview/${tableName}`);
 }
 
-export function generate(tableName: string) {
+export function generate(tableNames: Array<string>) {
   return axios.request({
-    url: `${BASE_URL}/${tableName}`,
+    url: `${BASE_URL}/${tableNames}`,
     method: 'post',
     responseType: 'blob',
   });

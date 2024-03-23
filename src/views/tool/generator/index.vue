@@ -18,6 +18,7 @@
     preview,
     generate,
   } from '@/api/tool/generator';
+  import {TableData} from "@arco-design/web-vue";
 
   const { proxy } = getCurrentInstance() as any;
   const { form_type_enum, query_type_enum } = proxy.useDict(
@@ -27,12 +28,16 @@
 
   const queryFormRef = ref();
   const formRef = ref();
+  const tableRef = ref();
   const { copy, copied } = useClipboard();
   const extensions = [java(), javascript()];
   const tableList = ref<TableRecord[]>([]);
   const fieldConfigList = ref<FieldConfigRecord[]>([]);
   const total = ref(0);
+  const ids = ref<Array<string>>([]);
   const title = ref('');
+  const single = ref(true);
+  const multiple = ref(true);
   const showQuery = ref(true);
   const loading = ref(false);
   const visible = ref(false);
@@ -79,6 +84,45 @@
       });
   };
   getList();
+
+  /**
+   * 点击行选择器
+   */
+  const handleSelect = (rowKeys: any, rowKey: any, record: TableData) => {
+    if (rowKeys.find((key: any) => key === rowKey)) {
+      if (record.children) {
+        record.children.forEach((r) => {
+          tableRef.value.select(r.id);
+          rowKeys.push(r.id);
+          if (r.children) {
+            handleSelect(rowKeys, rowKey, r);
+          }
+        });
+      }
+    } else if (record.children) {
+      record.children.forEach((r) => {
+        rowKeys.splice(
+            rowKeys.findIndex((key: number | undefined) => key === r.id),
+            1,
+        );
+        tableRef.value.select(r.id, false);
+        if (r.children) {
+          handleSelect(rowKeys, rowKey, r);
+        }
+      });
+    }
+  };
+
+  /**
+   * 已选择的数据行发生改变
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
+    multiple.value = !rowKeys.length;
+  };
 
   /**
    * 打开配置对话框
@@ -200,12 +244,23 @@
   });
 
   /**
+   * 批量生成代码
+   */
+  const handleBatchGenerate = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择生成的表数据');
+    } else {
+      handleGenerate(ids.value);
+    }
+  }
+
+  /**
    * 生成代码
    *
-   * @param tableName 表名称
+   * @param tableNames 表名称
    */
-  const handleGenerate = (tableName: string) => {
-    generate(tableName).then((res) => {
+  const handleGenerate = (tableNames: Array<string>) => {
+    generate(tableNames).then((res) => {
       const contentDisposition = res.headers['content-disposition'];
       const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
       const result = pattern.exec(contentDisposition) || '';
@@ -300,6 +355,12 @@
                 <a-button @click="resetQuery">
                   <template #icon><icon-refresh /></template>重置
                 </a-button>
+                <a-button
+                    type="outline"
+                    @click="handleBatchGenerate"
+                >
+                  <template #icon><icon-robot-add /></template>批量生成
+                </a-button>
               </a-space>
             </a-form-item>
           </a-form>
@@ -311,6 +372,11 @@
         row-key="tableName"
         :data="tableList"
         :loading="loading"
+        :row-selection="{
+          type: 'checkbox',
+          showCheckedAll: true,
+          onlyCurrent: false,
+        }"
         :pagination="{
           showTotal: true,
           showPageSize: true,
@@ -321,6 +387,8 @@
         column-resizable
         stripe
         size="large"
+        @select="handleSelect"
+        @selection-change="handleSelectionChange"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
@@ -359,7 +427,7 @@
                 size="small"
                 :title="record.isConfiged ? '生成' : '请先进行生成配置'"
                 :disabled="!record.isConfiged"
-                @click="handleGenerate(record.tableName)"
+                @click="handleGenerate([record.tableName])"
               >
                 <template #icon><icon-robot-add /></template>生成
               </a-button>
