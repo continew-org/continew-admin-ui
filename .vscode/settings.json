@@ -1,0 +1,13 @@
+{
+  // 配置该项, 新建文件时默认就是space: 2
+  "editor.tabSize": 2,
+  // 保存的时候自动格式化
+  "editor.formatOnSave": true,
+  // 默认格式化工具选择prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // 开启自动修复
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "explicit"
+  }
+}

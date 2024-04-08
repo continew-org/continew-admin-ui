@@ -1,0 +1,248 @@
+/* 全局样式 */
+@import './var.scss';
+
+// 通用外边距
+.gi_margin {
+  margin: $margin;
+}
+
+// 通用内边距
+.gi_padding {
+  padding: $padding;
+}
+
+.gi_relative {
+  position: relative;
+}
+
+.gi_absolute {
+  position: absolute;
+}
+
+.gi_rotate_90deg {
+  transform: rotate(90deg);
+}
+
+.gi_rotate_-90deg {
+  transform: rotate(-90deg);
+}
+
+.gi_rotate_180deg {
+  transform: rotate(180deg);
+}
+
+.gi_rotate_-180deg {
+  transform: rotate(-180deg);
+}
+
+// 通用盒子
+.gi_box {
+  background: var(--color-bg-1);
+  border-radius: $radius-box;
+  overflow: hidden;
+}
+
+.gi_select_input {
+  width: 120px !important;
+}
+
+.gi_search_input {
+  width: 250px !important;
+}
+
+.gi_line_1 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gi_line_2 {
+  -webkit-line-clamp: 2;
+}
+
+.gi_line_3 {
+  -webkit-line-clamp: 3;
+}
+
+.gi_line_4 {
+  -webkit-line-clamp: 4;
+}
+
+.gi_line_5 {
+  -webkit-line-clamp: 5;
+}
+
+.gi_line_2,
+.gi_line_3,
+.gi_line_4,
+.gi_line_5 {
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box; // 弹性伸缩盒
+  -webkit-box-orient: vertical; // 设置伸缩盒子元素排列方式
+}
+
+.gi_mt {
+  margin-top: $margin;
+}
+
+.gi_mb {
+  margin-bottom: $margin;
+}
+
+.gi_ml {
+  margin-left: $margin;
+}
+
+.gi_mr {
+  margin-right: $margin;
+}
+
+.gi_mx {
+  margin: 0 $margin;
+}
+
+.gi_my {
+  margin: $margin 0;
+}
+
+.gi_m0 {
+  margin: 0;
+}
+
+.gi_pt {
+  padding-top: $margin;
+}
+
+.gi_pb {
+  padding-bottom: $margin;
+}
+
+.gi_pl {
+  padding-left: $margin;
+}
+
+.gi_pr {
+  padding-right: $margin;
+}
+
+.gi_px {
+  padding: 0 $padding;
+}
+
+.gi_py {
+  padding: $padding 0;
+}
+
+.gi_p0 {
+  padding: 0;
+}
+
+.gi_round {
+  border-radius: 100px;
+}
+
+.gi_hover_btn {
+  border: 0 !important;
+  background-color: transparent;
+
+  &:hover {
+    background: var(--color-secondary-hover) !important;
+  }
+
+  &:active {
+    background: var(--color-secondary-active) !important;
+  }
+}
+
+.gi_card {
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .arco-card-body {
+    flex: 1;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.gi_table_box {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+// 使用场景，页面内容超出高度会自动滚动
+.gi_page {
+  flex: 1;
+  padding: $margin;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.gi_card_title {
+  .arco-card-header-title::before {
+    content: '';
+    width: 4px;
+    height: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(var(--primary-5));
+    border-radius: 0 4px 4px 0;
+  }
+}
+
+// 通用卡片
+.general-card {
+  height: 100%;
+  overflow-y: auto;
+  & > .arco-card-header {
+    height: auto;
+    padding: 20px;
+    border: none;
+  }
+  & > .arco-card-body {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+// 通用描述
+.general-description {
+  position: relative;
+  .arco-descriptions-title {
+    padding-left: 10px;
+  }
+  .arco-descriptions-title::before {
+    content: '';
+    width: 4px;
+    height: 22px;
+    position: absolute;
+    left: 0;
+    background-color: rgb(var(--primary-5));
+    border-radius: 0 4px 4px 0;
+  }
+}
+
+.arco-table-cell {
+  .circle {
+    display: inline-block;
+    margin-right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgb(var(--blue-6));
+    vertical-align: middle;
+    &.pass {
+      background-color: rgb(var(--green-6));
+    }
+    &.fail {
+      background-color: rgb(var(--red-6));
+    }
+  }
+}

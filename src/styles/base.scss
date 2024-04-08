@@ -1,0 +1,70 @@
+@import './var.scss';
+
+body {
+  --margin: 14px; // 通用外边距
+  --padding: 16px; // 通用内边距
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  overflow: hidden;
+  color: var(--color-text-2);
+  background-color: #f5f7fd; // body背景颜色
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  // font-family: Avenir, Helvetica, Arial, sans-serif;
+  // font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, \5fae\8f6f\96c5\9ed1, Arial,
+  //   sans-serif;
+}
+
+body[arco-theme='dark'] {
+  background-color: #373739; // body背景颜色-深色模式
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+ul {
+  list-style: none !important;
+  margin-bottom: 0;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.ov-hidden {
+  overflow: hidden;
+}

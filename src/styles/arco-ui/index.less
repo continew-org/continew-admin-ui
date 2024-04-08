@@ -1,0 +1,58 @@
+@import '@arco-themes/vue-gi-demo/index.less';
+
+@import './a-card.less';
+@import './a-input-number.less';
+@import './a-input.less';
+@import './a-modal.less';
+@import './a-pagination.less';
+@import './a-scrollbar';
+@import './a-tree.less';
+@import './a-descriptions.less';
+@import './a-table.less';
+@import './a-picker.less';
+@import './a-message.less';
+@import './a-menu.less';
+
+@color-menu-dark-bg: var(--color-bg-1);
+@card-color-bg: var(--color-bg-1);
+
+body {
+  --color-text-2: #42464e;
+  --color-text-3: #737a87;
+  --color-text-4: #737a87;
+  --color-bg-4: #f6f8fa;
+  --color-border-3: #dde2e9;
+}
+
+.app-menu-dark:extend(body[arco-theme='dark']) {
+  background-color: #001529 !important;
+  .arco-menu-light {
+    background-color: transparent;
+  }
+  .arco-menu-item,
+  .arco-menu-group-title,
+  .arco-menu-pop-header,
+  .arco-menu-inline-header {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(72, 72, 73);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(95, 95, 96);
+  }
+  ::-ms-scrollbar-thumb {
+    background-color: rgb(72, 72, 73);
+  }
+}
+
+// 禁止文本复制
+.arco-link,
+.arco-menu-title,
+.arco-menu-item-inner,
+.arco-tabs-tab-title,
+.arco-breadcrumb-item,
+.arco-checkbox-label {
+  user-select: none;
+}

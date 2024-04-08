@@ -1,0 +1,20 @@
+// 颜色变量
+$color-theme: rgb(var(--primary-6));
+$color-primary: rgb(var(--primary-6));
+$color-success: rgb(var(--success-6));
+$color-warning: rgb(var(--warning-6));
+$color-danger: rgb(var(--danger-6));
+$color-info: rgb(var(--gray-6));
+
+$color-text-1: var(--color-text-1); // 标题、重点文本字体颜色
+$color-text-2: var(--color-text-2); // 文本-全局默认字体颜色
+$color-text-3: var(--color-text-3); // 二级文本颜色
+$color-text-4: var(--color-text-4); // 辅助文本颜色
+
+$color-border: var(--color-border); // 边框颜色、分割线颜色
+$color-bg-box: var(--color-bg-1);
+
+$margin: var(--margin);
+$padding: var(--padding);
+
+$radius-box: 2px;

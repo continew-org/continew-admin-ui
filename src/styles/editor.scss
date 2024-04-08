@@ -1,0 +1,37 @@
+body {
+  --w-e-textarea-bg-color: #fff;
+  --w-e-textarea-color: #333;
+  --w-e-textarea-border-color: #ccc;
+  --w-e-textarea-slight-border-color: #e8e8e8;
+  --w-e-textarea-slight-color: #d4d4d4;
+  --w-e-textarea-slight-bg-color: #f5f2f0;
+  --w-e-textarea-selected-border-color: #b4d5ff;
+  --w-e-textarea-handler-bg-color: #4290f7;
+  --w-e-toolbar-color: #595959;
+  --w-e-toolbar-bg-color: #fff;
+  --w-e-toolbar-active-color: #333;
+  --w-e-toolbar-active-bg-color: #f1f1f1;
+  --w-e-toolbar-disabled-color: #999;
+  --w-e-toolbar-border-color: #e8e8e8;
+  --w-e-modal-button-bg-color: #fafafa;
+  --w-e-modal-button-border-color: #d9d9d9;
+}
+
+body[arco-theme='dark'] {
+  --w-e-textarea-bg-color: var(--color-bg-2);
+  --w-e-textarea-color: var(--color-text-1);
+  --w-e-textarea-border-color: var(--color-border);
+  --w-e-textarea-slight-border-color: var(--color-border-2);
+  --w-e-textarea-slight-color: var(--color-text-4);
+  --w-e-textarea-slight-bg-color: var(--color-bg-2);
+  --w-e-textarea-selected-border-color: var(--color-primary-light-1);
+  --w-e-textarea-handler-bg-color: var(--color-primary-light-4);
+  --w-e-toolbar-color: #ccc;
+  --w-e-toolbar-bg-color: var(--color-bg-2);
+  --w-e-toolbar-active-color: #fff;
+  --w-e-toolbar-active-bg-color: var(--color-secondary-active);
+  --w-e-toolbar-disabled-color: var(--color-text-4);
+  --w-e-toolbar-border-color: var(--color-border);
+  --w-e-modal-button-bg-color: var(--color-fill-2);
+  --w-e-modal-button-border-color: var(--color-border);
+}

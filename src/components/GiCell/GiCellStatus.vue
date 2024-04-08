@@ -1,0 +1,39 @@
+<template>
+  <span v-if="props.status === 1">
+    <icon-check-circle-fill class="success" />
+    <span>启用</span>
+  </span>
+  <span v-if="props.status === 2">
+    <icon-minus-circle-fill class="warning" />
+    <span>禁用</span>
+  </span>
+</template>
+
+<script lang="ts" setup>
+defineOptions({ name: 'GiCellStatus' })
+
+interface Props {
+  status: 0 | 1
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  status: 1
+})
+</script>
+
+<style lang="scss" scoped>
+.arco-icon.success {
+  color: rgb(var(--success-6));
+  margin-right: 4px;
+}
+
+.arco-icon.warning {
+  color: rgb(var(--warning-6));
+  margin-right: 4px;
+}
+
+.arco-icon.danger {
+  color: rgb(var(--danger-6));
+  margin-right: 4px;
+}
+</style>

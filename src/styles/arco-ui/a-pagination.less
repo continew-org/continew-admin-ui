@@ -1,0 +1,41 @@
+// 分页组件
+.arco-pagination-item {
+  padding: 0 6px;
+  border: 1px solid var(--color-border-3);
+  background-color: var(--color-bg-2);
+  border-radius: var(--border-radius-medium);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: none;
+  box-sizing: border-box;
+  &:hover {
+    color: rgb(var(--primary-6));
+    border: 1px solid rgb(var(--primary-6));
+    background-color: rgba(var(--primary-6), 0.1);
+  }
+  &:active {
+    color: #fff;
+    background-color: rgb(var(--primary-6));
+    border: 1px solid rgb(var(--primary-6));
+  }
+}
+
+.arco-pagination-item-active {
+  color: #fff;
+  background-color: rgb(var(--primary-6));
+  border: 1px solid rgb(var(--primary-6));
+  &:hover {
+    color: #fff;
+    background-color: rgb(var(--primary-6));
+    border: 1px solid rgb(var(--primary-6));
+  }
+}
+
+.arco-pagination .arco-pagination-item-previous.arco-pagination-item-disabled,
+.arco-pagination .arco-pagination-item-next.arco-pagination-item-disabled {
+  border-color: var(--color-border-2);
+  &:hover {
+    border-color: var(--color-border-2);
+  }
+}

@@ -1,0 +1,145 @@
+/* fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* fade-slide */
+.fade-slide-leave-active,
+.fade-slide-enter-active {
+  transition: all 0.3s;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* fade-bottom */
+.fade-bottom-enter-active,
+.fade-bottom-leave-active {
+  transition: opacity 0.25s, transform 0.3s;
+}
+.fade-bottom-enter-from {
+  opacity: 0;
+  transform: translateY(-10%);
+}
+.fade-bottom-leave-to {
+  opacity: 0;
+  transform: translateY(10%);
+}
+
+/* fade-scale */
+.fade-scale-leave-active,
+.fade-scale-enter-active {
+  transition: all 0.28s;
+}
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(1.2);
+}
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* zoom-fade */
+.zoom-fade-enter-active,
+.zoom-fade-leave-active {
+  transition: transform 0.2s, opacity 0.3s ease-out;
+}
+.zoom-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.zoom-fade-leave-to {
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+/* zoom-out */
+.zoom-out-enter-active,
+.zoom-out-leave-active {
+  transition: opacity 0.1s ease-in-out, transform 0.15s ease-out;
+}
+.zoom-out-enter-from,
+.zoom-out-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* elementUI 的 Dialog 动画 */
+@keyframes dialog-fade-in {
+  0% {
+    transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-fade-out {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -20px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes modal-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.el-dialog-enter-active {
+  animation: dialog-fade-in 0.3s;
+}
+.el-dialog-leave-active {
+  animation: dialog-fade-out 0.3s;
+}
+
+.el-mask-enter-active {
+  animation: modal-fade-in 0.3s;
+}
+.el-mask-leave-active {
+  animation: modal-fade-out 0.3s;
+}
+
+/* el-fade-bottom */
+.el-fade-enter-active,
+.el-fade-leave-active {
+  transition: all 0.3s;
+}
+.el-fade-enter-from {
+  opacity: 0;
+  transform: scale(1.1, 0.2);
+}
+.el-fade-leave-to {
+  opacity: 0;
+  transform: scale(1.1, 0.2);
+}
