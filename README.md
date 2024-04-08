@@ -85,6 +85,29 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
 - 在线用户：管理当前登录用户，可一键踢下线
 
+## 快速开始
+
+> **Note**
+> 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/admin/intro/quick-start.html#%E5%89%8D%E7%AB%AF)。
+
+```
+# 1.克隆本项目
+git clone https://github.com/charles7c/continew-admin-ui-gi.git
+git clone https://gitee.com/continew/continew-admin-ui-gi.git
+
+# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui-gi
+
+# 3.安装 pnpm
+npm install -g pnpm
+
+# 4.安装依赖
+pnpm i
+
+# 5.启动程序
+# 5.1 启动成功：访问 http://localhost:5173/
+pnpm dev
+```
+
 ## 贡献指南
 
 ContiNew Admin 致力于提供开箱即用，持续舒适的开发体验。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
