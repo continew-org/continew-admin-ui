@@ -102,7 +102,7 @@ http.interceptors.response.use(
     const response = Object.assign({}, error.response)
     response &&
       messageErrorWrapper({
-        content: StatusCodeMessage[response.status] || '系统异常，请检查网络或联系管理员',
+        content: StatusCodeMessage[response.status] || '服务器暂时未响应，请刷新页面并重试。若无法解决，请联系管理员',
         duration: 5 * 1000
       })
     return Promise.reject(error)
