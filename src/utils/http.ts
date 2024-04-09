@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'query-string'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useUserStore } from '@/stores'
 import { getToken } from '@/utils/auth'
@@ -8,7 +9,6 @@ import notificationErrorWrapper from '@/utils/notification-error-wrapper'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import router from '@/router'
-import qs from 'query-string'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -114,7 +114,15 @@ const request = <T = unknown>(config: AxiosRequestConfig): Promise<ApiRes<T>> =>
     http
       .request<T>(config)
       .then((res: AxiosResponse) => resolve(res.data))
-      .catch((err: { message: string }) => reject(err))
+      .catch((err: { msg: string }) => reject(err))
+  })
+}
+
+const requestNative = <T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse> => {
+  return new Promise((resolve, reject) => {
+    http
+      .request<T>(config)
+      .catch((err: { msg: string }) => reject(err))
   })
 }
 
@@ -166,4 +174,4 @@ const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
   })
 }
 
-export default { get, post, put, patch, del }
+export default { get, post, put, patch, del, request, requestNative }
