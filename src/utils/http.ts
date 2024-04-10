@@ -62,6 +62,7 @@ http.interceptors.response.use(
     const { data } = response
     const { success, code, msg } = data
     if(response.request.responseType==='blob'){
+      NProgress.done()
       return response
     }
     // 成功

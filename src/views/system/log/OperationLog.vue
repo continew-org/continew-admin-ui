@@ -111,7 +111,7 @@ const columns: TableInstance['columns'] = [
 ]
 //导出操作日志
 const onExportFile = ()=>{
-  useDownload(exportOperateLog,'',queryForm)
+  useDownload(()=>exportOperateLog(queryForm))
 }
 const queryForm = reactive({
   description: undefined,

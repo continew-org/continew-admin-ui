@@ -11,14 +11,13 @@ interface NavigatorWithMsSaveOrOpenBlob extends Navigator {
   msSaveOrOpenBlob(blob: Blob, fileName: string): void
 }
 export const useDownload = async (
-  api: (param: any) => Promise<any>,
-  tempName: string = '',
-  params: any = {},
+  api: () => Promise<any>,
   isNotify = true,
+  tempName: string = '',
   fileType = '.xlsx'
 ) => {
   try {
-    const res = await api(params)
+    const res = await api()
     if (res.headers['content-disposition']) {
       tempName = decodeURI(res.headers['content-disposition'].split(';')[1].split('=')[1]);
     } else {

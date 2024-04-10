@@ -44,7 +44,10 @@ export interface LogDetailResp extends LogResp {
   responseHeaders: string
   responseBody: string
 }
-export interface LogQuery extends PageQuery {
+// 系统日志分页查询条件
+export interface PageLogQuery extends PageQuery,LogQuery{}
+// 系统日志查询条件
+export interface LogQuery{
   description?: string
   module?: string
   ip?: string

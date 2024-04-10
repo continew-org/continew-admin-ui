@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/log'
 
 /** @desc 查询日志列表 */
-export function listLog(query: System.LogQuery) {
+export function listLog(query: System.PageLogQuery) {
   return http.get<PageRes<System.LogResp[]>>(`${BASE_URL}`, query)
 }
 

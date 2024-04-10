@@ -97,7 +97,7 @@ const columns: TableInstance['columns'] = [
 ]
 //导出登录日志
 const onExportFile = ()=>{
-  useDownload(exportLog,'',queryForm)
+  useDownload(()=>exportLog(queryForm))
 }
 const queryForm = reactive({
   module: '登录',
