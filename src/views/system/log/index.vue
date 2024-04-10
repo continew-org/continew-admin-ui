@@ -1,14 +1,13 @@
 <template>
   <div class="gi_page">
     <a-card title="系统日志" class="general-card">
-      <a-tabs type="card-gutter" size="large">
-        <a-tab-pane key="1" title="登录日志">
-          <LoginLog />
-        </a-tab-pane>
-        <a-tab-pane key="2" title="操作日志">
-          <OperationLog />
-        </a-tab-pane>
+      <a-tabs  type="card-gutter" size="large" :active-key="activeKey" @change="change">
+        <a-tab-pane key="1" title="登录日志"/>
+        <a-tab-pane key="2" title="操作日志"/>
       </a-tabs>
+      <keep-alive>
+          <component :is="PaneMap[activeKey]"></component>
+      </keep-alive>
     </a-card>
   </div>
 </template>
@@ -16,6 +15,26 @@
 <script setup lang="ts">
 import LoginLog from './LoginLog.vue'
 import OperationLog from './OperationLog.vue'
+const route = useRoute()
+const router = useRouter()
+const PaneMap:Record<string,Component> = {
+  '1': LoginLog,
+  '2': OperationLog
+}
+const activeKey = ref('1')
+watch(
+  () => route.query,
+  () => {
+    if (route.query.tabKey) {
+      activeKey.value = String(route.query.tabKey)
+    }
+  },
+  { immediate: true }
+)
+const change = (key: string | number) => {
+  activeKey.value = key as string
+  router.replace({ path: route.path, query: { tabKey: key } })
+}
 </script>
 
 <style lang="scss" scoped>
