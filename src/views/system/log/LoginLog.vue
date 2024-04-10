@@ -22,7 +22,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button>
+        <a-button @click="onExportFile">
           <template #icon>
             <icon-download />
           </template>
@@ -45,13 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import { listLog } from '@/apis'
+import { listLog,exportLog } from '@/apis'
 import type { TableInstance } from '@arco-design/web-vue'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useTable } from '@/hooks'
-
+import {useDownload} from '@/hooks'
 defineOptions({ name: 'LoginLog' })
-
 const filterChange = (values,record)=>{
   try {
     const slotName = columns[values.split('_').pop()].slotName as string
@@ -96,7 +95,10 @@ const columns: TableInstance['columns'] = [
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
-
+//导出登录日志
+const onExportFile = ()=>{
+  useDownload(exportLog,'',queryForm)
+}
 const queryForm = reactive({
   module: '登录',
   ip: undefined,

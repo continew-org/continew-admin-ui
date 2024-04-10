@@ -22,7 +22,7 @@
       <a-button @click="reset">重置</a-button>
     </template>
     <template #custom-right>
-      <a-tooltip content="导出">
+      <a-tooltip content="导出" @click="onExportFile">
         <a-button>
           <template #icon>
             <icon-download />
@@ -56,11 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import { listLog, type LogResp } from '@/apis'
+import { listLog, type LogResp,exportOperateLog } from '@/apis'
 import type { TableInstance } from '@arco-design/web-vue'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
-import { useTable } from '@/hooks'
+import { useDownload, useTable } from '@/hooks'
 
 defineOptions({ name: 'OperationLog' })
 const filterChange = (values,record)=>{
@@ -109,7 +109,10 @@ const columns: TableInstance['columns'] = [
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
-
+//导出操作日志
+const onExportFile = ()=>{
+  useDownload(exportOperateLog,'',queryForm)
+}
 const queryForm = reactive({
   description: undefined,
   ip: undefined,

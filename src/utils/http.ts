@@ -61,7 +61,9 @@ http.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response
     const { success, code, msg } = data
-
+    if(response.request.responseType==='blob'){
+      return response
+    }
     // 成功
     if (success) {
       NProgress.done()
@@ -122,6 +124,7 @@ const requestNative = <T = unknown>(config: AxiosRequestConfig): Promise<AxiosRe
   return new Promise((resolve, reject) => {
     http
       .request<T>(config)
+      .then((res: AxiosResponse) => resolve(res))
       .catch((err: { msg: string }) => reject(err))
   })
 }
@@ -173,5 +176,13 @@ const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     ...config
   })
 }
-
-export default { get, post, put, patch, del, request, requestNative }
+const download = <T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
+  return requestNative({
+    method: 'get',
+    url,
+    responseType: 'blob',
+    params,
+    ...config
+  })
+}
+export default { get, post, put, patch, del, request, requestNative,download }
