@@ -7,6 +7,7 @@
     :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
     :pagination="pagination"
     column-resizable
+    @filterChange="filterChange"
     :disabledTools="['setting']"
     @refresh="search"
   >
@@ -62,7 +63,16 @@ import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import { useTable } from '@/hooks'
 
 defineOptions({ name: 'OperationLog' })
-
+const filterChange = (values,record)=>{
+  try {
+    const slotName = columns[values.split('_').pop()].slotName as string
+    const value = record.join(',')
+    queryForm[slotName] = value
+    search()
+  } catch (error) {
+    search()
+  }
+}
 const columns: TableInstance['columns'] = [
   {
     title: '序号',
@@ -82,14 +92,14 @@ const columns: TableInstance['columns'] = [
       filters: [
         {
           text: '成功',
-          value: 1
+          value: '1'
         },
         {
           text: '失败',
-          value: 2
+          value: '2'
         }
       ],
-      filter: (value, record) => record.status == value,
+      filter: () => true,
       alignLeft: true
     }
   },

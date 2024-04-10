@@ -61,7 +61,6 @@ const filterChange = (values,record)=>{
   } catch (error) {
     search()
   }
-  console.log(values,record)
 }
 const columns: TableInstance['columns'] = [
   {

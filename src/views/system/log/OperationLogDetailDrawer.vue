@@ -2,7 +2,7 @@
   <a-drawer v-model:visible="visible" title="日志详情" :width="720" :footer="false">
     <a-descriptions title="基本信息" :column="2" size="large" class="general-description">
       <a-descriptions-item label="日志 ID">{{ operationLog?.id }}</a-descriptions-item>
-      <a-descriptions-item label="Trace ID">{{ operationLog?.traceId }}</a-descriptions-item>
+      <a-descriptions-item label="Trace ID" >{{ operationLog?.traceId }}<TextCopy :value="operationLog?.traceId"/></a-descriptions-item>
       <a-descriptions-item label="操作人">{{ operationLog?.createUserString }}</a-descriptions-item>
       <a-descriptions-item label="操作时间">{{ operationLog?.createTime }}</a-descriptions-item>
       <a-descriptions-item label="操作内容">{{ operationLog?.description }}</a-descriptions-item>
@@ -25,7 +25,7 @@
         <a-tag v-else color="green">{{ operationLog?.timeTaken }} ms</a-tag>
       </a-descriptions-item>
       <a-descriptions-item label="请求 URI" :span="2">
-        {{ operationLog?.requestUrl }}
+        {{ operationLog?.requestUrl }}<TextCopy :value="operationLog?.requestUrl"/>
       </a-descriptions-item>
     </a-descriptions>
     <a-descriptions
@@ -95,7 +95,6 @@
 import { getLog, type LogDetailResp } from '@/apis'
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
-
 const logId = ref('')
 const operationLog = ref<LogDetailResp | null>()
 // 查询详情
