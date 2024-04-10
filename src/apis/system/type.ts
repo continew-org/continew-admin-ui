@@ -52,3 +52,28 @@ export interface LogQuery extends PageQuery {
   createTime?: string
   status?: number
 }
+
+/** 系统存储类型 */
+export type StorageResp = {
+  id: string
+  name: string
+  code: string
+  type: number
+  accessKey: string
+  secretKey: string
+  endpoint: string
+  bucketName: string
+  domain: string
+  description: string
+  isDefault: boolean
+  sort: number
+  status: number
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export interface StorageQuery extends PageQuery {
+  description?: string
+  status?: number
+}

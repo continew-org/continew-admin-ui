@@ -1,0 +1,146 @@
+<template>
+  <div class="gi_page">
+    <a-card title="存储管理" class="general-card">
+      <GiTable
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :columns="columns"
+        :loading="loading"
+        :scroll="{ x: '100%', y: '100%', minWidth: 1300 }"
+        :pagination="pagination"
+        :disabledColumnKeys="['name']"
+        @refresh="search"
+      >
+        <template #custom-left>
+          <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+            <template #prefix><icon-search /></template>
+          </a-input>
+          <a-select
+            v-model="queryForm.status"
+            :options="DisEnableStatusList"
+            placeholder="请选择状态"
+            allow-clear
+            style="width: 150px"
+            @change="search"
+          />
+          <a-button @click="reset">重置</a-button>
+        </template>
+        <template #custom-right>
+          <a-button type="primary" @click="onAdd">
+            <template #icon><icon-plus /></template>
+            <span>新增</span>
+          </a-button>
+        </template>
+        <template #name="{ record }">
+          <a-space fill>
+            <span>{{ record.name }}</span>
+            <a-tag v-if="record.isDefault" color="arcoblue" size="small" class="gi_round">
+              <template #default>默认</template>
+            </a-tag>
+          </a-space>
+        </template>
+        <template #type="{ record }">
+          <GiCellTag :value="record.type" :dict="storage_type_enum" />
+        </template>
+        <template #status="{ record }">
+          <GiCellStatus :status="record.status" />
+        </template>
+        <template #action="{ record }">
+          <a-space>
+            <template #split>
+              <a-divider direction="vertical" :margin="0" />
+            </template>
+            <a-link @click="onUpdate(record)">修改</a-link>
+            <a-link
+              status="danger"
+              :title="record.isDefault ? '默认存储库不能删除' : undefined"
+              :disabled="record.disabled"
+              @click="onDelete(record)"
+            >
+              删除
+            </a-link>
+          </a-space>
+        </template>
+      </GiTable>
+    </a-card>
+
+    <AddStorageModal ref="AddStorageModalRef" @save-success="search" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { listStorage, deleteStorage, type StorageResp } from '@/apis'
+import type { TableInstance } from '@arco-design/web-vue'
+import AddStorageModal from './AddStorageModal.vue'
+import { useTable } from '@/hooks'
+import { useDict } from '@/hooks/app'
+import { isMobile } from '@/utils'
+import { DisEnableStatusList } from '@/constant/common'
+
+defineOptions({ name: 'Storage' })
+
+const { storage_type_enum } = useDict('storage_type_enum')
+
+const columns: TableInstance['columns'] = [
+  {
+    title: '序号',
+    width: 66,
+    align: 'center',
+    render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize)
+  },
+  { title: '名称', dataIndex: 'name', slotName: 'name', width: 140, ellipsis: true, tooltip: true },
+  { title: '编码', dataIndex: 'code', ellipsis: true, tooltip: true },
+  { title: '状态', slotName: 'status', align: 'center' },
+  { title: '类型', slotName: 'type', align: 'center' },
+  { title: '访问密钥', dataIndex: 'accessKey', ellipsis: true, tooltip: true },
+  { title: '终端节点', dataIndex: 'endpoint', ellipsis: true, tooltip: true },
+  { title: '桶名称', dataIndex: 'bucketName', ellipsis: true, tooltip: true },
+  { title: '域名', dataIndex: 'domain', ellipsis: true, tooltip: true },
+  { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建时间', dataIndex: 'createTime', width: 180 },
+  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
+  { title: '操作', slotName: 'action', width: 130, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+]
+
+const queryForm = reactive({
+  description: undefined,
+  status: undefined,
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listStorage({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
+
+// 删除
+const onDelete = (item: StorageResp) => {
+  return handleDelete(() => deleteStorage(item.id), { content: `是否确定删除存储 [${item.name}]？`, showModal: true })
+}
+
+const AddStorageModalRef = ref<InstanceType<typeof AddStorageModal>>()
+// 新增
+const onAdd = () => {
+  AddStorageModalRef.value?.onAdd()
+}
+
+// 修改
+const onUpdate = (item: StorageResp) => {
+  AddStorageModalRef.value?.onUpdate(item.id)
+}
+</script>
+
+<style lang="scss" scoped></style>
