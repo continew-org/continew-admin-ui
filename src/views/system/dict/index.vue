@@ -1,0 +1,127 @@
+<template>
+  <div class="gi_page">
+    <a-card title="字典管理" class="general-card">
+      <GiTable
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :columns="columns"
+        :loading="loading"
+        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+        :pagination="pagination"
+        :disabledColumnKeys="['name']"
+        @refresh="search"
+      >
+        <template #custom-left>
+          <a-button type="primary" @click="onAdd">
+            <template #icon><icon-plus /></template>
+            <span>新增</span>
+          </a-button>
+        </template>
+        <template #custom-right>
+          <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+            <template #prefix><icon-search /></template>
+          </a-input>
+          <a-button @click="reset">重置</a-button>
+        </template>
+        <template #isSystem="{ record }">
+          <a-tag v-if="record.isSystem" color="red">是</a-tag>
+          <a-tag v-else color="arcoblue">否</a-tag>
+        </template>
+        <template #action="{ record }">
+          <a-space>
+            <template #split>
+              <a-divider direction="vertical" :margin="0" />
+            </template>
+            <a-link @click="onViewDictItem(record)">管理</a-link>
+            <a-link @click="onUpdate(record)">修改</a-link>
+            <a-link
+              status="danger"
+              :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+              :disabled="record.disabled"
+              @click="onDelete(record)"
+            >
+              删除
+            </a-link>
+          </a-space>
+        </template>
+      </GiTable>
+    </a-card>
+
+    <AddDictModal ref="AddDictModalRef" @save-success="search" />
+    <DictItemModal ref="DictItemModalRef" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { listDict, deleteDict, type DictResp } from '@/apis'
+import type { TableInstance } from '@arco-design/web-vue'
+import AddDictModal from './AddDictModal.vue'
+import DictItemModal from '@/views/system/dict/item/index.vue'
+import { useTable } from '@/hooks'
+import { isMobile } from '@/utils'
+
+defineOptions({ name: 'Dict' })
+
+const columns: TableInstance['columns'] = [
+  {
+    title: '序号',
+    width: 66,
+    align: 'center',
+    render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize)
+  },
+  { title: '名称', dataIndex: 'name', ellipsis: true, tooltip: true },
+  { title: '编码', dataIndex: 'code', width: 170, ellipsis: true, tooltip: true },
+  { title: '系统内置', slotName: 'isSystem', align: 'center', show: false },
+  { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建时间', dataIndex: 'createTime', width: 180 },
+  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
+  { title: '操作', slotName: 'action', width: 200, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+]
+
+const queryForm = reactive({
+  description: undefined,
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
+
+// 删除
+const onDelete = (item: DictResp) => {
+  return handleDelete(() => deleteDict(item.id), { content: `是否确定删除字典 [${item.name}]？`, showModal: true })
+}
+
+const AddDictModalRef = ref<InstanceType<typeof AddDictModal>>()
+// 新增
+const onAdd = () => {
+  AddDictModalRef.value?.onAdd()
+}
+
+// 修改
+const onUpdate = (item: DictResp) => {
+  AddDictModalRef.value?.onUpdate(item.id)
+}
+
+const DictItemModalRef = ref<InstanceType<typeof DictItemModal>>()
+// 查看字典项
+const onViewDictItem = (item: DictResp) => {
+  DictItemModalRef.value?.open(item.id, item.code)
+}
+</script>
+
+<style lang="scss" scoped></style>

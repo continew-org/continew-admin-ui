@@ -56,6 +56,41 @@ export interface LogQuery{
   status?: number
 }
 
+/** 系统字典类型 */
+export interface DictResp {
+  id: string
+  name: string
+  code: string
+  isSystem: boolean
+  description: string
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export interface DictQuery extends PageQuery {
+  description?: string
+}
+export type DictItemResp = {
+  id: string
+  label: string
+  value: string
+  color: string
+  sort: number
+  description: string
+  status: 1 | 2
+  dictId: number
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export interface DictItemQuery extends PageQuery {
+  description?: string
+  status?: number
+  dictId: string
+}
+
 /** 系统存储类型 */
 export type StorageResp = {
   id: string
