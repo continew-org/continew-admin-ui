@@ -27,3 +27,8 @@ export function updateDept(data: any, id: string) {
 export function deleteDept(id: string) {
   return http.del(`${BASE_URL}/${id}`)
 }
+
+/** @desc 导出部门 */
+export function exportDept(query: System.DeptQuery) {
+  return http.download<any>(`${BASE_URL}/export`, query)
+}

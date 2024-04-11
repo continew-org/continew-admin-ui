@@ -36,7 +36,7 @@
             <span>新增</span>
           </a-button>
           <a-tooltip content="导出">
-            <a-button>
+            <a-button @click="onExport">
               <template #icon>
                 <icon-download />
               </template>
@@ -81,11 +81,12 @@
 </template>
 
 <script setup lang="ts">
-import { listDept, deleteDept, type DeptResp, type DeptQuery } from '@/apis'
+import { listDept, deleteDept, exportDept, type DeptResp, type DeptQuery } from '@/apis'
 import { Message, type TableInstance } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
 import AddDeptModal from './AddDeptModal.vue'
 import { DisEnableStatusList } from '@/constant/common'
+import { useDownload } from '@/hooks'
 import { isMobile } from '@/utils'
 
 defineOptions({ name: 'Dept' })
@@ -143,6 +144,11 @@ const onDelete = async (item: DeptResp) => {
   await deleteDept(item.id)
   Message.success('删除成功')
   search()
+}
+
+// 导出
+const onExport = ()=>{
+  useDownload(() => exportDept(queryForm))
 }
 
 const AddDeptModalRef = ref<InstanceType<typeof AddDeptModal>>()
