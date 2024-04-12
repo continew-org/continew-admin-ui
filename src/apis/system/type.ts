@@ -91,6 +91,25 @@ export interface DictItemQuery extends PageQuery {
   dictId: string
 }
 
+/** 系统文件类型 */
+export type FileItem = {
+  id: string
+  name: string
+  size: number
+  url: string
+  extension: string
+  type: number
+  storageId: string
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export interface FileQuery extends PageQuery {
+  name?: string
+  type?: string
+}
+
 /** 系统存储类型 */
 export type StorageResp = {
   id: string

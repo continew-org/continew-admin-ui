@@ -18,3 +18,8 @@ export function listRoleDict(query?: { name: string; status: number }) {
 export function listCommonDict(code: string) {
   return http.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`)
 }
+
+/** @desc 上传文件 */
+export function uploadFile(data: FormData) {
+  return http.post(`${BASE_URL}/file`, data)
+}
