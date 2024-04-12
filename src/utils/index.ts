@@ -1,6 +1,7 @@
 import { isExternal } from "@/utils/validate";
 import { browse, mapTree } from "xe-utils";
 import _ from "lodash";
+import { Message } from "@arco-design/web-vue";
 
 export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key]
@@ -241,4 +242,13 @@ export const formatFileSize = (fileSize: number) => {
   index = Math.floor(Math.log(srcSize) / Math.log(1024))
   const size = srcSize / 1024 ** index
   return `${size.toFixed(2)} ${unitArr[index]}`
+}
+export const copyText =(text:any) =>{
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+  Message.success('复制成功')
 }

@@ -38,21 +38,11 @@
       <a-descriptions-item :span="2">
         <a-tabs type="card">
           <a-tab-pane key="1" title="响应头">
-            <VueJsonPretty
-              v-if="operationLog?.responseHeaders"
-              :path="'res'"
-              :data="JSON.parse(operationLog?.responseHeaders)"
-              :show-length="true"
-            />
+            <JsonPretty v-if="operationLog?.responseHeaders" :josn="operationLog?.responseHeaders"/>
             <span v-else>无</span>
           </a-tab-pane>
           <a-tab-pane key="2" title="响应体">
-            <VueJsonPretty
-              v-if="operationLog?.responseBody"
-              :path="'res'"
-              :data="JSON.parse(operationLog?.responseBody)"
-              :show-length="true"
-            />
+            <JsonPretty v-if="operationLog?.responseBody" :josn="operationLog?.responseBody"/>
             <span v-else>无</span>
           </a-tab-pane>
         </a-tabs>
@@ -68,21 +58,11 @@
       <a-descriptions-item :span="2">
         <a-tabs type="card">
           <a-tab-pane key="1" title="请求头">
-            <VueJsonPretty
-              v-if="operationLog?.requestHeaders"
-              :path="'res'"
-              :data="JSON.parse(operationLog?.requestHeaders)"
-              :show-length="true"
-            />
+            <JsonPretty v-if="operationLog?.requestHeaders" :josn="operationLog?.requestHeaders"/>
             <span v-else>无</span>
           </a-tab-pane>
           <a-tab-pane key="2" title="请求体">
-            <VueJsonPretty
-              v-if="operationLog?.requestBody"
-              :path="'res'"
-              :data="JSON.parse(operationLog?.requestBody)"
-              :show-length="true"
-            />
+            <JsonPretty v-if="operationLog?.requestBody" :josn="operationLog?.requestBody"/>
             <span v-else>无</span>
           </a-tab-pane>
         </a-tabs>
@@ -93,8 +73,7 @@
 
 <script lang="ts" setup>
 import { getLog, type LogDetailResp } from '@/apis'
-import VueJsonPretty from 'vue-json-pretty'
-import 'vue-json-pretty/lib/styles.css'
+import JsonPretty from '@/components/JsonPretty/index.vue'
 const logId = ref('')
 const operationLog = ref<LogDetailResp | null>()
 // 查询详情

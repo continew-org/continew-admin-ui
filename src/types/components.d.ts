@@ -34,6 +34,7 @@ declare module 'vue' {
     IconTableSize: typeof import('./../components/icons/IconTableSize.vue')['default']
     IconTreeAdd: typeof import('./../components/icons/IconTreeAdd.vue')['default']
     IconTreeReduce: typeof import('./../components/icons/IconTreeReduce.vue')['default']
+    JsonPretty: typeof import('./../components/JsonPretty/index.vue')['default']
     ParentView: typeof import('./../components/ParentView/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
