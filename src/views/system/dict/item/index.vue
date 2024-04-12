@@ -16,7 +16,7 @@
       :data="dataList"
       :columns="columns"
       :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 780 }"
+      :scroll="{ x: '100%', y: '100%', minWidth: 800 }"
       :pagination="pagination"
       :disabledColumnKeys="['label']"
       @refresh="search"
@@ -78,7 +78,16 @@ const columns: TableInstance['columns'] = [
   { title: '标签', dataIndex: 'label', slotName: 'label' },
   { title: '值', dataIndex: 'value', ellipsis: true, tooltip: true },
   { title: '状态', slotName: 'status', align: 'center' },
-  { title: '排序', dataIndex: 'sort', show: false },
+  {
+    title: '排序',
+    dataIndex: 'sort',
+    width: 90,
+    align: 'center',
+    show: false,
+    sortable: {
+      sortDirections: ['ascend', 'descend']
+    }
+  },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
   { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
