@@ -9,7 +9,7 @@
           <template #title>文件类型</template>
           <a-menu-item v-for="item in FileTypeList" :key="item.value.toString()" @click="onClickItem(item)">
             <template #icon>
-              <GiSvgIcon :size="28" :name="item.menuIcon"></GiSvgIcon>
+              <GiSvgIcon :size="28" :name="item.icon"></GiSvgIcon>
             </template>
             <span>{{ item.name }}</span>
           </a-menu-item>

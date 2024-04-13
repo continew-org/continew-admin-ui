@@ -1,3 +1,32 @@
+/** 系统菜单类型 */
+export interface MenuResp {
+  id: string
+  title: string
+  parentId: string
+  type: 1 | 2 | 3
+  path: string
+  name: string
+  component: string
+  redirect: string
+  icon: string
+  isExternal: boolean
+  isCache: boolean
+  isHidden: boolean
+  permission: string
+  sort: number
+  status: 1 | 2
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+  children: MenuResp[]
+}
+export interface MenuQuery {
+  title?: string
+  status?: number
+  sort: Array<string>
+}
+
 /** 系统部门类型 */
 export interface DeptResp {
   id: string
@@ -16,7 +45,7 @@ export interface DeptResp {
 export interface DeptQuery {
   description?: string
   status?: number
-  sort?: Array<string>
+  sort: Array<string>
 }
 
 /** 系统日志类型 */

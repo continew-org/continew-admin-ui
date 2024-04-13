@@ -9,7 +9,6 @@
     >
       <template #prefix>
         <template v-if="modelValue">
-          <component v-if="props.type === 'arco'" :size="16" :is="modelValue" />
           <GiSvgIcon v-if="modelValue" :size="16" :name="modelValue" />
         </template>
         <icon-search v-else />
@@ -46,8 +45,7 @@
           <a-row wrap :gutter="4">
             <a-col :span="isGridView ? 4 : 8" v-for="item of currentPageIconList" :key="item">
               <div class="icon-item" :class="{ active: modelValue === item }" @click="handleSelectedIcon(item)">
-                <component v-if="props.type === 'arco'" :is="item" :size="20" />
-                <GiSvgIcon v-if="props.type === 'custom'" :name="item" :size="20"></GiSvgIcon>
+                <GiSvgIcon :name="item" :size="20"></GiSvgIcon>
                 <div class="gi_line_1 icon-name">{{ item }}</div>
               </div>
             </a-col>
@@ -69,23 +67,20 @@
 </template>
 
 <script setup lang="ts">
-import * as ArcoIcons from '@arco-design/web-vue/es/icon'
 import { useClipboard } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
 // 自定义图标模块
-const SvgIconModules = import.meta.glob('@/icons/*.svg')
+const SvgIconModules = import.meta.glob('@/assets/icons/*.svg')
 
 defineOptions({ name: 'GiIconSelector' })
 const emit = defineEmits(['select', 'update:modelValue'])
 
 interface Props {
-  type?: 'arco' | 'custom'
   modelValue?: string
   enableCopy?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: 'arco', // 默认是arco图标类型 custom自定义图标
   modelValue: '',
   enableCopy: false
 })
@@ -93,25 +88,21 @@ const props = withDefaults(defineProps<Props>(), {
 const searchValue = ref('') // 搜索词
 
 // 图标列表
-const isGridView = ref(true)
+const isGridView = ref(false)
 
-let IconList: string[] = []
-if (props.type === 'arco') {
-  IconList = Object.keys(ArcoIcons).filter((i) => i !== 'default')
-}
-if (props.type === 'custom') {
-  for (const path in SvgIconModules) {
-    const name = path.replace('/src/icons/', '').replace('.svg', '')
-    IconList.push(name)
-  }
+let iconList: string[] = []
+for (const path in SvgIconModules) {
+  console.log(path)
+  const name = path.replace('/src/assets/icons/', '').replace('.svg', '')
+  iconList.push(name)
 }
 
 const pageSize = 42
 const current = ref(1)
-const total = ref(IconList.length) // 图标总数
+const total = ref(iconList.length) // 图标总数
 
 // 当前页的图标列表
-const currentPageIconList = ref(IconList.slice(0, pageSize))
+const currentPageIconList = ref(iconList.slice(0, pageSize))
 // 搜索列表
 const searchList = ref<string[]>([])
 
@@ -119,7 +110,7 @@ const searchList = ref<string[]>([])
 const onPageChange = (page: number) => {
   current.value = page
   if (!searchList.value.length) {
-    currentPageIconList.value = IconList.slice((page - 1) * pageSize, page * pageSize)
+    currentPageIconList.value = iconList.slice((page - 1) * pageSize, page * pageSize)
   } else {
     currentPageIconList.value = searchList.value.slice((page - 1) * pageSize, page * pageSize)
   }
@@ -129,15 +120,15 @@ const onPageChange = (page: number) => {
 const search = () => {
   if (searchValue.value) {
     const temp = searchValue.value.toLowerCase()
-    searchList.value = IconList.filter((item) => {
+    searchList.value = iconList.filter((item) => {
       return item.toLowerCase().startsWith((temp.startsWith('icon') ? '' : 'icon') + temp)
     })
     total.value = searchList.value.length
     currentPageIconList.value = searchList.value.slice(0, pageSize)
   } else {
     searchList.value = []
-    total.value = IconList.length
-    currentPageIconList.value = IconList.slice((current.value - 1) * pageSize, current.value * pageSize)
+    total.value = iconList.length
+    currentPageIconList.value = iconList.slice((current.value - 1) * pageSize, current.value * pageSize)
   }
 }
 

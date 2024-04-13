@@ -1,0 +1,186 @@
+<template>
+  <div class="gi_page">
+    <a-card title="菜单管理" class="general-card">
+      <GiTable
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :columns="columns"
+        :loading="loading"
+        :scroll="{ x: '100%', y: '100%', minWidth: 1700 }"
+        :pagination="false"
+        :disabledColumnKeys="['title']"
+        @refresh="search"
+      >
+        <template #expand-icon="{ expanded }">
+          <IconDown v-if="expanded" />
+          <IconRight v-else />
+        </template>
+        <template #custom-left>
+          <a-input v-model="queryForm.title" placeholder="请输入菜单标题" allow-clear @change="search">
+            <template #prefix><icon-search /></template>
+          </a-input>
+          <a-select
+            v-model="queryForm.status"
+            :options="DisEnableStatusList"
+            placeholder="请选择状态"
+            allow-clear
+            style="width: 150px"
+            @change="search"
+          />
+          <a-button @click="reset">重置</a-button>
+        </template>
+        <template #custom-right>
+          <a-button type="primary" @click="onAdd">
+            <template #icon><icon-plus /></template>
+            <span>新增</span>
+          </a-button>
+          <a-tooltip content="展开/折叠">
+            <a-button @click="onExpanded">
+              <template #icon>
+                <icon-list v-if="!isExpanded" />
+                <icon-mind-mapping v-else />
+              </template>
+            </a-button>
+          </a-tooltip>
+        </template>
+        <template #title="{ record }">
+          <GiSvgIcon :name="record.icon" :size="15" />
+          <span style="margin-left: 5px; vertical-align: middle">{{ record.title }}</span>
+        </template>
+        <template #type="{ record }">
+          <a-tag v-if="record.type === 1" color="arcoblue">目录</a-tag>
+          <a-tag v-if="record.type === 2" color="green">菜单</a-tag>
+          <a-tag v-if="record.type === 3">按钮</a-tag>
+        </template>
+        <template #status="{ record }">
+          <GiCellStatus :status="record.status" />
+        </template>
+        <template #isExternal="{ record }">
+          <a-tag v-if="record.isExternal" color="arcoblue" size="small">是</a-tag>
+          <a-tag v-else color="red" size="small">否</a-tag>
+        </template>
+        <template #isHidden="{ record }">
+          <a-tag v-if="record.isHidden" color="arcoblue" size="small">是</a-tag>
+          <a-tag v-else color="red" size="small">否</a-tag>
+        </template>
+        <template #isCache="{ record }">
+          <a-tag v-if="record.isCache" color="arcoblue" size="small">是</a-tag>
+          <a-tag v-else color="red" size="small">否</a-tag>
+        </template>
+        <template #action="{ record }">
+          <a-space>
+            <template #split>
+              <a-divider direction="vertical" :margin="0" />
+            </template>
+            <a-link @click="onUpdate(record)">修改</a-link>
+            <a-link v-if="[1, 2].includes(record.type)" @click="onAdd(record.id)">新增</a-link>
+            <a-popconfirm
+              type="warning"
+              content="是否确定删除该条数据？"
+              :ok-button-props="{ status: 'danger' }"
+              @ok="onDelete(record)"
+            >
+              <a-link status="danger">删除</a-link>
+            </a-popconfirm>
+          </a-space>
+        </template>
+      </GiTable>
+    </a-card>
+
+    <AddMenuModal ref="AddMenuModalRef" :menus="dataList" @save-success="search"></AddMenuModal>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { listMenu, deleteMenu, type MenuResp, type MenuQuery } from '@/apis'
+import { Message, type TableInstance } from '@arco-design/web-vue'
+import type GiTable from '@/components/GiTable/index.vue'
+import AddMenuModal from './AddMenuModal.vue'
+import { DisEnableStatusList } from '@/constant/common'
+import { isMobile } from '@/utils'
+
+defineOptions({ name: 'Menu' })
+
+const columns: TableInstance['columns'] = [
+  { title: '菜单标题', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },
+  { title: '类型', slotName: 'type', align: 'center' },
+  { title: '状态', slotName: 'status', align: 'center' },
+  { title: '排序', dataIndex: 'sort', align: 'center', show: false },
+  { title: '路由地址', dataIndex: 'path', ellipsis: true, tooltip: true },
+  { title: '组件名称', dataIndex: 'name', ellipsis: true, tooltip: true },
+  { title: '组件路径', dataIndex: 'component', width: 180, ellipsis: true, tooltip: true },
+  { title: '权限标识', dataIndex: 'permission', width: 180, ellipsis: true, tooltip: true },
+  { title: '外链', slotName: 'isExternal', align: 'center' },
+  { title: '隐藏', slotName: 'isHidden', align: 'center' },
+  { title: '缓存', slotName: 'isCache', align: 'center' },
+  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建时间', dataIndex: 'createTime', width: 180 },
+  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
+  { title: '操作', slotName: 'action', width: 180, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+]
+
+const queryForm = reactive({
+  title: undefined,
+  status: undefined,
+  sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
+})
+
+const dataList = ref<MenuResp[]>([])
+const loading = ref(false)
+// 查询列表数据
+const getDataList = async (query: MenuQuery = { ...queryForm }) => {
+  try {
+    loading.value = true
+    const res = await listMenu(query)
+    dataList.value = res.data
+  } finally {
+    loading.value = false
+  }
+}
+
+// 查询
+const search = () => {
+  getDataList()
+}
+
+// 重置
+const reset = () => {
+  queryForm.title = undefined
+  queryForm.status = undefined
+  search()
+}
+
+// 删除
+const onDelete = async (item: MenuResp) => {
+  await deleteMenu(item.id)
+  Message.success('删除成功')
+  search()
+}
+
+const isExpanded = ref(false)
+const tableRef = ref<InstanceType<typeof GiTable>>()
+// 展开/折叠
+const onExpanded = () => {
+  isExpanded.value = !isExpanded.value
+  tableRef.value?.tableRef?.expandAll(isExpanded.value)
+}
+
+const AddMenuModalRef = ref<InstanceType<typeof AddMenuModal>>()
+// 新增
+const onAdd = (id?: string) => {
+  AddMenuModalRef.value?.onAdd(id)
+}
+
+// 修改
+const onUpdate = (item: MenuResp) => {
+  AddMenuModalRef.value?.onUpdate(item.id)
+}
+
+onMounted(() => {
+  search()
+})
+</script>
+
+<style lang="scss" scoped></style>

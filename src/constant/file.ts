@@ -1,18 +1,17 @@
 export interface FileTypeListItem {
   name: string
   value: string
-  menuIcon: string
   icon: string
 }
 
 /** 文件分类 */
 export const FileTypeList: FileTypeListItem[] = [
-  { name: '全部', value: '0', menuIcon: 'menu-file', icon: 'icon-stamp' },
-  { name: '图片', value: '2', menuIcon: 'file-image', icon: 'icon-file-image' },
-  { name: '文档', value: '3', menuIcon: 'file-txt', icon: 'icon-file' },
-  { name: '视频', value: '4', menuIcon: 'file-video', icon: 'icon-video-camera' },
-  { name: '音频', value: '5', menuIcon: 'file-music', icon: 'icon-file-audio' },
-  { name: '其他', value: '1', menuIcon: 'file-other', icon: 'icon-bulb' }
+  { name: '全部', value: '0', icon: 'menu-file' },
+  { name: '图片', value: '2', icon: 'file-image-color' },
+  { name: '文档', value: '3', icon: 'file-txt' },
+  { name: '视频', value: '4', icon: 'file-video-color' },
+  { name: '音频', value: '5', icon: 'file-music' },
+  { name: '其他', value: '1', icon: 'file-other' }
 ]
 
 export interface FileExtendNameIconMap {

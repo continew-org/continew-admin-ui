@@ -1,11 +1,9 @@
 <template>
-  <GiSvgIcon v-if="props.svgIcon" :name="props.svgIcon" :size="18"></GiSvgIcon>
-  <component v-else-if="props.icon" :is="props.icon" style="height: 18px; width: 18px"></component>
+  <GiSvgIcon :name="props.icon" :size="18" />
 </template>
 
 <script lang="ts" setup>
 interface Props {
-  svgIcon?: string
   icon?: string
 }
 

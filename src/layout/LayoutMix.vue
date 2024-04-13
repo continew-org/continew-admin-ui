@@ -23,14 +23,7 @@
         >
           <a-menu-item v-for="item in topMenus" :key="item.path">
             <template #icon>
-              <GiSvgIcon
-                v-if="getMenuIcon(item, 'svgIcon')"
-                :name="getMenuIcon(item, 'svgIcon')"
-                :size="24"
-              ></GiSvgIcon>
-              <template v-else>
-                <component v-if="getMenuIcon(item, 'svgIcon')" :is="getMenuIcon(item, 'icon')"></component>
-              </template>
+              <GiSvgIcon :name="getMenuIcon(item)" :size="24" />
             </template>
             <span>{{ item.meta?.title || item.children?.[0]?.meta?.title || '' }}</span>
           </a-menu-item>
@@ -72,8 +65,8 @@ const topMenus = ref<RouteRecordRaw[]>([])
 topMenus.value = JSON.parse(JSON.stringify(menuRoutes))
 console.log('topMenus', toRaw(topMenus.value))
 
-const getMenuIcon = (item: RouteRecordRaw, key: 'svgIcon' | 'icon') => {
-  return item.meta?.[key] || item.children?.[0].meta?.[key]
+const getMenuIcon = (item: RouteRecordRaw) => {
+  return item.meta?.icon || item.children?.[0].meta?.icon
 }
 
 const onMenuItemClick = (key: string) => {

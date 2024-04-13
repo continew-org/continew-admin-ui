@@ -57,8 +57,7 @@ const formatAsyncRoutes = (menus: RouteItem[]) => {
         hidden: item.isHidden,
         keepAlive: item.isCache,
         alwaysShow: item.type == 1,
-        svgIcon: item.icon.startsWith('svg-') ? item.icon : '',
-        icon: item.icon.startsWith('icon-') ? item.icon : ''
+        icon: item.icon
       }
     }
   })

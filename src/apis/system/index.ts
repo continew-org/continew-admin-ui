@@ -1,3 +1,4 @@
+export * from './menu'
 export * from './dept'
 export * from './log'
 export * from './dict'

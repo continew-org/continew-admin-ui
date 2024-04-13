@@ -13,14 +13,14 @@
         <MenuIcon
           :svg-icon="onlyOneChild?.meta?.svgIcon || item?.meta?.svgIcon"
           :icon="onlyOneChild?.meta?.icon || item?.meta?.icon"
-        ></MenuIcon>
+        />
       </template>
       <span>{{ onlyOneChild?.meta?.title }}</span>
     </a-menu-item>
 
     <a-sub-menu v-else v-bind="attrs" :key="item.path" :title="item?.meta?.title">
       <template #icon>
-        <MenuIcon :svg-icon="item?.meta?.svgIcon" :icon="item?.meta?.icon"></MenuIcon>
+        <MenuIcon :icon="item?.meta?.icon" />
       </template>
       <MenuItem v-for="child in item.children" :key="child.path" :item="child"></MenuItem>
     </a-sub-menu>

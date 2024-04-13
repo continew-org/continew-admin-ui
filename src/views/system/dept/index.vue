@@ -101,7 +101,7 @@ const columns: TableInstance['columns'] = [
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
   { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
-  { title: '操作', slotName: 'action', width: 200, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  { title: '操作', slotName: 'action', width: 180, align: 'center', fixed: !isMobile() ? 'right' : undefined }
 ]
 
 const queryForm = reactive({
