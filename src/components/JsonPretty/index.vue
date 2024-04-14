@@ -1,29 +1,35 @@
 <template>
-  <div class="json_prettt_container">
+  <div class="json_pretty_container">
     <vue-json-pretty
-              :path="'res'"
-              :data="JSONObject"
-              :show-length="true"
-            />
-    <icon-copy class="copy_icon" @click="onCopy(JSONObject)"/>
+      :path="'res'"
+      :data="JSONObject"
+      :show-length="true"
+    />
+    <icon-copy class="copy_icon" @click="onCopy(JSONObject)" />
   </div>
 </template>
+
 <script setup lang="ts">
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
-import {copyText} from '@/utils'
+import { copyText } from '@/utils'
+
 defineOptions({ name: 'JsonPretty', inheritAttrs: false })
+
 const props = defineProps<{
-  josn: string
+  json: string
 }>()
-const JSONObject = computed(()=>JSON.parse(props?.josn))
-const onCopy =(data:object)=>{
+
+const JSONObject = computed(() => JSON.parse(props?.json))
+
+// 拷贝
+const onCopy = (data: object) => {
   copyText(JSON.stringify(data))
-  console.log('copyObject',data)
 }
 </script>
+
 <style lang="scss" scoped>
-.json_prettt_container{
+.json_pretty_container{
   width: 100%;
   height: 100%;
   overflow: auto;

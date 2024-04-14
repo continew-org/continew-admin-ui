@@ -119,43 +119,6 @@ export interface DeptQuery {
   sort: Array<string>
 }
 
-/** 系统日志类型 */
-export interface LogResp {
-  id: string
-  description: string
-  module: string
-  timeTaken: number
-  ip: string
-  address: string
-  browser: string
-  os: string
-  status: number
-  errorMsg: string
-  createUserString: string
-  createTime: string
-}
-export interface LogDetailResp extends LogResp {
-  traceId: string
-  requestUrl: string
-  requestMethod: string
-  requestHeaders: string
-  requestBody: string
-  statusCode: number
-  responseHeaders: string
-  responseBody: string
-}
-// 系统日志分页查询条件
-export interface PageLogQuery extends PageQuery,LogQuery{}
-// 系统日志查询条件
-export interface LogQuery{
-  description?: string
-  module?: string
-  ip?: string
-  createUserString?: string
-  createTime?: string
-  status?: number
-}
-
 /** 系统字典类型 */
 export interface DictResp {
   id: string
