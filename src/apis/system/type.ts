@@ -1,3 +1,36 @@
+/** 系统用户类型 */
+export interface UserResp {
+  id: string
+  username: string
+  nickname: string
+  avatar: string
+  gender: number
+  email: string
+  phone: string
+  description: string
+  status: 1 | 2
+  isSystem?: boolean
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+  deptId: string
+  deptName: string
+  disabled: boolean
+}
+export type UserDetailResp = UserResp & {
+  roleIds?: Array<number>
+  roleNames: string
+  pwdResetTime?: string
+}
+export interface UserQuery {
+  description?: string
+  status?: number
+  deptId?: string
+  sort: Array<string>
+}
+export interface UserPageQuery extends PageQuery, UserQuery {}
+
 /** 系统角色类型 */
 export interface RoleResp {
   id: string

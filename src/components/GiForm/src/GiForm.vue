@@ -19,6 +19,15 @@
                 ></a-input>
               </template>
 
+              <template v-if="item.type === 'input-password'">
+                <a-input-password
+                  :placeholder="`请输入${item.label}`"
+                  v-bind="(item.props as A.InputInstance['$props'])"
+                  :model-value="modelValue[item.field as keyof typeof modelValue]"
+                  @update:model-value="valueChange($event, item.field)"
+                ></a-input-password>
+              </template>
+
               <template v-if="item.type === 'input-number'">
                 <a-input-number
                   :placeholder="`请输入${item.label}`"
