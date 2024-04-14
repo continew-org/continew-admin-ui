@@ -1,3 +1,4 @@
+export * from './role'
 export * from './menu'
 export * from './dept'
 export * from './log'

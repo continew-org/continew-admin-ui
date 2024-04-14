@@ -1,0 +1,87 @@
+<template>
+  <a-drawer
+    v-model:visible="visible"
+    title="角色详情"
+    :width="width >= 580 ? 580 : '100%'"
+    :footer="false"
+  >
+    <a-descriptions title="基础信息" :column="2" size="large" class="general-description">
+      <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
+      <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>
+      <a-descriptions-item label="编码">{{ dataDetail?.code }}</a-descriptions-item>
+      <a-descriptions-item label="状态">
+        <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
+        <a-tag v-else color="red">禁用</a-tag>
+      </a-descriptions-item>
+      <a-descriptions-item label="数据权限">
+        <GiCellTag :value="dataDetail?.dataScope" :dict="data_scope_enum" />
+      </a-descriptions-item>
+      <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
+      <a-descriptions-item label="创建时间">{{ dataDetail?.createTime }}</a-descriptions-item>
+      <a-descriptions-item label="修改人">{{ dataDetail?.updateUserString }}</a-descriptions-item>
+      <a-descriptions-item label="修改时间">{{ dataDetail?.updateTime }}</a-descriptions-item>
+      <a-descriptions-item label="描述" :span="2">{{ dataDetail?.description }}</a-descriptions-item>
+    </a-descriptions>
+    <a-descriptions title="功能权限" :column="2" size="large" class="general-description" style="margin-top: 20px; position: relative">
+      <a-descriptions-item :span="2">
+        <a-tree
+          ref="menuTreeRef"
+          :checked-keys="dataDetail?.menuIds"
+          :data="menuList"
+          default-expand-all
+          check-strictly
+          checkable
+        />
+      </a-descriptions-item>
+    </a-descriptions>
+    <a-descriptions v-if="dataDetail?.dataScope === 5" title="数据权限" :column="2" size="large" class="general-description" style="margin-top: 20px; position: relative">
+      <a-descriptions-item :span="2">
+        <a-tree
+          ref="deptTreeRef"
+          :checked-keys="dataDetail?.deptIds"
+          :data="deptList"
+          default-expand-all
+          check-strictly
+          checkable
+        />
+      </a-descriptions-item>
+    </a-descriptions>
+  </a-drawer>
+</template>
+
+<script lang="ts" setup>
+import { getRole, type RoleDetailResp } from '@/apis'
+import { useDict, useMenu, useDept } from '@/hooks/app'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+const { data_scope_enum } = useDict('data_scope_enum')
+const { deptList, getDeptList } = useDept()
+const { menuList, getMenuList } = useMenu()
+
+const visible = ref(false)
+const dataId = ref('')
+const dataDetail = ref<RoleDetailResp>()
+// 查询详情
+const getDataDetail = async () => {
+  const res = await getRole(dataId.value)
+  dataDetail.value = res.data
+}
+
+// 打开详情
+const open = async (id: string) => {
+  if (!menuList.value.length) {
+    await getMenuList()
+  }
+  if (!deptList.value.length) {
+    await getDeptList()
+  }
+  dataId.value = id
+  await getDataDetail()
+  visible.value = true
+}
+
+defineExpose({ open })
+</script>
+
+<style lang="scss" scoped></style>

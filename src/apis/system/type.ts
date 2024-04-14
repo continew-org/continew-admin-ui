@@ -1,3 +1,41 @@
+/** 系统角色类型 */
+export interface RoleResp {
+  id: string
+  name: string
+  code: string
+  sort: number
+  description: string
+  dataScope: number
+  status: 1 | 2
+  isSystem: boolean
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+  disabled: boolean
+}
+export interface RoleDetailResp {
+  id: string
+  name: string
+  code: string
+  sort: number
+  description: string
+  menuIds: Array<number>
+  dataScope: number
+  deptIds: Array<number>
+  status: 1 | 2
+  isSystem: boolean
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+  disabled: boolean
+}
+export interface RoleQuery extends PageQuery {
+  description?: string
+  status?: number
+}
+
 /** 系统菜单类型 */
 export interface MenuResp {
   id: string
