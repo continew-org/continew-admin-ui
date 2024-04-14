@@ -2,10 +2,58 @@ import { defineStore } from 'pinia'
 import { computed, reactive, toRefs } from 'vue'
 import { generate, getRgbStr } from '@arco-design/color'
 import defaultSettings from '@/config/setting.json'
+import type { BasicConfigRecordResp } from '@/apis'
+import { listOption } from '@/apis'
 
 const storeSetup = () => {
   // App配置
   const settingConfig = reactive({ ...defaultSettings }) as App.SettingConfig
+  // 系统配置
+  let webConfig = {} as BasicConfigRecordResp
+
+  const getLogo = () => {
+    return webConfig.site_logo;
+  }
+  const getFavicon = () => {
+    return webConfig?.site_favicon
+  }
+  const getTitle = () => {
+    return webConfig?.site_title
+  }
+  const getCopyright = () => {
+    return webConfig?.site_copyright
+  }
+
+  // 初始化系统配置
+  const initWebConfig = () => {
+     listOption({
+      code: ['site_title', 'site_copyright', 'site_favicon', 'site_logo']
+    }).then((res) => {
+      const resMap = new Map()
+      res.data.forEach((item) => {
+        resMap.set(item.label, item.value)
+      })
+      webConfig = {
+        site_title: resMap.get('site_title'),
+        site_copyright: resMap.get('site_copyright'),
+        site_logo: resMap.get('site_logo'),
+        site_favicon: resMap.get('site_logo')
+      }
+      document.title = resMap.get('site_title')
+      document
+        .querySelector('link[rel="shortcut icon"]')
+        ?.setAttribute('href', resMap.get('site_favicon') || 'https://cnadmin.charles7c.top/favicon.ico')
+    })
+  }
+
+  // 保存系统配置
+  const saveWebConfig = (config: BasicConfigRecordResp) => {
+    webConfig = config
+    document.title = config.site_title || ''
+    document
+      .querySelector('link[rel="shortcut icon"]')
+      ?.setAttribute('href', config.site_favicon || 'https://cnadmin.charles7c.top/favicon.ico')
+  }
 
   // 页面切换动画类名
   const transitionName = computed(() => (settingConfig.animate ? settingConfig.animateMode : ''))
@@ -61,8 +109,14 @@ const storeSetup = () => {
     toggleTheme,
     setThemeColor,
     initTheme,
-    setMenuCollapse
+    setMenuCollapse,
+    getLogo,
+    getFavicon,
+    getTitle,
+    getCopyright,
+    initWebConfig,
+    saveWebConfig
   }
 }
 
-export const useAppStore = defineStore('app', storeSetup, { persist: true })
+export const useAppStore = defineStore('app', storeSetup, {})

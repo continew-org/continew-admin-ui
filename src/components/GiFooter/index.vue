@@ -1,9 +1,12 @@
 <template>
-  <div class="gi-footer">Copyright © 2022-{{ year }} ContiNew Admin</div>
+  <div class="gi-footer">{{appStore.getCopyright()}}</div>
 </template>
 
 <script lang="ts" setup>
 import Dayjs from 'dayjs'
+import {useAppStore} from "@/stores";
+
+const appStore = useAppStore();
 
 defineOptions({ name: 'GiFooter' })
 

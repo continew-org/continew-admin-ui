@@ -19,7 +19,8 @@
             @submit="handleLogin"
           >
             <h3 class="login-right__title">
-              <img class="logo" src="@/assets/images/logo.svg" alt="logo" /><span>ContiNew Admin</span>
+              <img :src="appStore.getLogo()" alt="Logo" height="33" />
+              <span>{{appStore.getTitle()}}</span>
             </h3>
             <a-form-item field="username">
               <a-input v-model="form.username" placeholder="请输入用户名" allow-clear>
@@ -55,17 +56,26 @@
 
     <GiThemeBtn class="theme-btn"></GiThemeBtn>
     <LoginBg></LoginBg>
+
+<!--    <div class="footer">
+      <div class="beian">
+        <div class="below text" v-html="appStore.getCopyright()"></div>
+      </div>
+    </div>-->
   </div>
+
 </template>
 
 <script setup lang="ts">
 import { getImageCaptcha } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import LoginBg from './components/LoginBg/index.vue'
-import { useUserStore } from '@/stores'
+import {useAppStore, useUserStore} from '@/stores'
 import { useStorage } from '@vueuse/core'
 import { useLoading } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
+
+const appStore = useAppStore();
 
 defineOptions({ name: 'Login' })
 
@@ -230,5 +240,26 @@ onMounted(() => {
   height: 36px;
   margin: 0 0 0 5px;
   cursor: pointer;
+}
+
+.footer {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  .beian {
+    .text {
+      color: #41464f;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      line-height: 20px;
+      text-align: center;
+    }
+    .below {
+      align-items: center;
+      display: flex;
+    }
+  }
 }
 </style>

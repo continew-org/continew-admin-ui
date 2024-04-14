@@ -1,6 +1,7 @@
 import http from '@/utils/http'
 import type { LabelValueState } from '@/types/global'
 import type { TreeNodeData } from '@arco-design/web-vue'
+import type {OptionQuery} from '@/apis'
 
 const BASE_URL = '/common'
 
@@ -22,6 +23,11 @@ export function listRoleDict(query?: { name: string; status: number }) {
 /** @desc 查询字典列表 */
 export function listCommonDict(code: string) {
   return http.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`)
+}
+
+/** @desc 获取系统参数 */
+export function listOption(params: OptionQuery) {
+  return http.get<LabelValueState[]>(`${BASE_URL}/option`, params)
 }
 
 /** @desc 上传文件 */

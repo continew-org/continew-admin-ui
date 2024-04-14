@@ -1,5 +1,5 @@
 import router from '@/router'
-import { useUserStore, useRouteStore } from '@/stores'
+import {useUserStore, useRouteStore, useAppStore} from '@/stores'
 import { getToken } from '@/utils/auth'
 import { isHttp } from '@/utils/validate'
 
@@ -15,6 +15,8 @@ export const resetHasRouteFlag = () => {
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   const routeStore = useRouteStore()
+  const appStore = useAppStore();
+  appStore.initWebConfig();
 
   // 判断该用户是否登录
   if (getToken()) {

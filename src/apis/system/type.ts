@@ -234,3 +234,28 @@ export interface StorageQuery extends PageQuery {
   description?: string
   status?: number
 }
+
+/** 系统参数*/
+export interface OptionQuery {
+  code?: Array<string>
+}
+
+export interface OptionReq {
+  code: string
+  value: string
+}
+
+export interface OptionResp {
+  name?: string
+  code: string
+  value: string
+  description?: string
+}
+
+/** 系统配置*/
+export interface BasicConfigRecordResp {
+  site_title?: string
+  site_copyright?: string
+  site_logo?: string
+  site_favicon?: string
+}
