@@ -90,7 +90,7 @@ const searchValue = ref('') // 搜索词
 // 图标列表
 const isGridView = ref(false)
 
-let iconList: string[] = []
+const iconList: string[] = []
 for (const path in SvgIconModules) {
   console.log(path)
   const name = path.replace('/src/assets/icons/', '').replace('.svg', '')

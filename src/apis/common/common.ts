@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 import type { LabelValueState } from '@/types/global'
 import type { TreeNodeData } from '@arco-design/web-vue'
-import type {OptionQuery} from '@/apis'
+import type { OptionQuery } from '@/apis'
 
 const BASE_URL = '/common'
 

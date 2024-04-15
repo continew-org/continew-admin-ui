@@ -9,4 +9,3 @@ export * from './auth/type'
 export * from './common/type'
 export * from './monitor/type'
 export * from './system/type'
-

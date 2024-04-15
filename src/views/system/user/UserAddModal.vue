@@ -100,15 +100,11 @@ const title = computed(() => (isUpdate.value ? '修改用户' : '新增用户'))
 const formRef = ref<FormInstance>()
 
 const rules: FormInstance['rules'] = {
-  username: [
-    { required: true, message: '请输入用户名' },
-  ],
-  nickname: [
-    { required: true, message: '请输入昵称' },
-  ],
+  username: [{ required: true, message: '请输入用户名' }],
+  nickname: [{ required: true, message: '请输入昵称' }],
   password: [{ required: true, message: '请输入密码' }],
   deptId: [{ required: true, message: '请选择所属部门' }],
-  roleIds: [{ required: true, message: '请选择角色' }],
+  roleIds: [{ required: true, message: '请选择角色' }]
 }
 
 const { form, resetForm } = useForm({

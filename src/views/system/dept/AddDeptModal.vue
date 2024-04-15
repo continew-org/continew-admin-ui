@@ -89,7 +89,7 @@ const { form, resetForm } = useForm<DeptReq>({
   name: '',
   parentId: undefined,
   sort: 999,
-  status: 1,
+  status: 1
 })
 
 // 重置

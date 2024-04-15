@@ -20,7 +20,6 @@ export interface DictState {
   items: Array<LabelValueState>
 }
 
-
 /** 状态（1：启用；2：禁用） */
 type Status = 1 | 2
 

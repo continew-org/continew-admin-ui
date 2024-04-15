@@ -22,16 +22,16 @@
 
 <script lang="ts" setup>
 interface ImageType {
-  src: string;
-  title: string;
-  link: string;
+  src: string
+  title: string
+  link: string
 }
 
 const imageList: ImageType[] = [
   {
     src: `https://doc.charles7c.top/img/sponsor/ad/roovps.jpg?${new Date().getTime()}`,
     title: 'ROOVPS',
-    link: 'https://roovps.com/cart',
-  },
-];
+    link: 'https://roovps.com/cart'
+  }
+]
 </script>

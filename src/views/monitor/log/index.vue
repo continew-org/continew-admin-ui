@@ -6,7 +6,7 @@
         <a-tab-pane key="2" title="操作日志" />
       </a-tabs>
       <keep-alive>
-          <component :is="PaneMap[activeKey]" />
+        <component :is="PaneMap[activeKey]" />
       </keep-alive>
     </a-card>
   </div>

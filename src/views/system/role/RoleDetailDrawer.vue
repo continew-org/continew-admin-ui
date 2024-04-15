@@ -1,10 +1,5 @@
 <template>
-  <a-drawer
-    v-model:visible="visible"
-    title="角色详情"
-    :width="width >= 580 ? 580 : '100%'"
-    :footer="false"
-  >
+  <a-drawer v-model:visible="visible" title="角色详情" :width="width >= 580 ? 580 : '100%'" :footer="false">
     <a-descriptions title="基础信息" :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
       <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>
@@ -22,7 +17,13 @@
       <a-descriptions-item label="修改时间">{{ dataDetail?.updateTime }}</a-descriptions-item>
       <a-descriptions-item label="描述" :span="2">{{ dataDetail?.description }}</a-descriptions-item>
     </a-descriptions>
-    <a-descriptions title="功能权限" :column="2" size="large" class="general-description" style="margin-top: 20px; position: relative">
+    <a-descriptions
+      title="功能权限"
+      :column="2"
+      size="large"
+      class="general-description"
+      style="margin-top: 20px; position: relative"
+    >
       <a-descriptions-item :span="2">
         <a-tree
           ref="menuTreeRef"
@@ -34,7 +35,14 @@
         />
       </a-descriptions-item>
     </a-descriptions>
-    <a-descriptions v-if="dataDetail?.dataScope === 5" title="数据权限" :column="2" size="large" class="general-description" style="margin-top: 20px; position: relative">
+    <a-descriptions
+      v-if="dataDetail?.dataScope === 5"
+      title="数据权限"
+      :column="2"
+      size="large"
+      class="general-description"
+      style="margin-top: 20px; position: relative"
+    >
       <a-descriptions-item :span="2">
         <a-tree
           ref="deptTreeRef"

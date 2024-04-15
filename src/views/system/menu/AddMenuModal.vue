@@ -55,12 +55,7 @@
         </template>
       </a-form-item>
       <a-form-item label="组件路径" field="component" v-if="form.type === 2">
-        <a-input
-          v-if="form.isExternal"
-          v-model.trim="form.component"
-          placeholder="请输入组件路径"
-          allow-clear
-        />
+        <a-input v-if="form.isExternal" v-model.trim="form.component" placeholder="请输入组件路径" allow-clear />
         <a-input v-else v-model.trim="form.component" placeholder="请输入组件路径" allow-clear>
           <template #prepend>@/views/</template>
           <template #append>.vue</template>
@@ -240,7 +235,6 @@ const save = async () => {
     return false
   }
 }
-
 
 const emit = defineEmits<{
   (e: 'save-success'): void

@@ -76,7 +76,6 @@ defineOptions({ name: 'Profile' })
 
 const route = useRoute()
 const userStore = useUserStore()
-
 </script>
 
 <style lang="scss" scoped>

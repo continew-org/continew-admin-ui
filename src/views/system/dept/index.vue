@@ -147,7 +147,7 @@ const onDelete = async (item: DeptResp) => {
 }
 
 // 导出
-const onExport = ()=>{
+const onExport = () => {
   useDownload(() => exportDept(queryForm))
 }
 

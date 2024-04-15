@@ -2,7 +2,9 @@
   <a-drawer v-model:visible="visible" title="日志详情" :width="720" :footer="false">
     <a-descriptions title="基本信息" :column="2" size="large" class="general-description">
       <a-descriptions-item label="日志 ID">{{ dataDetail?.id }}</a-descriptions-item>
-      <a-descriptions-item label="Trace ID" >{{ dataDetail?.traceId }}<TextCopy :value="dataDetail?.traceId" /></a-descriptions-item>
+      <a-descriptions-item label="Trace ID"
+        >{{ dataDetail?.traceId }}<TextCopy :value="dataDetail?.traceId"
+      /></a-descriptions-item>
       <a-descriptions-item label="操作人">{{ dataDetail?.createUserString }}</a-descriptions-item>
       <a-descriptions-item label="操作时间">{{ dataDetail?.createTime }}</a-descriptions-item>
       <a-descriptions-item label="操作内容">{{ dataDetail?.description }}</a-descriptions-item>
@@ -16,12 +18,8 @@
         <a-tag v-else color="red">失败</a-tag>
       </a-descriptions-item>
       <a-descriptions-item label="耗时">
-        <a-tag v-if="dataDetail?.timeTaken > 500" color="red">
-          {{ dataDetail?.timeTaken }}ms
-        </a-tag>
-        <a-tag v-else-if="dataDetail?.timeTaken > 200" color="orange">
-          {{ dataDetail?.timeTaken }}ms
-        </a-tag>
+        <a-tag v-if="dataDetail?.timeTaken > 500" color="red"> {{ dataDetail?.timeTaken }}ms </a-tag>
+        <a-tag v-else-if="dataDetail?.timeTaken > 200" color="orange"> {{ dataDetail?.timeTaken }}ms </a-tag>
         <a-tag v-else color="green">{{ dataDetail?.timeTaken }} ms</a-tag>
       </a-descriptions-item>
       <a-descriptions-item label="请求 URI" :span="2">

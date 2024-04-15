@@ -1,10 +1,6 @@
 <template>
   <div class="json_pretty_container">
-    <vue-json-pretty
-      :path="'res'"
-      :data="JSONObject"
-      :show-length="true"
-    />
+    <vue-json-pretty :path="'res'" :data="JSONObject" :show-length="true" />
     <icon-copy class="copy_icon" @click="onCopy(JSONObject)" />
   </div>
 </template>
@@ -29,12 +25,12 @@ const onCopy = (data: object) => {
 </script>
 
 <style lang="scss" scoped>
-.json_pretty_container{
+.json_pretty_container {
   width: 100%;
   height: 100%;
   overflow: auto;
   position: relative;
-  .copy_icon{
+  .copy_icon {
     position: absolute;
     right: 10px;
     top: 10px;

@@ -12,7 +12,7 @@ const storeSetup = () => {
   const webConfig = reactive({}) as BasicConfigRecordResp
 
   const getLogo = () => {
-    return webConfig.site_logo;
+    return webConfig.site_logo
   }
   const getFavicon = () => {
     return webConfig.site_favicon
@@ -26,17 +26,17 @@ const storeSetup = () => {
 
   // 初始化系统配置
   const initWebConfig = () => {
-     listOption({
+    listOption({
       code: ['site_title', 'site_copyright', 'site_favicon', 'site_logo']
     }).then((res) => {
       const resMap = new Map()
       res.data.forEach((item) => {
         resMap.set(item.label, item.value)
       })
-       webConfig.site_title=resMap.get('site_title');
-       webConfig.site_copyright=resMap.get('site_copyright');
-       webConfig.site_logo=resMap.get('site_logo');
-       webConfig.site_favicon=resMap.get('site_favicon');
+      webConfig.site_title = resMap.get('site_title')
+      webConfig.site_copyright = resMap.get('site_copyright')
+      webConfig.site_logo = resMap.get('site_logo')
+      webConfig.site_favicon = resMap.get('site_favicon')
       document.title = resMap.get('site_title')
       document
         .querySelector('link[rel="shortcut icon"]')
@@ -46,7 +46,7 @@ const storeSetup = () => {
 
   // 保存系统配置
   const saveWebConfig = (config: BasicConfigRecordResp) => {
-    Object.assign(webConfig,config)
+    Object.assign(webConfig, config)
     document.title = config.site_title || ''
     document
       .querySelector('link[rel="shortcut icon"]')
@@ -118,4 +118,4 @@ const storeSetup = () => {
   }
 }
 
-export const useAppStore = defineStore('app', storeSetup, {persist: true})
+export const useAppStore = defineStore('app', storeSetup, { persist: true })

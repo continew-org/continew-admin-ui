@@ -1,12 +1,12 @@
 <template>
-  <div class="gi-footer">{{appStore.getCopyright()}}</div>
+  <div class="gi-footer">{{ appStore.getCopyright() }}</div>
 </template>
 
 <script lang="ts" setup>
 import Dayjs from 'dayjs'
-import {useAppStore} from "@/stores";
+import { useAppStore } from '@/stores'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 defineOptions({ name: 'GiFooter' })
 

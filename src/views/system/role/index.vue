@@ -145,7 +145,6 @@ const RoleDetailDrawerRef = ref<InstanceType<typeof RoleDetailDrawer>>()
 const openDetail = (item: RoleResp) => {
   RoleDetailDrawerRef.value?.open(item.id)
 }
-
 </script>
 
 <style lang="scss" scoped></style>

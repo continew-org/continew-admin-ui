@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { getStorage, addStorage, updateStorage } from '@/apis'
 import type { StorageReq } from './type'
-import { Message, type FormInstance } from "@arco-design/web-vue";
+import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { useWindowSize } from '@vueuse/core'

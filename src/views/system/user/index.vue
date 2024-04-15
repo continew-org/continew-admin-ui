@@ -6,14 +6,7 @@
           <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
             <template #prefix><icon-search /></template>
           </a-input>
-          <a-tree
-            ref="treeRef"
-            :data="deptList"
-            default-expand-all
-            show-line
-            block-node
-            @select="handleSelectDept"
-          >
+          <a-tree ref="treeRef" :data="deptList" default-expand-all show-line block-node @select="handleSelectDept">
           </a-tree>
         </a-col>
 
@@ -57,7 +50,12 @@
               </a-tooltip>
             </template>
             <template #nickname="{ record }">
-              <GiCellAvatar :avatar="getAvatar(record.avatar, record.gender)" :name="record.nickname" is-link @click="openDetail(record)" />
+              <GiCellAvatar
+                :avatar="getAvatar(record.avatar, record.gender)"
+                :name="record.nickname"
+                is-link
+                @click="openDetail(record)"
+              />
             </template>
             <template #gender="{ record }">
               <GiCellGender :gender="record.gender" />
@@ -178,7 +176,7 @@ const onDelete = (item: UserResp) => {
 }
 
 // 导出
-const onExport = ()=>{
+const onExport = () => {
   useDownload(() => exportUser(queryForm))
 }
 

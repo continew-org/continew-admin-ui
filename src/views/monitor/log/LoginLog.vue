@@ -77,7 +77,9 @@ const columns: TableInstance['columns'] = [
           value: '2'
         }
       ],
-      filter: () =>{return true},
+      filter: () => {
+        return true
+      },
       alignLeft: true
     }
   },

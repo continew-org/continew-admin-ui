@@ -43,7 +43,7 @@ export interface LogDetailResp extends LogResp {
   responseHeaders: string
   responseBody: string
 }
-export interface LogQuery{
+export interface LogQuery {
   description?: string
   module?: string
   ip?: string

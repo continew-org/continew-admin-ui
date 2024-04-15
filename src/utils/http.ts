@@ -61,7 +61,7 @@ http.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response
     const { success, code, msg } = data
-    if(response.request.responseType==='blob'){
+    if (response.request.responseType === 'blob') {
       NProgress.done()
       return response
     }
@@ -186,4 +186,4 @@ const download = <T = any>(url: string, params?: object, config?: AxiosRequestCo
     ...config
   })
 }
-export default { get, post, put, patch, del, request, requestNative,download }
+export default { get, post, put, patch, del, request, requestNative, download }

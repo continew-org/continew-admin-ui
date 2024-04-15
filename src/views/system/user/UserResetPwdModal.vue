@@ -30,7 +30,7 @@ const options: Options = {
 }
 
 const columns: Columns = [
-  { label: '密码', field: 'newPassword', type: 'input-password', rules: [{ required: true, message: '请输入密码' }] },
+  { label: '密码', field: 'newPassword', type: 'input-password', rules: [{ required: true, message: '请输入密码' }] }
 ]
 
 const { form, resetForm } = useForm({
@@ -56,7 +56,7 @@ const save = async () => {
   try {
     const isInvalid = await formRef.value?.formRef?.validate()
     if (isInvalid) return false
-    await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || ''}, dataId.value)
+    await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || '' }, dataId.value)
     Message.success('重置成功')
     emit('save-success')
     return true

@@ -20,7 +20,7 @@
           >
             <h3 class="login-right__title">
               <img :src="appStore.getLogo()" alt="Logo" height="33" />
-              <span>{{appStore.getTitle()}}</span>
+              <span>{{ appStore.getTitle() }}</span>
             </h3>
             <a-form-item field="username">
               <a-input v-model="form.username" placeholder="请输入用户名" allow-clear>
@@ -57,25 +57,24 @@
     <GiThemeBtn class="theme-btn"></GiThemeBtn>
     <LoginBg></LoginBg>
 
-<!--    <div class="footer">
+    <!--    <div class="footer">
       <div class="beian">
         <div class="below text" v-html="appStore.getCopyright()"></div>
       </div>
     </div>-->
   </div>
-
 </template>
 
 <script setup lang="ts">
 import { getImageCaptcha } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import LoginBg from './components/LoginBg/index.vue'
-import {useAppStore, useUserStore} from '@/stores'
+import { useAppStore, useUserStore } from '@/stores'
 import { useStorage } from '@vueuse/core'
 import { useLoading } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 defineOptions({ name: 'Login' })
 

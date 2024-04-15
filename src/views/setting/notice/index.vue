@@ -1,6 +1,5 @@
 <template>
-  <div class="page">
-  </div>
+  <div class="page"></div>
 </template>
 
 <script setup lang="ts">
@@ -10,7 +9,6 @@ defineOptions({ name: 'Notification' })
 
 const route = useRoute()
 const form = reactive({ name: '' })
-
 </script>
 
 <style lang="scss" scoped>

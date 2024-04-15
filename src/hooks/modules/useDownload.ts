@@ -10,16 +10,11 @@ import { Message, Notification } from '@arco-design/web-vue'
 interface NavigatorWithMsSaveOrOpenBlob extends Navigator {
   msSaveOrOpenBlob(blob: Blob, fileName: string): void
 }
-export const useDownload = async (
-  api: () => Promise<any>,
-  isNotify = true,
-  tempName: string = '',
-  fileType = '.xlsx'
-) => {
+export const useDownload = async (api: () => Promise<any>, isNotify = true, tempName = '', fileType = '.xlsx') => {
   try {
     const res = await api()
     if (res.headers['content-disposition']) {
-      tempName = decodeURI(res.headers['content-disposition'].split(';')[1].split('=')[1]);
+      tempName = decodeURI(res.headers['content-disposition'].split(';')[1].split('=')[1])
     } else {
       tempName = tempName ? tempName : new Date().getTime() + fileType
     }
@@ -36,7 +31,7 @@ export const useDownload = async (
     const blob = new Blob([res.data])
     // 兼容 edge 不支持 createObjectURL 方法
     if ('msSaveOrOpenBlob' in (navigator as unknown as NavigatorWithMsSaveOrOpenBlob)) {
-      ; (window.navigator as unknown as NavigatorWithMsSaveOrOpenBlob).msSaveOrOpenBlob(blob, tempName + fileType)
+      ;(window.navigator as unknown as NavigatorWithMsSaveOrOpenBlob).msSaveOrOpenBlob(blob, tempName + fileType)
     }
     const blobUrl = window.URL.createObjectURL(blob)
     const exportFile = document.createElement('a')

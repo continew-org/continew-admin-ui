@@ -54,7 +54,7 @@ const mode = computed(() => {
 
 // 是否默认展开选中的菜单
 const autoOpenSelected = computed(() => {
-  return ['left', 'mix'].includes(appStore.layout);
+  return ['left', 'mix'].includes(appStore.layout)
 })
 
 // 当前页面激活菜单路径，先从路由里面找
