@@ -2,7 +2,6 @@
   <div class="gi_page">
     <a-card title="存储管理" class="general-card">
       <GiTable
-        ref="tableRef"
         row-key="id"
         :data="dataList"
         :columns="columns"
@@ -27,7 +26,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button type="primary" @click="onAdd">
+          <a-button v-has-perm="['system:storage:add']" type="primary" @click="onAdd">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>
@@ -51,8 +50,9 @@
             <template #split>
               <a-divider direction="vertical" :margin="0" />
             </template>
-            <a-link @click="onUpdate(record)">修改</a-link>
+            <a-link v-has-perm="['system:storage:update']" @click="onUpdate(record)">修改</a-link>
             <a-link
+              v-has-perm="['system:storage:delete']"
               status="danger"
               :title="record.isDefault ? '默认存储库不能删除' : undefined"
               :disabled="record.disabled"
@@ -65,14 +65,14 @@
       </GiTable>
     </a-card>
 
-    <AddStorageModal ref="AddStorageModalRef" @save-success="search" />
+    <StorageAddModal ref="StorageAddModalRef" @save-success="search" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { listStorage, deleteStorage, type StorageResp } from '@/apis'
+import StorageAddModal from './StorageAddModal.vue'
 import type { TableInstance } from '@arco-design/web-vue'
-import AddStorageModal from './AddStorageModal.vue'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -131,15 +131,15 @@ const onDelete = (item: StorageResp) => {
   return handleDelete(() => deleteStorage(item.id), { content: `是否确定删除存储 [${item.name}]？`, showModal: true })
 }
 
-const AddStorageModalRef = ref<InstanceType<typeof AddStorageModal>>()
+const StorageAddModalRef = ref<InstanceType<typeof StorageAddModal>>()
 // 新增
 const onAdd = () => {
-  AddStorageModalRef.value?.onAdd()
+  StorageAddModalRef.value?.onAdd()
 }
 
 // 修改
 const onUpdate = (item: StorageResp) => {
-  AddStorageModalRef.value?.onUpdate(item.id)
+  StorageAddModalRef.value?.onUpdate(item.id)
 }
 </script>
 
