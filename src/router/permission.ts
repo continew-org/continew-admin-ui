@@ -16,7 +16,6 @@ router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   const routeStore = useRouteStore()
   const appStore = useAppStore()
-  appStore.initWebConfig()
 
   // 判断该用户是否登录
   if (getToken()) {

@@ -1,14 +1,17 @@
 <template>
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
-    <img class="logo" :src="appStore.getLogo() ?? '@/assets/images/logo.svg'" alt="logo" />
-    <span class="system-name">{{ appStore.getTitle() }}</span>
+    <img class="logo" :src="appStore.getLogo() ?? '@/assets/images/logo.svg'"  alt="logo"/>
+    <span class="system-name">{{ webTitle }}</span>
   </section>
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
+import {useAppStore} from "@/stores";
 
-const appStore = useAppStore()
+const appStore= useAppStore();
+appStore.initWebConfig()
+
+const webTitle = computed(() => appStore.getTitle());
 
 interface Props {
   collapsed?: boolean
