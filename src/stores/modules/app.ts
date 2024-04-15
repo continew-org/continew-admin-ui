@@ -9,19 +9,19 @@ const storeSetup = () => {
   // App配置
   const settingConfig = reactive({ ...defaultSettings }) as App.SettingConfig
   // 系统配置
-  let webConfig = {} as BasicConfigRecordResp
+  const webConfig = reactive({}) as BasicConfigRecordResp
 
   const getLogo = () => {
     return webConfig.site_logo;
   }
   const getFavicon = () => {
-    return webConfig?.site_favicon
+    return webConfig.site_favicon
   }
   const getTitle = () => {
-    return webConfig?.site_title
+    return webConfig.site_title
   }
   const getCopyright = () => {
-    return webConfig?.site_copyright
+    return webConfig.site_copyright
   }
 
   // 初始化系统配置
@@ -33,12 +33,10 @@ const storeSetup = () => {
       res.data.forEach((item) => {
         resMap.set(item.label, item.value)
       })
-      webConfig = {
-        site_title: resMap.get('site_title'),
-        site_copyright: resMap.get('site_copyright'),
-        site_logo: resMap.get('site_logo'),
-        site_favicon: resMap.get('site_logo')
-      }
+       webConfig.site_title=resMap.get('site_title');
+       webConfig.site_copyright=resMap.get('site_copyright');
+       webConfig.site_logo=resMap.get('site_logo');
+       webConfig.site_favicon=resMap.get('site_favicon');
       document.title = resMap.get('site_title')
       document
         .querySelector('link[rel="shortcut icon"]')
@@ -48,7 +46,7 @@ const storeSetup = () => {
 
   // 保存系统配置
   const saveWebConfig = (config: BasicConfigRecordResp) => {
-    webConfig = config
+    Object.assign(webConfig,config)
     document.title = config.site_title || ''
     document
       .querySelector('link[rel="shortcut icon"]')
@@ -104,6 +102,7 @@ const storeSetup = () => {
 
   return {
     ...toRefs(settingConfig),
+    ...toRefs(webConfig),
     transitionName,
     themeCSSVar,
     toggleTheme,
@@ -119,4 +118,4 @@ const storeSetup = () => {
   }
 }
 
-export const useAppStore = defineStore('app', storeSetup, {})
+export const useAppStore = defineStore('app', storeSetup, {persist: true})

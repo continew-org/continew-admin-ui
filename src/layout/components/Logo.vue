@@ -1,7 +1,7 @@
 <template>
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
     <img class="logo" :src="appStore.getLogo() ?? '@/assets/images/logo.svg'"  alt="logo"/>
-    <span class="system-name">{{ appStore.getTitle() }}</span>
+    <span class="system-name">{{ appStore.getTitle()}}</span>
   </section>
 </template>
 
