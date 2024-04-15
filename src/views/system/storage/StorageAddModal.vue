@@ -112,6 +112,13 @@ const { form, resetForm } = useForm<StorageReq>({
   name: '',
   code: '',
   type: 2,
+  accessKey: undefined,
+  secretKey: undefined,
+  endpoint: undefined,
+  bucketName: undefined,
+  domain: undefined,
+  description: undefined,
+  isDefault: false,
   sort: 999,
   status: 1
 })

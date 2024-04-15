@@ -4,7 +4,7 @@ import hasRole from './permission/hasRole'
 
 export default {
   install(Vue: App) {
-    Vue.directive('hasPerm', hasPerm)
-    Vue.directive('hasRole', hasRole)
+    Vue.directive('permission', hasPerm)
+    Vue.directive('role', hasRole)
   }
 }
