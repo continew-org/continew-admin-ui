@@ -46,13 +46,13 @@
 
 <script setup lang="ts">
 import { exportLoginLog, listLog } from '@/apis'
-import type { TableInstance } from '@arco-design/web-vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useTable, useDownload } from '@/hooks'
 
 defineOptions({ name: 'LoginLog' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

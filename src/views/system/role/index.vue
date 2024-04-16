@@ -70,9 +70,9 @@
 
 <script setup lang="ts">
 import { listRole, deleteRole, type RoleResp } from '@/apis'
-import type { TableInstance } from '@arco-design/web-vue'
 import AddRoleModal from './AddRoleModal.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -82,7 +82,7 @@ defineOptions({ name: 'Role' })
 
 const { data_scope_enum } = useDict('data_scope_enum')
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

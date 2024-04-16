@@ -57,14 +57,14 @@
 
 <script setup lang="ts">
 import { listLog, exportOperationLog, type LogResp } from '@/apis'
-import type { TableInstance } from '@arco-design/web-vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import { useTable, useDownload } from '@/hooks'
 
 defineOptions({ name: 'OperationLog' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

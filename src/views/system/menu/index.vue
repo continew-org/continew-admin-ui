@@ -94,15 +94,16 @@
 
 <script setup lang="ts">
 import { listMenu, deleteMenu, type MenuResp, type MenuQuery } from '@/apis'
-import { Message, type TableInstance } from '@arco-design/web-vue'
+import { Message } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import AddMenuModal from './AddMenuModal.vue'
 import { DisEnableStatusList } from '@/constant/common'
 import { isMobile } from '@/utils'
 
 defineOptions({ name: 'Menu' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   { title: '菜单标题', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },
   { title: '类型', slotName: 'type', align: 'center' },
   { title: '状态', slotName: 'status', align: 'center' },

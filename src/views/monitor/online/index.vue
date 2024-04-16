@@ -44,7 +44,8 @@
 
 <script setup lang="ts">
 import { listOnlineUser, kickout } from '@/apis'
-import { Message, type TableInstance } from '@arco-design/web-vue'
+import { Message } from '@arco-design/web-vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useUserStore } from '@/stores'
 import { useTable } from '@/hooks'
@@ -52,7 +53,7 @@ import { isMobile } from '@/utils'
 
 defineOptions({ name: 'OnlineUser' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

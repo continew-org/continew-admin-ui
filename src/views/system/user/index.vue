@@ -102,10 +102,11 @@
 
 <script setup lang="ts">
 import { listUser, deleteUser, exportUser, type UserResp } from '@/apis'
-import type { TableInstance, TreeInstance } from '@arco-design/web-vue'
 import UserAddModal from './UserAddModal.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
+import type { TreeInstance } from '@arco-design/web-vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable, useDownload } from '@/hooks'
 import { useDept } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -114,7 +115,7 @@ import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'User' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

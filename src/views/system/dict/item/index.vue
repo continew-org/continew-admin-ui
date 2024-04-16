@@ -63,12 +63,12 @@
 
 <script lang="ts" setup>
 import { listDictItem, deleteDictItem, type DictItemResp } from '@/apis'
-import type { TableInstance } from '@arco-design/web-vue'
 import AddDictItemModal from './AddDictItemModal.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

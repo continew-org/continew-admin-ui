@@ -19,8 +19,8 @@
             @submit="handleLogin"
           >
             <h3 class="login-right__title">
-              <img v-if="webLogo" class="logo" :src="webLogo"  alt="logo" height="33"/>
-              <img v-else class="logo" src="@/assets/images/logo.svg"  alt="logo"/>
+              <img v-if="webLogo" class="logo" :src="webLogo" alt="logo" height="33" />
+              <img v-else class="logo" src="@/assets/images/logo.svg" alt="logo" />
               <span>{{ appStore.getTitle() }}</span>
             </h3>
             <a-form-item field="username">
@@ -78,8 +78,8 @@ import { encryptByRsa } from '@/utils/encrypt'
 const appStore = useAppStore()
 appStore.initWebConfig()
 
-const webTitle = computed(() => appStore.getTitle());
-const webLogo = computed(() => appStore.getLogo());
+computed(() => appStore.getTitle())
+const webLogo = computed(() => appStore.getLogo())
 
 defineOptions({ name: 'Login' })
 

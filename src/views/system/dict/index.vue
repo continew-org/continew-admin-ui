@@ -55,15 +55,15 @@
 
 <script setup lang="ts">
 import { listDict, deleteDict, type DictResp } from '@/apis'
-import type { TableInstance } from '@arco-design/web-vue'
 import AddDictModal from './AddDictModal.vue'
 import DictItemModal from '@/views/system/dict/item/index.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 
 defineOptions({ name: 'Dict' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,

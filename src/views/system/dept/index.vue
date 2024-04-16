@@ -82,8 +82,9 @@
 
 <script setup lang="ts">
 import { listDept, deleteDept, exportDept, type DeptResp, type DeptQuery } from '@/apis'
-import { Message, type TableInstance } from '@arco-design/web-vue'
+import { Message } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import AddDeptModal from './AddDeptModal.vue'
 import { DisEnableStatusList } from '@/constant/common'
 import { useDownload } from '@/hooks'
@@ -91,7 +92,7 @@ import { isMobile } from '@/utils'
 
 defineOptions({ name: 'Dept' })
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   { title: '名称', dataIndex: 'name', width: 170, ellipsis: true, tooltip: true },
   { title: '状态', slotName: 'status', align: 'center' },
   { title: '排序', dataIndex: 'sort', align: 'center', show: false },
