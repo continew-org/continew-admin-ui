@@ -62,7 +62,7 @@
         </template>
       </GiTable>
 
-      <AddRoleModal ref="AddRoleModalRef" @save-success="search" />
+      <RoleAddModal ref="RoleAddModalRef" @save-success="search" />
       <RoleDetailDrawer ref="RoleDetailDrawerRef" />
     </a-card>
   </div>
@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { listRole, deleteRole, type RoleResp } from '@/apis'
-import AddRoleModal from './AddRoleModal.vue'
+import RoleAddModal from './RoleAddModal.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -129,15 +129,15 @@ const onDelete = (item: RoleResp) => {
   return handleDelete(() => deleteRole(item.id), { content: `是否确定删除角色 [${item.name}]？`, showModal: true })
 }
 
-const AddRoleModalRef = ref<InstanceType<typeof AddRoleModal>>()
+const RoleAddModalRef = ref<InstanceType<typeof RoleAddModal>>()
 // 新增
 const onAdd = () => {
-  AddRoleModalRef.value?.onAdd()
+  RoleAddModalRef.value?.onAdd()
 }
 
 // 修改
 const onUpdate = (item: RoleResp) => {
-  AddRoleModalRef.value?.onUpdate(item.id)
+  RoleAddModalRef.value?.onUpdate(item.id)
 }
 
 const RoleDetailDrawerRef = ref<InstanceType<typeof RoleDetailDrawer>>()

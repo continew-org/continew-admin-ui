@@ -48,14 +48,14 @@
       </GiTable>
     </a-card>
 
-    <AddDictModal ref="AddDictModalRef" @save-success="search" />
+    <DictAddModal ref="DictAddModalRef" @save-success="search" />
     <DictItemModal ref="DictItemModalRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { listDict, deleteDict, type DictResp } from '@/apis'
-import AddDictModal from './AddDictModal.vue'
+import DictAddModal from './DictAddModal.vue'
 import DictItemModal from '@/views/system/dict/item/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -97,7 +97,6 @@ const {
 // 重置
 const reset = () => {
   queryForm.description = undefined
-  queryForm.status = undefined
   search()
 }
 
@@ -106,15 +105,15 @@ const onDelete = (item: DictResp) => {
   return handleDelete(() => deleteDict(item.id), { content: `是否确定删除字典 [${item.name}]？`, showModal: true })
 }
 
-const AddDictModalRef = ref<InstanceType<typeof AddDictModal>>()
+const DictAddModalRef = ref<InstanceType<typeof DictAddModal>>()
 // 新增
 const onAdd = () => {
-  AddDictModalRef.value?.onAdd()
+  DictAddModalRef.value?.onAdd()
 }
 
 // 修改
 const onUpdate = (item: DictResp) => {
-  AddDictModalRef.value?.onUpdate(item.id)
+  DictAddModalRef.value?.onUpdate(item.id)
 }
 
 const DictItemModalRef = ref<InstanceType<typeof DictItemModal>>()

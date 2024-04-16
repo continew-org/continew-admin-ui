@@ -88,16 +88,16 @@
       </GiTable>
     </a-card>
 
-    <AddMenuModal ref="AddMenuModalRef" :menus="dataList" @save-success="search"></AddMenuModal>
+    <MenuAddModal ref="MenuAddModalRef" :menus="dataList" @save-success="search" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { listMenu, deleteMenu, type MenuResp, type MenuQuery } from '@/apis'
+import MenuAddModal from './MenuAddModal.vue'
 import { Message } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import AddMenuModal from './AddMenuModal.vue'
 import { DisEnableStatusList } from '@/constant/common'
 import { isMobile } from '@/utils'
 
@@ -168,15 +168,15 @@ const onExpanded = () => {
   tableRef.value?.tableRef?.expandAll(isExpanded.value)
 }
 
-const AddMenuModalRef = ref<InstanceType<typeof AddMenuModal>>()
+const MenuAddModalRef = ref<InstanceType<typeof MenuAddModal>>()
 // 新增
 const onAdd = (id?: string) => {
-  AddMenuModalRef.value?.onAdd(id)
+  MenuAddModalRef.value?.onAdd(id)
 }
 
 // 修改
 const onUpdate = (item: MenuResp) => {
-  AddMenuModalRef.value?.onUpdate(item.id)
+  MenuAddModalRef.value?.onUpdate(item.id)
 }
 
 onMounted(() => {

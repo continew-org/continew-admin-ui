@@ -76,16 +76,16 @@
       </GiTable>
     </a-card>
 
-    <AddDeptModal ref="AddDeptModalRef" @save-success="search" />
+    <DeptAddModal ref="DeptAddModalRef" @save-success="search" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { listDept, deleteDept, exportDept, type DeptResp, type DeptQuery } from '@/apis'
+import DeptAddModal from './DeptAddModal.vue'
 import { Message } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import AddDeptModal from './AddDeptModal.vue'
 import { DisEnableStatusList } from '@/constant/common'
 import { useDownload } from '@/hooks'
 import { isMobile } from '@/utils'
@@ -152,15 +152,15 @@ const onExport = () => {
   useDownload(() => exportDept(queryForm))
 }
 
-const AddDeptModalRef = ref<InstanceType<typeof AddDeptModal>>()
+const DeptAddModalRef = ref<InstanceType<typeof DeptAddModal>>()
 // 新增
 const onAdd = (id?: string) => {
-  AddDeptModalRef.value?.onAdd(id)
+  DeptAddModalRef.value?.onAdd(id)
 }
 
 // 修改
 const onUpdate = (item: DeptResp) => {
-  AddDeptModalRef.value?.onUpdate(item.id)
+  DeptAddModalRef.value?.onUpdate(item.id)
 }
 
 onMounted(() => {

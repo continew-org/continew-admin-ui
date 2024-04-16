@@ -57,13 +57,13 @@
       </template>
     </GiTable>
 
-    <AddDictItemModal ref="AddDictItemModalRef" @save-success="search" />
+    <DictItemAddModal ref="DictItemAddModalRef" @save-success="search" />
   </a-modal>
 </template>
 
 <script lang="ts" setup>
 import { listDictItem, deleteDictItem, type DictItemResp } from '@/apis'
-import AddDictItemModal from './AddDictItemModal.vue'
+import DictItemAddModal from './DictItemAddModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
@@ -137,15 +137,15 @@ const onDelete = (item: DictItemResp) => {
   return handleDelete(() => deleteDictItem(item.id), { content: `是否确定删除 [${item.label}]？`, showModal: false })
 }
 
-const AddDictItemModalRef = ref<InstanceType<typeof AddDictItemModal>>()
+const DictItemAddModalRef = ref<InstanceType<typeof DictItemAddModal>>()
 // 新增
 const onAdd = () => {
-  AddDictItemModalRef.value?.onAdd(dictId.value)
+  DictItemAddModalRef.value?.onAdd(dictId.value)
 }
 
 // 修改
 const onUpdate = (item: DictItemResp) => {
-  AddDictItemModalRef.value?.onUpdate(item.id)
+  DictItemAddModalRef.value?.onUpdate(item.id)
 }
 </script>
 
