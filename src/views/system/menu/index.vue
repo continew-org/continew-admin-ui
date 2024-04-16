@@ -31,7 +31,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button type="primary" @click="onAdd">
+          <a-button v-permission="['system:menu:add']" type="primary" @click="onAdd">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>
@@ -70,18 +70,17 @@
         </template>
         <template #action="{ record }">
           <a-space>
-            <template #split>
-              <a-divider direction="vertical" :margin="0" />
-            </template>
-            <a-link @click="onUpdate(record)">修改</a-link>
-            <a-link v-if="[1, 2].includes(record.type)" @click="onAdd(record.id)">新增</a-link>
+            <a-link v-permission="['system:menu:update']" @click="onUpdate(record)">修改</a-link>
+            <a-link v-if="[1, 2].includes(record.type)" v-permission="['system:menu:add']" @click="onAdd(record.id)">
+              新增
+            </a-link>
             <a-popconfirm
               type="warning"
               content="是否确定删除该条数据？"
               :ok-button-props="{ status: 'danger' }"
               @ok="onDelete(record)"
             >
-              <a-link status="danger">删除</a-link>
+              <a-link v-permission="['system:menu:delete']" status="danger">删除</a-link>
             </a-popconfirm>
           </a-space>
         </template>
@@ -100,6 +99,7 @@ import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { DisEnableStatusList } from '@/constant/common'
 import { isMobile } from '@/utils'
+import has from '@/utils/has'
 
 defineOptions({ name: 'Menu' })
 
@@ -115,11 +115,18 @@ const columns: TableInstanceColumns[] = [
   { title: '外链', slotName: 'isExternal', align: 'center' },
   { title: '隐藏', slotName: 'isHidden', align: 'center' },
   { title: '缓存', slotName: 'isCache', align: 'center' },
-  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
-  { title: '操作', slotName: 'action', width: 180, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 180,
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['system:menu:update', 'system:menu:delete', 'system:menu:add'])
+  }
 ]
 
 const queryForm = reactive({

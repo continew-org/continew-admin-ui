@@ -26,7 +26,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button type="primary" @click="onAdd">
+          <a-button v-permission="['system:role:add']" type="primary" @click="onAdd">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>
@@ -46,11 +46,9 @@
         </template>
         <template #action="{ record }">
           <a-space>
-            <template #split>
-              <a-divider direction="vertical" :margin="0" />
-            </template>
-            <a-link @click="onUpdate(record)">修改</a-link>
+            <a-link v-permission="['system:role:update']" @click="onUpdate(record)">修改</a-link>
             <a-link
+              v-permission="['system:role:delete']"
               status="danger"
               :title="record.isSystem ? '系统内置数据不能删除' : undefined"
               :disabled="record.disabled"
@@ -77,6 +75,7 @@ import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
 import { DisEnableStatusList } from '@/constant/common'
+import has from '@/utils/has'
 
 defineOptions({ name: 'Role' })
 
@@ -96,11 +95,18 @@ const columns: TableInstanceColumns[] = [
   { title: '排序', dataIndex: 'sort', align: 'center', show: false },
   { title: '系统内置', slotName: 'isSystem', align: 'center', show: false },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
-  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
-  { title: '操作', slotName: 'action', width: 200, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 200,
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['system:role:update', 'system:role:delete'])
+  }
 ]
 
 const queryForm = reactive({

@@ -37,12 +37,12 @@
               <a-button @click="reset">重置</a-button>
             </template>
             <template #custom-right>
-              <a-button type="primary" @click="onAdd">
+              <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
                 <template #icon><icon-plus /></template>
                 <span>新增</span>
               </a-button>
               <a-tooltip content="导出">
-                <a-button @click="onExport">
+                <a-button v-permission="['system:user:export']" @click="onExport">
                   <template #icon>
                     <icon-download />
                   </template>
@@ -69,11 +69,9 @@
             </template>
             <template #action="{ record }">
               <a-space>
-                <template #split>
-                  <a-divider direction="vertical" :margin="0" />
-                </template>
-                <a-link @click="onUpdate(record)">修改</a-link>
+                <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
                 <a-link
+                  v-permission="['system:user:delete']"
                   status="danger"
                   :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
                   :disabled="record.disabled"
@@ -111,6 +109,7 @@ import { useTable, useDownload } from '@/hooks'
 import { useDept } from '@/hooks/app'
 import { isMobile } from '@/utils'
 import getAvatar from '@/utils/avatar'
+import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'User' })
@@ -139,11 +138,18 @@ const columns: TableInstanceColumns[] = [
   { title: '所属部门', dataIndex: 'deptName', ellipsis: true, tooltip: true },
   { title: '系统内置', slotName: 'isSystem', width: 100, align: 'center', show: false },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
-  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
-  { title: '操作', slotName: 'action', width: 200, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 200,
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['system:user:update', 'system:user:delete', 'system:user:resetPwd'])
+  }
 ]
 
 const queryForm = reactive({

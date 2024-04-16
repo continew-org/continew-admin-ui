@@ -96,9 +96,9 @@ const columns: TableInstanceColumns[] = [
   { title: '桶名称', dataIndex: 'bucketName', ellipsis: true, tooltip: true },
   { title: '域名', dataIndex: 'domain', ellipsis: true, tooltip: true },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
-  { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
+  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
   {
     title: '操作',
