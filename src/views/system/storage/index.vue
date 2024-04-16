@@ -26,7 +26,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button v-has-perm="['system:storage:add']" type="primary" @click="onAdd">
+          <a-button v-permission="['system:storage:add']" type="primary" @click="onAdd">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>
@@ -47,12 +47,9 @@
         </template>
         <template #action="{ record }">
           <a-space>
-            <template #split>
-              <a-divider direction="vertical" :margin="0" />
-            </template>
-            <a-link v-has-perm="['system:storage:update']" @click="onUpdate(record)">修改</a-link>
+            <a-link v-permission="['system:storage:update']" @click="onUpdate(record)">修改</a-link>
             <a-link
-              v-has-perm="['system:storage:delete']"
+              v-permission="['system:storage:delete']"
               status="danger"
               :title="record.isDefault ? '默认存储库不能删除' : undefined"
               :disabled="record.disabled"
@@ -72,17 +69,18 @@
 <script setup lang="ts">
 import { listStorage, deleteStorage, type StorageResp } from '@/apis'
 import StorageAddModal from './StorageAddModal.vue'
-import type { TableInstance } from '@arco-design/web-vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
+import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'Storage' })
 
 const { storage_type_enum } = useDict('storage_type_enum')
 
-const columns: TableInstance['columns'] = [
+const columns: TableInstanceColumns[] = [
   {
     title: '序号',
     width: 66,
@@ -102,7 +100,14 @@ const columns: TableInstance['columns'] = [
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
   { title: '修改人', dataIndex: 'updateUserString', show: false, ellipsis: true, tooltip: true },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
-  { title: '操作', slotName: 'action', width: 130, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 130,
+    show: has.hasPermOr(['system:storage:update', 'system:storage:delete']),
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined
+  }
 ]
 
 const queryForm = reactive({
