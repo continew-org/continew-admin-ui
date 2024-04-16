@@ -2,8 +2,8 @@ import type { DirectiveBinding, Directive } from 'vue'
 import { useUserStore } from '@/stores'
 
 /**
- * @desc v-hasPerm 操作权限处理
- * @desc 使用 v-hasPerm="['home:btn:add']"
+ * @desc v-permission 操作权限处理
+ * @desc 使用 v-permission="['system:user:add']"
  */
 function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   const userStore = useUserStore()
