@@ -1,5 +1,5 @@
 <template>
-  <a-card title="工作台" :bordered="false" size="medium" class="card">
+  <a-card title="工作台" :bordered="false" class="card">
     <template #extra>
       <NowTime />
     </template>
@@ -15,6 +15,11 @@
           </div>
         </a-space>
       </a-col>
+      <a-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8" :xxl="6" style="margin: -8px -7px">
+        <a-row justify="end">
+          <SupportCard />
+        </a-row>
+      </a-col>
     </a-row>
   </a-card>
 </template>
@@ -23,6 +28,7 @@
 import NowTime from './NowTime/index.vue'
 import { useUserStore } from '@/stores'
 import { goodTimeText } from '@/utils'
+import SupportCard from './SupportCard.vue'
 
 const userStore = useUserStore()
 </script>
