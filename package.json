@@ -29,7 +29,7 @@
     "dayjs": "^1.11.4",
     "echarts": "^5.4.2",
     "jsencrypt": "^3.3.2",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "md-editor-v3": "^4.6.2",
     "mitt": "^3.0.0",
     "mockjs": "^1.1.0",

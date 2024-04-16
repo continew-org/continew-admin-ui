@@ -56,7 +56,7 @@ dependencies:
   jsencrypt:
     specifier: ^3.3.2
     version: 3.3.2
-  lodash:
+  lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
   md-editor-v3:
@@ -4413,6 +4413,7 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
 
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}

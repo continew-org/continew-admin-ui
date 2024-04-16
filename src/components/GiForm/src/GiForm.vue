@@ -8,8 +8,14 @@
           v-bind="item.col || item.span ? item.col : options.col"
           v-show="index <= (options.fold?.index || 0) || (index >= (options.fold?.index || 0) && !collapsed)"
         >
-          <a-form-item v-bind="item.item" :label="item.label" :field="item.field" :rules="item.rules">
-            <slot :name="item.field">
+          <a-form-item
+            v-bind="item.item"
+            :label="item.label"
+            :field="item.field"
+            :rules="item.rules"
+            :disabled="isDisabled(item.disabled)"
+          >
+            <slot :name="item.field" v-bind="{ disabled: isDisabled(item.disabled) }">
               <template v-if="item.type === 'input'">
                 <a-input
                   :placeholder="`请输入${item.label}`"
@@ -165,9 +171,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Options, Columns, ColumnsItemHide, ColumnsItem } from './type'
+import type { Options, Columns, ColumnsItemHide, ColumnsItemDisabled, ColumnsItem } from './type'
 import type * as A from '@arco-design/web-vue'
-import _ from 'lodash'
+import { cloneDeep } from 'lodash-es'
 
 interface Props {
   modelValue: any
@@ -199,6 +205,14 @@ const isHide = (hide?: ColumnsItemHide<boolean | object>) => {
   }
 }
 
+const isDisabled = (disabled?: ColumnsItemDisabled<boolean | object>) => {
+  if (disabled === undefined) return false
+  if (typeof disabled === 'boolean') return disabled
+  if (typeof disabled === 'function') {
+    return disabled(props.modelValue)
+  }
+}
+
 const dicData: Record<string, any> = reactive({})
 props.columns.forEach((item) => {
   if (item.request && typeof item.request === 'function' && item?.init) {
@@ -219,7 +233,7 @@ props.columns.forEach((item) => {
 })
 
 // 要深克隆，否则无法监听新旧值变化
-const cloneForm = computed(() => _.cloneDeep(props.modelValue))
+const cloneForm = computed(() => cloneDeep(props.modelValue))
 
 watch(cloneForm as any, (newVal, oldVal) => {
   hasCascaderColumns.forEach((item) => {
