@@ -9,8 +9,8 @@
       </a-col>
       <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="6" :xxl="4">
         <div class="home__item"><FastCard /></div>
-        <div class="home__item"><Sponsor /></div>
-        <div class="home__item"><MessageCard /></div>
+        <div class="home__item"><SponsorCard /></div>
+        <div class="home__item"><NoticeCard /></div>
       </a-col>
     </a-row>
 
@@ -25,8 +25,8 @@ import WorkCard from './components/WorkCard.vue'
 import ProjectCard from './components/ProjectCard.vue'
 import AccessTrendCard from './components/AccessTrendCard.vue'
 import FastCard from './components/FastCard.vue'
-import MessageCard from './components/MessageCard.vue'
-import Sponsor from './components/Sponsor.vue'
+import NoticeCard from './components/NoticeCard.vue'
+import SponsorCard from './components/SponsorCard.vue'
 
 defineOptions({ name: 'Home' })
 </script>
