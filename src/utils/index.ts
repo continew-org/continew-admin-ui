@@ -1,6 +1,6 @@
 import { isExternal } from '@/utils/validate'
 import { browse, mapTree } from 'xe-utils'
-import { upperFirst, camelCase } from 'lodash-es'
+import _ from 'lodash'
 import { Message } from '@arco-design/web-vue'
 
 export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
@@ -184,7 +184,7 @@ export const randomHex = () => {
 export const transformPathToName = (path: string) => {
   if (!path) return ''
   if (isExternal(path)) return ''
-  return upperFirst(camelCase(path))
+  return _.upperFirst(_.camelCase(path))
 }
 
 /**
