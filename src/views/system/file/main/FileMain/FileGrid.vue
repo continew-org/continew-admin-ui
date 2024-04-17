@@ -91,7 +91,7 @@ const handleRightMenuClick = (mode: string, item: FileItem) => {
 .file-grid {
   flex: 1;
   margin-top: 12px;
-  overflow: scroll;
+  // overflow: scroll;
   background: var(--color-bg-2);
 }
 

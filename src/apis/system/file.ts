@@ -5,7 +5,7 @@ const BASE_URL = '/system/file'
 
 /** @desc 查询文件列表 */
 export function listFile(query: System.FileQuery) {
-  return http.get<System.FileItem[]>(`${BASE_URL}/list`, query)
+  return http.get<PageRes<System.FileItem[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 修改文件 */

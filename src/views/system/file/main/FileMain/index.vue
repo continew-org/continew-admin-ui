@@ -60,7 +60,7 @@
     </a-row>
 
     <!-- 文件列表-宫格模式 -->
-    <a-spin class="file-main__list" :loading="loading">
+    <a-spin class="file-main__list" id="fileMain" @scroll="handleScroll" :loading="loading">
       <FileGrid
         v-show="fileList.length && mode == 'grid'"
         :data="fileList"
@@ -101,9 +101,34 @@ import useFileManage from './useFileManage'
 import { ImageTypes } from '@/constant/file'
 import { api as viewerApi } from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
-
+import { downloadByUrl } from '@/utils/downloadFile'
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
+onMounted(() => {
+  const fileMainDom = document.getElementById('fileMain')
+  fileMainDom.addEventListener('scrool', handleScroll)
+  console.table('fileMainDom', fileMainDom)
+})
+onUnmounted(() => {
+  // 移除事件监听
+  const fileMainDom = document.getElementById('fileMain')
+  fileMainDom.removeEventListener('scroll', handleScroll)
+})
+const timer = ref<any>()
+const handleScroll = (event) => {
+  const { clientHeight, scrollHeight, scrollTop } = event.target
+  const scrollLinerHeight = (clientHeight / scrollHeight) * scrollHeight
+  if (!timer.value) {
+    timer.value = setTimeout(() => {
+      if ((scrollTop + scrollLinerHeight) / scrollHeight >= 0.9 && !loading.value) {
+        ++pagination.page
+        getFileList()
+      }
+      timer.value = null
+    }, 1000)
+  }
 
+  console.log('event', event)
+}
 const route = useRoute()
 const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 
@@ -112,19 +137,35 @@ const queryForm = reactive({
   type: route.query.type?.toString() || undefined,
   sort: ['updateTime,desc']
 })
-
+const pagination = reactive({
+  page: 1,
+  size: 30
+})
 const fileList = ref<FileItem[]>([])
 const isBatchMode = ref(false)
 const loading = ref(false)
 // 查询文件列表
-const getFileList = async (query: FileQuery = { ...queryForm, page: 1, size: 50 }) => {
+const getFileList = async (query: FileQuery = { ...queryForm, page: pagination.page, size: pagination.size }) => {
   try {
     loading.value = true
     isBatchMode.value = false
     query.type = query.type === '0' ? undefined : query.type
     const res = await listFile(query)
-    fileList.value = res.data
+    if (res.data.list) {
+      if (query.page === 1) {
+        fileList.value = res.data.list
+        timer.value = setTimeout(() => {
+          clearTimeout(timer.value)
+          timer.value = null
+        }, 1000)
+      } else {
+        fileList.value = [...fileList.value, ...res.data.list]
+      }
+    } else {
+      --pagination.page
+    }
   } catch (error) {
+    --pagination.page
     return error
   } finally {
     loading.value = false
@@ -156,7 +197,7 @@ const handleClickFile = (item: FileItem) => {
 }
 
 // 右键菜单
-const handleRightMenuClick = (mode: string, fileInfo: FileItem) => {
+const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
   if (mode === 'delete') {
     Modal.warning({
       title: '提示',
@@ -173,6 +214,15 @@ const handleRightMenuClick = (mode: string, fileInfo: FileItem) => {
     openFileRenameModal(fileInfo)
   } else if (mode === 'detail') {
     openFileDetailModal(fileInfo)
+  } else if (mode === 'download') {
+    console.log('fileInfo', fileInfo)
+    const res = await downloadByUrl({
+      url: fileInfo.url,
+      target: '_self',
+      fileName: `${fileInfo.name}.${fileInfo.extension}`
+    })
+    res ? Message.success('下载成功') : Message.error('下载失败')
+    search()
   }
 }
 
@@ -204,7 +254,7 @@ const handleUpload = (options: RequestOption) => {
     const formData = new FormData()
     formData.append(name as string, fileItem.file as Blob)
     try {
-      const res = uploadFile(formData)
+      const res = await uploadFile(formData)
       Message.success('上传成功')
       onSuccess(res)
       search()
@@ -221,6 +271,7 @@ const handleUpload = (options: RequestOption) => {
 
 // 查询
 const search = () => {
+  pagination.page = 1
   getFileList()
 }
 
@@ -253,7 +304,8 @@ onMounted(() => {
     flex: 1;
     padding: 0 $padding $padding;
     box-sizing: border-box;
-    overflow: hidden;
+    // overflow: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
