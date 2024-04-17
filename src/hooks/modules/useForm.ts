@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
-import _ from 'lodash'
+import { cloneDeep } from 'lodash-es'
 
 export function useForm<F extends object>(initValue: F) {
-  const getInitValue = () => _.cloneDeep(initValue)
+  const getInitValue = () => cloneDeep(initValue)
 
   const form = reactive(getInitValue())
 
