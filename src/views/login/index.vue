@@ -50,13 +50,24 @@
                 <a-button type="primary" size="large" long :loading="loading" html-type="submit">登录</a-button>
               </a-space>
             </a-form-item>
+            <div class="login-right__oauth">
+              <a-divider orientation="center">其他登录方式</a-divider>
+              <div class="list">
+                <a class="item" title="使用 Gitee 账号登录" @click="onOauth('gitee')">
+                  <GiSvgIcon name="gitee" :size="24" />
+                </a>
+                <a class="item" title="使用 GitHub 账号登录" @click="onOauth('github')">
+                  <GiSvgIcon name="github" :size="24" />
+                </a>
+              </div>
+            </div>
           </a-form>
         </div>
       </a-col>
     </a-row>
 
-    <GiThemeBtn class="theme-btn"></GiThemeBtn>
-    <LoginBg></LoginBg>
+    <GiThemeBtn class="theme-btn" />
+    <LoginBg />
 
     <!--    <div class="footer">
       <div class="beian">
@@ -67,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImageCaptcha } from '@/apis'
+import { getImageCaptcha, socialAuth } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import LoginBg from './components/LoginBg/index.vue'
 import { useAppStore, useUserStore } from '@/stores'
@@ -145,6 +156,12 @@ const getCaptcha = () => {
     form.uuid = res.data.uuid
     captchaImgBase64.value = res.data.img
   })
+}
+
+// 第三方登录授权
+const onOauth = async (source: string) => {
+  const { data } = await socialAuth(source);
+  window.location.href = data.authorizeUrl;
 }
 
 onMounted(() => {
@@ -229,6 +246,27 @@ onMounted(() => {
   .arco-input-wrapper :deep(.arco-input) {
     font-size: 13px;
     color: var(--color-text-1);
+  }
+  &__oauth {
+    margin-bottom: 20px;
+    :deep(.arco-divider-text) {
+      color: var(--color-text-4);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+    :deep(.arco-divider-horizontal) {
+      border-bottom: 1px solid rgb(229, 230, 235);
+    }
+    .list {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      .item {
+        margin-right: 15px;
+      }
+    }
   }
 }
 
