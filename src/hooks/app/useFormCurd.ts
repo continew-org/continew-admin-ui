@@ -1,7 +1,7 @@
 import { reactive, computed, ref, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Modal, Message, type FormInstance } from '@arco-design/web-vue'
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 type Option<T> = {
   key?: string
