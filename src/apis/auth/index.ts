@@ -22,3 +22,8 @@ export const getUserInfo = () => {
 export const getUserRoute = () => {
   return http.get<Auth.RouteItem[]>(`${BASE_URL}/route`)
 }
+
+/** @desc 第三方登录授权 */
+export function socialAuth(source: string) {
+  return http.get<Auth.SocialAuthAuthorizeResp>(`/oauth/${source}`)
+}

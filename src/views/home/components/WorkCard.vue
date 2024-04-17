@@ -39,7 +39,6 @@ const userStore = useUserStore()
 }
 
 .card {
-  margin-top: $margin;
   .content {
     padding: 8px 20px;
     .welcome {

@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import BasicSetting from './components/BasicSetting.vue'
-</script>
-
-<script lang="ts">
-export default {
-  name: 'Config'
-}
-</script>
-
 <template>
   <div class="gi_page">
     <a-card class="general-card" title="系统配置">
@@ -20,6 +10,12 @@ export default {
     </a-card>
   </div>
 </template>
+
+<script setup lang="ts">
+import BasicSetting from './components/BasicSetting.vue'
+
+defineOptions({ name: 'Config' })
+</script>
 
 <style scoped lang="less">
 :deep(.arco-tabs-content) {
