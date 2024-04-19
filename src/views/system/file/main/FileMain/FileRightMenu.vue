@@ -1,9 +1,9 @@
 <template>
   <GiOption :class="{ shadow: props.shadow }">
-    <GiOptionItem label="重命名" icon="menu-edit" @click="onClickItem('rename')"> </GiOptionItem>
-    <GiOptionItem label="详情" icon="menu-detail" @click="onClickItem('detail')"> </GiOptionItem>
-    <GiOptionItem label="下载" icon="menu-download" @click="onClickItem('download')"></GiOptionItem>
-    <GiOptionItem label="删除" icon="menu-delete" @click="onClickItem('delete')"> </GiOptionItem>
+    <GiOptionItem label="重命名" @click="onClickItem('rename')"> </GiOptionItem>
+    <GiOptionItem label="详情" @click="onClickItem('detail')"> </GiOptionItem>
+    <GiOptionItem label="下载" @click="onClickItem('download')"></GiOptionItem>
+    <GiOptionItem label="删除" @click="onClickItem('delete')"> </GiOptionItem>
   </GiOption>
 </template>
 

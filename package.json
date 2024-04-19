@@ -18,6 +18,7 @@
     "@codemirror/lang-javascript": "^6.2.1",
     "@codemirror/lang-vue": "^0.1.2",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@ddietr/codemirror-themes": "^1.4.2",
     "@vueuse/components": "^10.5.0",
     "@vueuse/core": "^10.5.0",
     "@wangeditor/editor": "^5.1.1",

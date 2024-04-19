@@ -13,23 +13,21 @@
 import CodeMirror from 'vue-codemirror6'
 import { javascript } from '@codemirror/lang-javascript'
 import { vue } from '@codemirror/lang-vue'
+import { githubLight } from '@ddietr/codemirror-themes/github-light'
 import { oneDark } from '@codemirror/theme-one-dark'
+import { useAppStore } from '@/stores'
+
+const appStore = useAppStore()
+const isDark = computed(() => appStore.theme === 'dark')
 
 interface Props {
   type?: 'javascript' | 'vue'
   codeJson: string
 }
-
 const props = withDefaults(defineProps<Props>(), {
   type: 'javascript',
   codeJson: ''
 })
-
-const visible = ref(false)
-const open = () => {
-  visible.value = true
-}
-defineExpose({ open })
 
 const defaultConfig = {
   tabSize: 2,
@@ -40,8 +38,14 @@ const defaultConfig = {
 const config = defaultConfig
 
 const codeValue = computed(() => props.codeJson)
+const visible = ref(false)
+// 打开
+const open = () => {
+  visible.value = true
+}
+
 const extensions = computed(() => {
-  const arr = [oneDark]
+  const arr = [isDark.value ? oneDark : githubLight]
   if (props.type === 'javascript') {
     arr.push(javascript())
   }
@@ -50,6 +54,8 @@ const extensions = computed(() => {
   }
   return arr
 })
+
+defineExpose({ open })
 </script>
 
 <style lang="scss" scoped>

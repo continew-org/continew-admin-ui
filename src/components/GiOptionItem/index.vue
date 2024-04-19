@@ -6,7 +6,7 @@
   >
     <div class="gi-option-item__wrapper">
       <span class="gi-option-item__icon">
-        <slot name="icon">
+        <slot v-if="props.icon" name="icon">
           <GiSvgIcon :name="props.icon"></GiSvgIcon>
         </slot>
       </span>

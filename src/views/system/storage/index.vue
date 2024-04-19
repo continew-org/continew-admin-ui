@@ -104,7 +104,7 @@ const columns: TableInstanceColumns[] = [
     title: '操作',
     slotName: 'action',
     width: 130,
-    show: has.hasPermOr(['system:storage:update', 'system:storage:delete']),
+    3
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined
   }

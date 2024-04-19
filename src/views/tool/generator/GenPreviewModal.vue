@@ -1,5 +1,12 @@
 <template>
-  <a-modal v-model:visible="visible" title="生成预览" :mask-closable="false" :esc-to-close="false" width="90%">
+  <a-modal
+    v-model:visible="visible"
+    title="生成预览"
+    :mask-closable="false"
+    :esc-to-close="false"
+    width="90%"
+    :footer="false"
+  >
     <div>
       <a-scrollbar style="height: 700px; overflow: auto">
         <a-link style="position: absolute; right: 20px; top: 50px; z-index: 999" @click="onCopy">
@@ -13,7 +20,7 @@
             <GiCodeView
               :type="'vue' === item.fileName.split('.')[1] ? 'vue' : 'javascript'"
               :code-json="item.content"
-            ></GiCodeView>
+            />
           </a-tab-pane>
         </a-tabs>
       </a-scrollbar>

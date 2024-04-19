@@ -23,6 +23,9 @@ dependencies:
   '@codemirror/theme-one-dark':
     specifier: ^6.1.2
     version: 6.1.2
+  '@ddietr/codemirror-themes':
+    specifier: ^1.4.2
+    version: 1.4.2
   '@vueuse/components':
     specifier: ^10.5.0
     version: 10.9.0(vue@3.4.21)
@@ -853,6 +856,15 @@ packages:
       '@codemirror/state': 6.4.1
       style-mod: 4.1.2
       w3c-keyname: 2.2.8
+    dev: false
+
+  /@ddietr/codemirror-themes@1.4.2:
+    resolution: {integrity: sha512-8U3H3lmtmSWLD5VRlt7jf2HW62URnwgPxjZZDYjBX5EtMpgZ2QnqiIYrNzdQPPjJngT9D43gls3+JlekCBmrfw==}
+    dependencies:
+      '@codemirror/language': 6.10.1
+      '@codemirror/state': 6.4.1
+      '@codemirror/view': 6.26.0
+      '@lezer/highlight': 1.2.0
     dev: false
 
   /@esbuild/aix-ppc64@0.19.12:

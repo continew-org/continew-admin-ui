@@ -2,7 +2,7 @@
   <div class="gi_page">
     <a-card title="代码生成" class="general-card">
       <GiTable
-        row-key="id"
+        row-key="tableName"
         :data="dataList"
         :columns="columns"
         :loading="loading"
@@ -64,7 +64,7 @@ const columns: TableInstanceColumns[] = [
   { title: '描述', dataIndex: 'comment', tooltip: true },
   { title: '存储引擎', dataIndex: 'engine', align: 'center' },
   { title: '字符集', dataIndex: 'charset' },
-  { title: '创建时间', dataIndex: 'createTime' },
+  { title: '创建时间', dataIndex: 'createTime', width: 180 },
   { title: '操作', slotName: 'action', width: 180, align: 'center', fixed: !isMobile() ? 'right' : undefined }
 ]
 

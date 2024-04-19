@@ -4,107 +4,109 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    :width="width >= 1000 ? 1000 : '100%'"
+    :width="width >= 1050 ? 1050 : '100%'"
     @before-ok="save"
     @close="reset"
   >
-    <a-card title="字段配置" class="field-config">
-      <template #extra>
-        <a-popconfirm
-          content="是否确定同步最新数据表结构？同步后只要不点击确定保存，则不影响原有配置数据。"
-          type="warning"
-          @ok="handleRefresh(form.tableName)"
+    <a-tabs>
+      <a-tab-pane key="1" title="生成配置">
+        <a-form ref="formRef" :model="form" :rules="rules" class="gen-config" size="large">
+          <a-form-item label="作者名称" field="author">
+            <a-input v-model="form.author" placeholder="请输入作者名称" />
+          </a-form-item>
+          <a-form-item label="业务名称" field="businessName">
+            <a-input v-model="form.businessName" placeholder="自定义业务名称，例如：用户" />
+          </a-form-item>
+          <a-form-item label="所属模块" field="moduleName">
+            <a-input v-model="form.moduleName" placeholder="项目模块名称，例如：continew-admin-system" />
+          </a-form-item>
+          <a-form-item label="模块包名" field="packageName">
+            <a-input v-model="form.packageName" placeholder="项目模块包名，例如：top.charles7c.continew.admin.system" />
+          </a-form-item>
+          <a-form-item label="去表前缀" field="tablePrefix">
+            <a-input v-model="form.tablePrefix" placeholder="数据库表前缀，例如：sys_" />
+          </a-form-item>
+          <a-form-item label="是否覆盖" field="isOverride">
+            <a-radio-group v-model="form.isOverride" type="button">
+              <a-radio :value="true">是</a-radio>
+              <a-radio :value="false">否</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-form>
+      </a-tab-pane>
+      <a-tab-pane key="2" title="字段配置">
+        <GiTable
+          row-key="tableName"
+          :data="dataList"
+          :columns="columns"
+          :loading="loading"
+          :scroll="{ x: '100%', y: 800, minWidth: 900 }"
+          :pagination="false"
+          :disabledTools="['setting', 'refresh']"
+          :disabledColumnKeys="['tableName']"
         >
-          <a-tooltip content="同步最新数据表结构">
-            <a-button
-              type="primary"
-              status="success"
-              size="small"
-              title="同步"
-              :disabled="dataList.length !== 0 && dataList[0].createTime === null"
+          <template #custom-left>
+            <a-popconfirm
+              content="是否确定同步最新数据表结构？同步后只要不点击确定保存，则不影响原有配置数据。"
+              type="warning"
+              @ok="handleRefresh(form.tableName)"
             >
-              <template #icon><icon-sync /></template>同步
-            </a-button>
-          </a-tooltip>
-        </a-popconfirm>
-      </template>
-      <GiTable
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ y: 400 }"
-        :pagination="false"
-        :disabledTools="['setting', 'refresh']"
-        :disabledColumnKeys="['tableName']"
-      >
-        <template #fieldType="{ record }">
-          <span v-if="record.fieldType">{{ record.fieldType }}</span>
-          <a-tooltip v-else content="请检查 generator.properties 配置">
-            <icon-exclamation-circle-fill size="large" style="color: #f53f3f" />
-          </a-tooltip>
-        </template>
-        <template #comment="{ record }">
-          <a-input v-model="record.comment" />
-        </template>
-        <template #showInList="{ record }">
-          <a-checkbox v-model="record.showInList" value="true" />
-        </template>
-        <template #showInForm="{ record }">
-          <a-checkbox v-model="record.showInForm" value="true" />
-        </template>
-        <template #isRequired="{ record }">
-          <a-checkbox v-if="record.showInForm" v-model="record.isRequired" value="true" />
-          <a-checkbox v-else disabled />
-        </template>
-        <template #showInQuery="{ record }">
-          <a-checkbox v-model="record.showInQuery" value="true" />
-        </template>
-        <template #formType="{ record }">
-          <a-select
-            v-if="record.showInForm || record.showInQuery"
-            v-model="record.formType"
-            :options="form_type_enum"
-            placeholder="请选择表单类型"
-          />
-          <span v-else>无需设置</span>
-        </template>
-        <template #queryType="{ record }">
-          <a-select
-            v-if="record.showInQuery"
-            v-model="record.queryType"
-            :options="query_type_enum"
-            placeholder="请选择查询方式"
-          />
-          <span v-else>无需设置</span>
-        </template>
-      </GiTable>
-    </a-card>
-    <a-card title="生成配置" style="margin-top: 10px">
-      <a-form ref="formRef" :model="form" :rules="rules" class="gen-config" size="large">
-        <a-form-item label="作者名称" field="author">
-          <a-input v-model="form.author" placeholder="请输入作者名称" />
-        </a-form-item>
-        <a-form-item label="业务名称" field="businessName">
-          <a-input v-model="form.businessName" placeholder="自定义业务名称，例如：用户" />
-        </a-form-item>
-        <a-form-item label="所属模块" field="moduleName">
-          <a-input v-model="form.moduleName" placeholder="项目模块名称，例如：continew-admin-system" />
-        </a-form-item>
-        <a-form-item label="模块包名" field="packageName">
-          <a-input v-model="form.packageName" placeholder="项目模块包名，例如：top.charles7c.continew.admin.system" />
-        </a-form-item>
-        <a-form-item label="去表前缀" field="tablePrefix">
-          <a-input v-model="form.tablePrefix" placeholder="数据库表前缀，例如：sys_" />
-        </a-form-item>
-        <a-form-item label="是否覆盖" field="isOverride">
-          <a-radio-group v-model="form.isOverride" type="button">
-            <a-radio :value="true">是</a-radio>
-            <a-radio :value="false">否</a-radio>
-          </a-radio-group>
-        </a-form-item>
-      </a-form>
-    </a-card>
+              <a-tooltip content="同步最新数据表结构">
+                <a-button
+                  type="primary"
+                  status="success"
+                  size="small"
+                  title="同步"
+                  :disabled="dataList.length !== 0 && dataList[0].createTime === null"
+                >
+                  <template #icon><icon-sync /></template>同步
+                </a-button>
+              </a-tooltip>
+            </a-popconfirm>
+          </template>
+          <template #fieldType="{ record }">
+            <span v-if="record.fieldType">{{ record.fieldType }}</span>
+            <a-tooltip v-else content="请检查 generator.properties 配置">
+              <icon-exclamation-circle-fill size="large" style="color: #f53f3f" />
+            </a-tooltip>
+          </template>
+          <template #comment="{ record }">
+            <a-input v-model="record.comment" />
+          </template>
+          <template #showInList="{ record }">
+            <a-checkbox v-model="record.showInList" value="true" />
+          </template>
+          <template #showInForm="{ record }">
+            <a-checkbox v-model="record.showInForm" value="true" />
+          </template>
+          <template #isRequired="{ record }">
+            <a-checkbox v-if="record.showInForm" v-model="record.isRequired" value="true" />
+            <a-checkbox v-else disabled />
+          </template>
+          <template #showInQuery="{ record }">
+            <a-checkbox v-model="record.showInQuery" value="true" />
+          </template>
+          <template #formType="{ record }">
+            <a-select
+              v-if="record.showInForm || record.showInQuery"
+              v-model="record.formType"
+              :options="form_type_enum"
+              placeholder="请选择表单类型"
+            />
+            <span v-else>无需设置</span>
+          </template>
+          <template #queryType="{ record }">
+            <a-select
+              v-if="record.showInQuery"
+              v-model="record.queryType"
+              :options="query_type_enum"
+              placeholder="请选择查询方式"
+            />
+            <span v-else>无需设置</span>
+          </template>
+        </GiTable>
+      </a-tab-pane>
+    </a-tabs>
   </a-drawer>
 </template>
 
@@ -213,11 +215,7 @@ const emit = defineEmits<{
 defineExpose({ onConfig })
 </script>
 
-<style scoped lang="less">
-.field-config :deep(.arco-card-body) {
-  padding: 0;
-}
-
+<style lang="scss" scoped>
 :deep(.gen-config.arco-form) {
   width: 50%;
 }
