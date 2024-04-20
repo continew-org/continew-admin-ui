@@ -13,7 +13,7 @@
 import FileAside from './main/FileAside.vue'
 import FileMain from './main/FileMain/index.vue'
 
-defineOptions({ name: 'File' })
+defineOptions({ name: 'SystemFile' })
 </script>
 
 <style lang="scss" scoped>

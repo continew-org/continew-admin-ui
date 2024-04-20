@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import BasicSetting from './components/BasicSetting.vue'
 
-defineOptions({ name: 'Config' })
+defineOptions({ name: 'SystemConfig' })
 </script>
 
 <style scoped lang="less">

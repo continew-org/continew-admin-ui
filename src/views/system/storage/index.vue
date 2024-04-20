@@ -76,7 +76,7 @@ import { isMobile } from '@/utils'
 import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
-defineOptions({ name: 'Storage' })
+defineOptions({ name: 'SystemStorage' })
 
 const { storage_type_enum } = useDict('storage_type_enum')
 
@@ -104,7 +104,7 @@ const columns: TableInstanceColumns[] = [
     title: '操作',
     slotName: 'action',
     width: 130,
-    3
+    show: has.hasPermOr(['system:storage:update', 'system:storage:delete']),
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined
   }

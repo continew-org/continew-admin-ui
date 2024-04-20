@@ -101,7 +101,7 @@ import { DisEnableStatusList } from '@/constant/common'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
 
-defineOptions({ name: 'Menu' })
+defineOptions({ name: 'SystemMenu' })
 
 const columns: TableInstanceColumns[] = [
   { title: '菜单标题', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },

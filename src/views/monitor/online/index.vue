@@ -51,7 +51,7 @@ import { useUserStore } from '@/stores'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 
-defineOptions({ name: 'OnlineUser' })
+defineOptions({ name: 'MonitorOnline' })
 
 const columns: TableInstanceColumns[] = [
   {
