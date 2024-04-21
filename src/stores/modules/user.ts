@@ -8,7 +8,8 @@ import { resetHasRouteFlag } from '@/router/permission'
 import getAvatar from '@/utils/avatar'
 
 const storeSetup = () => {
-  const userInfo = reactive<Pick<UserInfo, 'nickname' | 'avatar' | 'email' | 'phone' | 'registrationDate'>>({
+  const userInfo = reactive<Pick<UserInfo, 'id' | 'nickname' | 'avatar' | 'email' | 'phone' | 'registrationDate'>>({
+    id: '',
     nickname: '',
     avatar: '',
     email: '',
@@ -67,6 +68,7 @@ const storeSetup = () => {
   // 获取用户信息
   const getInfo = async () => {
     const res = await getUserInfoApi()
+    userInfo.id = res.data.id
     userInfo.nickname = res.data.nickname
     userInfo.avatar = getAvatar(res.data.avatar, res.data.gender)
     userInfo.email = res.data.email

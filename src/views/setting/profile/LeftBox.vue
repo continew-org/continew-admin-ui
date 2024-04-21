@@ -5,7 +5,7 @@
       <div class="body">
         <section>
           <div class="avatar">
-            <img src="https://q1.itc.cn/q_70/images03/20240320/fcf023d835c54f78bac6c7efc98fbb4c.jpeg" />
+            <img :src="userStore.avatar" alt="avatar" />
           </div>
           <div class="name">
             <span style="margin-right: 10px">{{ userInfo.nickname }}</span>
@@ -13,7 +13,7 @@
           </div>
           <div class="id">
             <GiSvgIcon name="id" :size="16" />
-            <span style="margin-left: 10px">88888888</span>
+            <span style="margin-left: 10px">{{ userInfo.id }}</span>
           </div>
         </section>
         <footer>

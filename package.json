@@ -45,6 +45,7 @@
     "vue": "^3.4.21",
     "vue-codemirror6": "^1.1.27",
     "vue-color-kit": "^1.0.5",
+    "vue-cropper": "^0.6.4",
     "vue-draggable-plus": "^0.3.5",
     "vue-echarts": "^6.5.5",
     "vue-json-pretty": "^2.4.0",
