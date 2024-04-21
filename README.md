@@ -1,4 +1,4 @@
-# ContiNew Admin UI - Gi
+# ContiNew Admin UI
 
 <a href="https://github.com/Charles7c/continew-admin-ui/blob/dev/LICENSE" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
@@ -35,7 +35,7 @@
 
 ## 简介
 
-基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。
+全新 3.0 版本，基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。
 
 ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，持续提供舒适的开发体验，依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
