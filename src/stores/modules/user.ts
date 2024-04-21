@@ -2,15 +2,18 @@ import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
 import { resetRouter } from '@/router'
 import { accountLogin as accountLoginApi, logout as logoutApi, getUserInfo as getUserInfoApi } from '@/apis'
-import type { UserInfo } from '@/apis'
+import { socialAuth, type UserInfo } from '@/apis'
 import { setToken, clearToken, getToken } from '@/utils/auth'
 import { resetHasRouteFlag } from '@/router/permission'
 import getAvatar from '@/utils/avatar'
 
 const storeSetup = () => {
-  const userInfo = reactive<Pick<UserInfo, 'nickname' | 'avatar'>>({
+  const userInfo = reactive<Pick<UserInfo, 'nickname' | 'avatar' | 'email' | 'phone' | 'registrationDate'>>({
     nickname: '',
-    avatar: ''
+    avatar: '',
+    email: '',
+    phone: '',
+    registrationDate: ''
   })
   const name = computed(() => userInfo.nickname)
   const avatar = computed(() => userInfo.avatar)
@@ -32,7 +35,16 @@ const storeSetup = () => {
     setToken(res.data.token)
     token.value = res.data.token
   }
-
+  // 三方账号身份登录
+  const socialLogin = async (source: string, req: any) => {
+    try {
+      const res = await socialAuth(source, req)
+      setToken(res.data.token)
+    } catch (err) {
+      clearToken()
+      throw err
+    }
+  }
   // 退出登录
   const logout = async () => {
     try {
@@ -57,6 +69,9 @@ const storeSetup = () => {
     const res = await getUserInfoApi()
     userInfo.nickname = res.data.nickname
     userInfo.avatar = getAvatar(res.data.avatar, res.data.gender)
+    userInfo.email = res.data.email
+    userInfo.phone = res.data.phone
+    userInfo.registrationDate = res.data.registrationDate
     if (res.data.roles && res.data.roles.length) {
       roles.value = res.data.roles
       permissions.value = res.data.permissions
@@ -71,6 +86,7 @@ const storeSetup = () => {
     roles,
     permissions,
     accountLogin,
+    socialLogin,
     logout,
     logoutCallBack,
     getInfo,

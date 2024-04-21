@@ -222,3 +222,8 @@ export interface BasicConfigRecordResp {
   site_logo?: string
   site_favicon?: string
 }
+/** 绑定三方账号信息*/
+export interface BindSocialAccountRes {
+  source: string
+  description: string
+}

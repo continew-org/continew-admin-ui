@@ -41,6 +41,7 @@
     "query-string": "^9.0.0",
     "v-viewer": "^3.0.10",
     "viewerjs": "^1.11.6",
+    "vite-plugin-vue-devtools": "^7.0.27",
     "vue": "^3.4.21",
     "vue-codemirror6": "^1.1.27",
     "vue-color-kit": "^1.0.5",

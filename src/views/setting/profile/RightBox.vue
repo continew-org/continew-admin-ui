@@ -1,161 +1,137 @@
 <template>
-  <div class="right-box">
-    <section class="right-box__header">
-      <a-avatar :size="60" :trigger-icon-style="{ color: '#3491FA' }">
-        <img :src="userStore.avatar" />
-        <template #trigger-icon>
-          <IconCamera />
-        </template>
-      </a-avatar>
-      <section class="username">{{ userStore.name }}</section>
-      <ul class="list">
-        <li><icon-user /><span>前端开发工程师</span></li>
-        <li><icon-safe /><span>前端</span></li>
-        <li><icon-location /><span>广州</span></li>
-      </ul>
-      <a-button type="primary" class="edit-btn"
-        ><template #icon> <icon-edit /> </template>编辑信息</a-button
-      >
-    </section>
-
-    <a-tabs hide-content default-active-key="2">
-      <a-tab-pane key="1">
-        <template #title>文章</template>
-      </a-tab-pane>
-      <a-tab-pane key="2">
-        <template #title>项目</template>
-      </a-tab-pane>
-      <a-tab-pane key="3">
-        <template #title>应用（3）</template>
-      </a-tab-pane>
-    </a-tabs>
-
-    <section class="right-box__comment">
-      <a-comment
-        v-for="(item, index) in list"
-        :key="index"
-        :author="item.name"
-        datetime="1个小时之前"
-        align="right"
-        class="comment-item"
-      >
-        <template #actions>
-          <a-space :size="20">
-            <span class="action" key="heart">
-              <span><IconHeart /></span>
-              <span>83</span>
-            </span>
-            <span class="action" key="star">
-              <span><IconStar /></span>
-              <span>3</span>
-            </span>
-            <span class="action" key="reply"> <IconMessage /><span>回复</span></span>
-          </a-space>
-        </template>
-        <template #avatar>
-          <a-avatar>
-            <img alt="avatar" :src="item.avatar" />
-          </a-avatar>
-        </template>
-        <template #content>
-          <div class="text">{{ item.text }}</div>
-        </template>
-      </a-comment>
-    </section>
-  </div>
+  <Card>
+    <template #header> 登录方式 </template>
+    <template #body>
+      <div class="mode-list">
+        <div v-for="item in modeList" :key="item.title" class="mode-item">
+          <div class="mode-item-box">
+            <div class="mode-item-icon">
+              <GiSvgIcon :name="item.icon" :size="50" />
+            </div>
+            <div class="mode-item-content">
+              <div class="mode-item-title">
+                <div>{{ item.title }}</div>
+                <div style="margin-left: 10px">
+                  <GiSvgIcon :name="item.status ? 'success' : 'warning'" :size="14" /><span
+                    style="margin-left: 5px; font-size: 12px"
+                    >{{ item.status ? '已绑定' : '未绑定' }}</span
+                  >
+                </div>
+              </div>
+              <div class="mode-item-subtitle">{{ item.subtitle }}</div>
+            </div>
+          </div>
+          <div class="model-item-btn">
+            <a-button @click="openVerifyModel(item.type, item.status)" v-if="item.jumpMode == 'modal'">{{
+              item.status ? '修改' : '绑定'
+            }}</a-button>
+            <a-button @click="onBinding(item.type, item.status)" v-else-if="item.jumpMode == 'link'">{{
+              item.status ? '解绑' : '绑定'
+            }}</a-button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </Card>
+  <VerifyModel ref="verifyModelRef" />
 </template>
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores'
+import Card from '../components/Card.vue'
+import VerifyModel from '../components/VerifyModel.vue'
+import { socialAuth, getSocialAccount, unbindSocialAccount } from '@/apis'
+interface ModeItem {
+  title: string
+  icon: string
+  subtitle: string
+  type: 'phone' | 'email' | 'gitee' | 'github'
+  jumpMode: 'link' | 'modal'
+  status: boolean
+}
 const userStore = useUserStore()
-
-const list = [
+const userInfo = computed(() => userStore.userInfo)
+const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
+const openVerifyModel = (type: 'phone' | 'email') => {
+  verifyModelRef.value?.open(type)
+}
+const socialList = ref<any>([])
+const modeList = ref<ModeItem[]>([])
+modeList.value = [
   {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
-    text: '生活会让你苦上一阵子，等你适应以后，再让你苦上一辈子'
+    title: '绑定手机号',
+    icon: 'Tel',
+    subtitle: `${userInfo.value.phone || '绑定后'},可通过手机验证码快捷登录`,
+    type: 'phone',
+    jumpMode: 'modal',
+    status: userInfo.value.phone ? true : false
   },
   {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
-    text: '我从一无所有，到资产过亿，从家徒四壁，到豪车别墅，这些不是靠的别人，完全是靠我自己，一点一滴，想出来的'
+    title: '绑定邮箱',
+    icon: 'Mail',
+    subtitle: `${userInfo.value.email || '绑定后'},可通过邮箱验证码进行登录`,
+    type: 'email',
+    jumpMode: 'modal',
+    status: userInfo.value.email ? true : false
   },
   {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
-    text: '有很多事情你当时想不通，别着急，过一段时间你再想，就想不起来了'
+    title: '绑定Gitee',
+    icon: 'gitee',
+    subtitle: '绑定后，可通过Gitee进行登录',
+    jumpMode: 'link',
+    type: 'gitee',
+    status: socialList.value.some((el) => el == 'gitee')
   },
   {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
-    text: '⽐你优秀的⼈都⽐你努⼒，你努力还有什么用'
-  },
-  {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: '窃·格瓦拉',
-    text: '打工这辈子是不可能打工的，做生意又不会做，就是偷这种东西，才可以维持生活这样子'
+    title: '绑定GitHub',
+    icon: 'github',
+    subtitle: '绑定后，可通过github进行登录',
+    type: 'github',
+    jumpMode: 'link',
+    status: socialList.value.some((el) => el == 'github')
   }
 ]
+const initData = () => {
+  getSocialAccount().then((res) => {
+    socialList.value = res.data.map((el) => el.source)
+  })
+}
+onMounted(() => {
+  initData()
+})
+const onBinding = (type: string, status: boolean) => {
+  if (!status) {
+    socialAuth(type).then((res) => {
+      window.open(res.data.authorizeUrl, '_self')
+    })
+  } else {
+    unbindSocialAccount(type).then((res) => {
+      if (res.code == 200) {
+        userStore.getInfo()
+      }
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.edit-btn {
-  color: #fff;
-  border-color: #fff;
-  background: transparent;
-  &:hover {
-    background: rgb(var(--primary-5));
-    border-color: rgb(var(--primary-5));
-  }
-}
-
-.right-box {
-  flex: 1;
-  background-color: var(--color-bg-1);
-  display: flex;
-  flex-direction: column;
-  border-radius: 2px;
-  overflow: hidden;
-  overflow-y: auto;
-  &__header {
-    min-height: 204px;
-    height: fit-content;
+.mode-list {
+  .mode-item {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: var(--color-white);
-    background-color: rgb(var(--primary-6));
-    .username {
-      font-size: 16px;
-      font-weight: 500;
-      margin: 10px 0;
-    }
-    .list {
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .mode-item-box {
       display: flex;
-      margin-bottom: 10px;
-      > li {
-        margin-right: 15px;
-        span {
-          margin-left: 2px;
-        }
+      align-items: center;
+      .mode-item-icon {
+        margin-right: 10px;
       }
-    }
-  }
-  &__comment {
-    flex: 1;
-    padding: 20px 30px;
-    padding-left: 16px;
-    overflow: auto;
-    .comment-item {
-      margin-bottom: 15px;
-      .text {
-        color: $color-text-2;
+      .mode-item-content > div {
+        line-height: 26px;
+      }
+      .mode-item-content .mode-item-title {
+        display: flex;
+        align-items: center;
       }
     }
   }
