@@ -1,4 +1,4 @@
-# ContiNew Admin UI - Gi
+# ContiNew Admin UI
 
 <a href="https://github.com/Charles7c/continew-admin-ui/blob/dev/LICENSE" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
@@ -31,11 +31,11 @@
 <img src="https://img.shields.io/badge/Vite-5.1.5-%236CB52D.svg" alt="Release" />
 </a>
 
-📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://admin.continew.top)（账号/密码：admin/admin123）
 
 ## 简介
 
-基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。
+全新 3.0 版本，基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。
 
 ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，持续提供舒适的开发体验，依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
@@ -61,15 +61,16 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 项目源码
 
-|       | 前端源码                                                                                           | 后端源码                                |
-| ----- |------------------------------------------------------------------------------------------------| ----------------------------------------- |
-| GitHub | [github.com/Charles7c/continew-admin-ui-gi](https://github.com/Charles7c/continew-admin-ui-gi) | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin) |
-| Gitee | [gitee.com/continew/continew-admin-ui-gi](https://gitee.com/continew/continew-admin-ui-gi)     | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin) |
+|        | Gitee                                                                                     | GitHub                                                                             |
+|--------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| 前端     | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)      | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
+| 后端     | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin)            | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin)     |
+| 2.5 前端 | [gitee.com/continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [github.com/Charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
 
 ##  系统功能
 
 > **Note**
-> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://doc.charles7c.top/admin/intro/require.html#任务清单) 和 [更新日志](https://doc.charles7c.top/admin/other/changelog.html)。
+> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://continew.top/admin/intro/require.html#任务清单) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
 
 - 账号管理：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
@@ -88,7 +89,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ## 快速开始
 
 > **Note**
-> 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/admin/intro/quick-start.html#%E5%89%8D%E7%AB%AF)。
+> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/admin/intro/quick-start.html#%E5%89%8D%E7%AB%AF)。
 
 ```
 # 1.克隆本项目
@@ -112,11 +113,11 @@ pnpm dev
 
 ContiNew Admin 致力于提供开箱即用，持续舒适的开发体验。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://doc.charles7c.top/support.html) 讨论或认领任务。
+我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/support.html) 讨论或认领任务。
 
 ### 分支说明
 
-ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://doc.charles7c.top/admin/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
+ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://continew.top/admin/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
 
 | 分支  | 说明                                                         |
 | ----- | ------------------------------------------------------------ |

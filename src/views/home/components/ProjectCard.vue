@@ -27,31 +27,31 @@ const list = [
   {
     name: 'ContiNew Admin',
     desc: '持续优化的前后端分离中后台管理框架，开箱即用，持续提供舒适的开发体验。',
-    logo: 'https://doc.charles7c.top/logo.svg',
+    logo: 'https://continew.top/logo.svg',
     url: 'https://gitee.com/continew/continew-admin'
   },
   {
     name: 'ContiNew Starter',
     desc: '包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken）。',
-    logo: 'https://doc.charles7c.top/logo.svg',
+    logo: 'https://continew.top/logo.svg',
     url: 'https://gitee.com/continew/continew-starter'
   },
   {
     name: 'ContiNew Admin UI - GI',
     desc: '基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。',
-    logo: 'https://doc.charles7c.top/logo.svg',
+    logo: 'https://continew.top/logo.svg',
     url: 'https://gitee.com/continew/continew-admin-ui-gi'
   },
   {
     name: 'ContiNew Admin UI',
     desc: '基于 Arco Design Pro 前端模板开发的 ContiNew Admin 前端适配项目。',
-    logo: 'https://doc.charles7c.top/logo.svg',
+    logo: 'https://continew.top/logo.svg',
     url: 'https://gitee.com/continew/continew-admin-ui'
   },
   {
     name: 'ContiNew Cloud（孵化中）',
     desc: 'ContiNew Admin 微服务版本',
-    logo: 'https://doc.charles7c.top/logo.svg',
+    logo: 'https://continew.top/logo.svg',
     url: '#'
   },
   {

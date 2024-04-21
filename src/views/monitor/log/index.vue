@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import LoginLog from './LoginLog.vue'
-import OperationLog from './OperationLog.vue'
+import LoginLog from './login/index.vue'
+import OperationLog from './operation/index.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -77,7 +77,7 @@ import { isMobile } from '@/utils'
 import { DisEnableStatusList } from '@/constant/common'
 import has from '@/utils/has'
 
-defineOptions({ name: 'Role' })
+defineOptions({ name: 'SystemRole' })
 
 const { data_scope_enum } = useDict('data_scope_enum')
 

@@ -89,7 +89,7 @@ import { useDownload } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
 
-defineOptions({ name: 'Dept' })
+defineOptions({ name: 'SystemDept' })
 
 const columns: TableInstanceColumns[] = [
   { title: '名称', dataIndex: 'name', width: 170, ellipsis: true, tooltip: true },

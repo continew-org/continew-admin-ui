@@ -112,7 +112,7 @@ import getAvatar from '@/utils/avatar'
 import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
-defineOptions({ name: 'User' })
+defineOptions({ name: 'SystemUser' })
 
 const columns: TableInstanceColumns[] = [
   {

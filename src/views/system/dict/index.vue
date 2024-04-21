@@ -60,7 +60,7 @@ import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
 
-defineOptions({ name: 'Dict' })
+defineOptions({ name: 'SystemDict' })
 
 const columns: TableInstanceColumns[] = [
   {

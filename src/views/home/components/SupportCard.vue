@@ -15,5 +15,5 @@
 </template>
 
 <script lang="ts" setup>
-const imageSrc = [`https://doc.charles7c.top/qrcode.jpg?${new Date().getTime()}`]
+const imageSrc = [`https://continew.top/qrcode.jpg?${new Date().getTime()}`]
 </script>
