@@ -40,7 +40,7 @@ const storeSetup = () => {
       document.title = resMap.get('site_title')
       document
         .querySelector('link[rel="shortcut icon"]')
-        ?.setAttribute('href', resMap.get('site_favicon') || 'https://cnadmin.charles7c.top/favicon.ico')
+        ?.setAttribute('href', resMap.get('site_favicon') || 'https://admin.continew.top/favicon.ico')
     })
   }
 
@@ -50,7 +50,7 @@ const storeSetup = () => {
     document.title = config.site_title || ''
     document
       .querySelector('link[rel="shortcut icon"]')
-      ?.setAttribute('href', config.site_favicon || 'https://cnadmin.charles7c.top/favicon.ico')
+      ?.setAttribute('href', config.site_favicon || 'https://admin.continew.top/favicon.ico')
   }
 
   // 页面切换动画类名

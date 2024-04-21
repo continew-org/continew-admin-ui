@@ -1,7 +1,7 @@
 <template>
   <a-card title="特别赞助" :bordered="false" size="medium" class="card gi_card_title">
     <template #extra>
-      <a-link href="https://doc.charles7c.top/other/sponsor.html" target="_blank" rel="noopener">>></a-link>
+      <a-link href="https://continew.top/other/sponsor.html" target="_blank" rel="noopener">>></a-link>
     </template>
     <a-row :gutter="8">
       <a-carousel
@@ -29,7 +29,7 @@ interface ImageType {
 
 const imageList: ImageType[] = [
   {
-    src: `https://doc.charles7c.top/img/sponsor/ad/roovps.jpg?${new Date().getTime()}`,
+    src: `https://continew.top/img/sponsor/ad/roovps.jpg?${new Date().getTime()}`,
     title: 'ROOVPS',
     link: 'https://roovps.com/cart'
   }
