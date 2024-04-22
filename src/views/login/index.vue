@@ -20,7 +20,7 @@
           >
             <h3 class="login-right__title">
               <img v-if="webLogo" class="logo" :src="webLogo" alt="logo" height="33" />
-              <img v-else class="logo" src="@/assets/images/logo.svg" alt="logo" />
+              <img v-else class="logo" src="/logo.svg" alt="logo" />
               <span>{{ appStore.getTitle() }}</span>
             </h3>
             <a-form-item field="username">
@@ -160,8 +160,8 @@ const getCaptcha = () => {
 
 // 第三方登录授权
 const onOauth = async (source: string) => {
-  const { data } = await socialAuth(source);
-  window.location.href = data.authorizeUrl;
+  const { data } = await socialAuth(source)
+  window.location.href = data.authorizeUrl
 }
 
 onMounted(() => {
