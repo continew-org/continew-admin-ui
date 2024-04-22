@@ -31,7 +31,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd">
+          <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd()">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>

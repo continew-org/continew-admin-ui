@@ -92,7 +92,6 @@ const isGridView = ref(false)
 
 const iconList: string[] = []
 for (const path in SvgIconModules) {
-  console.log(path)
   const name = path.replace('/src/assets/icons/', '').replace('.svg', '')
   iconList.push(name)
 }
