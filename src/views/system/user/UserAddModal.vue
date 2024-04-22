@@ -82,6 +82,7 @@ import { Message, type FormInstance, type TreeNodeData } from '@arco-design/web-
 import { useForm } from '@/hooks'
 import { useDept, useRole } from '@/hooks/app'
 import { useWindowSize } from '@vueuse/core'
+import { encryptByRsa } from '@/utils/encrypt'
 
 const { width } = useWindowSize()
 const { roleList, getRoleList } = useRole()
@@ -166,7 +167,14 @@ const save = async () => {
       await updateUser(form, dataId.value)
       Message.success('修改成功')
     } else {
-      await addUser(form)
+      const rawPassword = form.password
+      if (rawPassword) {
+        form.password = encryptByRsa(rawPassword) || ''
+      }
+      await addUser(form).catch(() => {
+        form.password = rawPassword
+        return false
+      })
       Message.success('新增成功')
     }
     emit('save-success')
