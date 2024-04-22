@@ -22,7 +22,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button @click="onExport">
+        <a-button v-permission="['monitor:log:export']" @click="onExport">
           <template #icon>
             <icon-download />
           </template>
@@ -109,6 +109,17 @@ const {
   search
 } = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
+// 过滤查询
+const filterChange = (dataIndex, filteredValues) => {
+  try {
+    const slotName = columns[dataIndex.split('_').pop()].slotName as string
+    queryForm[slotName] = filteredValues.join(',')
+    search()
+  } catch (error) {
+    search()
+  }
+}
+
 // 重置
 const reset = () => {
   queryForm.ip = undefined
@@ -124,17 +135,6 @@ const reset = () => {
 // 导出
 const onExport = () => {
   useDownload(() => exportLoginLog(queryForm))
-}
-
-// 过滤查询
-const filterChange = (dataIndex, filteredValues) => {
-  try {
-    const slotName = columns[dataIndex.split('_').pop()].slotName as string
-    queryForm[slotName] = filteredValues.join(',')
-    search()
-  } catch (error) {
-    search()
-  }
 }
 </script>
 

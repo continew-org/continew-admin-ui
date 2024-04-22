@@ -28,6 +28,7 @@
               @ok="handleKickout(record.token)"
             >
               <a-link
+                v-permission="['monitor:online:kickout']"
                 status="danger"
                 :title="currentToken === record.token ? '不能强退自己' : '强退'"
                 :disabled="currentToken === record.token"
@@ -50,9 +51,12 @@ import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useUserStore } from '@/stores'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
+import has from '@/utils/has'
 
 defineOptions({ name: 'MonitorOnline' })
 
+const userStore = useUserStore()
+const currentToken = userStore.token
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -66,7 +70,13 @@ const columns: TableInstanceColumns[] = [
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true },
   { title: '登录时间', dataIndex: 'loginTime', width: 180 },
-  { title: '操作', slotName: 'action', align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['monitor:online:kickout'])
+  }
 ]
 
 const queryForm = reactive({
@@ -89,8 +99,6 @@ const reset = () => {
   search()
 }
 
-const userStore = useUserStore()
-const currentToken = userStore.token
 // 强退
 const handleKickout = (token: string) => {
   kickout(token).then(() => {

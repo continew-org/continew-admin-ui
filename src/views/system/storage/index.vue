@@ -51,7 +51,7 @@
             <a-link
               v-permission="['system:storage:delete']"
               status="danger"
-              :title="record.isDefault ? '默认存储库不能删除' : undefined"
+              :title="record.isDefault ? '默认存储不能删除' : undefined"
               :disabled="record.disabled"
               @click="onDelete(record)"
             >
@@ -104,9 +104,9 @@ const columns: TableInstanceColumns[] = [
     title: '操作',
     slotName: 'action',
     width: 130,
-    show: has.hasPermOr(['system:storage:update', 'system:storage:delete']),
     align: 'center',
-    fixed: !isMobile() ? 'right' : undefined
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['system:storage:update', 'system:storage:delete'])
   }
 ]
 

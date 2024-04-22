@@ -23,7 +23,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button @click="onExport">
+        <a-button v-permission="['monitor:log:export']" @click="onExport">
           <template #icon>
             <icon-download />
           </template>
@@ -31,7 +31,7 @@
       </a-tooltip>
     </template>
     <template #createTime="{ record }">
-      <a-link @click="openDetail(record)">{{ record.createTime }}</a-link>
+      <a-link @click="onDetail(record)">{{ record.createTime }}</a-link>
     </template>
     <template #status="{ record }">
       <a-tag v-if="record.status === 1" color="green">
@@ -57,9 +57,9 @@
 
 <script setup lang="ts">
 import { listLog, exportOperationLog, type LogResp } from '@/apis'
+import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
-import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import { useTable, useDownload } from '@/hooks'
 import dayjs from 'dayjs'
 
@@ -121,7 +121,18 @@ const {
   search
 } = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置查询
+// 过滤查询
+const filterChange = (dataIndex, filteredValues) => {
+  try {
+    const slotName = columns[dataIndex.split('_').pop()].slotName as string
+    queryForm[slotName] = filteredValues.join(',')
+    search()
+  } catch (error) {
+    search()
+  }
+}
+
+// 重置
 const reset = () => {
   queryForm.description = undefined
   queryForm.ip = undefined
@@ -139,21 +150,10 @@ const onExport = () => {
   useDownload(() => exportOperationLog(queryForm))
 }
 
-// 过滤查询
-const filterChange = (dataIndex, filteredValues) => {
-  try {
-    const slotName = columns[dataIndex.split('_').pop()].slotName as string
-    queryForm[slotName] = filteredValues.join(',')
-    search()
-  } catch (error) {
-    search()
-  }
-}
-
 const OperationLogDetailDrawerRef = ref<InstanceType<typeof OperationLogDetailDrawer>>()
-// 查询详情
-const openDetail = (item: LogResp) => {
-  OperationLogDetailDrawerRef.value?.open(item.id)
+// 详情
+const onDetail = (item: LogResp) => {
+  OperationLogDetailDrawerRef.value?.onDetail(item.id)
 }
 </script>
 
