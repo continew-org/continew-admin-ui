@@ -112,4 +112,4 @@ const storeSetup = () => {
   }
 }
 
-export const useTabsStore = defineStore('tabs', storeSetup, { persist: false })
+export const useTabsStore = defineStore('tabs', storeSetup, { persist: true })
