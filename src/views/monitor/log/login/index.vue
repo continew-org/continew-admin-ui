@@ -49,6 +49,7 @@ import { exportLoginLog, listLog } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useTable, useDownload } from '@/hooks'
+import dayjs from 'dayjs'
 
 defineOptions({ name: 'LoginLog' })
 
@@ -93,7 +94,10 @@ const queryForm = reactive({
   module: '登录',
   ip: undefined,
   createUserString: undefined,
-  createTime: undefined,
+  createTime: [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ],
   status: undefined,
   sort: ['createTime,desc']
 })
@@ -109,7 +113,10 @@ const {
 const reset = () => {
   queryForm.ip = undefined
   queryForm.createUserString = undefined
-  queryForm.createTime = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
   queryForm.status = undefined
   search()
 }

@@ -61,6 +61,7 @@ import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import { useTable, useDownload } from '@/hooks'
+import dayjs from 'dayjs'
 
 defineOptions({ name: 'OperationLog' })
 
@@ -105,7 +106,10 @@ const queryForm = reactive({
   description: undefined,
   ip: undefined,
   createUserString: undefined,
-  createTime: undefined,
+  createTime: [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ],
   status: undefined,
   sort: ['createTime,desc']
 })
@@ -122,7 +126,10 @@ const reset = () => {
   queryForm.description = undefined
   queryForm.ip = undefined
   queryForm.createUserString = undefined
-  queryForm.createTime = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
   queryForm.status = undefined
   search()
 }

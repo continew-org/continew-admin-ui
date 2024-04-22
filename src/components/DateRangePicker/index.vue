@@ -13,6 +13,8 @@
 import type { ShortcutType } from '@arco-design/web-vue'
 import dayjs from 'dayjs'
 
+defineOptions({ name: 'DateRangePicker' })
+
 defineProps({
   format: {
     type: String,
@@ -55,12 +57,6 @@ const shortcuts = computed<ShortcutType[]>(() => {
     }
   ]
 })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'DateRangePicker'
-}
 </script>
 
 <style scoped lang="less"></style>
