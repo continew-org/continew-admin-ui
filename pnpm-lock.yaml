@@ -105,8 +105,8 @@ dependencies:
     specifier: ^1.0.5
     version: 1.0.6(vue@3.4.21)
   vue-cropper:
-    specifier: ^0.6.4
-    version: 0.6.4
+    specifier: ^1.1.1
+    version: 1.1.2
   vue-draggable-plus:
     specifier: ^0.3.5
     version: 0.3.5(@types/sortablejs@1.15.8)
@@ -6295,8 +6295,8 @@ packages:
       vue: 3.4.21(typescript@5.0.4)
     dev: false
 
-  /vue-cropper@0.6.4:
-    resolution: {integrity: sha512-U3bm17Li/Xwfw2t3pr8/hFE/tYhvwIWqepHK9IFC1TnX1KFd64VyfCD9nMBhPY91RyvMC6jSQgT/DyDNKuTpIQ==}
+  /vue-cropper@1.1.2:
+    resolution: {integrity: sha512-S4cmvQzdNiVpNGigFwgULSwxWp55bdD1xf+RIEH+4mLDpD9/MUjNoHf970V3nFX7SerUrPZbOXG/ZBaD6pxfWQ==}
     dev: false
 
   /vue-demi@0.13.11(vue@3.4.21):

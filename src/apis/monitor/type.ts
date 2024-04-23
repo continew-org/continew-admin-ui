@@ -48,7 +48,7 @@ export interface LogQuery {
   module?: string
   ip?: string
   createUserString?: string
-  createTime?: string
+  createTime: Array<string>
   status?: number
   sort: Array<string>
 }

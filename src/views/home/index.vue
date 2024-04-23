@@ -4,7 +4,7 @@
 
     <a-alert>
       全新版本 v3.0.0 发布预告，采用全新前端模板，提供更可靠、更舒适的前端开发体验，点击查看
-      <span class="link" @click="open('https://gitee.com/continew/continew-admin-ui-gi/commits/dev')">项目进展</span>。
+      <span class="link" @click="open('https://gitee.com/continew/continew-admin-ui/commits/dev')">项目进展</span>。
     </a-alert>
 
     <a-row class="home__content">

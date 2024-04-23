@@ -31,7 +31,7 @@
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
-          <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd">
+          <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd()">
             <template #icon><icon-plus /></template>
             <span>新增</span>
           </a-button>
@@ -84,10 +84,10 @@ import DeptAddModal from './DeptAddModal.vue'
 import { Message } from '@arco-design/web-vue'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { DisEnableStatusList } from '@/constant/common'
 import { useDownload } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
+import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemDept' })
 

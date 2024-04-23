@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 import type * as Monitor from './type'
 
-const BASE_URL = '/monitor/online/user'
+const BASE_URL = '/monitor/online'
 
 /** @desc 查询在线用户列表 */
 export function listOnlineUser(query: Monitor.OnlineUserQuery) {

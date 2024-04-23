@@ -21,7 +21,7 @@
             <a-input v-model="form.moduleName" placeholder="项目模块名称，例如：continew-admin-system" />
           </a-form-item>
           <a-form-item label="模块包名" field="packageName">
-            <a-input v-model="form.packageName" placeholder="项目模块包名，例如：top.charles7c.continew.admin.system" />
+            <a-input v-model="form.packageName" placeholder="项目模块包名，例如：top.continew.admin.system" />
           </a-form-item>
           <a-form-item label="去表前缀" field="tablePrefix">
             <a-input v-model="form.tablePrefix" placeholder="数据库表前缀，例如：sys_" />

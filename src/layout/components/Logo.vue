@@ -1,7 +1,7 @@
 <template>
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
     <img v-if="webLogo" class="logo" :src="webLogo" alt="logo" />
-    <img v-else class="logo" src="@/assets/images/logo.svg" alt="logo" />
+    <img v-else class="logo" src="/logo.svg" alt="logo" />
     <span class="system-name">{{ webTitle }}</span>
   </section>
 </template>

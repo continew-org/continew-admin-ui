@@ -4,7 +4,7 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    :width="width >= 580 ? 580 : '100%'"
+    :width="width >= 600 ? 600 : '100%'"
     @before-ok="save"
     @close="reset"
   >
@@ -160,6 +160,7 @@ const onUpdate = async (id: string) => {
 
 // 保存
 const save = async () => {
+  const rawPassword = form.password
   try {
     const isInvalid = await formRef.value?.validate()
     if (isInvalid) return false
@@ -167,15 +168,16 @@ const save = async () => {
       await updateUser(form, dataId.value)
       Message.success('修改成功')
     } else {
-      await addUser({
-        ...form,
-        password: encryptByRsa(form.password)
-      })
+      if (rawPassword) {
+        form.password = encryptByRsa(rawPassword) || ''
+      }
+      await addUser(form)
       Message.success('新增成功')
     }
     emit('save-success')
     return true
   } catch (error) {
+    form.password = rawPassword
     return false
   }
 }

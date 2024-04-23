@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-model:visible="visible" title="角色详情" :width="width >= 580 ? 580 : '100%'" :footer="false">
+  <a-drawer v-model:visible="visible" title="角色详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions title="基础信息" :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
       <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>

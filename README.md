@@ -18,16 +18,16 @@
 <a href="https://gitee.com/continew/continew-admin" target="_blank">
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui-gi" target="_blank">
+<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/Vue-3.4.21-%236CB52D.svg" alt="Release" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui-gi" target="_blank">
+<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/Arco Design Vue-2.55.0-%236CB52D.svg" alt="Release" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui-gi" target="_blank">
+<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/TypeScript-5.0.4-%236CB52D.svg" alt="Release" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin-ui-gi" target="_blank">
+<a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
 <img src="https://img.shields.io/badge/Vite-5.1.5-%236CB52D.svg" alt="Release" />
 </a>
 
@@ -61,11 +61,11 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 项目源码
 
-|        | Gitee                                                                                     | GitHub                                                                             |
-|--------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| 前端     | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)      | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
-| 后端     | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin)            | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin)     |
-| 2.5 前端 | [gitee.com/continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [github.com/Charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
+|          | Gitee                                                                                     | GitHub                                                                             |
+|----------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| 前端       | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)      | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
+| 后端       | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin)            | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin)     |
+| 2.5 版本前端 | [gitee.com/continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [github.com/Charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
 
 ##  系统功能
 
@@ -93,10 +93,10 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ```
 # 1.克隆本项目
-git clone https://github.com/charles7c/continew-admin-ui-gi.git
-git clone https://gitee.com/continew/continew-admin-ui-gi.git
+git clone https://github.com/charles7c/continew-admin-ui.git
+git clone https://gitee.com/continew/continew-admin-ui.git
 
-# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui-gi
+# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
 
 # 3.安装 pnpm
 npm install -g pnpm
@@ -132,7 +132,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 2. 然后，将 fork 过来的项目（即您的项目）克隆到本地
 3. 切换到当前仍在维护的分支（请务必充分了解分支使用说明，可进群联系维护者确认）
 4. 开始修改代码，修改完成后，将代码 commit 并 push 到您的远程仓库
-5. 在 Gitee 或 GitHub 上新建 pull request（pr），选择好源和目标，按模板要求填写说明信息后提交即可（多多参考 [已批准合并的 pr 记录](https://github.com/Charles7c/continew-admin-ui-gi/pulls?q=is%3Apr+is%3Amerged)，会大大增加批准合并率）
+5. 在 Gitee 或 GitHub 上新建 pull request（pr），选择好源和目标，按模板要求填写说明信息后提交即可（多多参考 [已批准合并的 pr 记录](https://github.com/Charles7c/continew-admin-ui/pulls?q=is%3Apr+is%3Amerged)，会大大增加批准合并率）
 6. 最后，耐心等待维护者合并您的请求即可
 
 请记住，如果您有任何疑问或需要帮助，我们将随时提供支持。
@@ -159,7 +159,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 </div>
 <details>
 <summary>无加群意愿</summary>
-如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin-ui-gi/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
+如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin-ui/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
 </details>
 
 ## 鸣谢

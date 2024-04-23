@@ -23,7 +23,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button @click="onExport">
+        <a-button v-permission="['monitor:log:export']" @click="onExport">
           <template #icon>
             <icon-download />
           </template>
@@ -31,7 +31,7 @@
       </a-tooltip>
     </template>
     <template #createTime="{ record }">
-      <a-link @click="openDetail(record)">{{ record.createTime }}</a-link>
+      <a-link @click="onDetail(record)">{{ record.createTime }}</a-link>
     </template>
     <template #status="{ record }">
       <a-tag v-if="record.status === 1" color="green">
@@ -57,10 +57,11 @@
 
 <script setup lang="ts">
 import { listLog, exportOperationLog, type LogResp } from '@/apis'
+import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
-import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import { useTable, useDownload } from '@/hooks'
+import dayjs from 'dayjs'
 
 defineOptions({ name: 'OperationLog' })
 
@@ -105,7 +106,10 @@ const queryForm = reactive({
   description: undefined,
   ip: undefined,
   createUserString: undefined,
-  createTime: undefined,
+  createTime: [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ],
   status: undefined,
   sort: ['createTime,desc']
 })
@@ -116,21 +120,6 @@ const {
   pagination,
   search
 } = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置查询
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.ip = undefined
-  queryForm.createUserString = undefined
-  queryForm.createTime = undefined
-  queryForm.status = undefined
-  search()
-}
-
-// 导出
-const onExport = () => {
-  useDownload(() => exportOperationLog(queryForm))
-}
 
 // 过滤查询
 const filterChange = (dataIndex, filteredValues) => {
@@ -143,10 +132,28 @@ const filterChange = (dataIndex, filteredValues) => {
   }
 }
 
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.ip = undefined
+  queryForm.createUserString = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
+  queryForm.status = undefined
+  search()
+}
+
+// 导出
+const onExport = () => {
+  useDownload(() => exportOperationLog(queryForm))
+}
+
 const OperationLogDetailDrawerRef = ref<InstanceType<typeof OperationLogDetailDrawer>>()
-// 查询详情
-const openDetail = (item: LogResp) => {
-  OperationLogDetailDrawerRef.value?.open(item.id)
+// 详情
+const onDetail = (item: LogResp) => {
+  OperationLogDetailDrawerRef.value?.onDetail(item.id)
 }
 </script>
 

@@ -22,7 +22,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button @click="onExport">
+        <a-button v-permission="['monitor:log:export']" @click="onExport">
           <template #icon>
             <icon-download />
           </template>
@@ -49,6 +49,7 @@ import { exportLoginLog, listLog } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useTable, useDownload } from '@/hooks'
+import dayjs from 'dayjs'
 
 defineOptions({ name: 'LoginLog' })
 
@@ -93,7 +94,10 @@ const queryForm = reactive({
   module: '登录',
   ip: undefined,
   createUserString: undefined,
-  createTime: undefined,
+  createTime: [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ],
   status: undefined,
   sort: ['createTime,desc']
 })
@@ -105,20 +109,6 @@ const {
   search
 } = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.ip = undefined
-  queryForm.createUserString = undefined
-  queryForm.createTime = undefined
-  queryForm.status = undefined
-  search()
-}
-
-// 导出
-const onExport = () => {
-  useDownload(() => exportLoginLog(queryForm))
-}
-
 // 过滤查询
 const filterChange = (dataIndex, filteredValues) => {
   try {
@@ -128,6 +118,23 @@ const filterChange = (dataIndex, filteredValues) => {
   } catch (error) {
     search()
   }
+}
+
+// 重置
+const reset = () => {
+  queryForm.ip = undefined
+  queryForm.createUserString = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
+  queryForm.status = undefined
+  search()
+}
+
+// 导出
+const onExport = () => {
+  useDownload(() => exportLoginLog(queryForm))
 }
 </script>
 

@@ -37,16 +37,16 @@ const list = [
     url: 'https://gitee.com/continew/continew-starter'
   },
   {
-    name: 'ContiNew Admin UI - GI',
-    desc: '基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。',
-    logo: 'https://continew.top/logo.svg',
-    url: 'https://gitee.com/continew/continew-admin-ui-gi'
-  },
-  {
     name: 'ContiNew Admin UI',
-    desc: '基于 Arco Design Pro 前端模板开发的 ContiNew Admin 前端适配项目。',
+    desc: '全新 3.0 版本，基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目。',
     logo: 'https://continew.top/logo.svg',
     url: 'https://gitee.com/continew/continew-admin-ui'
+  },
+  {
+    name: 'ContiNew Admin UI Arco',
+    desc: '2.5 版本，基于 Arco Design Pro 前端模板开发的 ContiNew Admin 前端适配项目。',
+    logo: 'https://continew.top/logo.svg',
+    url: 'https://gitee.com/continew/continew-admin-ui-arco'
   },
   {
     name: 'ContiNew Cloud（孵化中）',

@@ -82,14 +82,14 @@ const getDataDetail = async () => {
 }
 
 const visible = ref(false)
-// 打开详情
-const open = async (id: string) => {
+// 详情
+const onDetail = async (id: string) => {
   dataId.value = id
   await getDataDetail()
   visible.value = true
 }
 
-defineExpose({ open })
+defineExpose({ onDetail })
 </script>
 
 <style lang="scss" scoped>
