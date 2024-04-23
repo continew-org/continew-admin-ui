@@ -1,5 +1,11 @@
 <template>
   <div class="login">
+    <h3 class="login-logo">
+      <img v-if="logo" :src="logo" alt="logo" />
+      <img v-else src="/logo.svg" alt="logo" />
+      <span>{{ title }}</span>
+    </h3>
+
     <a-row align="stretch" class="login-box">
       <a-col :xs="0" :sm="12" :md="13">
         <div class="login-left">
@@ -8,66 +14,29 @@
       </a-col>
       <a-col :xs="24" :sm="12" :md="11">
         <div class="login-right">
-          <a-form
-            ref="formRef"
-            :model="form"
-            :rules="rules"
-            :style="{ width: '84%' }"
-            :label-col-style="{ display: 'none' }"
-            :wrapper-col-style="{ flex: 1 }"
-            size="large"
-            @submit="handleLogin"
-          >
-            <h3 class="login-right__title">
-              <img v-if="webLogo" class="logo" :src="webLogo" alt="logo" height="33" />
-              <img v-else class="logo" src="/logo.svg" alt="logo" />
-              <span>{{ appStore.getTitle() }}</span>
-            </h3>
-            <a-form-item field="username">
-              <a-input v-model="form.username" placeholder="请输入用户名" allow-clear>
-                <template #prefix><icon-user :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-              </a-input>
-            </a-form-item>
-            <a-form-item field="password">
-              <a-input-password v-model="form.password" placeholder="请输入密码">
-                <template #prefix><icon-lock :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-              </a-input-password>
-            </a-form-item>
-            <a-form-item field="captcha" hide-label>
-              <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1">
-                <template #prefix><icon-check-circle :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-              </a-input>
-              <img :src="captchaImgBase64" alt="验证码" class="captcha" @click="getCaptcha" />
-            </a-form-item>
-            <a-form-item>
-              <a-row justify="space-between" align="center" class="w-full">
-                <a-checkbox v-model="loginConfig.rememberMe">记住我</a-checkbox>
-                <a-link>忘记密码</a-link>
-              </a-row>
-            </a-form-item>
-            <a-form-item>
-              <a-space direction="vertical" fill class="w-full">
-                <a-button type="primary" size="large" long :loading="loading" html-type="submit">登录</a-button>
-              </a-space>
-            </a-form-item>
-            <div class="login-right__oauth">
-              <a-divider orientation="center">其他登录方式</a-divider>
-              <div class="list">
-                <a class="item" title="使用 Gitee 账号登录" @click="onOauth('gitee')">
-                  <GiSvgIcon name="gitee" :size="24" />
-                </a>
-                <a class="item" title="使用 GitHub 账号登录" @click="onOauth('github')">
-                  <GiSvgIcon name="github" :size="24" />
-                </a>
-              </div>
+          <a-tabs class="login-right__form">
+            <a-tab-pane title="账号登录" key="1">
+              <Account />
+            </a-tab-pane>
+            <a-tab-pane title="手机号登录" key="2" disabled></a-tab-pane>
+          </a-tabs>
+          <div class="login-right__oauth">
+            <a-divider orientation="center">其他登录方式</a-divider>
+            <div class="list">
+              <a class="item" title="使用 Gitee 账号登录" @click="onOauth('gitee')">
+                <GiSvgIcon name="gitee" :size="24" />
+              </a>
+              <a class="item" title="使用 GitHub 账号登录" @click="onOauth('github')">
+                <GiSvgIcon name="github" :size="24" />
+              </a>
             </div>
-          </a-form>
+          </div>
         </div>
       </a-col>
     </a-row>
 
     <GiThemeBtn class="theme-btn" />
-    <LoginBg />
+    <Background />
 
     <!--    <div class="footer">
       <div class="beian">
@@ -78,94 +47,22 @@
 </template>
 
 <script setup lang="ts">
-import { getImageCaptcha, socialAuth } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
-import LoginBg from './components/LoginBg/index.vue'
-import { useAppStore, useUserStore } from '@/stores'
-import { useStorage } from '@vueuse/core'
-import { useLoading } from '@/hooks'
-import { encryptByRsa } from '@/utils/encrypt'
-
-const appStore = useAppStore()
-
-computed(() => appStore.getTitle())
-const webLogo = computed(() => appStore.getLogo())
+import { socialAuth } from '@/apis'
+import Background from './components/background/index.vue'
+import Account from './components/account/index.vue'
+import { useAppStore } from '@/stores'
 
 defineOptions({ name: 'Login' })
 
-const loginConfig = useStorage('login-config', {
-  rememberMe: true,
-  username: 'admin', // 演示默认值
-  password: 'admin123' // 演示默认值
-  // username: debug ? 'admin' : '', // 演示默认值
-  // password: debug ? 'admin123' : '', // 演示默认值
-})
-
-const formRef = ref<FormInstance>()
-const form = reactive({
-  username: loginConfig.value.username,
-  password: loginConfig.value.password,
-  captcha: '',
-  uuid: ''
-})
-
-const rules: FormInstance['rules'] = {
-  username: [{ required: true, message: '请输入用户名' }],
-  password: [{ required: true, message: '请输入密码' }],
-  captcha: [{ required: true, message: '请输入验证码' }]
-}
-
-const userStore = useUserStore()
-const router = useRouter()
-const { loading, setLoading } = useLoading()
-// 登录
-const handleLogin = async () => {
-  try {
-    const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return
-    setLoading(true)
-    await userStore.accountLogin({
-      username: form.username,
-      password: encryptByRsa(form.password) || '',
-      captcha: form.captcha,
-      uuid: form.uuid
-    })
-    const { redirect, ...othersQuery } = router.currentRoute.value.query
-    router.push({
-      path: (redirect as string) || '/',
-      query: {
-        ...othersQuery
-      }
-    })
-    const { rememberMe } = loginConfig.value
-    loginConfig.value.username = rememberMe ? form.username : ''
-    Message.success('欢迎使用')
-  } catch (error) {
-    getCaptcha()
-    form.captcha = ''
-  } finally {
-    setLoading(false)
-  }
-}
-
-const captchaImgBase64 = ref()
-// 获取验证码
-const getCaptcha = () => {
-  getImageCaptcha().then((res) => {
-    form.uuid = res.data.uuid
-    captchaImgBase64.value = res.data.img
-  })
-}
+const appStore = useAppStore()
+const title = computed(() => appStore.getTitle())
+const logo = computed(() => appStore.getLogo())
 
 // 第三方登录授权
 const onOauth = async (source: string) => {
   const { data } = await socialAuth(source)
   window.location.href = data.authorizeUrl
 }
-
-onMounted(() => {
-  getCaptcha()
-})
 </script>
 
 <style lang="scss" scoped>
@@ -175,9 +72,28 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   background-color: var(--color-bg-5);
+  &-logo {
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    z-index: 9999;
+    color: var(--color-text-1);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 32px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 34px;
+      height: 34px;
+      margin-right: 10px;
+    }
+  }
   &-box {
     width: 86%;
-    max-width: 820px;
+    max-width: 850px;
     height: 480px;
     display: flex;
     z-index: 999;
@@ -212,39 +128,31 @@ onMounted(() => {
   height: 100%;
   background: var(--color-bg-1);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 30px;
+  flex-direction: column;
+  padding: 30px 30px 0;
   box-sizing: border-box;
-  &__title {
-    color: var(--color-text-1);
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 32px;
-    margin-bottom: 20px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .logo {
-      width: 32px;
-      height: 32px;
-      margin-right: 6px;
+  &__form {
+    :deep(.arco-tabs-nav::before) {
+      display: none;
     }
-  }
-  .arco-input-wrapper,
-  :deep(.arco-select-view-single) {
-    height: 40px;
-    border-radius: 4px;
-    font-size: 13px;
-  }
-  .arco-input-wrapper.arco-input-error {
-    background-color: rgb(var(--danger-1));
-    border-color: rgb(var(--danger-4));
-  }
-  .arco-input-wrapper :deep(.arco-input) {
-    font-size: 13px;
-    color: var(--color-text-1);
+    :deep(.arco-tabs-tab) {
+      color: var(--color-text-2);
+    }
+    :deep(.arco-tabs-tab-title) {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+    :deep(.arco-tabs-tab-active),
+    :deep(.arco-tabs-tab-title:hover) {
+      color: rgb(var(--arcoblue-6));
+    }
+    :deep(.arco-tabs-tab-title:before) {
+      display: none;
+    }
+    :deep(.arco-tabs-content) {
+      margin-top: 10px;
+    }
   }
   &__oauth {
     margin-bottom: 20px;
@@ -272,15 +180,8 @@ onMounted(() => {
 .theme-btn {
   position: fixed;
   top: 20px;
-  left: 30px;
+  right: 30px;
   z-index: 9999;
-}
-
-.captcha {
-  width: 111px;
-  height: 36px;
-  margin: 0 0 0 5px;
-  cursor: pointer;
 }
 
 .footer {
