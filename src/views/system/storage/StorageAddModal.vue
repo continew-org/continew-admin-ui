@@ -16,13 +16,18 @@
         <a-input v-model.trim="form.code" placeholder="请输入编码" :disabled="isUpdate" />
       </a-form-item>
       <a-form-item label="类型" field="type">
-        <a-select v-model.trim="form.type" :options="storage_type_enum" placeholder="请选择类型" />
+        <a-select v-model.trim="form.type" :options="storage_type_enum" placeholder="请选择类型" :disabled="isUpdate" />
       </a-form-item>
       <a-form-item v-if="form.type === 1" label="访问密钥" field="accessKey">
-        <a-input v-model.trim="form.accessKey" placeholder="请输入访问密钥" />
+        <a-input v-model.trim="form.accessKey" placeholder="请输入访问密钥" :max-length="255" />
       </a-form-item>
       <a-form-item v-if="form.type === 1" label="私有密钥" field="secretKey">
-        <a-input v-model.trim="form.secretKey" placeholder="请输入私有密钥" />
+        <a-input
+          v-model.trim="form.secretKey"
+          placeholder="请输入私有密钥"
+          :max-length="255"
+          @input="updateSecretKey"
+        />
       </a-form-item>
       <a-form-item v-if="form.type === 1" label="终端节点" field="endpoint">
         <a-input v-model.trim="form.endpoint" placeholder="请输入终端节点" />
@@ -89,11 +94,13 @@ import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { useWindowSize } from '@vueuse/core'
+import { encryptByRsa } from '@/utils/encrypt'
 
 const { width } = useWindowSize()
 const { storage_type_enum } = useDict('storage_type_enum')
 
 const dataId = ref('')
+const updatedSecretKey = ref(false)
 const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改存储' : '新增存储'))
 const formRef = ref<FormInstance>()
@@ -113,6 +120,7 @@ const { form, resetForm } = useForm<StorageReq>({
   code: '',
   type: 2,
   accessKey: undefined,
+  secretKeyEncrypted: undefined,
   secretKey: undefined,
   endpoint: undefined,
   bucketName: undefined,
@@ -146,16 +154,24 @@ const onUpdate = async (id: string) => {
   visible.value = true
 }
 
+const updateSecretKey = () => {
+  updatedSecretKey.value = true
+}
+
 // 保存
 const save = async () => {
   try {
     const isInvalid = await formRef.value?.validate()
     if (isInvalid) return false
+    const data = Object.assign({}, form)
+    if (data.type === 1) {
+      data.secretKey = updatedSecretKey.value ? encryptByRsa(form.secretKey) : form.secretKeyEncrypted
+    }
     if (isUpdate.value) {
-      await updateStorage(form, dataId.value)
+      await updateStorage(data, dataId.value)
       Message.success('修改成功')
     } else {
-      await addStorage(form)
+      await addStorage(data)
       Message.success('新增成功')
     }
     emit('save-success')
