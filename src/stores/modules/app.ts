@@ -1,58 +1,12 @@
 import { defineStore } from 'pinia'
+import { listOptionDict, type BasicConfigResp } from '@/apis'
 import { computed, reactive, toRefs } from 'vue'
 import { generate, getRgbStr } from '@arco-design/color'
 import defaultSettings from '@/config/setting.json'
-import type { BasicConfigRecordResp } from '@/apis'
-import { listOption } from '@/apis'
 
 const storeSetup = () => {
   // App配置
   const settingConfig = reactive({ ...defaultSettings }) as App.SettingConfig
-  // 系统配置
-  const webConfig = reactive({}) as BasicConfigRecordResp
-
-  const getLogo = () => {
-    return webConfig.site_logo
-  }
-  const getFavicon = () => {
-    return webConfig.site_favicon
-  }
-  const getTitle = () => {
-    return webConfig.site_title
-  }
-  const getCopyright = () => {
-    return webConfig.site_copyright
-  }
-
-  // 初始化系统配置
-  const initWebConfig = () => {
-    listOption({
-      code: ['site_title', 'site_copyright', 'site_favicon', 'site_logo']
-    }).then((res) => {
-      const resMap = new Map()
-      res.data.forEach((item) => {
-        resMap.set(item.label, item.value)
-      })
-      webConfig.site_title = resMap.get('site_title')
-      webConfig.site_copyright = resMap.get('site_copyright')
-      webConfig.site_logo = resMap.get('site_logo')
-      webConfig.site_favicon = resMap.get('site_favicon')
-      document.title = resMap.get('site_title')
-      document
-        .querySelector('link[rel="shortcut icon"]')
-        ?.setAttribute('href', resMap.get('site_favicon') || 'https://admin.continew.top/favicon.ico')
-    })
-  }
-
-  // 保存系统配置
-  const saveWebConfig = (config: BasicConfigRecordResp) => {
-    Object.assign(webConfig, config)
-    document.title = config.site_title || ''
-    document
-      .querySelector('link[rel="shortcut icon"]')
-      ?.setAttribute('href', config.site_favicon || 'https://admin.continew.top/favicon.ico')
-  }
-
   // 页面切换动画类名
   const transitionName = computed(() => (settingConfig.animate ? settingConfig.animateMode : ''))
 
@@ -100,21 +54,66 @@ const storeSetup = () => {
     settingConfig.menuCollapse = collapsed
   }
 
+  // 系统配置配置
+  const siteConfig = reactive({}) as BasicConfigResp
+  // 初始化系统配置
+  const initSiteConfig = () => {
+    listOptionDict({
+      code: ['site_favicon', 'site_logo', 'site_title', 'site_copyright']
+    }).then((res) => {
+      const resMap = new Map()
+      res.data.forEach((item) => {
+        resMap.set(item.label, item.value)
+      })
+      siteConfig.site_logo = resMap.get('site_logo')
+      siteConfig.site_favicon = resMap.get('site_favicon')
+      siteConfig.site_title = resMap.get('site_title')
+      siteConfig.site_copyright = resMap.get('site_copyright')
+      document.title = resMap.get('site_title')
+      document
+        .querySelector('link[rel="shortcut icon"]')
+        ?.setAttribute('href', resMap.get('site_favicon') || '/favicon.ico')
+    })
+  }
+
+  // 设置系统配置
+  const setSiteConfig = (config: BasicConfigResp) => {
+    Object.assign(siteConfig, config)
+    document.title = config.site_title || ''
+    document.querySelector('link[rel="shortcut icon"]')?.setAttribute('href', config.site_favicon || '/favicon.ico')
+  }
+
+  const getFavicon = () => {
+    return siteConfig.site_favicon
+  }
+
+  const getLogo = () => {
+    return siteConfig.site_logo
+  }
+
+  const getTitle = () => {
+    return siteConfig.site_title
+  }
+
+  const getCopyright = () => {
+    return siteConfig.site_copyright
+  }
+
   return {
     ...toRefs(settingConfig),
-    ...toRefs(webConfig),
+    ...toRefs(siteConfig),
     transitionName,
     themeCSSVar,
     toggleTheme,
     setThemeColor,
     initTheme,
     setMenuCollapse,
-    getLogo,
+    initSiteConfig,
+    setSiteConfig,
     getFavicon,
+    getLogo,
     getTitle,
-    getCopyright,
-    initWebConfig,
-    saveWebConfig
+    getCopyright
   }
 }
 

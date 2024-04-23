@@ -14,6 +14,7 @@ defineOptions({ name: 'App' })
 
 const appStore = useAppStore()
 appStore.initTheme()
+appStore.initSiteConfig()
 </script>
 
 <style lang="scss" scoped>

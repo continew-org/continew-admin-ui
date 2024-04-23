@@ -198,30 +198,25 @@ export interface StorageQuery extends PageQuery {
   status?: number
 }
 
-/** 系统参数*/
-export interface OptionQuery {
-  code?: Array<string>
-}
-
-export interface OptionReq {
-  code: string
-  value: string
-}
-
+/** 系统参数类型 */
 export interface OptionResp {
-  name?: string
+  name: string
   code: string
   value: string
-  description?: string
+  description: string
+}
+export interface OptionQuery {
+  code: Array<string>
 }
 
-/** 系统配置*/
-export interface BasicConfigRecordResp {
-  site_title?: string
-  site_copyright?: string
-  site_logo?: string
-  site_favicon?: string
+/** 基础配置类型 */
+export interface BasicConfigResp {
+  site_favicon: string
+  site_logo: string
+  site_title: string
+  site_copyright: string
 }
+
 /** 绑定三方账号信息*/
 export interface BindSocialAccountRes {
   source: string

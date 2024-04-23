@@ -87,7 +87,6 @@ import { useLoading } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
 
 const appStore = useAppStore()
-appStore.initWebConfig()
 
 computed(() => appStore.getTitle())
 const webLogo = computed(() => appStore.getLogo())

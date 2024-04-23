@@ -1,8 +1,8 @@
 <template>
-  <a-form ref="formRef" layout="vertical" :model="form" :rules="rules" size="large" :disabled="!isEdit">
+  <a-form ref="formRef" :model="form" :rules="rules" size="large" layout="vertical" :disabled="!isUpdate">
     <a-list class="list-layout" :bordered="false">
       <a-list-item>
-        <a-form-item class="image-item" hide-label field="favicon">
+        <a-form-item class="image-item" hide-label field="site_favicon">
           {{ siteFavicon?.name }}
           <template #extra>
             {{ siteFavicon?.description }}
@@ -25,7 +25,7 @@
                     class="arco-upload-list-picture custom-upload-avatar favicon"
                   >
                     <img :src="faviconFile.url" alt="favicon" />
-                    <div v-if="isEdit" class="arco-upload-list-picture-mask favicon">
+                    <div v-if="isUpdate" class="arco-upload-list-picture-mask favicon">
                       <IconEdit />
                     </div>
                   </div>
@@ -61,7 +61,7 @@
                 >
                   <div v-if="logoFile && logoFile.url" class="arco-upload-list-picture custom-upload-avatar logo">
                     <img :src="logoFile.url" alt="Logo" />
-                    <div v-if="isEdit" class="arco-upload-list-picture-mask logo">
+                    <div v-if="isUpdate" class="arco-upload-list-picture-mask logo">
                       <IconEdit />
                     </div>
                   </div>
@@ -78,11 +78,11 @@
       </a-list-item>
       <a-list-item style="padding-top: 13px; border: none">
         <a-form-item class="input-item" :label="siteTitle?.name" field="site_title">
-          <a-input v-model="form.site_title" placeholder="请输入网站标题" :max-length="18" />
+          <a-input v-model.trim="form.site_title" placeholder="请输入网站标题" :max-length="18" />
         </a-form-item>
         <a-form-item class="input-item" :label="siteCopyright?.name" field="site_copyright" tooltip="支持HTML标签">
           <a-textarea
-            v-model="form.site_copyright"
+            v-model.trim="form.site_copyright"
             placeholder="请输入版权信息"
             :auto-size="{
               minRows: 3
@@ -92,31 +92,31 @@
         </a-form-item>
         <div style="margin-top: 20px">
           <a-space>
-            <a-button v-if="!isEdit" @click="toResetValue">
+            <a-button v-if="!isUpdate" @click="onResetValue">
               <template #icon>
                 <icon-undo />
               </template>
               恢复默认
             </a-button>
-            <a-button v-if="!isEdit" type="primary" @click="toEdit">
+            <a-button v-if="!isUpdate" type="primary" @click="onUpdate">
               <template #icon>
                 <icon-edit />
               </template>
               修改
             </a-button>
-            <a-button v-if="isEdit" type="primary" @click="handleSave">
+            <a-button v-if="isUpdate" type="primary" @click="handleSave">
               <template #icon>
                 <icon-save />
               </template>
               保存
             </a-button>
-            <a-button v-if="isEdit" @click="reset">
+            <a-button v-if="isUpdate" @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
               重置
             </a-button>
-            <a-button v-if="isEdit" @click="handleCancel">
+            <a-button v-if="isUpdate" @click="handleCancel">
               <template #icon>
                 <icon-undo />
               </template>
@@ -130,130 +130,102 @@
 </template>
 
 <script lang="ts" setup>
-import type { OptionResp } from '@/apis'
-import { list, resetValue, save, uploadFile } from '@/apis'
+import { listOption, updateOption, resetOptionValue, uploadFile, type OptionResp } from '@/apis'
+import { Message, Modal, type FileItem, type FormInstance, type RequestOption } from '@arco-design/web-vue'
 import { useAppStore } from '@/stores'
-import { type FileItem, type FormInstance, type RequestOption, Message, Modal } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 
 const formRef = ref<FormInstance>()
-const dataList = ref<OptionResp[]>([])
-const isEdit = ref(false)
-const logoFile = ref<FileItem>({ uid: '-1' })
-const faviconFile = ref<FileItem>({ uid: '-2' })
-const siteTitle = ref<OptionResp>()
-const siteCopyright = ref<OptionResp>()
-const siteLogo = ref<OptionResp>()
-const siteFavicon = ref<OptionResp>()
-const appStore = useAppStore()
-
 const rules: FormInstance['rules'] = {
   site_title: [{ required: true, message: '请输入系统标题' }],
   site_copyright: [{ required: true, message: '请输入版权信息' }]
 }
 
 const { form } = useForm({
-  site_title: '',
-  site_copyright: '',
+  site_favicon: '',
   site_logo: '',
-  site_favicon: ''
+  site_title: '',
+  site_copyright: ''
 })
 
-const query = reactive({
-  queryParams: {
-    code: ['site_title', 'site_copyright', 'site_logo', 'site_favicon']
-  }
-})
-
-/**
- * 重置表单
- */
+const siteFavicon = ref<OptionResp>()
+const siteLogo = ref<OptionResp>()
+const siteTitle = ref<OptionResp>()
+const siteCopyright = ref<OptionResp>()
+const faviconFile = ref<FileItem>({ uid: '-1' })
+const logoFile = ref<FileItem>({ uid: '-2' })
+// 重置
 const reset = () => {
+  form.site_favicon = siteFavicon.value?.value || ''
+  form.site_logo = siteLogo.value?.value || ''
   form.site_title = siteTitle.value?.value || ''
   form.site_copyright = siteCopyright.value?.value || ''
-  form.site_logo = siteLogo.value?.value || ''
-  form.site_favicon = siteFavicon.value?.value || ''
-  logoFile.value.url = siteLogo.value?.value
   faviconFile.value.url = siteFavicon.value?.value
+  logoFile.value.url = siteLogo.value?.value
 }
 
-/**
- * 查询配置
- */
-const getConfig = async () => {
-  const res = await list(query.queryParams)
+const isUpdate = ref(false)
+// 修改
+const onUpdate = () => {
+  isUpdate.value = true
+}
+
+// 取消
+const handleCancel = () => {
+  isUpdate.value = false
+}
+
+const dataList = ref<OptionResp[]>([])
+const queryForm = reactive({
+  code: ['site_title', 'site_copyright', 'site_logo', 'site_favicon']
+})
+// 查询列表数据
+const getDataList = async () => {
+  const res = await listOption(queryForm)
   dataList.value = res.data
+  siteFavicon.value = dataList.value.find((option) => option.code === 'site_favicon')
+  siteLogo.value = dataList.value.find((option) => option.code === 'site_logo')
   siteTitle.value = dataList.value.find((option) => option.code === 'site_title')
   siteCopyright.value = dataList.value.find((option) => option.code === 'site_copyright')
-  siteLogo.value = dataList.value.find((option) => option.code === 'site_logo')
-  siteFavicon.value = dataList.value.find((option) => option.code === 'site_favicon')
   reset()
 }
 
-getConfig()
-
-/**
- * 取消
- */
-const handleCancel = () => {
-  isEdit.value = false
+const appStore = useAppStore()
+// 保存
+const handleSave = async () => {
+  const isInvalid = await formRef.value?.validate()
+  if (isInvalid) return false
+  await updateOption(
+    Object.entries(form).map((item) => {
+      return {
+        code: item[0],
+        value: item[1]
+      }
+    })
+  )
+  appStore.setSiteConfig(form)
+  handleCancel()
+  Message.success('保存成功')
 }
 
-/**
- * 保存
- */
-const handleSave = () => {
-  formRef.value?.validate((valid: any) => {
-    if (!valid) {
-      const optionList: OptionResp[] = Object.entries(form).map((item) => {
-        return {
-          code: item[0],
-          value: item[1]
-        }
-      })
-      save(optionList).then((res) => {
-        appStore.saveWebConfig(form)
-        handleCancel()
-        Message.success(res.msg)
-      })
-    }
+// 恢复默认
+const handleResetValue = async () => {
+  await resetOptionValue(queryForm)
+  Message.success('恢复成功')
+  await getDataList()
+  appStore.setSiteConfig(form)
+}
+const onResetValue = () => {
+  Modal.warning({
+    title: '警告',
+    content: '确认恢复基础配置为默认值吗？',
+    hideCancel: false,
+    maskClosable: false,
+    onOk: handleResetValue
   })
 }
 
-/**
- * 上传 Logo
- *
- * @param options /
- */
-const handleUploadLogo = (options: RequestOption) => {
-  const controller = new AbortController()
-  ;(async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
-      .then((res) => {
-        onSuccess(res)
-        form.site_logo = res.data.url
-        Message.success(res.msg)
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  })()
-  return {
-    abort() {
-      controller.abort()
-    }
-  }
-}
-
-/**
- * 上传 Favicon
- *
- * @param options /
- */
+// 上传 favicon
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
   ;(async function requestWrap() {
@@ -265,7 +237,7 @@ const handleUploadFavicon = (options: RequestOption) => {
       .then((res) => {
         onSuccess(res)
         form.site_favicon = res.data.url
-        Message.success(res.msg)
+        Message.success('上传成功')
       })
       .catch((error) => {
         onError(error)
@@ -277,63 +249,48 @@ const handleUploadFavicon = (options: RequestOption) => {
     }
   }
 }
-
-/**
- * 选择 Logo
- *
- * @param _ /
- * @param currentFile
- */
-const handleChangeLogo = (_: any, currentFile: any) => {
-  logoFile.value = {
-    ...currentFile
-  }
-}
-
-/**
- * 选择 Favicon
- *
- * @param _ /
- * @param currentFile
- */
 const handleChangeFavicon = (_: any, currentFile: any) => {
   faviconFile.value = {
     ...currentFile
   }
 }
 
-/**
- * 恢复默认
- */
-const handleResetValue = async () => {
-  await resetValue(query.queryParams)
-  Message.success('恢复成功')
-  await getConfig()
-  appStore.saveWebConfig(form)
+// 上传 Logo
+const handleUploadLogo = (options: RequestOption) => {
+  const controller = new AbortController()
+  ;(async function requestWrap() {
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    uploadFile(formData)
+      .then((res) => {
+        onSuccess(res)
+        form.site_logo = res.data.url
+        Message.success('上传成功')
+      })
+      .catch((error) => {
+        onError(error)
+      })
+  })()
+  return {
+    abort() {
+      controller.abort()
+    }
+  }
+}
+const handleChangeLogo = (_: any, currentFile: any) => {
+  logoFile.value = {
+    ...currentFile
+  }
 }
 
-/**
- * 点击恢复默认
- */
-const toResetValue = () => {
-  Modal.warning({
-    title: '警告',
-    content: '确认恢复基础配置为默认值吗？',
-    hideCancel: false,
-    maskClosable: false,
-    onBeforeOk: handleResetValue
-  })
-}
-
-/**
- * 开始编辑
- */
-const toEdit = () => {
-  isEdit.value = true
-}
+onMounted(() => {
+  getDataList()
+})
 </script>
 
-<style scoped lang="less">
+<style lang="scss" scoped>
 .logo {
   width: 33px;
   height: 33px;
