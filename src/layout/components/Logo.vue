@@ -1,8 +1,8 @@
 <template>
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
-    <img v-if="webLogo" class="logo" :src="webLogo" alt="logo" />
+    <img v-if="logo" class="logo" :src="logo" alt="logo" />
     <img v-else class="logo" src="/logo.svg" alt="logo" />
-    <span class="system-name">{{ webTitle }}</span>
+    <span class="system-name">{{ title }}</span>
   </section>
 </template>
 
@@ -10,21 +10,17 @@
 import { useAppStore } from '@/stores'
 
 const appStore = useAppStore()
-appStore.initWebConfig()
-
-const webTitle = computed(() => appStore.getTitle())
-const webLogo = computed(() => appStore.getLogo())
+const title = computed(() => appStore.getTitle())
+const logo = computed(() => appStore.getLogo())
 
 interface Props {
   collapsed?: boolean
 }
-
 const props = withDefaults(defineProps<Props>(), {
   collapsed: false
 })
 
 const router = useRouter()
-
 // 跳转首页
 const toHome = () => {
   router.push('/')

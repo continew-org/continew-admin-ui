@@ -5,7 +5,7 @@
         <a-tab-pane key="1" title="基础配置">
           <BasicSetting />
         </a-tab-pane>
-        <a-tab-pane key="2" title="高级配置" disabled></a-tab-pane>
+        <a-tab-pane key="2" title="邮件配置(暂未开放)" disabled></a-tab-pane>
       </a-tabs>
     </a-card>
   </div>
