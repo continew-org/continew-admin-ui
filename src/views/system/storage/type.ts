@@ -4,7 +4,6 @@ export interface StorageReq {
   type: number
   accessKey: string
   secretKey: string
-  secretKeyEncrypted: string
   endpoint: string
   bucketName: string
   domain: string

@@ -100,7 +100,6 @@ const { width } = useWindowSize()
 const { storage_type_enum } = useDict('storage_type_enum')
 
 const dataId = ref('')
-const updatedSecretKey = ref(false)
 const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改存储' : '新增存储'))
 const formRef = ref<FormInstance>()
@@ -120,7 +119,6 @@ const { form, resetForm } = useForm<StorageReq>({
   code: '',
   type: 2,
   accessKey: undefined,
-  secretKeyEncrypted: undefined,
   secretKey: undefined,
   endpoint: undefined,
   bucketName: undefined,
@@ -154,18 +152,14 @@ const onUpdate = async (id: string) => {
   visible.value = true
 }
 
-const updateSecretKey = () => {
-  updatedSecretKey.value = true
-}
-
 // 保存
 const save = async () => {
   try {
     const isInvalid = await formRef.value?.validate()
     if (isInvalid) return false
-    const data = Object.assign({}, form)
-    if (data.type === 1) {
-      data.secretKey = updatedSecretKey.value ? encryptByRsa(form.secretKey) : form.secretKeyEncrypted
+    const data = {
+      ...form,
+      secretKey: form.type === 1 && !form.secretKey.includes('*') ? encryptByRsa(form.secretKey) : null
     }
     if (isUpdate.value) {
       await updateStorage(data, dataId.value)
