@@ -40,11 +40,24 @@ export interface RouteItem {
   affix: boolean
 }
 
+/** 账号登录请求参数 */
 export interface AccountLoginReq {
   username: string
   password: string
   captcha: string
   uuid: string
+}
+
+/** 手机号登录请求参数 */
+export interface PhoneLoginReq {
+  phone: string
+  captcha: string
+}
+
+/** 邮箱登录请求参数 */
+export interface EmailLoginReq {
+  email: string
+  captcha: string
 }
 
 // 登录响应类型

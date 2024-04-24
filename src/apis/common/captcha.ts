@@ -7,11 +7,13 @@ const BASE_URL = '/captcha'
 export function getImageCaptcha() {
   return http.get<Common.ImageCaptchaResp>(`${BASE_URL}/img`)
 }
-/**@desc 获取手机验证码 */
-export function getPhoneCaptcha(query: { phone: string }) {
+
+/** @desc 获取短信验证码 */
+export function getSmsCaptcha(query: { phone: string }) {
   return http.get<boolean>(`${BASE_URL}/sms`, query)
 }
-/**@desc 获取邮箱验证码 */
+
+/** @desc 获取邮箱验证码 */
 export function getEmailCaptcha(query: { email: string }) {
   return http.get<boolean>(`${BASE_URL}/mail`, query)
 }

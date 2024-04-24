@@ -1,8 +1,8 @@
 <template>
   <a-button size="mini" class="gi_hover_btn" @click="handleToggleTheme">
     <template #icon>
-      <icon-sun-fill :size="18" v-if="appStore.theme === 'light'"></icon-sun-fill>
-      <icon-moon-fill :size="18" v-else></icon-moon-fill>
+      <icon-moon-fill v-if="appStore.theme === 'light'" :size="18" />
+      <icon-sun-fill v-else :size="18" />
     </template>
   </a-button>
 </template>

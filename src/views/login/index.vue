@@ -14,15 +14,21 @@
       </a-col>
       <a-col :xs="24" :sm="12" :md="11">
         <div class="login-right">
-          <a-tabs class="login-right__form">
+          <h3 class="login-right__title" v-if="isEmailLogin">邮箱登录</h3>
+          <EmailLogin v-if="isEmailLogin" />
+          <a-tabs v-else class="login-right__form">
             <a-tab-pane title="账号登录" key="1">
-              <Account />
+              <AccountLogin />
             </a-tab-pane>
-            <a-tab-pane title="手机号登录" key="2" disabled></a-tab-pane>
+            <a-tab-pane title="手机号登录" key="2">
+              <PhoneLogin />
+            </a-tab-pane>
           </a-tabs>
           <div class="login-right__oauth">
             <a-divider orientation="center">其他登录方式</a-divider>
             <div class="list">
+              <div v-if="isEmailLogin" class="mode item" @click="toggleLoginMode"><icon-user /> 账号/手机号登录</div>
+              <div v-else class="mode item" @click="toggleLoginMode"><icon-email /> 邮箱登录</div>
               <a class="item" title="使用 Gitee 账号登录" @click="onOauth('gitee')">
                 <GiSvgIcon name="gitee" :size="24" />
               </a>
@@ -49,7 +55,9 @@
 <script setup lang="ts">
 import { socialAuth } from '@/apis'
 import Background from './components/background/index.vue'
-import Account from './components/account/index.vue'
+import AccountLogin from './components/account/index.vue'
+import PhoneLogin from './components/phone/index.vue'
+import EmailLogin from './components/email/index.vue'
 import { useAppStore } from '@/stores'
 
 defineOptions({ name: 'Login' })
@@ -57,6 +65,12 @@ defineOptions({ name: 'Login' })
 const appStore = useAppStore()
 const title = computed(() => appStore.getTitle())
 const logo = computed(() => appStore.getLogo())
+
+const isEmailLogin = ref(false)
+// 切换登录模式
+const toggleLoginMode = () => {
+  isEmailLogin.value = !isEmailLogin.value
+}
 
 // 第三方登录授权
 const onOauth = async (source: string) => {
@@ -88,13 +102,13 @@ const onOauth = async (source: string) => {
     img {
       width: 34px;
       height: 34px;
-      margin-right: 10px;
+      margin-right: 8px;
     }
   }
   &-box {
     width: 86%;
     max-width: 850px;
-    height: 480px;
+    height: 490px;
     display: flex;
     z-index: 999;
     box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.08);
@@ -131,9 +145,18 @@ const onOauth = async (source: string) => {
   flex-direction: column;
   padding: 30px 30px 0;
   box-sizing: border-box;
+  &__title {
+    color: var(--color-text-1);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 32px;
+    margin-bottom: 20px;
+  }
   &__form {
-    :deep(.arco-tabs-nav::before) {
-      display: none;
+    :deep(.arco-tabs-nav-tab) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     :deep(.arco-tabs-tab) {
       color: var(--color-text-2);
@@ -143,27 +166,28 @@ const onOauth = async (source: string) => {
       font-weight: 500;
       line-height: 22px;
     }
+    :deep(.arco-tabs-content) {
+      margin-top: 10px;
+    }
     :deep(.arco-tabs-tab-active),
     :deep(.arco-tabs-tab-title:hover) {
       color: rgb(var(--arcoblue-6));
     }
+    :deep(.arco-tabs-nav::before) {
+      display: none;
+    }
     :deep(.arco-tabs-tab-title:before) {
       display: none;
     }
-    :deep(.arco-tabs-content) {
-      margin-top: 10px;
-    }
   }
   &__oauth {
+    margin-top: auto;
     margin-bottom: 20px;
     :deep(.arco-divider-text) {
       color: var(--color-text-4);
       font-size: 12px;
       font-weight: 400;
       line-height: 20px;
-    }
-    :deep(.arco-divider-horizontal) {
-      border-bottom: 1px solid rgb(229, 230, 235);
     }
     .list {
       align-items: center;
@@ -172,6 +196,35 @@ const onOauth = async (source: string) => {
       width: 100%;
       .item {
         margin-right: 15px;
+      }
+      .mode {
+        color: var(--color-text-2);
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        padding: 6px 10px;
+        align-items: center;
+        border: 1px solid var(--color-border-3);
+        border-radius: 32px;
+        box-sizing: border-box;
+        display: flex;
+        height: 32px;
+        justify-content: center;
+        cursor: pointer;
+        .icon {
+          width: 21px;
+          height: 20px;
+        }
+      }
+      .mode svg {
+        font-size: 16px;
+        margin-right: 10px;
+      }
+      .mode:hover,
+      .mode svg:hover {
+        background: rgba(var(--primary-6), 0.05);
+        border: 1px solid rgb(var(--primary-3));
+        color: rgb(var(--arcoblue-6));
       }
     }
   }

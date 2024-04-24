@@ -8,20 +8,14 @@
     size="large"
     @submit="handleLogin"
   >
-    <a-form-item field="username">
-      <a-input v-model="form.username" placeholder="请输入用户名" allow-clear>
-        <template #prefix><icon-user :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-      </a-input>
+    <a-form-item field="username" hide-label>
+      <a-input v-model="form.username" placeholder="请输入用户名" allow-clear />
     </a-form-item>
-    <a-form-item field="password">
-      <a-input-password v-model="form.password" placeholder="请输入密码">
-        <template #prefix><icon-lock :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-      </a-input-password>
+    <a-form-item field="password" hide-label>
+      <a-input-password v-model="form.password" placeholder="请输入密码" />
     </a-form-item>
     <a-form-item field="captcha" hide-label>
-      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1">
-        <template #prefix><icon-check-circle :stroke-width="1" :style="{ fontSize: '16px' }" /></template>
-      </a-input>
+      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
       <img :src="captchaImgBase64" alt="验证码" class="captcha" @click="getCaptcha" />
     </a-form-item>
     <a-form-item>
@@ -32,7 +26,7 @@
     </a-form-item>
     <a-form-item>
       <a-space direction="vertical" fill class="w-full">
-        <a-button class="btn" type="primary" size="large" long :loading="loading" html-type="submit">登录</a-button>
+        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button>
       </a-space>
     </a-form-item>
   </a-form>
@@ -70,13 +64,13 @@ const rules: FormInstance['rules'] = {
 
 const userStore = useUserStore()
 const router = useRouter()
-const { loading, setLoading } = useLoading()
+const loading = ref(false)
 // 登录
 const handleLogin = async () => {
   try {
     const isInvalid = await formRef.value?.validate()
     if (isInvalid) return
-    setLoading(true)
+    loading.value = true
     await userStore.accountLogin({
       username: form.username,
       password: encryptByRsa(form.password) || '',
@@ -97,7 +91,7 @@ const handleLogin = async () => {
     getCaptcha()
     form.captcha = ''
   } finally {
-    setLoading(false)
+    loading.value = false
   }
 }
 
@@ -122,13 +116,22 @@ onMounted(() => {
   border-radius: 4px;
   font-size: 13px;
 }
+
 .arco-input-wrapper.arco-input-error {
   background-color: rgb(var(--danger-1));
-  border-color: rgb(var(--danger-4));
+  border-color: rgb(var(--danger-3));
 }
+.arco-input-wrapper.arco-input-error:hover {
+  background-color: rgb(var(--danger-1));
+  border-color: rgb(var(--danger-6));
+}
+
 .arco-input-wrapper :deep(.arco-input) {
   font-size: 13px;
   color: var(--color-text-1);
+}
+.arco-input-wrapper:hover {
+  border-color: rgb(var(--arcoblue-6));
 }
 
 .captcha {

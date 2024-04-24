@@ -1,8 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
 import { resetRouter } from '@/router'
-import { accountLogin as accountLoginApi, logout as logoutApi, getUserInfo as getUserInfoApi } from '@/apis'
-import { socialAuth, type UserInfo } from '@/apis'
+import {
+  accountLogin as accountLoginApi,
+  phoneLogin as phoneLoginApi,
+  emailLogin as emailLoginApi,
+  socialLogin as socialLoginApi,
+  logout as logoutApi,
+  getUserInfo as getUserInfoApi,
+  type AccountLoginReq,
+  type PhoneLoginReq,
+  type EmailLoginReq,
+  type UserInfo
+} from '@/apis'
 import { setToken, clearToken, getToken } from '@/utils/auth'
 import { resetHasRouteFlag } from '@/router/permission'
 import getAvatar from '@/utils/avatar'
@@ -31,21 +41,33 @@ const storeSetup = () => {
   }
 
   // 登录
-  const accountLogin = async (params: any) => {
-    const res = await accountLoginApi(params)
+  const accountLogin = async (req: AccountLoginReq) => {
+    const res = await accountLoginApi(req)
     setToken(res.data.token)
     token.value = res.data.token
   }
-  // 三方账号身份登录
-  const socialLogin = async (source: string, req: any) => {
-    try {
-      const res = await socialAuth(source, req)
-      setToken(res.data.token)
-    } catch (err) {
-      clearToken()
-      throw err
-    }
+
+  // 邮箱登录
+  const emailLogin = async (req: EmailLoginReq) => {
+    const res = await emailLoginApi(req)
+    setToken(res.data.token)
+    token.value = res.data.token
   }
+
+  // 手机号登录
+  const phoneLogin = async (req: PhoneLoginReq) => {
+    const res = await phoneLoginApi(req)
+    setToken(res.data.token)
+    token.value = res.data.token
+  }
+
+  // 三方账号登录
+  const socialLogin = async (source: string, req: any) => {
+    const res = await socialLoginApi(source, req)
+    setToken(res.data.token)
+    token.value = res.data.token
+  }
+
   // 退出登录
   const logout = async () => {
     try {
@@ -88,6 +110,8 @@ const storeSetup = () => {
     roles,
     permissions,
     accountLogin,
+    emailLogin,
+    phoneLogin,
     socialLogin,
     logout,
     logoutCallBack,

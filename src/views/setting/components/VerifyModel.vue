@@ -36,7 +36,7 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { getPhoneCaptcha, getEmailCaptcha, updateUserEmail } from '@/apis'
+import { getSmsCaptcha, getEmailCaptcha, updateUserEmail } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import * as Regexp from '@/utils/regexp'
 import { Message, type Modal } from '@arco-design/web-vue'
@@ -60,7 +60,7 @@ const onSendCaptcha = () => {
       // 发送验证码
       if (verifyType.value === 'phone') {
         //手机号
-        getPhoneCaptcha({ phone: form.newPhone }).then((res) => {
+        getSmsCaptcha({ phone: form.newPhone }).then((res) => {
           console.log(res)
         })
       } else if (verifyType.value === 'email') {

@@ -45,10 +45,6 @@ const toHome = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    // .logo {
-    //   width: 24px;
-    //   height: 24px;
-    // }
     .system-name {
       display: none;
     }
@@ -62,7 +58,7 @@ const toHome = () => {
     flex-shrink: 0;
   }
   .system-name {
-    padding-left: 10px;
+    padding-left: 8px;
     white-space: nowrap;
     transition: color 0.3s;
     &:hover {
