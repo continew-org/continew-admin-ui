@@ -19,7 +19,7 @@
         <a-input-password v-model.trim="form.password" placeholder="请输入密码" :max-length="32" />
       </a-form-item>
       <a-form-item label="手机号码" field="phone">
-        <a-input v-model.trim="form.phone" placeholder="请输入手机号码" />
+        <a-input v-model.trim="form.phone" placeholder="请输入手机号码" :max-length="11" />
       </a-form-item>
       <a-form-item label="邮箱" field="email">
         <a-input v-model.trim="form.email" placeholder="请输入邮箱" :max-length="255" />

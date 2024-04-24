@@ -92,13 +92,13 @@
         </a-form-item>
         <div style="margin-top: 20px">
           <a-space>
-            <a-button v-if="!isUpdate" @click="onResetValue">
+            <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
               <template #icon>
                 <icon-undo />
               </template>
               恢复默认
             </a-button>
-            <a-button v-if="!isUpdate" type="primary" @click="onUpdate">
+            <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
               <template #icon>
                 <icon-edit />
               </template>

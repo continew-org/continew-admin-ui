@@ -160,8 +160,8 @@ const onExport = () => {
 
 const DeptAddModalRef = ref<InstanceType<typeof DeptAddModal>>()
 // 新增
-const onAdd = (id?: string) => {
-  DeptAddModalRef.value?.onAdd(id)
+const onAdd = (parentId?: string) => {
+  DeptAddModalRef.value?.onAdd(parentId)
 }
 
 // 修改

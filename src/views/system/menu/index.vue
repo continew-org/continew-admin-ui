@@ -177,8 +177,8 @@ const onExpanded = () => {
 
 const MenuAddModalRef = ref<InstanceType<typeof MenuAddModal>>()
 // 新增
-const onAdd = (id?: string) => {
-  MenuAddModalRef.value?.onAdd(id)
+const onAdd = (parentId?: string) => {
+  MenuAddModalRef.value?.onAdd(parentId)
 }
 
 // 修改

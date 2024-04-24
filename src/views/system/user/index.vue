@@ -9,7 +9,6 @@
           <a-tree ref="treeRef" :data="deptList" default-expand-all show-line block-node @select="handleSelectDept">
           </a-tree>
         </a-col>
-
         <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
           <GiTable
             ref="tableRef"
@@ -54,7 +53,7 @@
                 :avatar="getAvatar(record.avatar, record.gender)"
                 :name="record.nickname"
                 is-link
-                @click="openDetail(record)"
+                @click="onDetail(record)"
               />
             </template>
             <template #gender="{ record }">
@@ -80,9 +79,9 @@
                   删除
                 </a-link>
                 <a-dropdown>
-                  <a-button type="text">更多</a-button>
+                  <a-button v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-button>
                   <template #content>
-                    <a-doption @click="onResetPwd(record)">重置密码</a-doption>
+                    <a-doption v-permission="['system:user:resetPwd']" @click="onResetPwd(record)">重置密码</a-doption>
                   </template>
                 </a-dropdown>
               </a-space>
@@ -225,9 +224,9 @@ const onUpdate = (item: UserResp) => {
 }
 
 const UserDetailDrawerRef = ref<InstanceType<typeof UserDetailDrawer>>()
-// 打开详情
-const openDetail = (item: UserResp) => {
-  UserDetailDrawerRef.value?.open(item.id)
+// 详情
+const onDetail = (item: UserResp) => {
+  UserDetailDrawerRef.value?.onDetail(item.id)
 }
 
 const UserResetPwdModalRef = ref<InstanceType<typeof UserResetPwdModal>>()

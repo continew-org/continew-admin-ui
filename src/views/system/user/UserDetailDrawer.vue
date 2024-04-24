@@ -32,7 +32,6 @@ import { useWindowSize } from '@vueuse/core'
 
 const { width } = useWindowSize()
 
-const visible = ref(false)
 const dataId = ref('')
 const dataDetail = ref<UserDetailResp>()
 // 查询详情
@@ -41,14 +40,15 @@ const getDataDetail = async () => {
   dataDetail.value = res.data
 }
 
-// 打开详情
-const open = async (id: string) => {
+const visible = ref(false)
+// 详情
+const onDetail = async (id: string) => {
   dataId.value = id
   await getDataDetail()
   visible.value = true
 }
 
-defineExpose({ open })
+defineExpose({ onDetail })
 </script>
 
 <style lang="scss" scoped></style>

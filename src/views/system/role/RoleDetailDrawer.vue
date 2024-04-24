@@ -21,7 +21,7 @@
       title="功能权限"
       :column="2"
       size="large"
-      class="general-description"
+      class="permission general-description"
       style="margin-top: 20px; position: relative"
     >
       <a-descriptions-item :span="2">
@@ -67,7 +67,6 @@ const { data_scope_enum } = useDict('data_scope_enum')
 const { deptList, getDeptList } = useDept()
 const { menuList, getMenuList } = useMenu()
 
-const visible = ref(false)
 const dataId = ref('')
 const dataDetail = ref<RoleDetailResp>()
 // 查询详情
@@ -76,8 +75,9 @@ const getDataDetail = async () => {
   dataDetail.value = res.data
 }
 
-// 打开详情
-const open = async (id: string) => {
+const visible = ref(false)
+// 详情
+const onDetail = async (id: string) => {
   if (!menuList.value.length) {
     await getMenuList()
   }
@@ -89,7 +89,11 @@ const open = async (id: string) => {
   visible.value = true
 }
 
-defineExpose({ open })
+defineExpose({ onDetail })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.permission :deep(.arco-descriptions-item-label-block) {
+  padding-right: 0;
+}
+</style>

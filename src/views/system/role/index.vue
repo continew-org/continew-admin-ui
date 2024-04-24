@@ -32,7 +32,7 @@
           </a-button>
         </template>
         <template #name="{ record }">
-          <a-link @click="openDetail(record)">{{ record.name }}</a-link>
+          <a-link @click="onDetail(record)">{{ record.name }}</a-link>
         </template>
         <template #status="{ record }">
           <GiCellStatus :status="record.status" />
@@ -74,8 +74,8 @@ import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
-import { DisEnableStatusList } from '@/constant/common'
 import has from '@/utils/has'
+import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemRole' })
 
@@ -147,9 +147,9 @@ const onUpdate = (item: RoleResp) => {
 }
 
 const RoleDetailDrawerRef = ref<InstanceType<typeof RoleDetailDrawer>>()
-// 打开详情
-const openDetail = (item: RoleResp) => {
-  RoleDetailDrawerRef.value?.open(item.id)
+// 详情
+const onDetail = (item: RoleResp) => {
+  RoleDetailDrawerRef.value?.onDetail(item.id)
 }
 </script>
 

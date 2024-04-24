@@ -48,13 +48,13 @@
       <a-form-item v-if="[1, 2].includes(form.type) && !form.isExternal" label="组件名称" field="name">
         <a-input v-model.trim="form.name" placeholder="请输入组件名称" allow-clear />
         <template #extra>
-          <div v-if="routeName">
+          <div v-if="componentName">
             <span>建议组件名称：</span>
-            <a-tag checkable @check="inputRouteName">{{ routeName }}</a-tag>
+            <a-tag checkable @check="inputComponentName">{{ componentName }}</a-tag>
           </div>
         </template>
       </a-form-item>
-      <a-form-item label="组件路径" field="component" v-if="form.type === 2">
+      <a-form-item v-if="form.type === 2" label="组件路径" field="component">
         <a-input v-if="form.isExternal" v-model.trim="form.component" placeholder="请输入组件路径" allow-clear />
         <a-input v-else v-model.trim="form.component" placeholder="请输入组件路径" allow-clear>
           <template #prepend>@/views/</template>
@@ -64,7 +64,7 @@
       <a-form-item v-if="form.type === 3" label="权限标识" field="permission">
         <a-input v-model.trim="form.permission" placeholder="system:user:add" allow-clear />
       </a-form-item>
-      <a-row :gutter="16" v-if="[1, 2].includes(form.type)">
+      <a-row v-if="[1, 2].includes(form.type)" :gutter="16">
         <a-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8" :xxl="8">
           <a-form-item label="是否隐藏" field="hidden">
             <a-switch
@@ -90,7 +90,7 @@
           </a-form-item>
         </a-col>
         <a-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8" :xxl="8">
-          <a-form-item label="是否外链" field="isExternalUrl" v-if="form.type === 2">
+          <a-form-item v-if="form.type === 2" label="是否外链" field="isExternalUrl">
             <a-switch
               v-model="form.isExternal"
               :checked-value="true"
@@ -121,8 +121,8 @@
 
 <script setup lang="ts">
 import { getMenu, addMenu, updateMenu, type MenuResp } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
 import type { MenuForm } from './type'
+import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { filterTree, transformPathToName } from '@/utils'
 import { mapTree } from 'xe-utils'
@@ -130,7 +130,6 @@ import { mapTree } from 'xe-utils'
 interface Props {
   menus: MenuResp[]
 }
-
 const props = withDefaults(defineProps<Props>(), {
   menus: () => []
 })
@@ -176,7 +175,7 @@ const { form, resetForm } = useForm<MenuForm>({
   parentId: '',
   status: 1
 })
-const routeName = computed(() => transformPathToName(form.path))
+const componentName = computed(() => transformPathToName(form.path))
 const formRules = computed(() => {
   if ([1, 2].includes(form.type)) {
     const { title, name, path } = rules
@@ -187,9 +186,9 @@ const formRules = computed(() => {
     return { parentId, title, permission } as FormInstance['rules']
   }
 })
-
-const inputRouteName = () => {
-  form.name = routeName.value
+// 设置建议组件名
+const inputComponentName = () => {
+  form.name = componentName.value
 }
 
 // 切换类型清除校验
