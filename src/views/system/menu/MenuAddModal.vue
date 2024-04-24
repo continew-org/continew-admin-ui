@@ -50,7 +50,7 @@
         <template #extra>
           <div v-if="routeName">
             <span>建议组件名称：</span>
-            <a-tag>{{ routeName }}</a-tag>
+            <a-tag checkable @check="inputRouteName">{{ routeName }}</a-tag>
           </div>
         </template>
       </a-form-item>
@@ -65,18 +65,6 @@
         <a-input v-model.trim="form.permission" placeholder="system:user:add" allow-clear />
       </a-form-item>
       <a-row :gutter="16" v-if="[1, 2].includes(form.type)">
-        <a-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8" :xxl="8">
-          <a-form-item label="是否外链" field="isExternalUrl" v-if="[1, 2].includes(form.type)">
-            <a-switch
-              v-model="form.isExternal"
-              :checked-value="true"
-              :unchecked-value="false"
-              checked-text="是"
-              unchecked-text="否"
-              type="round"
-            />
-          </a-form-item>
-        </a-col>
         <a-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8" :xxl="8">
           <a-form-item label="是否隐藏" field="hidden">
             <a-switch
@@ -93,6 +81,18 @@
           <a-form-item label="是否缓存" field="keepAlive">
             <a-switch
               v-model="form.isCache"
+              :checked-value="true"
+              :unchecked-value="false"
+              checked-text="是"
+              unchecked-text="否"
+              type="round"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8" :xxl="8">
+          <a-form-item label="是否外链" field="isExternalUrl" v-if="form.type === 2">
+            <a-switch
+              v-model="form.isExternal"
               :checked-value="true"
               :unchecked-value="false"
               checked-text="是"
@@ -187,6 +187,10 @@ const formRules = computed(() => {
     return { parentId, title, permission } as FormInstance['rules']
   }
 })
+
+const inputRouteName = () => {
+  form.name = routeName.value
+}
 
 // 切换类型清除校验
 const onChangeType = () => {
