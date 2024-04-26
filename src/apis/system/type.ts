@@ -222,3 +222,26 @@ export interface BindSocialAccountRes {
   source: string
   description: string
 }
+
+/** 公告类型 */
+export interface AnnouncementResp {
+  id: string
+  title: string
+  content: string
+  status: number
+  type?: string
+  effectiveTime?: string
+  terminateTime?: string
+  createUser: string
+  createTime: string
+  updateUser: string
+  updateTime: string
+  createUserString: string
+  updateUserString: string
+}
+
+export interface AnnouncementQuery extends PageQuery {
+  title?: string
+  status?: number
+  type?: string
+}
