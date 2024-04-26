@@ -1,12 +1,10 @@
 <template>
   <a-modal
+    v-model:visible="visible"
     :title="title"
-    :visible="visible"
     width="80%"
     :mask-closable="false"
     :esc-to-close="false"
-    unmount-on-close
-    render-to-body
     @before-ok="save"
     @close="reset"
     @cancel="reset"
@@ -22,7 +20,7 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="标题" field="title">
-            <a-input v-model="form.title" placeholder="请输入标题" :max-length="150" style="width: 100%" />
+            <a-input v-model="form.title" placeholder="请输入标题" allow-clear :max-length="150" style="width: 100%" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -58,12 +56,7 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="内容" field="content">
-            <v-md-editor
-              v-model="form.content"
-              height="400px"
-              left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code"
-              placeholder="请输入内容"
-            />
+            <MdEditor v-model="form.content" :toolbars="toolbars" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -76,14 +69,49 @@ import { addAnnouncement, updateAnnouncement, getAnnouncement } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
+import { MdEditor } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 
 const { announcement_type } = useDict('announcement_type')
-
 const visible = ref(false)
 const announcementId = ref('')
 const isUpdate = computed(() => !!announcementId.value)
 const title = computed(() => (isUpdate.value ? '修改公告' : '新增公告'))
 const formRef = ref<FormInstance>()
+
+const toolbars = [
+  'bold',
+  'underline',
+  'italic',
+  'strikeThrough',
+  '-',
+  'title',
+  'sub',
+  'sup',
+  'quote',
+  'unorderedList',
+  'orderedList',
+  'task',
+  '-',
+  'codeRow',
+  'code',
+  'link',
+  'image',
+  'table',
+  0,
+  1,
+  2,
+  3,
+  '-',
+  'revoke',
+  'next',
+  '=',
+  'prettier',
+  'pageFullscreen',
+  'fullscreen',
+  'preview',
+  'previewOnly'
+]
 
 const rules: FormInstance['rules'] = {
   title: [{ required: true, message: '请输入名称' }],
