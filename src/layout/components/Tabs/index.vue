@@ -51,7 +51,7 @@ const appStore = useAppStore()
 const tabsStore = useTabsStore()
 
 // 重置, 同时把 affix: true 的路由筛选出来
-// tabsStore.reset()
+tabsStore.reset()
 
 // 监听路由变化
 watch(
