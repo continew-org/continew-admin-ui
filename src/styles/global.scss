@@ -261,6 +261,16 @@
   }
 }
 
+// 渐变卡片
+.gradient-card {
+  border-radius: 8px;
+  border: 1px solid var(--color-neutral-3);
+  & > .arco-card-header {
+    border: none;
+    background: linear-gradient(180deg, rgba(232, 244, 255, 0.5), hsla(0, 0%, 100%, 0));
+  }
+}
+
 // 通用描述
 .general-description {
   position: relative;
@@ -275,23 +285,5 @@
     left: 0;
     background-color: rgb(var(--primary-5));
     border-radius: 0 4px 4px 0;
-  }
-}
-
-.arco-table-cell {
-  .circle {
-    display: inline-block;
-    margin-right: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: rgb(var(--blue-6));
-    vertical-align: middle;
-    &.pass {
-      background-color: rgb(var(--green-6));
-    }
-    &.fail {
-      background-color: rgb(var(--red-6));
-    }
   }
 }

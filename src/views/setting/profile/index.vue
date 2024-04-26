@@ -1,40 +1,25 @@
 <template>
-  <div class="user">
-    <div class="user__info">
-      <a-row justify="space-between">
-        <a-col :span="7" style="padding-right: 20px">
-          <LeftBox />
-        </a-col>
-        <a-col :span="17">
-          <RightBox />
-        </a-col>
-      </a-row>
-    </div>
+  <div class="gi_page">
+    <a-row wrap :gutter="16">
+      <a-col :xs="24" :sm="24" :md="10" :lg="10" :xl="7" :xxl="7">
+        <LeftBox />
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="14" :lg="14" :xl="17" :xxl="17">
+        <RightBox />
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
-import { useUserStore } from '@/stores'
-import RightBox from './RightBox.vue'
 import LeftBox from './LeftBox.vue'
-defineOptions({ name: 'Profile' })
+import RightBox from './RightBox.vue'
 
-const route = useRoute()
-const userStore = useUserStore()
+defineOptions({ name: 'Profile' })
 </script>
 
 <style lang="scss" scoped>
-.user {
-  // background-color: var(--color-bg-1);
-  &__alert {
-    padding: $padding;
-    padding-bottom: 0;
-  }
-  &__info {
-    box-sizing: border-box;
-    overflow: hidden;
-    // display: flex;
-  }
+.gi_page {
+  background-color: var(--color-bg-1);
 }
 </style>

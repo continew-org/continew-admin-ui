@@ -1,54 +1,55 @@
 <template>
-  <Card>
-    <template #header> 登录方式 </template>
-    <template #body>
-      <div class="mode-list">
-        <div v-for="item in modeList" :key="item.title" class="mode-item">
-          <div class="mode-item-box">
-            <div class="mode-item-icon">
-              <GiSvgIcon :name="item.icon" :size="50" />
-            </div>
-            <div class="mode-item-content">
-              <div class="mode-item-title">
-                <div>{{ item.title }}</div>
-                <div style="margin-left: 10px">
-                  <GiSvgIcon :name="item.status ? 'success' : 'warning'" :size="14" /><span
-                    style="margin-left: 5px; font-size: 12px"
-                    >{{ item.status ? '已绑定' : '未绑定' }}</span
-                  >
-                </div>
-              </div>
-              <div class="mode-item-subtitle">{{ item.subtitle }}</div>
-            </div>
+  <a-card title="登录方式" bordered class="gradient-card">
+    <div class="mode-list">
+      <div v-for="item in modeList" :key="item.title" class="mode-item">
+        <div class="mode-item-box">
+          <div class="mode-item-box__icon">
+            <GiSvgIcon :name="item.icon" :size="48" />
           </div>
-          <div class="model-item-btn">
-            <a-button @click="openVerifyModel(item.type, item.status)" v-if="item.jumpMode == 'modal'">{{
-              item.status ? '修改' : '绑定'
-            }}</a-button>
-            <a-button @click="onBinding(item.type, item.status)" v-else-if="item.jumpMode == 'link'">{{
-              item.status ? '解绑' : '绑定'
-            }}</a-button>
+          <div class="mode-item-box__content">
+            <div class="title">
+              <div>{{ item.title }}</div>
+              <div style="margin-left: 10px">
+                <icon-check-circle-fill v-if="item.status" :size="14" class="success" />
+                <icon-exclamation-circle-fill v-else :size="14" class="warning" />
+                <span style="font-size: 12px" :class="item.status ? 'success' : 'warning'">{{
+                  item.status ? '已绑定' : '未绑定'
+                }}</span>
+              </div>
+            </div>
+            <div class="mode-item-box__subtitle">{{ item.subtitle }}</div>
           </div>
         </div>
+        <div>
+          <a-button
+            v-if="item.jumpMode == 'modal'"
+            class="btn"
+            :type="item.status ? 'secondary' : 'primary'"
+            @click="openVerifyModel(item.type, item.status)"
+          >
+            {{ item.status ? '修改' : '绑定' }}
+          </a-button>
+          <a-button
+            v-else-if="item.jumpMode == 'link'"
+            class="btn"
+            :type="item.status ? 'secondary' : 'primary'"
+            @click="onBinding(item.type, item.status)"
+          >
+            {{ item.status ? '解绑' : '绑定' }}
+          </a-button>
+        </div>
       </div>
-    </template>
-  </Card>
+    </div>
+  </a-card>
   <VerifyModel ref="verifyModelRef" />
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/stores'
-import Card from '../components/Card.vue'
-import VerifyModel from '../components/VerifyModel.vue'
 import { socialAuth, getSocialAccount, unbindSocialAccount } from '@/apis'
-interface ModeItem {
-  title: string
-  icon: string
-  subtitle: string
-  type: 'phone' | 'email' | 'gitee' | 'github'
-  jumpMode: 'link' | 'modal'
-  status: boolean
-}
+import type { ModeItem } from './type'
+import { useUserStore } from '@/stores'
+import VerifyModel from '../components/VerifyModel.vue'
+
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
@@ -56,36 +57,37 @@ const openVerifyModel = (type: 'phone' | 'email') => {
   verifyModelRef.value?.open(type)
 }
 const socialList = ref<any>([])
+
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
   {
-    title: '绑定手机号',
-    icon: 'Tel',
-    subtitle: `${userInfo.value.phone || '绑定后'},可通过手机验证码快捷登录`,
+    title: '绑定手机',
+    icon: userInfo.value.phone ? 'tel' : 'tel-unbind',
+    subtitle: `${userInfo.value.phone || '绑定后'}，可通过手机验证码快捷登录`,
     type: 'phone',
     jumpMode: 'modal',
-    status: userInfo.value.phone ? true : false
+    status: !!userInfo.value.phone
   },
   {
     title: '绑定邮箱',
-    icon: 'Mail',
-    subtitle: `${userInfo.value.email || '绑定后'},可通过邮箱验证码进行登录`,
+    icon: userInfo.value.email ? 'mail' : 'mail-unbind',
+    subtitle: `${userInfo.value.email || '绑定后'}，可通过邮箱验证码进行登录`,
     type: 'email',
     jumpMode: 'modal',
-    status: userInfo.value.email ? true : false
+    status: !!userInfo.value.email
   },
   {
-    title: '绑定Gitee',
+    title: '绑定 Gitee',
     icon: 'gitee',
-    subtitle: '绑定后，可通过Gitee进行登录',
+    subtitle: '绑定后，可通过 Gitee 进行登录',
     jumpMode: 'link',
     type: 'gitee',
     status: socialList.value.some((el) => el == 'gitee')
   },
   {
-    title: '绑定GitHub',
+    title: '绑定 GitHub',
     icon: 'github',
-    subtitle: '绑定后，可通过github进行登录',
+    subtitle: '绑定后，可通过 GitHub 进行登录',
     type: 'github',
     jumpMode: 'link',
     status: socialList.value.some((el) => el == 'github')
@@ -96,9 +98,7 @@ const initData = () => {
     socialList.value = res.data.map((el) => el.source)
   })
 }
-onMounted(() => {
-  initData()
-})
+
 const onBinding = (type: string, status: boolean) => {
   if (!status) {
     socialAuth(type).then((res) => {
@@ -112,6 +112,10 @@ const onBinding = (type: string, status: boolean) => {
     })
   }
 }
+
+onMounted(() => {
+  initData()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -119,20 +123,28 @@ const onBinding = (type: string, status: boolean) => {
   .mode-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    .mode-item-box {
+    &-box {
       display: flex;
       align-items: center;
-      .mode-item-icon {
+      &__icon {
         margin-right: 10px;
       }
-      .mode-item-content > div {
-        line-height: 26px;
+      &__content {
+        div {
+          line-height: 26px;
+        }
+        .title {
+          display: flex;
+          align-items: center;
+        }
       }
-      .mode-item-content .mode-item-title {
-        display: flex;
-        align-items: center;
-      }
+    }
+    .btn {
+      height: 28px;
+      margin-left: 10px;
+      width: 56px;
     }
   }
 }

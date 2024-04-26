@@ -24,7 +24,7 @@
       </div>
       <div>
         <div class="content_title">
-          <div class="icon"><GiSvgIcon name="loginProtect" :size="36" /></div>
+          <div class="icon"><GiSvgIcon name="login-protect" :size="36" /></div>
           <div>
             <div style="font-size: 14px; font-weight: 500; line-height: 28px">操作保护</div>
             <div style="font-size: 12px">进行敏感操作时需进行二次身份校验</div>
@@ -50,7 +50,7 @@ interface ModeItem {
 }
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
-  { title: '登录保护', icon: 'loginProtect', subtitle: '开启登录保护后，账号登录需进行二次身份验证', status: false }
+  { title: '登录保护', icon: 'login-protect', subtitle: '开启登录保护后，账号登录需进行二次身份验证', status: false }
 ]
 </script>
 <style scoped lang="scss">

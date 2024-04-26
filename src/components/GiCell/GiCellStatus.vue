@@ -21,19 +21,4 @@ const props = withDefaults(defineProps<Props>(), {
 })
 </script>
 
-<style lang="scss" scoped>
-.arco-icon.success {
-  color: rgb(var(--success-6));
-  margin-right: 4px;
-}
-
-.arco-icon.warning {
-  color: rgb(var(--warning-6));
-  margin-right: 4px;
-}
-
-.arco-icon.danger {
-  color: rgb(var(--danger-6));
-  margin-right: 4px;
-}
-</style>
+<style lang="scss" scoped></style>

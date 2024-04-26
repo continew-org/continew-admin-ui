@@ -3,7 +3,7 @@
     <template #header> 登录会话设置 </template>
     <template #body>
       <div class="content_title">
-        <div class="icon"><GiSvgIcon name="loginStatus" :size="36" /></div>
+        <div class="icon"><GiSvgIcon name="login-status" :size="36" /></div>
         <div>
           <div style="font-size: 14px; font-weight: 500; line-height: 28px">登录态保持时间设置</div>
           <div style="font-size: 12px">保持登录状态的限制</div>

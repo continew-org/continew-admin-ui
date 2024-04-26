@@ -38,8 +38,8 @@ interface ModeItem {
 }
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
-  { title: '绑定手机号', icon: 'Tel', subtitle: '+86******88888可通过手机验证码快捷登录', type: 'phone', status: true },
-  { title: '绑定邮箱', icon: 'Mail', subtitle: '邮箱可用于身份验证、密码找回、通知接收', type: 'email', status: true }
+  { title: '绑定手机号', icon: 'tel', subtitle: '+86******88888可通过手机验证码快捷登录', type: 'phone', status: true },
+  { title: '绑定邮箱', icon: 'mail', subtitle: '邮箱可用于身份验证、密码找回、通知接收', type: 'email', status: true }
 ]
 const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
 const openVerifyModel = (type: 'phone' | 'email') => {

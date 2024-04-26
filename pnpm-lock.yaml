@@ -63,8 +63,8 @@ dependencies:
     specifier: ^4.17.21
     version: 4.17.21
   md-editor-v3:
-    specifier: ^4.6.2
-    version: 4.12.1(@codemirror/view@6.26.0)(@lezer/common@1.2.1)(vue@3.4.21)
+    specifier: ^4.13.4
+    version: 4.13.4(@codemirror/view@6.26.0)(@lezer/common@1.2.1)(vue@3.4.21)
   mitt:
     specifier: ^3.0.0
     version: 3.0.1
@@ -619,6 +619,18 @@ packages:
       - '@codemirror/view'
     dev: false
 
+  /@codemirror/lang-go@6.0.0(@codemirror/view@6.26.0):
+    resolution: {integrity: sha512-mMT4YeYdKGjnffDBOhr1ur1glee4oV/rfMe28vzazNHZkSt7vSiuHiBcgr3L/79Cl2RIjFdpQ1XMD0/T8Rx64g==}
+    dependencies:
+      '@codemirror/autocomplete': 6.15.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)(@lezer/common@1.2.1)
+      '@codemirror/language': 6.10.1
+      '@codemirror/state': 6.4.1
+      '@lezer/common': 1.2.1
+      '@lezer/go': 1.0.0
+    transitivePeerDependencies:
+      - '@codemirror/view'
+    dev: false
+
   /@codemirror/lang-html@6.4.8:
     resolution: {integrity: sha512-tE2YK7wDlb9ZpAH6mpTPiYm6rhfdQKVDa5r9IwIFlwwgvVaKsCfuKKZoJGWsmMZIf3FQAuJ5CHMPLymOtg1hXw==}
     dependencies:
@@ -684,8 +696,8 @@ packages:
       '@lezer/lr': 1.4.0
     dev: false
 
-  /@codemirror/lang-markdown@6.2.4:
-    resolution: {integrity: sha512-UghkA1vSMs8bT7RSZM6vsIocigyah2bV00eRQuZy76401UmFZdsTsbQNBGdyxRQDOLeEvF5iFwap0BM8LKyd+g==}
+  /@codemirror/lang-markdown@6.2.5:
+    resolution: {integrity: sha512-Hgke565YcO4fd9pe2uLYxnMufHO5rQwRr+AAhFq8ABuhkrjyX8R5p5s+hZUTdV60O0dMRjxKhBLxz8pu/MkUVA==}
     dependencies:
       '@codemirror/autocomplete': 6.15.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.0)(@lezer/common@1.2.1)
       '@codemirror/lang-html': 6.4.8
@@ -793,19 +805,20 @@ packages:
       - '@codemirror/view'
     dev: false
 
-  /@codemirror/language-data@6.4.1(@codemirror/view@6.26.0):
-    resolution: {integrity: sha512-NYhC3NvEMwUxSWS1sB5AePUtr5g2ASSYOZ37YixicDG8PWHslDV9mmXIX0KvmtEm50V8FT4F5i4HAsk/7i78LA==}
+  /@codemirror/language-data@6.5.1(@codemirror/view@6.26.0):
+    resolution: {integrity: sha512-0sWxeUSNlBr6OmkqybUTImADFUP0M3P0IiSde4nc24bz/6jIYzqYSgkOSLS+CBIoW1vU8Q9KUWXscBXeoMVC9w==}
     dependencies:
       '@codemirror/lang-angular': 0.1.3
       '@codemirror/lang-cpp': 6.0.2
       '@codemirror/lang-css': 6.2.1(@codemirror/view@6.26.0)
+      '@codemirror/lang-go': 6.0.0(@codemirror/view@6.26.0)
       '@codemirror/lang-html': 6.4.8
       '@codemirror/lang-java': 6.0.1
       '@codemirror/lang-javascript': 6.2.2
       '@codemirror/lang-json': 6.0.1
       '@codemirror/lang-less': 6.0.2(@codemirror/view@6.26.0)
       '@codemirror/lang-liquid': 6.2.1
-      '@codemirror/lang-markdown': 6.2.4
+      '@codemirror/lang-markdown': 6.2.5
       '@codemirror/lang-php': 6.0.1
       '@codemirror/lang-python': 6.1.4(@codemirror/view@6.26.0)
       '@codemirror/lang-rust': 6.0.1
@@ -816,7 +829,7 @@ packages:
       '@codemirror/lang-xml': 6.1.0
       '@codemirror/lang-yaml': 6.0.0(@codemirror/view@6.26.0)
       '@codemirror/language': 6.10.1
-      '@codemirror/legacy-modes': 6.3.3
+      '@codemirror/legacy-modes': 6.4.0
     transitivePeerDependencies:
       - '@codemirror/view'
     dev: false
@@ -832,8 +845,8 @@ packages:
       style-mod: 4.1.2
     dev: false
 
-  /@codemirror/legacy-modes@6.3.3:
-    resolution: {integrity: sha512-X0Z48odJ0KIoh/HY8Ltz75/4tDYc9msQf1E/2trlxFaFFhgjpVHjZ/BCXe1Lk7s4Gd67LL/CeEEHNI+xHOiESg==}
+  /@codemirror/legacy-modes@6.4.0:
+    resolution: {integrity: sha512-5m/K+1A6gYR0e+h/dEde7LoGimMjRtWXZFg4Lo70cc8HzjSdHe3fLwjWMR0VRl5KFT1SxalSap7uMgPKF28wBA==}
     dependencies:
       '@codemirror/language': 6.10.1
     dev: false
@@ -1186,6 +1199,14 @@ packages:
       '@lezer/lr': 1.4.0
     dev: false
 
+  /@lezer/go@1.0.0:
+    resolution: {integrity: sha512-co9JfT3QqX1YkrMmourYw2Z8meGC50Ko4d54QEcQbEYpvdUvN4yb0NBZdn/9ertgvjsySxHsKzH3lbm3vqJ4Jw==}
+    dependencies:
+      '@lezer/common': 1.2.1
+      '@lezer/highlight': 1.2.0
+      '@lezer/lr': 1.4.0
+    dev: false
+
   /@lezer/highlight@1.2.0:
     resolution: {integrity: sha512-WrS5Mw51sGrpqjlh3d4/fOwpEV2Hd3YOkp9DBt4k8XZQcoTHZFB7sx030A6OcahF4J1nDQAa3jXlTVVYH50IFA==}
     dependencies:
@@ -1477,8 +1498,8 @@ packages:
     resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
     dev: true
 
-  /@types/markdown-it@13.0.7:
-    resolution: {integrity: sha512-U/CBi2YUUcTHBt5tjO2r5QV/x0Po6nsYwQU4Y04fBS6vfoImaiZ6f8bi3CjTCxBPQSO1LMyUqkByzi8AidyxfA==}
+  /@types/markdown-it@14.0.1:
+    resolution: {integrity: sha512-6WfOG3jXR78DW8L5cTYCVVGAsIFZskRHCDo5tbqa+qtKVt4oDRVH7hyIWu1SpDQJlmIoEivNQZ5h+AGAOrgOtQ==}
     dependencies:
       '@types/linkify-it': 3.0.5
       '@types/mdurl': 1.0.5
@@ -1696,8 +1717,8 @@ packages:
       nanoid: 3.3.7
     dev: false
 
-  /@vavt/util@1.5.0:
-    resolution: {integrity: sha512-GJ3q7yJp4mjVVjT1PgbyayJu8q6dYpS0H2ojIcd3k7fEyG4sZhjepjmtA12J1n8Cs5HtkHtqdewCH4U5owytQw==}
+  /@vavt/util@1.5.1:
+    resolution: {integrity: sha512-/q/ilzRwZZJlnDAl6DGZ8pinOSAjR91dcck79bi1ujrqYlPaFVHnbmkDeGPuLub6A821rXvtPXVRXULrfMN03Q==}
     dev: false
 
   /@vitejs/plugin-vue-jsx@3.1.0(vite@5.1.6)(vue@3.4.21):
@@ -4584,15 +4605,15 @@ packages:
       uc.micro: 2.1.0
     dev: false
 
-  /md-editor-v3@4.12.1(@codemirror/view@6.26.0)(@lezer/common@1.2.1)(vue@3.4.21):
-    resolution: {integrity: sha512-TbGsqWTnKQkQWnm1oAGm8yH+OD5zHTa49Um6WMcS+Y+M4fLl0gWZbz7NzeyOPtrEU13NlPY6c3IZcWAwdmZdiA==}
+  /md-editor-v3@4.13.4(@codemirror/view@6.26.0)(@lezer/common@1.2.1)(vue@3.4.21):
+    resolution: {integrity: sha512-Db53oV0Ei7s8orNkDOK+nsemqINf0cdY6aAjVOIX4ze+vCTVIdjq4To/6TbIcXPdRIaTcBYFHkP6uV+z0dnWXw==}
     peerDependencies:
       vue: ^3.2.47
     dependencies:
-      '@codemirror/lang-markdown': 6.2.4
-      '@codemirror/language-data': 6.4.1(@codemirror/view@6.26.0)
-      '@types/markdown-it': 13.0.7
-      '@vavt/util': 1.5.0
+      '@codemirror/lang-markdown': 6.2.5
+      '@codemirror/language-data': 6.5.1(@codemirror/view@6.26.0)
+      '@types/markdown-it': 14.0.1
+      '@vavt/util': 1.5.1
       codemirror: 6.0.1(@lezer/common@1.2.1)
       copy-to-clipboard: 3.3.3
       lru-cache: 10.2.0

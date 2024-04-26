@@ -50,8 +50,11 @@
           <icon-down />
         </a-row>
         <template #content>
-          <a-doption @click="toUser">
+          <a-doption @click="router.push('/setting/profile')">
             <span>账号管理</span>
+          </a-doption>
+          <a-doption @click="router.push('/setting/security')">
+            <span>安全设置</span>
           </a-doption>
           <a-divider :margin="0" />
           <a-doption @click="logout">
@@ -79,11 +82,6 @@ defineOptions({ name: 'HeaderRight' })
 const router = useRouter()
 const userStore = useUserStore()
 const SettingDrawerRef = ref<InstanceType<typeof SettingDrawer>>()
-
-// 跳转基本信息
-const toUser = () => {
-  router.push('/setting/profile')
-}
 
 // 退出登录
 const logout = () => {

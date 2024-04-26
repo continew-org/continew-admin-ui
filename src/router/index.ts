@@ -70,19 +70,13 @@ export const constantRoutes: RouteRecordRaw[] = [
             path: '/setting/profile',
             component: () => import('@/views/setting/profile/index.vue'),
             name: 'Profile',
-            meta: { title: '基本信息', hidden: false }
+            meta: { title: '账号管理', hidden: false, showInTabs: false }
           },
           {
             path: '/setting/security',
             component: () => import('@/views/setting/security/index.vue'),
             name: 'Security',
-            meta: { title: '安全设置', hidden: false }
-          },
-          {
-            path: '/setting/notice',
-            component: () => import('@/views/setting/notice/index.vue'),
-            name: 'Notification',
-            meta: { title: '消息中心', hidden: false }
+            meta: { title: '安全设置', hidden: false, showInTabs: false }
           }
         ]
       }
