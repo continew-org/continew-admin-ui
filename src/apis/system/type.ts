@@ -39,7 +39,6 @@ export interface RoleResp {
   sort: number
   description: string
   dataScope: number
-  status: 1 | 2
   isSystem: boolean
   createUserString: string
   createTime: string
@@ -56,7 +55,6 @@ export interface RoleDetailResp {
   menuIds: Array<number>
   dataScope: number
   deptIds: Array<number>
-  status: 1 | 2
   isSystem: boolean
   createUserString: string
   createTime: string
@@ -66,7 +64,6 @@ export interface RoleDetailResp {
 }
 export interface RoleQuery extends PageQuery {
   description?: string
-  status?: number
 }
 
 /** 系统菜单类型 */

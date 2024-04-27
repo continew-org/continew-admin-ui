@@ -32,17 +32,6 @@
             :auto-size="{ minRows: 3, maxRows: 5 }"
           />
         </a-form-item>
-        <a-form-item label="状态" field="status">
-          <a-switch
-            v-model="form.status"
-            :disabled="form.isSystem"
-            type="round"
-            :checked-value="1"
-            :unchecked-value="2"
-            checked-text="启用"
-            unchecked-text="禁用"
-          />
-        </a-form-item>
       </fieldset>
       <fieldset>
         <legend>功能权限</legend>
@@ -123,7 +112,6 @@ const { form, resetForm } = useForm({
   name: '',
   code: '',
   sort: 999,
-  status: 1,
   description: undefined,
   menuIds: undefined,
   dataScope: 4,

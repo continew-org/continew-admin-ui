@@ -15,14 +15,6 @@
           <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
             <template #prefix><icon-search /></template>
           </a-input>
-          <a-select
-            v-model="queryForm.status"
-            :options="DisEnableStatusList"
-            placeholder="请选择状态"
-            allow-clear
-            style="width: 150px"
-            @change="search"
-          />
           <a-button @click="reset">重置</a-button>
         </template>
         <template #custom-right>
@@ -33,9 +25,6 @@
         </template>
         <template #name="{ record }">
           <a-link @click="onDetail(record)">{{ record.name }}</a-link>
-        </template>
-        <template #status="{ record }">
-          <GiCellStatus :status="record.status" />
         </template>
         <template #dataScope="{ record }">
           <GiCellTag :value="record.dataScope" :dict="data_scope_enum" />
@@ -75,7 +64,6 @@ import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
-import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemRole' })
 
@@ -90,7 +78,6 @@ const columns: TableInstanceColumns[] = [
   },
   { title: '名称', dataIndex: 'name', slotName: 'name', ellipsis: true, tooltip: true },
   { title: '编码', dataIndex: 'code', ellipsis: true, tooltip: true },
-  { title: '状态', slotName: 'status', align: 'center' },
   { title: '数据权限', dataIndex: 'dataScope', slotName: 'dataScope', ellipsis: true, tooltip: true },
   { title: '排序', dataIndex: 'sort', align: 'center', show: false },
   { title: '系统内置', slotName: 'isSystem', align: 'center', show: false },
@@ -111,7 +98,6 @@ const columns: TableInstanceColumns[] = [
 
 const queryForm = reactive({
   description: undefined,
-  status: undefined,
   sort: ['createTime,desc']
 })
 
@@ -126,7 +112,6 @@ const {
 // 重置
 const reset = () => {
   queryForm.description = undefined
-  queryForm.status = undefined
   search()
 }
 

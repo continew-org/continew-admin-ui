@@ -1,16 +1,12 @@
 <template>
   <a-drawer v-model:visible="visible" title="角色详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions title="基础信息" :column="2" size="large" class="general-description">
-      <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
-      <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>
-      <a-descriptions-item label="编码">{{ dataDetail?.code }}</a-descriptions-item>
-      <a-descriptions-item label="状态">
-        <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
-        <a-tag v-else color="red">禁用</a-tag>
-      </a-descriptions-item>
+      <a-descriptions-item label="ID">{{ dataDetail?.id }}</a-descriptions-item>
       <a-descriptions-item label="数据权限">
         <GiCellTag :value="dataDetail?.dataScope" :dict="data_scope_enum" />
       </a-descriptions-item>
+      <a-descriptions-item label="名称">{{ dataDetail?.name }}</a-descriptions-item>
+      <a-descriptions-item label="编码">{{ dataDetail?.code }}</a-descriptions-item>
       <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
       <a-descriptions-item label="创建时间">{{ dataDetail?.createTime }}</a-descriptions-item>
       <a-descriptions-item label="修改人">{{ dataDetail?.updateUserString }}</a-descriptions-item>
