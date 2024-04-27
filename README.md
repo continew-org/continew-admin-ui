@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin-ui" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v3.0.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/RELEASE-v3.0.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -72,19 +72,90 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 > **Note**
 > 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://continew.top/admin/intro/require.html#任务清单) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
 
-- 账号管理：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
-- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
-- 部门管理：可配置系统组织架构，树形表格展示
+- 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传等能力
+- 用户管理：提供系统用户的新增维护，支持禁用登录及重置指定用户密码
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
-- 通知公告：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
+- 部门管理：可配置系统组织架构，以树形表格展示
+- 公告管理：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
+- 消息管理：提供消息查看、标记已读、全部已读、删除等功能（适配对接导航栏站内信功能）（v3.1 重构，v2.5 版可用）
 - 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
-- 系统日志：提供在线用户监控、登录日志监控、操作日志监控和系统日志监控等监控功能
 - 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
-- 存储管理：提供文件存储库新增、编辑、删除、导出等功能
-- 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致（暂未开放高级配置）
+- 存储管理：提供文件存储库新增、编辑、删除等功能，支持本地存储、兼容 S3 协议存储
+- 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致（v3.1 支持邮件配置）
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
 - 在线用户：管理当前登录用户，可一键踢下线
+- 系统日志：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
+
+## 系统截图
+
+> [!TIP]
+> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2024年4月27日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
+
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+    <tbody>
+        <tr>
+            <td><img src=".image/screenshot/000登录页面.png" alt="登录页面" width="1920" /></td>
+            <td><img src=".image/screenshot/001仪表盘.png" alt="仪表盘" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/002仪表盘-查看公告.png" alt="仪表盘-查看公告" width="1920" /></td>
+            <td><img src=".image/screenshot/010账号管理.png" alt="账号管理" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/011安全设置.png" alt="安全设置" width="1920" /></td>
+            <td><img src=".image/screenshot/012安全设置-修改邮箱.png" alt="安全设置-修改邮箱" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/013安全设置-修改邮箱-邮箱验证码.png" alt="安全设置-修改邮箱-邮箱验证码" width="1920" /></td>
+            <td><img src=".image/screenshot/060系统管理-系统配置.png" alt="系统管理-系统配置" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/020系统管理-用户管理-列表.png" alt="系统管理-用户管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/021系统管理-用户管理-新增.png" alt="系统管理-用户管理-新增" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/025系统管理-部门管理-列表.png" alt="系统管理-部门管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/026系统管理-部门管理-新增.png" alt="系统管理-部门管理-新增" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/030系统管理-角色管理-列表.png" alt="系统管理-角色管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/031系统管理-角色管理-新增.png" alt="系统管理-角色管理-新增" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/035系统管理-菜单管理-列表.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/036系统管理-菜单管理-新增.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/040系统管理-公告管理-列表.png" alt="系统管理-公告管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/041系统管理-公告管理-修改.png" alt="系统管理-公告管理-修改" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/045系统管理-字典管理-列表.png" alt="系统管理-字典管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/046系统管理-字典项管理.png" alt="系统管理-字典项管理" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/050系统管理-文件管理-列表-1.png" alt="系统管理-文件管理-列表-1" width="1920" /></td>
+            <td><img src=".image/screenshot/051系统管理-文件管理-列表-2.png" alt="系统管理-文件管理-列表-2" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/052系统管理-文件管理-图片.png" alt="系统管理-文件管理-图片" width="1920" /></td>
+            <td><img src=".image/screenshot/053系统管理-文件管理-音乐.png" alt="系统管理-文件管理-音乐" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/101系统工具-代码生成-配置.png" alt="系统工具-代码生成-配置" width="1920" /></td>
+            <td><img src=".image/screenshot/102系统工具-代码生成-预览.png" alt="系统工具-代码生成-预览" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/200系统监控-在线用户.png" alt="系统监控-在线用户" width="1920" /></td>
+            <td><img src=".image/screenshot/201系统监控-系统日志-登录日志.png" alt="系统监控-系统日志-登录日志" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src=".image/screenshot/202系统监控-系统日志-操作日志.png" alt="系统监控-系统日志-操作日志" width="1920" /></td>
+            <td><img src=".image/screenshot/202系统监控-系统日志-操作日志-详情.png" alt="系统监控-系统日志-操作日志-详情" width="1920" /></td>
+        </tr>
+    </tbody>
+</table>
 
 ## 快速开始
 
