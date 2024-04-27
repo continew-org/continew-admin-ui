@@ -74,8 +74,10 @@ const handleLogin = async () => {
   }
 }
 
-const captchaTime = ref(60)
 const captchaTimer = ref()
+const captchaTime = ref(60)
+const captchaBtnName = ref('获取验证码')
+const captchaDisable = ref(false)
 // 重置验证码
 const resetCaptcha = () => {
   window.clearInterval(captchaTimer.value)
@@ -84,15 +86,13 @@ const resetCaptcha = () => {
   captchaDisable.value = false
 }
 
-const captchaBtnName = ref('获取验证码')
 const captchaLoading = ref(false)
-const captchaDisable = ref(false)
 // 获取验证码
 const onCaptcha = async () => {
+  if (captchaLoading.value) return
+  const isInvalid = await formRef.value?.validateField('email')
+  if (isInvalid) return
   try {
-    if (captchaLoading.value) return
-    const isInvalid = await formRef.value?.validateField('email')
-    if (isInvalid) return
     captchaLoading.value = true
     captchaBtnName.value = '发送中...'
     // await getEmailCaptcha({

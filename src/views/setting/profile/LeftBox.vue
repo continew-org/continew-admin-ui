@@ -7,7 +7,7 @@
         </div>
         <div class="name">
           <span style="margin-right: 10px">{{ userInfo.nickname }}</span>
-          <icon-edit :size="16" class="btn" @click="onEditNickName" />
+          <icon-edit :size="16" class="btn" @click="onUpdate" />
         </div>
         <div class="id">
           <GiSvgIcon name="id" :size="16" />
@@ -43,22 +43,81 @@
     </div>
     <div class="footer">注册于 {{ userInfo.registrationDate }}</div>
   </a-card>
-  <VerifyModel ref="verifyModelRef" />
+
+  <a-modal v-model:visible="visible" title="修改基本信息" @before-ok="save" @close="reset">
+    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+  </a-modal>
 </template>
 
 <script setup lang="ts">
-import { updateUserBaseInfo } from '@/apis'
-import VerifyModel from '../components/VerifyModel.vue'
+import { updateUserBaseInfo, updateUserPassword } from '@/apis'
+import { Message } from '@arco-design/web-vue'
+import { type Columns, GiForm } from '@/components/GiForm'
+import { useForm } from '@/hooks'
 import { useUserStore } from '@/stores'
+import { encryptByRsa } from '@/utils/encrypt'
 
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
-const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
-const onEditNickName = () => {
-  userStore.editNickNameVisible = true
+const formRef = ref<InstanceType<typeof GiForm>>()
+
+const options: Options = {
+  form: {},
+  col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
+  btns: { hide: true }
 }
-const openVerifyModel = (type: 'phone' | 'email') => {
-  verifyModelRef.value?.open(type)
+
+const columns: Columns = [
+  {
+    label: '昵称',
+    field: 'nickname',
+    type: 'input',
+    rules: [{ required: true, message: '请输入昵称' }]
+  },
+  {
+    label: '性别',
+    field: 'gender',
+    type: 'radio-group',
+    options: [
+      { label: '男', value: 1 },
+      { label: '女', value: 2 },
+      { label: '未知', value: 0, disabled: true }
+    ],
+    rules: [{ required: true, message: '请选择性别' }]
+  }
+]
+
+const { form, resetForm } = useForm({
+  nickname: userInfo.value.nickname,
+  gender: userInfo.value.gender
+})
+
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+}
+
+const visible = ref(false)
+// 修改
+const onUpdate = async () => {
+  reset()
+  visible.value = true
+}
+
+// 保存
+const save = async () => {
+  const isInvalid = await formRef.value?.formRef?.validate()
+  if (isInvalid) return false
+  try {
+    await updateUserBaseInfo(form)
+    Message.success('修改成功')
+    // 修改成功后，重新获取用户信息
+    await userStore.getInfo()
+    return true
+  } catch (error) {
+    return false
+  }
 }
 </script>
 

@@ -7,6 +7,7 @@ export interface UserInfo {
   email: string
   phone: string
   avatar: string
+  pwdResetTime: string
   registrationDate: string
   deptName: string
   roles: string[]

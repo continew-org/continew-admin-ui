@@ -24,7 +24,7 @@
             v-if="item.jumpMode == 'modal'"
             class="btn"
             :type="item.status ? 'secondary' : 'primary'"
-            @click="openVerifyModel(item.type, item.status)"
+            @click="onUpdate(item.type, item.status)"
           >
             {{ item.status ? '修改' : '绑定' }}
           </a-button>
@@ -44,19 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import { socialAuth, getSocialAccount, unbindSocialAccount } from '@/apis'
+import { socialAuth, listUserSocial, unbindSocialAccount } from '@/apis'
 import type { ModeItem } from '../type'
-import { useUserStore } from '@/stores'
 import VerifyModel from '../components/VerifyModel.vue'
+import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
-const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
-const openVerifyModel = (type: 'phone' | 'email') => {
-  verifyModelRef.value?.open(type)
-}
-const socialList = ref<any>([])
 
+const socialList = ref<any>([])
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
   {
@@ -94,12 +90,8 @@ modeList.value = [
     status: socialList.value.some((el) => el == 'github')
   }
 ]
-const initData = () => {
-  getSocialAccount().then((res) => {
-    socialList.value = res.data.map((el) => el.source)
-  })
-}
 
+// 绑定
 const onBinding = (type: string, status: boolean) => {
   if (!status) {
     socialAuth(type).then((res) => {
@@ -112,6 +104,19 @@ const onBinding = (type: string, status: boolean) => {
       }
     })
   }
+}
+
+const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()
+// 修改
+const onUpdate = (type: string) => {
+  verifyModelRef.value?.open(type)
+}
+
+// 初始化数据
+const initData = () => {
+  listUserSocial().then((res) => {
+    socialList.value = res.data.map((el) => el.source)
+  })
 }
 
 onMounted(() => {

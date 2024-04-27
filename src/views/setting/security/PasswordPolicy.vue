@@ -9,7 +9,7 @@
         <div class="info-desc">为了您的账号安全，建议定期修改密码</div>
       </div>
       <div class="btn-wrapper">
-        <a-button class="btn">修改</a-button>
+        <a-button class="btn" @click="onUpdate">修改</a-button>
       </div>
     </div>
     <div class="detail">
@@ -31,8 +31,91 @@
       </div>
     </div>
   </a-card>
+
+  <a-modal v-model:visible="visible" title="修改密码" @before-ok="save" @close="reset">
+    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+  </a-modal>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { updateUserPassword } from '@/apis'
+import { Message } from '@arco-design/web-vue'
+import { encryptByRsa } from '@/utils/encrypt'
+import { type Columns, GiForm } from '@/components/GiForm'
+import { useForm } from '@/hooks'
+import { useUserStore } from '@/stores'
+
+const userStore = useUserStore()
+const userInfo = computed(() => userStore.userInfo)
+const formRef = ref<InstanceType<typeof GiForm>>()
+
+const options: Options = {
+  form: {},
+  col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
+  btns: { hide: true }
+}
+
+const columns: Columns = [
+  {
+    label: '当前密码',
+    field: 'oldPassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请输入当前密码' }],
+    hide: () => {
+      return userInfo.pwdResetTime
+    }
+  },
+  {
+    label: '新密码',
+    field: 'newPassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请输入新密码' }]
+  },
+  {
+    label: '确认新密码',
+    field: 'rePassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请再次输入新密码' }],
+    props: {
+      placeholder: '请再次输入新密码'
+    }
+  }
+]
+
+const { form, resetForm } = useForm({
+  oldPassword: '',
+  newPassword: '',
+  rePassword: ''
+})
+
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+}
+
+const visible = ref(false)
+// 修改
+const onUpdate = async () => {
+  reset()
+  visible.value = true
+}
+
+// 保存
+const save = async () => {
+  const isInvalid = await formRef.value?.formRef?.validate()
+  if (isInvalid) return false
+  try {
+    await updateUserPassword({
+      oldPassword: encryptByRsa(form.oldPassword) || '',
+      newPassword: encryptByRsa(form.newPassword) || ''
+    })
+    Message.success('修改成功')
+    return true
+  } catch (error) {
+    return false
+  }
+}
+</script>
 
 <style lang="scss" scoped></style>

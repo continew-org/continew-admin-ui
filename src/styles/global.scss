@@ -313,6 +313,12 @@
       .btn {
         height: 28px;
         width: 56px;
+        &:hover {
+          -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .15);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, .15);
+          border-color: rgb(var(--primary-5));
+          color: var(--color-text-2);
+        }
       }
     }
   }

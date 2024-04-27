@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="btn-wrapper">
-          <a-switch disabled />
+          <a-switch disabled title="未开放" />
         </div>
       </div>
     </div>

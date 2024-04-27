@@ -37,25 +37,3 @@ export function exportUser(query: System.UserQuery) {
 export function resetUserPwd(data: any, id: string) {
   return http.patch(`${BASE_URL}/${id}/password`, data)
 }
-
-/** @desc 修改用户基础信息 */
-export function updateUserBaseInfo(data: { nickname?: string; gender?: number }) {
-  return http.patch(`${BASE_URL}/basic/info`, data)
-}
-
-/** @desc 修改邮箱 */
-export function updateUserEmail(data: { newEmail: string; captcha: string; currentPassword: string }) {
-  return http.patch(`${BASE_URL}/email`, data)
-}
-/**@desc 绑定三方账号 */
-export function bindSocialAccount(source: string, data: any) {
-  return http.post(`${BASE_URL}/social/${source}`, data)
-}
-/**@desc 获取绑定的三方账号 */
-export function getSocialAccount() {
-  return http.get<System.BindSocialAccountRes[]>(`${BASE_URL}/social`)
-}
-/**@desc 解绑三方账号 */
-export function unbindSocialAccount(source: string) {
-  return http.del(`${BASE_URL}/social/${source}`)
-}

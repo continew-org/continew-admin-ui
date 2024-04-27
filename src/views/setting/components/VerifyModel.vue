@@ -1,107 +1,184 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" @before-ok="save" @cancel="handleCancel">
-    <a-form :model="form" ref="formRef">
-      <a-form-item
-        field="newPhone"
-        label="新手机号"
-        :rules="[{ required: true, match: Regexp.Phone, message: '请输入正确的手机号' }]"
-        v-if="verifyType === 'phone'"
-      >
-        <a-input v-model="form.newPhone" />
-      </a-form-item>
-      <a-form-item
-        field="email"
-        label="邮箱"
-        v-if="verifyType === 'email'"
-        :rules="[{ required: true, match: Regexp.Email, message: '请输入正确的邮箱' }]"
-      >
-        <a-input v-model="form.email" />
-      </a-form-item>
-      <a-form-item field="verifyCode" label="验证码" :rules="[{ required: true, message: '请输入正确的验证码' }]">
-        <a-input v-model="form.captcha" />
-        <a-button type="outline" @click="onSendCaptcha">发送验证码</a-button>
-      </a-form-item>
-      <a-form-item
-        field="currentPassword"
-        label="当前密码"
-        :rules="[
-          { required: true, message: '请输入当前密码' },
-          { match: Regexp.Password, message: '请输入格式的密码' }
-        ]"
-      >
-        <a-input v-model="form.currentPassword" />
-      </a-form-item>
-    </a-form>
+  <a-modal v-model:visible="visible" :title="title" @before-ok="save" @close="reset">
+    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
+      <template #captcha>
+        <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
+        <a-button
+          class="captcha-btn"
+          :loading="captchaLoading"
+          :disabled="captchaDisable"
+          size="large"
+          @click="onCaptcha"
+        >
+          {{ captchaBtnName }}
+        </a-button>
+      </template>
+    </GiForm>
   </a-modal>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { getSmsCaptcha, getEmailCaptcha, updateUserEmail } from '@/apis'
-import { encryptByRsa } from '@/utils/encrypt'
+// import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
+import { Message } from '@arco-design/web-vue'
+// import { encryptByRsa } from '@/utils/encrypt'
 import * as Regexp from '@/utils/regexp'
-import { Message, type Modal } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
-const userStore = useUserStore()
-const visible = ref<boolean>(false)
-const form = reactive({
+import { type Columns, GiForm } from '@/components/GiForm'
+import { useForm } from '@/hooks'
+
+const verifyType = ref()
+const title = computed(() => (verifyType.value === 'phone' ? '修改手机号' : '修改邮箱'))
+const formRef = ref<InstanceType<typeof GiForm>>()
+
+const options: Options = {
+  form: {},
+  col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
+  btns: { hide: true }
+}
+
+const columns: Columns = [
+  {
+    label: '手机号',
+    field: 'newPhone',
+    type: 'input',
+    rules: [
+      { required: true, message: '请输入手机号' },
+      { match: Regexp.Phone, message: '请输入正确的手机号' }
+    ],
+    hide: () => {
+      return verifyType.value !== 'phone'
+    }
+  },
+  {
+    label: '邮箱',
+    field: 'email',
+    type: 'input',
+    rules: [
+      { required: true, message: '请输入邮箱' },
+      { match: Regexp.Email, message: '请输入正确的邮箱' }
+    ],
+    hide: () => {
+      return verifyType.value !== 'email'
+    }
+  },
+  {
+    label: '验证码',
+    field: 'captcha',
+    type: 'input',
+    rules: [{ required: true, message: '请输入验证码' }]
+  },
+  {
+    label: '当前密码',
+    field: 'currentPassword',
+    type: 'input',
+    rules: [{ required: true, message: '请输入当前密码' }]
+  }
+]
+
+const { form, resetForm } = useForm({
   newPhone: '',
   captcha: '',
   currentPassword: '',
   email: ''
 })
-const formRef = ref()
-const verifyType = ref()
-const title = computed(() => {
-  return verifyType.value === 'phone' ? '修改手机号' : '修改邮箱'
-})
-const onSendCaptcha = () => {
-  formRef.value.validateField(verifyType.value === 'phone' ? 'newPhone' : 'email', (validate) => {
-    if (!validate) {
-      // 发送验证码
-      if (verifyType.value === 'phone') {
-        //手机号
-        getSmsCaptcha({ phone: form.newPhone }).then((res) => {
-          console.log(res)
-        })
-      } else if (verifyType.value === 'email') {
-        //邮箱
-        getEmailCaptcha({ email: form.email }).then((res) => {
-          console.log(res)
-        })
-      }
-    }
-  })
+
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+  resetCaptcha()
 }
-const save: InstanceType<typeof Modal>['onBeforeOk'] = async () => {
-  const flag = await formRef.value?.validate()
-  if (flag) return false
+
+const captchaTimer = ref()
+const captchaTime = ref(60)
+const captchaBtnName = ref('获取验证码')
+const captchaDisable = ref(false)
+// 重置验证码
+const resetCaptcha = () => {
+  window.clearInterval(captchaTimer.value)
+  captchaTime.value = 60
+  captchaBtnName.value = '获取验证码'
+  captchaDisable.value = false
+}
+
+const captchaLoading = ref(false)
+// 获取验证码
+const onCaptcha = async () => {
+  const isInvalid = await formRef.value?.formRef?.validateField(verifyType.value === 'phone' ? 'newPhone' : 'email')
+  if (isInvalid) return false
+  // 发送验证码
   try {
-    const res = await updateUserEmail({
-      newEmail: form.email,
-      captcha: form.captcha,
-      currentPassword: encryptByRsa(form.currentPassword) as string
-    })
-    if (res.code === 200) {
-      Message.success('修改成功')
-      visible.value = false
-      // 修改成功后，重新获取用户信息
-      userStore.getInfo()
-      return true
+    captchaLoading.value = true
+    captchaBtnName.value = '发送中...'
+    if (verifyType.value === 'phone') {
+      // await getSmsCaptcha({
+      //   phone: form.newPhone
+      // })
+    } else if (verifyType.value === 'email') {
+      // await getEmailCaptcha({
+      //   email: form.email
+      // })
     }
+    captchaLoading.value = false
+    captchaDisable.value = true
+    captchaBtnName.value = `获取验证码(${(captchaTime.value -= 1)}s)`
+    // Message.success('发送成功')
+    Message.success('仅提供效果演示，实际使用请查看代码取消相关注释')
+    captchaTimer.value = window.setInterval(() => {
+      captchaTime.value -= 1
+      captchaBtnName.value = `获取验证码(${captchaTime.value}s)`
+      if (captchaTime.value <= 0) {
+        resetCaptcha()
+      }
+    }, 1000)
+  } catch (error) {
+    resetCaptcha()
+  } finally {
+    captchaLoading.value = false
+  }
+}
+
+const userStore = useUserStore()
+// 保存
+const save = async () => {
+  const isInvalid = await formRef.value?.formRef?.validate()
+  if (isInvalid) return false
+  try {
+    if (verifyType.value === 'phone') {
+      // await updateUserEmail({
+      //   newEmail: form.email,
+      //   captcha: form.captcha,
+      //   currentPassword: encryptByRsa(form.currentPassword) as string
+      // })
+    } else if (verifyType.value === 'email') {
+      // await updateUserPhone({
+      //   newPhone: form.email,
+      //   captcha: form.captcha,
+      //   currentPassword: encryptByRsa(form.currentPassword) as string
+      // })
+    }
+    Message.success('修改成功')
+    // 修改成功后，重新获取用户信息
+    await userStore.getInfo()
+    return true
   } catch (error) {
     return false
   }
-  // return await saveApi()
 }
-const handleCancel = () => {
-  formRef.value?.resetFields()
-  visible.value = false
-}
+
+const visible = ref(false)
+// 打开弹框
 const open = (type: string) => {
   verifyType.value = type
   visible.value = true
 }
-defineExpose({
-  open
-})
+
+defineExpose({ open })
 </script>
+
+<style lang="scss" scoped>
+.captcha-btn {
+  margin-left: 12px;
+  min-width: 98px;
+  border-radius: 4px;
+}
+</style>
