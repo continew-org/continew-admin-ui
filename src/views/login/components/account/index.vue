@@ -37,7 +37,6 @@ import { getImageCaptcha } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
 import { useStorage } from '@vueuse/core'
-import { useLoading } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
 
 const loginConfig = useStorage('login-config', {

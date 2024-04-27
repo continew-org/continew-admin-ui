@@ -13,7 +13,7 @@
       <div class="sub-text-wrapper">
         <div class="sub-text">无操作登录会话保持<span class="sub-text-value">30</span>分钟，超时登录会话将失效</div>
         <div class="sub-text">登录会话最大保持<span class="sub-text-value">0</span>天，超时登录会话将失效</div>
-        <a-link class="link">修改规则（未开放）</a-link class="link">
+        <a-link class="link">修改规则（未开放）</a-link>
       </div>
     </div>
   </a-card>

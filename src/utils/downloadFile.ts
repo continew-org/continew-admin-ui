@@ -26,7 +26,7 @@ export function downloadByUrl({
 }): Promise<boolean> {
   // 是否同源
   const isSameHost = new URL(url).host == location.host
-  return new Promise<boolean>((resolve, reject) => {
+  return new Promise<boolean>((resolve) => {
     if (isSameHost) {
       const link = document.createElement('a')
       link.href = url

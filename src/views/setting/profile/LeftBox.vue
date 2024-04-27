@@ -2,9 +2,21 @@
   <a-card title="基本信息" bordered class="gradient-card">
     <div class="body">
       <section>
-        <div class="avatar">
-          <img :src="userStore.avatar" alt="avatar" />
-        </div>
+        <a-upload
+          :file-list="avatarList"
+          accept="image/*"
+          :show-file-list="false"
+          list-type="picture-card"
+          :show-upload-button="true"
+          :on-before-upload="onBeforeUpload"
+        >
+          <template #upload-button>
+            <a-avatar :size="100">
+              <template #trigger-icon><icon-camera /></template>
+              <img v-if="avatarList.length" :src="avatarList[0].url" alt="avatar" />
+            </a-avatar>
+          </template>
+        </a-upload>
         <div class="name">
           <span style="margin-right: 10px">{{ userInfo.nickname }}</span>
           <icon-edit :size="16" class="btn" @click="onUpdate" />
@@ -44,84 +56,146 @@
     <div class="footer">注册于 {{ userInfo.registrationDate }}</div>
   </a-card>
 
-  <a-modal v-model:visible="visible" title="修改基本信息" @before-ok="save" @close="reset">
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+  <a-modal v-model:visible="visible" title="上传头像" :width="400" :footer="false" @close="reset">
+    <a-row>
+      <a-col :span="14" style="width: 200px; height: 200px">
+        <vue-cropper
+          ref="cropperRef"
+          :img="options.img"
+          :info="true"
+          :auto-crop="options.autoCrop"
+          :auto-crop-width="options.autoCropWidth"
+          :auto-crop-height="options.autoCropHeight"
+          :fixed-box="options.fixedBox"
+          :fixed="options.fixed"
+          :full="options.full"
+          :center-box="options.centerBox"
+          :can-move="options.canMove"
+          :output-type="options.outputType"
+          :output-size="options.outputSize"
+          @real-time="handleRealTime"
+        />
+      </a-col>
+      <a-col :span="10" style="display: flex; justify-content: center">
+        <div :style="previewStyle">
+          <div :style="previews.div">
+            <img :src="previews.url" :style="previews.img" alt="" />
+          </div>
+        </div>
+      </a-col>
+    </a-row>
+    <div style="text-align: center; padding-top: 30px">
+      <a-space>
+        <a-button type="primary" @click="handleUpload">确定</a-button>
+        <a-button @click="reset">取消</a-button>
+      </a-space>
+    </div>
   </a-modal>
+  <BasicInfoUpdateModal ref="BasicInfoUpdateModalRef" />
 </template>
 
 <script setup lang="ts">
-import { updateUserBaseInfo, updateUserPassword } from '@/apis'
-import { Message } from '@arco-design/web-vue'
-import { type Columns, GiForm } from '@/components/GiForm'
-import { useForm } from '@/hooks'
+import { uploadAvatar } from '@/apis'
+import BasicInfoUpdateModal from './BasicInfoUpdateModal.vue'
+import { Message, type FileItem } from '@arco-design/web-vue'
+import { VueCropper } from 'vue-cropper'
+import 'vue-cropper/dist/index.css'
 import { useUserStore } from '@/stores'
-import { encryptByRsa } from '@/utils/encrypt'
+import getAvatar from '@/utils/avatar'
 
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
-const formRef = ref<InstanceType<typeof GiForm>>()
 
-const options: Options = {
-  form: {},
-  col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
-  btns: { hide: true }
+const avatar = {
+  uid: '-2',
+  name: 'avatar.png',
+  url: userInfo.value.avatar
 }
-
-const columns: Columns = [
-  {
-    label: '昵称',
-    field: 'nickname',
-    type: 'input',
-    rules: [{ required: true, message: '请输入昵称' }]
-  },
-  {
-    label: '性别',
-    field: 'gender',
-    type: 'radio-group',
-    options: [
-      { label: '男', value: 1 },
-      { label: '女', value: 2 },
-      { label: '未知', value: 0, disabled: true }
-    ],
-    rules: [{ required: true, message: '请选择性别' }]
-  }
-]
-
-const { form, resetForm } = useForm({
-  nickname: userInfo.value.nickname,
-  gender: userInfo.value.gender
+const avatarList = ref<FileItem[]>([avatar])
+const fileRef = ref(reactive({ name: 'avatar.png' }))
+const options: cropperOptions = reactive({
+  img: '',
+  autoCrop: true,
+  autoCropWidth: 160,
+  autoCropHeight: 160,
+  fixedBox: true,
+  fixed: true,
+  full: false,
+  centerBox: true,
+  canMove: true,
+  outputSize: 1,
+  outputType: 'png'
 })
+const visible = ref(false)
+// 打开裁剪框
+const onBeforeUpload = (file: File): boolean => {
+  fileRef.value = file
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    options.img = reader.result
+  }
+  visible.value = true
+  return false
+}
 
 // 重置
 const reset = () => {
-  formRef.value?.formRef?.resetFields()
-  resetForm()
+  fileRef.value = { name: '' }
+  options.img = ''
+  visible.value = false
 }
 
-const visible = ref(false)
-// 修改
-const onUpdate = async () => {
-  reset()
-  visible.value = true
-}
-
-// 保存
-const save = async () => {
-  const isInvalid = await formRef.value?.formRef?.validate()
-  if (isInvalid) return false
-  try {
-    await updateUserBaseInfo(form)
-    Message.success('修改成功')
-    // 修改成功后，重新获取用户信息
-    await userStore.getInfo()
-    return true
-  } catch (error) {
-    return false
+const previews: any = ref({})
+const previewStyle: any = ref({})
+// 实时预览
+const handleRealTime = (data: any) => {
+  previewStyle.value = {
+    width: `${data.w}px`,
+    height: `${data.h}px`,
+    overflow: 'hidden',
+    margin: '0',
+    zoom: 100 / data.h,
+    borderRadius: '50%'
   }
+  previews.value = data
+}
+
+const cropperRef = ref()
+// 上传头像
+const handleUpload = async () => {
+  cropperRef.value.getCropBlob((data: any) => {
+    const formData = new FormData()
+    formData.append('avatarFile', data, fileRef.value?.name)
+    uploadAvatar(formData).then((res) => {
+      userInfo.value.avatar = res.data.avatar
+      avatarList.value[0].url = getAvatar(res.data.avatar, undefined)
+      reset()
+      Message.success('更新成功')
+    })
+  })
+}
+
+const BasicInfoUpdateModalRef = ref<InstanceType<typeof BasicInfoUpdateModal>>()
+// 修改基本信息
+const onUpdate = async () => {
+  BasicInfoUpdateModalRef.value?.onUpdate()
 }
 </script>
 
 <style scoped lang="scss">
+:deep(.arco-avatar-trigger-icon-button) {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  background-color: #e8f3ff;
+  .arco-icon-camera {
+    margin-top: 8px;
+    color: rgb(var(--arcoblue-6));
+    font-size: 14px;
+  }
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -137,11 +211,6 @@ const save = async () => {
     justify-content: center;
     align-items: center;
     padding: 32px 0 50px;
-    .avatar > img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-    }
     .name {
       font-size: 20px;
       margin: 20px 0;

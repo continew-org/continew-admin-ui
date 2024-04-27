@@ -1,5 +1,5 @@
 import router from '@/router'
-import { useUserStore, useRouteStore, useAppStore } from '@/stores'
+import { useUserStore, useRouteStore } from '@/stores'
 import { getToken } from '@/utils/auth'
 import { isHttp } from '@/utils/validate'
 

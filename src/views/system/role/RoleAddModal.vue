@@ -179,6 +179,7 @@ const getMenuAllCheckedKeys = () => {
   // 获取半选中的菜单
   const halfCheckedNodes = menuTreeRef.value?.getHalfCheckedNodes()
   const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key)
+  // eslint-disable-next-line prefer-spread
   checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
   return checkedKeys
 }
@@ -194,6 +195,7 @@ const getDeptAllCheckedKeys = () => {
   // 获取半选中的部门
   const halfCheckedNodes = deptTreeRef.value?.getHalfCheckedNodes()
   const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key)
+  // eslint-disable-next-line prefer-spread
   checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
   return checkedKeys
 }

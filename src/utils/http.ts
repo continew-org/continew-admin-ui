@@ -177,7 +177,7 @@ const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     ...config
   })
 }
-const download = <T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
+const download = (url: string, params?: object, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
   return requestNative({
     method: 'get',
     url,

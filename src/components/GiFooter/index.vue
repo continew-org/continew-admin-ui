@@ -3,14 +3,11 @@
 </template>
 
 <script lang="ts" setup>
-import Dayjs from 'dayjs'
 import { useAppStore } from '@/stores'
 
 const appStore = useAppStore()
 
 defineOptions({ name: 'GiFooter' })
-
-const year = Dayjs(new Date()).format('YYYY')
 </script>
 
 <style lang="scss" scoped>

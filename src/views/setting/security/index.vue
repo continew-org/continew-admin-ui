@@ -20,16 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
 import BasicsSetting from './BasicsSetting.vue'
 import SessionSetting from './SessionSetting.vue'
 import PasswordPolicy from './PasswordPolicy.vue'
 import AccountProtection from './AccountProtection.vue'
 
 defineOptions({ name: 'SettingSecurity' })
-
-const route = useRoute()
-const form = reactive({ name: '' })
 </script>
 
 <style lang="scss" scoped>

@@ -3,6 +3,11 @@ import type * as System from '@/apis/system/type'
 
 const BASE_URL = '/system/user'
 
+/** @desc 上传头像 */
+export function uploadAvatar(data: FormData) {
+  return http.post(`${BASE_URL}/avatar`, data)
+}
+
 /** @desc 修改用户基本信息 */
 export function updateUserBaseInfo(data: { nickname: string; gender: number }) {
   return http.patch(`${BASE_URL}/basic/info`, data)
