@@ -1,21 +1,21 @@
 <template>
-  <div class="page">
-    <div class="flex_box">
-      <div class="flex_item_container">
+  <div class="gi_page">
+    <a-row wrap :gutter="16">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
         <BasicsSetting />
-      </div>
-      <div class="flex_item_container">
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
         <SessionSetting />
-      </div>
-    </div>
-    <div class="flex_box">
-      <div class="flex_item_container">
+      </a-col>
+    </a-row>
+    <a-row wrap :gutter="16" style="margin-top: 16px">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
         <PasswordPolicy />
-      </div>
-      <div class="flex_item_container">
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
         <AccountProtection />
-      </div>
-    </div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
@@ -25,20 +25,19 @@ import BasicsSetting from './BasicsSetting.vue'
 import SessionSetting from './SessionSetting.vue'
 import PasswordPolicy from './PasswordPolicy.vue'
 import AccountProtection from './AccountProtection.vue'
-defineOptions({ name: 'Security' })
+
+defineOptions({ name: 'SettingSecurity' })
 
 const route = useRoute()
 const form = reactive({ name: '' })
 </script>
 
 <style lang="scss" scoped>
-.page {
-  padding: $padding;
+.gi_page {
   background-color: var(--color-bg-1);
   .flex_box {
     display: flex;
     margin-bottom: 20px;
-    height: 100%;
     .flex_item_container {
       width: 100%;
       height: 100%;

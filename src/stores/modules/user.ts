@@ -18,13 +18,18 @@ import { resetHasRouteFlag } from '@/router/permission'
 import getAvatar from '@/utils/avatar'
 
 const storeSetup = () => {
-  const userInfo = reactive<Pick<UserInfo, 'id' | 'nickname' | 'avatar' | 'email' | 'phone' | 'registrationDate'>>({
+  const userInfo = reactive<UserInfo>({
     id: '',
+    username: '',
     nickname: '',
-    avatar: '',
+    gender: 0,
     email: '',
     phone: '',
-    registrationDate: ''
+    avatar: '',
+    registrationDate: '',
+    deptName: '',
+    roles: [],
+    permissions: []
   })
   const name = computed(() => userInfo.nickname)
   const avatar = computed(() => userInfo.avatar)
@@ -90,12 +95,8 @@ const storeSetup = () => {
   // 获取用户信息
   const getInfo = async () => {
     const res = await getUserInfoApi()
-    userInfo.id = res.data.id
-    userInfo.nickname = res.data.nickname
+    Object.assign(userInfo, res.data)
     userInfo.avatar = getAvatar(res.data.avatar, res.data.gender)
-    userInfo.email = res.data.email
-    userInfo.phone = res.data.phone
-    userInfo.registrationDate = res.data.registrationDate
     if (res.data.roles && res.data.roles.length) {
       roles.value = res.data.roles
       permissions.value = res.data.permissions

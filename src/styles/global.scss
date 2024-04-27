@@ -269,6 +269,81 @@
     border: none;
     background: linear-gradient(180deg, rgba(232, 244, 255, 0.5), hsla(0, 0%, 100%, 0));
   }
+  .item {
+    align-items: center;
+    display: flex;
+    margin-bottom: 20px;
+    .icon-wrapper {
+      align-items: center;
+      background: var(--color-neutral-2);
+      border-radius: 50%;
+      display: flex;
+      height: 48px;
+      justify-content: center;
+      width: 48px;
+    }
+    .info {
+      flex: 1 1;
+      margin: 0 16px;
+      &-top {
+        margin-bottom: 4px;
+        .label {
+          font-weight: 500;
+          line-height: 22px;
+          margin-right: 12px;
+        }
+        .bind {
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 20px;
+        }
+      }
+      &-desc {
+        color: #86909c;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        .value {
+          color: #4e5969;
+        }
+      }
+    }
+    .btn-wrapper {
+      align-self: flex-start;
+      .btn {
+        height: 28px;
+        width: 56px;
+      }
+    }
+  }
+
+  .detail {
+    display: flex;
+    font-size: 12px;
+    justify-content: flex-start;
+    margin: -5px 0 0 64px;
+    .sub-text-wrapper {
+      width: 100%;
+      border-left: 2px solid var(--color-fill-4);
+      padding-left: 12px;
+      .sub-text {
+        color: #4e5969;
+        font-weight: 400;
+        line-height: 20px;
+        margin-bottom: 8px;
+        &-value {
+          background: var(--color-neutral-2);
+          padding: 1px 5px;
+          margin: 0 5px;
+          border-radius: 3px;
+        }
+      }
+      .arco-link.link {
+        font-size: 12px;
+        padding: 0;
+      }
+    }
+  }
 }
 
 // 通用描述

@@ -1,26 +1,25 @@
 <template>
   <a-card title="登录方式" bordered class="gradient-card">
-    <div class="mode-list">
-      <div v-for="item in modeList" :key="item.title" class="mode-item">
-        <div class="mode-item-box">
-          <div class="mode-item-box__icon">
-            <GiSvgIcon :name="item.icon" :size="48" />
+    <div v-for="item in modeList" :key="item.title">
+      <div class="item">
+        <div class="icon-wrapper"><GiSvgIcon :name="item.icon" :size="26" /></div>
+        <div class="info">
+          <div class="info-top">
+            <span class="label">{{ item.title }}</span>
+            <span class="bind">
+              <icon-check-circle-fill v-if="item.status" :size="14" class="success" />
+              <icon-exclamation-circle-fill v-else :size="14" class="warning" />
+              <span style="font-size: 12px" :class="item.status ? 'success' : 'warning'">{{
+                item.status ? '已绑定' : '未绑定'
+              }}</span>
+            </span>
           </div>
-          <div class="mode-item-box__content">
-            <div class="title">
-              <div>{{ item.title }}</div>
-              <div style="margin-left: 10px">
-                <icon-check-circle-fill v-if="item.status" :size="14" class="success" />
-                <icon-exclamation-circle-fill v-else :size="14" class="warning" />
-                <span style="font-size: 12px" :class="item.status ? 'success' : 'warning'">{{
-                  item.status ? '已绑定' : '未绑定'
-                }}</span>
-              </div>
-            </div>
-            <div class="mode-item-box__subtitle">{{ item.subtitle }}</div>
+          <div class="info-desc">
+            <span class="value">{{ item.value }}</span>
+            {{ item.subtitle }}
           </div>
         </div>
-        <div>
+        <div class="btn-wrapper">
           <a-button
             v-if="item.jumpMode == 'modal'"
             class="btn"
@@ -46,7 +45,7 @@
 
 <script setup lang="ts">
 import { socialAuth, getSocialAccount, unbindSocialAccount } from '@/apis'
-import type { ModeItem } from './type'
+import type { ModeItem } from '../type'
 import { useUserStore } from '@/stores'
 import VerifyModel from '../components/VerifyModel.vue'
 
@@ -62,16 +61,18 @@ const modeList = ref<ModeItem[]>([])
 modeList.value = [
   {
     title: '绑定手机',
-    icon: userInfo.value.phone ? 'tel' : 'tel-unbind',
-    subtitle: `${userInfo.value.phone || '绑定后'}，可通过手机验证码快捷登录`,
+    icon: 'phone-color',
+    value: `${userInfo.value.phone + ' ' || '绑定后，'}`,
+    subtitle: `可通过手机验证码快捷登录`,
     type: 'phone',
     jumpMode: 'modal',
     status: !!userInfo.value.phone
   },
   {
     title: '绑定邮箱',
-    icon: userInfo.value.email ? 'mail' : 'mail-unbind',
-    subtitle: `${userInfo.value.email || '绑定后'}，可通过邮箱验证码进行登录`,
+    icon: 'email-color',
+    value: `${userInfo.value.email + ' ' || '绑定后，'}`,
+    subtitle: `可通过邮箱验证码进行登录`,
     type: 'email',
     jumpMode: 'modal',
     status: !!userInfo.value.email
@@ -79,7 +80,7 @@ modeList.value = [
   {
     title: '绑定 Gitee',
     icon: 'gitee',
-    subtitle: '绑定后，可通过 Gitee 进行登录',
+    subtitle: `${socialList.value.some((el) => el == 'gitee') ? '' : '绑定后，'}可通过 Gitee 进行登录`,
     jumpMode: 'link',
     type: 'gitee',
     status: socialList.value.some((el) => el == 'gitee')
@@ -87,7 +88,7 @@ modeList.value = [
   {
     title: '绑定 GitHub',
     icon: 'github',
-    subtitle: '绑定后，可通过 GitHub 进行登录',
+    subtitle: `${socialList.value.some((el) => el == 'gitee') ? '' : '绑定后，'}可通过 GitHub 进行登录`,
     type: 'github',
     jumpMode: 'link',
     status: socialList.value.some((el) => el == 'github')
@@ -118,34 +119,4 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-.mode-list {
-  .mode-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    &-box {
-      display: flex;
-      align-items: center;
-      &__icon {
-        margin-right: 10px;
-      }
-      &__content {
-        div {
-          line-height: 26px;
-        }
-        .title {
-          display: flex;
-          align-items: center;
-        }
-      }
-    }
-    .btn {
-      height: 28px;
-      margin-left: 10px;
-      width: 56px;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

@@ -16,8 +16,11 @@
       </section>
       <footer>
         <a-descriptions column="4" size="large">
-          <a-descriptions-item label="性别" :span="4">
-            {{ userInfo.nickname }}
+          <a-descriptions-item :span="4">
+            <template #label> <icon-user /><span style="margin-left: 5px">用户名</span></template>
+            {{ userInfo.username }}
+            <icon-man v-if="userInfo.gender === 1" style="color: #19bbf1" />
+            <icon-woman v-else-if="userInfo.gender === 2" style="color: #fa7fa9" />
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-phone /><span style="margin-left: 5px">手机</span></template>
@@ -29,11 +32,11 @@
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-mind-mapping /><span style="margin-left: 5px">部门</span></template>
-            {{ userInfo.nickname }}
+            {{ userInfo.deptName }}
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-user-group /><span style="margin-left: 5px">角色</span></template>
-            {{ userInfo.nickname }}
+            {{ userInfo.roles.join('，') }}
           </a-descriptions-item>
         </a-descriptions>
       </footer>
@@ -47,6 +50,7 @@
 import { updateUserBaseInfo } from '@/apis'
 import VerifyModel from '../components/VerifyModel.vue'
 import { useUserStore } from '@/stores'
+
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 const verifyModelRef = ref<InstanceType<typeof VerifyModel>>()

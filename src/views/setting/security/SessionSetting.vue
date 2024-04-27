@@ -1,48 +1,24 @@
 <template>
-  <Card style="height: 100%">
-    <template #header> 登录会话设置 </template>
-    <template #body>
-      <div class="content_title">
-        <div class="icon"><GiSvgIcon name="login-status" :size="36" /></div>
-        <div>
-          <div style="font-size: 14px; font-weight: 500; line-height: 28px">登录态保持时间设置</div>
-          <div style="font-size: 12px">保持登录状态的限制</div>
+  <a-card title="登录会话设置" bordered class="gradient-card">
+    <div class="item">
+      <div class="icon-wrapper"><GiSvgIcon name="message-color" :size="26" /></div>
+      <div class="info">
+        <div class="info-top">
+          <span class="label">登录态保持时间设置</span>
         </div>
+        <div class="info-desc">保持登录状态的限制</div>
       </div>
-      <div class="content_Box">
-        <p>操作登录会话保持120分钟，超时登录会话将失效</p>
-        <p>登录会话最大保持0天，超时登录会话将失效</p>
-        <p class="link_btn">修改规则(未开发)</p>
+    </div>
+    <div class="detail">
+      <div class="sub-text-wrapper">
+        <div class="sub-text">无操作登录会话保持<span class="sub-text-value">30</span>分钟，超时登录会话将失效</div>
+        <div class="sub-text">登录会话最大保持<span class="sub-text-value">0</span>天，超时登录会话将失效</div>
+        <a-link class="link">修改规则（未开放）</a-link class="link">
       </div>
-    </template>
-  </Card>
+    </div>
+  </a-card>
 </template>
-<script setup lang="ts">
-import Card from '../components/Card.vue'
-</script>
-<style scoped lang="scss">
-.content_title {
-  display: flex;
-  align-items: center;
-  .icon {
-    margin-right: 10px;
-  }
-}
-.content_Box {
-  border-left: 1px solid #ccc;
-  margin-left: 40px;
-  padding-left: 10px;
-  font-size: 12px;
-  margin-top: 20px;
-  & > p {
-    margin: 10px;
-  }
-}
-.link_btn {
-  cursor: pointer;
-  color: #007aff;
-  &:hover {
-    color: rgba($color: #007aff, $alpha: 0.8);
-  }
-}
-</style>
+
+<script lang="ts" setup></script>
+
+<style lang="scss" scoped></style>

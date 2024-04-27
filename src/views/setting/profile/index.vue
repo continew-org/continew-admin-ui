@@ -15,7 +15,7 @@
 import LeftBox from './LeftBox.vue'
 import RightBox from './RightBox.vue'
 
-defineOptions({ name: 'Profile' })
+defineOptions({ name: 'SettingProfile' })
 </script>
 
 <style lang="scss" scoped>
