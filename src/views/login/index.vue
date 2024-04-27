@@ -41,14 +41,14 @@
       </a-col>
     </a-row>
 
-    <GiThemeBtn class="theme-btn" />
-    <Background />
-
-    <!--    <div class="footer">
+    <div v-if="isDesktop" class="footer">
       <div class="beian">
         <div class="below text" v-html="appStore.getCopyright()"></div>
       </div>
-    </div>-->
+    </div>
+
+    <GiThemeBtn class="theme-btn" />
+    <Background />
   </div>
 </template>
 
@@ -59,9 +59,11 @@ import AccountLogin from './components/account/index.vue'
 import PhoneLogin from './components/phone/index.vue'
 import EmailLogin from './components/email/index.vue'
 import { useAppStore } from '@/stores'
+import { useDevice } from '@/hooks'
 
 defineOptions({ name: 'Login' })
 
+const { isDesktop } = useDevice()
 const appStore = useAppStore()
 const title = computed(() => appStore.getTitle())
 const logo = computed(() => appStore.getLogo())
@@ -83,6 +85,7 @@ const onOauth = async (source: string) => {
 .login {
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: var(--color-bg-5);
@@ -240,11 +243,11 @@ const onOauth = async (source: string) => {
 .footer {
   align-items: center;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  bottom: 10px;
+  z-index: 999;
   .beian {
     .text {
-      color: #41464f;
       font-size: 12px;
       font-weight: 400;
       letter-spacing: 0.2px;

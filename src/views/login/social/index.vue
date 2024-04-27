@@ -3,30 +3,58 @@
     <div></div>
   </a-spin>
 </template>
+
 <script setup lang="ts">
-import { isLogin } from '@/utils/auth'
 import { bindSocialAccount } from '@/apis'
+import { Message } from '@arco-design/web-vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getCurrentInstance, ref } from 'vue'
-const { proxy } = getCurrentInstance() as any
+import { isLogin } from '@/utils/auth'
+
 const route = useRoute()
 const router = useRouter()
-const loading = ref(false)
 const source = route.query.source as string
+const loading = ref(false)
 
-/**
- * 绑定第三方账号
- */
-const handleBindSocial = () => {
+// 三方账号登录
+const handleSocialLogin = () => {
   if (loading.value) return
   loading.value = true
   const { redirect, ...othersQuery } = router.currentRoute.value.query
+  userStore
+    .socialLogin(source, othersQuery)
+    .then(() => {
+      router.push({
+        path: (redirect as string) || '/',
+        query: {
+          ...othersQuery
+        }
+      })
+      Message.success('欢迎使用')
+    })
+    .catch(() => {
+      router.push({
+        name: 'Login',
+        query: {
+          ...othersQuery
+        }
+      })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+// 绑定三方账号
+const handleBindSocial = () => {
+  if (loading.value) return
+  loading.value = true
+  const { ...othersQuery } = router.currentRoute.value.query
   bindSocialAccount(source, othersQuery)
     .then((res) => {
       router.push({
         path: '/setting/profile',
         query: {
-          tab: 'security-setting'
+          ...othersQuery
         }
       })
       proxy.$message.success(res.msg)
@@ -35,7 +63,7 @@ const handleBindSocial = () => {
       router.push({
         path: '/setting/profile',
         query: {
-          tab: 'security-setting'
+          ...othersQuery
         }
       })
     })
@@ -46,12 +74,8 @@ const handleBindSocial = () => {
 
 if (isLogin()) {
   handleBindSocial()
-}
-</script>
-
-<script lang="ts">
-export default {
-  name: 'SocialCallback'
+} else {
+  handleSocialLogin()
 }
 </script>
 

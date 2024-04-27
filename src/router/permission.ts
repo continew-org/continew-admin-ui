@@ -4,7 +4,7 @@ import { getToken } from '@/utils/auth'
 import { isHttp } from '@/utils/validate'
 
 /** 免登录白名单 */
-const whiteList = ['/login', '/register']
+const whiteList = ['/login', '/social/callback']
 
 /** 是否已经生成过路由表 */
 let hasRouteFlag = false
