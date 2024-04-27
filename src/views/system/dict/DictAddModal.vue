@@ -74,9 +74,9 @@ const onUpdate = async (id: string) => {
 
 // 保存
 const save = async () => {
+  const isInvalid = await formRef.value?.formRef?.validate()
+  if (isInvalid) return false
   try {
-    const isInvalid = await formRef.value?.formRef?.validate()
-    if (isInvalid) return false
     if (isUpdate.value) {
       await updateDict(form, dataId.value)
       Message.success('修改成功')

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { listAccessTrend, type DashboardAccessTrendResp } from '@/apis'
+import { listDashboardAccessTrend, type DashboardAccessTrendResp } from '@/apis'
 import VCharts from 'vue-echarts'
 import { graphic } from 'echarts'
 import { useChart } from '@/hooks'
@@ -180,7 +180,7 @@ const getChartData = async (days: number) => {
     xData.value = []
     pvStatisticsData.value = []
     ipStatisticsData.value = []
-    const { data: chartData } = await listAccessTrend(days)
+    const { data: chartData } = await listDashboardAccessTrend(days)
     chartData.forEach((el: DashboardAccessTrendResp) => {
       xData.value.unshift(el.date)
       pvStatisticsData.value.unshift(el.pvCount)

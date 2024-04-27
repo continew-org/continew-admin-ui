@@ -2,7 +2,6 @@
   <div class="gi_page">
     <a-card title="字典管理" class="general-card">
       <GiTable
-        ref="tableRef"
         row-key="id"
         :data="dataList"
         :columns="columns"

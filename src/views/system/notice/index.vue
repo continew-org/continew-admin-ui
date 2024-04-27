@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="gi_page">
-      <a-card title="公告" class="general-card">
+      <a-card title="通知公告" class="general-card">
         <GiTable
           row-key="id"
           :data="dataList"
@@ -9,18 +9,16 @@
           :loading="loading"
           :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
           :pagination="pagination"
-          :disabledColumnKeys="['name']"
+          :disabledColumnKeys="['title']"
           @refresh="search"
         >
           <template #custom-left>
             <a-input v-model="queryForm.title" placeholder="请输入公告标题" allow-clear @change="search">
-              <template #prefix>
-                <icon-search />
-              </template>
+              <template #prefix><icon-search /></template>
             </a-input>
             <a-select
               v-model="queryForm.type"
-              :options="announcement_type"
+              :options="notice_type"
               placeholder="请选择类型"
               allow-clear
               style="width: 150px"
@@ -30,20 +28,18 @@
           </template>
           <template #custom-right>
             <a-button v-permission="['system:notice:add']" type="primary" @click="onAdd">
-              <template #icon>
-                <icon-plus />
-              </template>
+              <template #icon><icon-plus /></template>
               <span>新增</span>
             </a-button>
           </template>
           <template #title="{ record }">
-            <a-link @click="openDetail(record)">{{ record.title }}</a-link>
+            <a-link @click="onDetail(record)">{{ record.title }}</a-link>
           </template>
           <template #type="{ record }">
-            <GiCellTag :value="record.type" :dict="announcement_type" />
+            <GiCellTag :value="record.type" :dict="notice_type" />
           </template>
           <template #status="{ record }">
-            <GiCellTag :value="record.status" :dict="announcement_status_enum" />
+            <GiCellTag :value="record.status" :dict="notice_status_enum" />
           </template>
           <template #action="{ record }">
             <a-space>
@@ -55,22 +51,24 @@
       </a-card>
     </div>
 
-    <AnnouncementAddModal ref="AnnouncementAddModalRef" @save-success="search" />
-    <AnnouncementDetailDrawer ref="AnnouncementDetailDrawerRef" />
+    <NoticeAddModal ref="NoticeAddModalRef" @save-success="search" />
+    <NoticeDetailModal ref="NoticeDetailModalRef" />
   </div>
 </template>
 <script lang="ts" setup>
-import { listAnnouncement, delAnnouncement, type AnnouncementResp } from '@/apis'
+import { listNotice, deleteNotice, type NoticeResp } from '@/apis'
+import NoticeAddModal from './NoticeAddModal.vue'
+import NoticeDetailModal from './NoticeDetailModal.vue'
+import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
-import AnnouncementAddModal from './AnnouncementAddModal.vue'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
-import AnnouncementDetailDrawer from '@/views/system/notice/AnnouncementDetailDrawer.vue'
+import has from '@/utils/has'
 
-defineOptions({ name: 'Announcement' })
+defineOptions({ name: 'SystemNotice' })
 
-const { announcement_type, announcement_status_enum } = useDict('announcement_type', 'announcement_status_enum')
+const { notice_type, notice_status_enum } = useDict('notice_type', 'notice_status_enum')
+
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -85,7 +83,14 @@ const columns: TableInstanceColumns[] = [
   { title: '终止时间', dataIndex: 'terminateTime', width: 180 },
   { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '操作', slotName: 'action', width: 200, align: 'center', fixed: !isMobile() ? 'right' : undefined }
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 130,
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['system:notice:update', 'system:notice:delete'])
+  }
 ]
 
 const queryForm = reactive({
@@ -100,7 +105,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listAnnouncement({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((p) => listNotice({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
 // 重置
 const reset = () => {
@@ -110,74 +115,29 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: AnnouncementResp) => {
-  return handleDelete(() => delAnnouncement(item.id), {
+const onDelete = (item: NoticeResp) => {
+  return handleDelete(() => deleteNotice(item.id), {
     content: `是否确定删除公告 [${item.title}]？`,
     showModal: true
   })
 }
 
-const AnnouncementAddModalRef = ref<InstanceType<typeof AnnouncementAddModal>>()
-
+const NoticeAddModalRef = ref<InstanceType<typeof NoticeAddModal>>()
 // 新增
 const onAdd = () => {
-  AnnouncementAddModalRef.value?.onAdd()
+  NoticeAddModalRef.value?.onAdd()
 }
 
 // 修改
-const onUpdate = (item: AnnouncementResp) => {
-  AnnouncementAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (item: NoticeResp) => {
+  NoticeAddModalRef.value?.onUpdate(item.id)
 }
-const AnnouncementDetailDrawerRef = ref<InstanceType<typeof AnnouncementDetailDrawer>>()
-// 打开详情
-const openDetail = (item: AnnouncementResp) => {
-  console.log(item)
-  AnnouncementDetailDrawerRef.value?.onDetail(item.id)
+
+const NoticeDetailModalRef = ref<InstanceType<typeof NoticeDetailModal>>()
+// 详情
+const onDetail = (item: NoticeResp) => {
+  NoticeDetailModalRef.value?.onDetail(item.id)
 }
 </script>
 
-<style scoped lang="less">
-:deep(.github-markdown-body) {
-  padding: 16px 32px 5px;
-}
-
-:deep(.arco-form-item-label-tooltip) {
-  margin-left: 3px;
-}
-
-.meta-data {
-  font-size: 15px;
-  text-align: center;
-}
-
-.icon {
-  margin-right: 3px;
-}
-
-.update-time-row {
-  text-align: right;
-}
-</style>
-
-<style scoped lang="less">
-:deep(.github-markdown-body) {
-  padding: 16px 32px 5px;
-}
-
-:deep(.arco-form-item-label-tooltip) {
-  margin-left: 3px;
-}
-
-.meta-data {
-  font-size: 15px;
-  text-align: center;
-}
-
-.icon {
-  margin-right: 3px;
-}
-
-.update-time-row {
-  text-align: right;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -119,6 +119,25 @@ export interface DeptQuery {
   sort: Array<string>
 }
 
+/** 系统公告类型 */
+export interface NoticeResp {
+  id: string
+  title: string
+  content: string
+  status: number
+  type: string
+  effectiveTime: string
+  terminateTime: string
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export interface NoticeQuery extends PageQuery {
+  title?: string
+  type?: string
+}
+
 /** 系统字典类型 */
 export interface DictResp {
   id: string
@@ -221,27 +240,4 @@ export interface BasicConfigResp {
 export interface BindSocialAccountRes {
   source: string
   description: string
-}
-
-/** 公告类型 */
-export interface AnnouncementResp {
-  id: string
-  title: string
-  content: string
-  status: number
-  type?: string
-  effectiveTime?: string
-  terminateTime?: string
-  createUser: string
-  createTime: string
-  updateUser: string
-  updateTime: string
-  createUserString: string
-  updateUserString: string
-}
-
-export interface AnnouncementQuery extends PageQuery {
-  title?: string
-  status?: number
-  type?: string
 }

@@ -13,24 +13,41 @@
     >
       <template #content>
         <div class="content">
-          <a-tag v-if="item.type === 1" color="blue" size="small">通知</a-tag>
-          <a-tag v-if="item.type === 2" color="orangered" size="small">活动</a-tag>
-          <a-tag v-if="item.type === 3" color="cyan" size="small">消息</a-tag>
-          <p>{{ item.content }}</p>
+          <GiCellTag :value="item.type" :dict="notice_type" />
+          <p>
+            <a-link @click="onDetail(item.id)">{{ item.title }}</a-link>
+          </p>
         </div>
       </template>
     </a-comment>
   </a-card>
+
+  <NoticeDetailModal ref="NoticeDetailModalRef" />
 </template>
 
 <script setup lang="ts">
-const dataList = [
-  { type: 1, content: 'v2.4.0 版本发布公告🎉' },
-  { type: 1, content: 'v2.3.0 版本发布公告🎉' },
-  { type: 1, content: 'v2.2.0 版本发布公告🎉' },
-  { type: 2, content: '作者喊你来贡献代码了~' },
-  { type: 2, content: '作者喊你来提需求了~' }
-]
+import { listDashboardNotice, type DashboardNoticeResp } from '@/apis'
+import { useDict } from '@/hooks/app'
+import NoticeDetailModal from '@/views/system/notice/NoticeDetailModal.vue'
+
+const { notice_type } = useDict('notice_type')
+
+const dataList = ref<DashboardNoticeResp[]>([])
+// 查询列表数据
+const getDataList = async () => {
+  const res = await listDashboardNotice()
+  dataList.value = res.data
+}
+
+const NoticeDetailModalRef = ref<InstanceType<typeof NoticeDetailModal>>()
+// 详情
+const onDetail = (id: string) => {
+  NoticeDetailModalRef.value?.onDetail(id)
+}
+
+onMounted(() => {
+  getDataList()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -51,5 +68,17 @@ const dataList = [
   > p {
     margin-left: 6px;
   }
+}
+
+.arco-link {
+  color: rgb(var(--gray-8));
+}
+
+.icon {
+  margin-right: 3px;
+}
+
+.update-time-row {
+  text-align: right;
 }
 </style>
