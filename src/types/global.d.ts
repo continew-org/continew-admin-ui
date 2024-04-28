@@ -23,5 +23,5 @@ export interface DictState {
 /** 状态（1：启用；2：禁用） */
 type Status = 1 | 2
 
-/** 性别（1：男；2：女；3：未知） */
-type Gender = 1 | 2 | 3
+/** 性别（1：男；2：女；0：未知） */
+type Gender = 1 | 2 | 0
