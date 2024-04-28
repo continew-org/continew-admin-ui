@@ -180,6 +180,86 @@ pnpm i
 pnpm dev
 ```
 
+## 项目结构
+
+```
+continew-admin-ui      # 前端项目
+├─ config                # Vite 插件配置
+├─ public                # 公共静态资源（favicon.ico、logo.svg）
+├─ src
+│  ├─ apis             # 请求接口
+│  │  ├─ auth            # 认证模块
+│  │  ├─ common          # 公共模块
+│  │  ├─ monitor         # 系统监控模块
+│  │  ├─ system          # 系统管理模块
+│  │  └─ tool            # 系统工具模块
+│  ├─ assets           # 静态资源
+│  │  ├─ icons           # 图标资源
+│  │  ├─ images          # 图片资源
+│  │  └─ fonts           # 字体资源
+│  ├─ components       # 通用业务组件
+│  ├─ config           # 全局配置（包含 echarts 主题）
+│  │  └─ settings.json   # 配置文件
+│  ├─ directives       # 指令集（如需，可自行补充）
+│  ├─ hooks            # 全局 hooks
+│  ├─ layout           # 布局
+│  ├─ mock             # 模拟数据
+│  ├─ router           # 路由配置
+│  ├─ stores           # 状态管理中心
+│  ├─ types            # TypeScript 类型
+│  ├─ utils            # 工具库（mock 全局开启/关闭）
+│  ├─ views            # 页面
+│  │  ├─ default         # 默认页面
+│  │  ├─ home            # 首页模块
+│  │  ├─ login           # 登录模块
+│  │  ├─ monitor         # 系统监控
+│  │  │  ├─ log            # 系统日志
+│  │  │  │  ├─ login         # 登录日志
+│  │  │  │  ├─ operation     # 操作日志
+│  │  │  │  └─ index
+│  │  │  └─ online           # 在线用户
+│  │  ├─ setting         # 设置
+│  │  │  ├─ profile        # 账号管理
+│  │  │  └─ security       # 安全设置
+│  │  ├─ tool            # 系统工具
+│  │  │  └─ generator      # 代码生成
+│  │  └─ system          # 系统管理
+│  │    ├─ config          # 系统配置
+│  │    ├─ dept            # 部门管理
+│  │    ├─ dict            # 字典管理
+│  │    ├─ file            # 文件管理
+│  │    ├─ menu            # 菜单管理
+│  │    ├─ notice          # 通知公告
+│  │    ├─ role            # 角色管理
+│  │    ├─ storage         # 存储管理
+│  │    └─ user            # 用户管理
+│  ├─ App.vue
+│  └─ main.ts
+├─ .env.development
+├─ .env.production
+├─ .env.test
+├─ .eslintignore
+├─ .eslintrc.cjs
+├─ .prettierignore
+├─ .prettierrc.js
+├─ index.html
+├─ package.json
+├─ package-lock.json
+├─ pnpm-lock.yaml
+├─ tsconfig.json
+├─ vite.config.ts
+├─ .gitignore（Git 忽略文件相关配置文件）
+├─ .gitee（Gitee 相关配置目录，实际开发时直接删除）
+├─ .github（GitHub 相关配置目录，实际开发时直接删除）
+├─ .idea
+│  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
+├─ .image（截图目录，实际开发时直接删除）
+├─ .vscode（VSCode 配置目录）
+├─ LICENSE（开源协议文件）
+├─ CHANGELOG.md（更新日志文件，实际开发时直接删除）
+└─ README.md（项目 README 文件，实际开发时替换为真实内容）
+```
+
 ## 贡献指南
 
 ContiNew Admin 致力于提供开箱即用，持续舒适的开发体验。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
