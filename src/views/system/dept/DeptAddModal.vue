@@ -40,6 +40,9 @@ const columns: Columns = [
     field: 'parentId',
     type: 'tree-select',
     data: deptList,
+    hide: (form) => {
+      return form.parentId === 0
+    },
     props: {
       allowClear: true,
       allowSearch: true,
