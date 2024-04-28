@@ -18,6 +18,7 @@
       :loading="loading"
       :scroll="{ x: '100%', y: '100%', minWidth: 800 }"
       :pagination="pagination"
+      :disabledTools="['size']"
       :disabledColumnKeys="['label']"
       @refresh="search"
     >

@@ -3,16 +3,16 @@
     <WorkCard />
 
     <a-alert>
-      全新版本 v3.0.0 发布预告，采用全新前端模板，提供更可靠、更舒适的前端开发体验，点击查看
-      <span class="link" @click="open('https://gitee.com/continew/continew-admin-ui/commits/dev')">项目进展</span>。
+      全新版本 v3.0.0 已发布，采用全新前端模板，提供更可靠、更舒适的前端开发体验，点击查看
+      <span class="link" @click="open('https://continew.top/admin/other/changelog.html')">更新日志</span>。
     </a-alert>
 
     <a-row class="home__content">
-      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="18" :xxl="20">
+      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="18" :xxl="18">
         <div class="home__item"><ProjectCard /></div>
         <div class="home__item"><AccessTrendCard /></div>
       </a-col>
-      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="6" :xxl="4">
+      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="6" :xxl="6">
         <div class="home__item"><FastCard /></div>
         <div class="home__item"><SponsorCard /></div>
         <div class="home__item"><NoticeCard /></div>

@@ -36,7 +36,7 @@
             <span>新增</span>
           </a-button>
           <a-tooltip content="展开/折叠">
-            <a-button @click="onExpanded">
+            <a-button class="gi_hover_btn-border" @click="onExpanded">
               <template #icon>
                 <icon-list v-if="!isExpanded" />
                 <icon-mind-mapping v-else />

@@ -18,6 +18,7 @@
             :loading="loading"
             :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
             :pagination="pagination"
+            :disabledTools="['size']"
             :disabledColumnKeys="['nickname']"
             @refresh="search"
           >
@@ -41,7 +42,7 @@
                 <span>新增</span>
               </a-button>
               <a-tooltip content="导出">
-                <a-button v-permission="['system:user:export']" @click="onExport">
+                <a-button v-permission="['system:user:export']" class="gi_hover_btn-border" @click="onExport">
                   <template #icon>
                     <icon-download />
                   </template>

@@ -8,6 +8,7 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1300 }"
         :pagination="pagination"
+        :disabledTools="['size']"
         :disabledColumnKeys="['name']"
         @refresh="search"
       >

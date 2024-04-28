@@ -8,7 +8,7 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledTools="['setting']"
+        :disabledTools="['size', 'setting']"
         :disabledColumnKeys="['tableName']"
         @refresh="search"
       >

@@ -7,7 +7,7 @@
     :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
     :pagination="pagination"
     column-resizable
-    :disabledTools="['setting']"
+    :disabledTools="['size', 'setting']"
     @filterChange="filterChange"
     @refresh="search"
   >
@@ -23,7 +23,7 @@
     </template>
     <template #custom-right>
       <a-tooltip content="导出">
-        <a-button v-permission="['monitor:log:export']" @click="onExport">
+        <a-button v-permission="['monitor:log:export']" class="gi_hover_btn-border" @click="onExport">
           <template #icon>
             <icon-download />
           </template>

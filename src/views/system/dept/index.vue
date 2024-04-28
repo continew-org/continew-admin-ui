@@ -9,6 +9,7 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="false"
+        :disabledTools="['size']"
         :disabledColumnKeys="['name']"
         @refresh="search"
       >
@@ -36,7 +37,7 @@
             <span>新增</span>
           </a-button>
           <a-tooltip content="导出">
-            <a-button v-permission="['system:dept:export']" @click="onExport">
+            <a-button v-permission="['system:dept:export']" class="gi_hover_btn-border" @click="onExport">
               <template #icon>
                 <icon-download />
               </template>

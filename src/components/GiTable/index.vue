@@ -7,10 +7,22 @@
       <a-space wrap class="gi-table__toolbar-right" :size="[8, 8]">
         <slot name="custom-right"></slot>
         <a-tooltip content="刷新">
-          <a-button v-if="showRefreshBtn" @click="refresh">
+          <a-button v-if="showRefreshBtn" class="gi_hover_btn-border" @click="refresh">
             <template #icon><icon-refresh /></template>
           </a-button>
         </a-tooltip>
+        <a-dropdown v-if="showSizeBtn" @select="handleSelect">
+          <a-tooltip content="尺寸">
+            <a-button class="gi_hover_btn-border">
+              <template #icon><icon-table-size style="width: 14px; height: 14px" /></template>
+            </a-button>
+          </a-tooltip>
+          <template #content>
+            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">{{
+              item.label
+            }}</a-doption>
+          </template>
+        </a-dropdown>
         <a-popover
           v-if="showSettingColumnBtn"
           trigger="click"
@@ -18,7 +30,7 @@
           :content-style="{ minWidth: '120px', padding: '6px 8px 10px' }"
         >
           <a-tooltip content="列设置">
-            <a-button>
+            <a-button class="gi_hover_btn-border">
               <template #icon>
                 <icon-settings />
               </template>
@@ -42,6 +54,14 @@
             </a-row>
           </template>
         </a-popover>
+        <a-tooltip content="全屏">
+          <a-button v-if="showFullscreenBtn" class="gi_hover_btn-border" @click="isFullscreen = !isFullscreen">
+            <template #icon>
+              <icon-fullscreen v-if="!isFullscreen" />
+              <icon-fullscreen-exit v-else />
+            </template>
+          </a-button>
+        </a-tooltip>
       </a-space>
     </a-row>
     <div class="gi-table__container">
@@ -60,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TableInstance, TableColumnData } from '@arco-design/web-vue'
+import type { TableInstance, TableColumnData, DropdownInstance } from '@arco-design/web-vue'
 import { VueDraggable } from 'vue-draggable-plus'
 
 defineOptions({ name: 'GiTable', inheritAttrs: false })
@@ -87,11 +107,23 @@ const size = ref<TableInstance['size']>('medium')
 const isBordered = ref(false)
 const isFullscreen = ref(false)
 
+type SizeItem = { label: string; value: TableInstance['size'] }
+const sizeList: SizeItem[] = [
+  { label: '紧凑', value: 'small' },
+  { label: '默认', value: 'medium' }
+]
+
+const handleSelect: DropdownInstance['onSelect'] = (value) => {
+  size.value = value as TableInstance['size']
+}
+
 const refresh = () => {
   emit('refresh')
 }
 
 const showRefreshBtn = computed(() => !props.disabledTools.includes('refresh'))
+const showSizeBtn = computed(() => !props.disabledTools.includes('size'))
+const showFullscreenBtn = computed(() => !props.disabledTools.includes('fullscreen'))
 const showSettingColumnBtn = computed(
   () => !props.disabledTools.includes('setting') && attrs?.columns && (attrs?.columns as TableColumnData[])?.length
 )
@@ -177,7 +209,6 @@ defineExpose({ tableRef })
         margin-right: 0;
       }
     }
-
     :deep(.arco-form-layout-inline .arco-form-item) {
       margin-bottom: 0;
     }

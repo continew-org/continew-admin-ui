@@ -9,6 +9,7 @@
           :loading="loading"
           :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
           :pagination="pagination"
+          :disabledTools="['size']"
           :disabledColumnKeys="['title']"
           @refresh="search"
         >
