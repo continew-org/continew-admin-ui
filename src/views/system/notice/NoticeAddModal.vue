@@ -69,7 +69,6 @@ import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { MdEditor } from 'md-editor-v3'
-import 'md-editor-v3/lib/style.css'
 
 const { notice_type } = useDict('notice_type')
 
