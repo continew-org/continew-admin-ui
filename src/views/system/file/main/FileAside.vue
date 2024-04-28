@@ -42,7 +42,7 @@ watch(
 
 // 点击事件
 const onClickItem = (item: FileTypeListItem) => {
-  router.push({ name: 'File', query: { type: item.value } })
+  router.push({ name: 'SystemFile', query: { type: item.value } })
 }
 </script>
 
