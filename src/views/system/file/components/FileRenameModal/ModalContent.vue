@@ -14,11 +14,17 @@
 </template>
 
 <script lang="ts" setup>
+import type { FileItem } from '@/apis'
 import type { FormInstance } from '@arco-design/web-vue'
+
+interface Props {
+  data: FileItem
+}
+const props = withDefaults(defineProps<Props>(), {})
 
 const formRef = ref<FormInstance>()
 const form = reactive({
-  name: ''
+  name: props.data?.name || ''
 })
 
 defineExpose({ formRef })

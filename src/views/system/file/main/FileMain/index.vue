@@ -17,7 +17,13 @@
         </a-dropdown>
 
         <a-input-group>
-          <a-input v-model="queryForm.name" placeholder="请输入文件名" allow-clear @change="search" />
+          <a-input
+            v-model="queryForm.name"
+            placeholder="请输入文件名"
+            allow-clear
+            style="width: 200px"
+            @change="search"
+          />
           <a-button type="primary" @click="search">
             <template #icon>
               <icon-search />
@@ -47,11 +53,11 @@
           <template #default>{{ isBatchMode ? '取消批量' : '批量操作' }}</template>
         </a-button>
         <a-button-group>
-          <a-tooltip content="视图" position="bottom">
-            <a-button @click="toggleMode">
+          <a-tooltip content="视图">
+            <a-button class="gi_hover_btn-border" @click="toggleMode">
               <template #icon>
-                <icon-apps v-if="mode === 'grid'" />
-                <icon-list v-else />
+                <icon-list v-if="mode === 'grid'" />
+                <icon-apps v-else />
               </template>
             </a-button>
           </a-tooltip>

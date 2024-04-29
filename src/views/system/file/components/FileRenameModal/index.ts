@@ -12,6 +12,7 @@ export function openFileRenameModal(data: FileItem, callback?: () => void) {
     width: '90%',
     content: () =>
       h(ModalContent, {
+        data,
         ref: (e) => {
           ModalContentRef.value = e as any
         }
