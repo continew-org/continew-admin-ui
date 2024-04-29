@@ -20,10 +20,10 @@
 // import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
 import { Message } from '@arco-design/web-vue'
 // import { encryptByRsa } from '@/utils/encrypt'
-import * as Regexp from '@/utils/regexp'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
+import * as Regexp from '@/utils/regexp'
 
 const verifyType = ref()
 const title = computed(() => (verifyType.value === 'phone' ? '修改手机号' : '修改邮箱'))

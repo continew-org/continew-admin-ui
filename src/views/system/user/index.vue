@@ -49,10 +49,10 @@
                 </a-button>
               </a-tooltip>
             </template>
-            <template #nickname="{ record }">
+            <template #username="{ record }">
               <GiCellAvatar
                 :avatar="getAvatar(record.avatar, record.gender)"
-                :name="record.nickname"
+                :name="record.username"
                 is-link
                 @click="onDetail(record)"
               />
@@ -123,14 +123,14 @@ const columns: TableInstanceColumns[] = [
     fixed: !isMobile() ? 'left' : undefined
   },
   {
-    title: '昵称',
-    slotName: 'nickname',
-    width: 170,
+    title: '用户名',
+    slotName: 'username',
+    width: 140,
     ellipsis: true,
     tooltip: true,
     fixed: !isMobile() ? 'left' : undefined
   },
-  { title: '用户名', dataIndex: 'username', width: 120, ellipsis: true, tooltip: true },
+  { title: '昵称', dataIndex: 'nickname', width: 120, ellipsis: true, tooltip: true },
   { title: '状态', slotName: 'status', align: 'center' },
   { title: '性别', slotName: 'gender', align: 'center' },
   { title: '手机号', dataIndex: 'phone', width: 170, ellipsis: true, tooltip: true },

@@ -77,9 +77,9 @@ const columns: TableInstanceColumns[] = [
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize)
   },
-  { title: '标题', dataIndex: 'title', slotName: 'title', ellipsis: true, tooltip: true },
-  { title: '类型', slotName: 'type', align: 'center', width: 130 },
-  { title: '状态', slotName: 'status', align: 'center', width: 130 },
+  { title: '标题', dataIndex: 'title', slotName: 'title', width: 200, ellipsis: true, tooltip: true },
+  { title: '类型', slotName: 'type', align: 'center' },
+  { title: '状态', slotName: 'status', align: 'center' },
   { title: '生效时间', dataIndex: 'effectiveTime', width: 180 },
   { title: '终止时间', dataIndex: 'terminateTime', width: 180 },
   { title: '创建人', dataIndex: 'createUserString', show: false, ellipsis: true, tooltip: true },

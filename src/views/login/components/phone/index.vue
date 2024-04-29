@@ -37,6 +37,7 @@
 // import { getSmsCaptcha } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
+import * as Regexp from '@/utils/regexp'
 
 const formRef = ref<FormInstance>()
 const form = reactive({
@@ -47,7 +48,7 @@ const form = reactive({
 const rules: FormInstance['rules'] = {
   phone: [
     { required: true, message: '请输入手机号' },
-    { match: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
+    { match: Regexp.Phone, message: '请输入正确的手机号' }
   ],
   captcha: [{ required: true, message: '请输入验证码' }]
 }

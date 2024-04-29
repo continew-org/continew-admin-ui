@@ -17,7 +17,7 @@
       </a-col>
       <a-col :xs="24" :sm="24" :md="10" :lg="8" :xl="8" :xxl="6" style="margin: -8px -7px">
         <a-row justify="end">
-          <SupportCard />
+          <SupportCard v-if="isDesktop" />
         </a-row>
       </a-col>
     </a-row>
@@ -26,10 +26,12 @@
 
 <script setup lang="ts">
 import NowTime from './NowTime/index.vue'
+import { useDevice } from '@/hooks'
 import { useUserStore } from '@/stores'
 import { goodTimeText } from '@/utils'
 import SupportCard from './SupportCard.vue'
 
+const { isDesktop } = useDevice()
 const userStore = useUserStore()
 </script>
 

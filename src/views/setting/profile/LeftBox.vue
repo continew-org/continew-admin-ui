@@ -27,7 +27,7 @@
         </div>
       </section>
       <footer>
-        <a-descriptions column="4" size="large">
+        <a-descriptions :column="4" size="large">
           <a-descriptions-item :span="4">
             <template #label> <icon-user /><span style="margin-left: 5px">用户名</span></template>
             {{ userInfo.username }}

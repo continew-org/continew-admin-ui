@@ -5,7 +5,7 @@ const BASE_URL = '/captcha'
 
 /** @desc 获取图片验证码 */
 export function getImageCaptcha() {
-  return http.get<Common.ImageCaptchaResp>(`${BASE_URL}/img`)
+  return http.get<Common.ImageCaptchaResp>(`${BASE_URL}/image`)
 }
 
 /** @desc 获取短信验证码 */

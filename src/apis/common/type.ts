@@ -2,6 +2,7 @@
 export interface ImageCaptchaResp {
   uuid: string
   img: string
+  expireTime: number
 }
 
 /** 仪表盘访问趋势类型 */

@@ -37,6 +37,7 @@
 // import { getEmailCaptcha } from '@/apis'
 import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
+import * as Regexp from '@/utils/regexp'
 
 const formRef = ref<FormInstance>()
 const form = reactive({
@@ -45,7 +46,10 @@ const form = reactive({
 })
 
 const rules: FormInstance['rules'] = {
-  email: [{ required: true, message: '请输入邮箱' }],
+  email: [
+    { required: true, message: '请输入邮箱' },
+    { match: Regexp.Email, message: '请输入正确的邮箱' }
+  ],
   captcha: [{ required: true, message: '请输入验证码' }]
 }
 
