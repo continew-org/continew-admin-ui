@@ -16,7 +16,12 @@
     </a-form-item>
     <a-form-item field="captcha" hide-label>
       <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
-      <img :src="captchaImgBase64" alt="验证码" class="captcha" @click="getCaptcha" />
+      <div class="captcha-container" @click="getCaptcha">
+        <img :src="captchaImgBase64" alt="验证码" class="captcha" />
+        <div v-if="form.expired" class="overlay">
+          <p>已过期，请刷新</p>
+        </div>
+      </div>
     </a-form-item>
     <a-form-item>
       <a-row justify="space-between" align="center" class="w-full">
@@ -52,7 +57,8 @@ const form = reactive({
   username: loginConfig.value.username,
   password: loginConfig.value.password,
   captcha: '',
-  uuid: ''
+  uuid: '',
+  expired: false
 })
 
 const rules: FormInstance['rules'] = {
@@ -98,10 +104,35 @@ const captchaImgBase64 = ref()
 // 获取验证码
 const getCaptcha = () => {
   getImageCaptcha().then((res) => {
-    form.uuid = res.data.uuid
-    captchaImgBase64.value = res.data.img
+    const { uuid, img, expireTime } = res.data
+    form.uuid = uuid
+    captchaImgBase64.value = img
+    form.expired = false
+    startTimer(expireTime)
   })
 }
+
+// 验证码过期定时器
+let timer
+const startTimer = (expireTime: number) => {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  const remainingTime = expireTime - Date.now()
+  if (remainingTime <= 0) {
+    form.expired = true
+    return
+  }
+  timer = setTimeout(() => {
+    form.expired = true
+  }, remainingTime)
+}
+// 组件销毁时清理定时器
+onBeforeUnmount(() => {
+  if (timer) {
+    clearTimeout(timer)
+  }
+})
 
 onMounted(() => {
   getCaptcha()
@@ -137,10 +168,37 @@ onMounted(() => {
   width: 111px;
   height: 36px;
   margin: 0 0 0 5px;
-  cursor: pointer;
 }
 
 .btn {
   height: 40px;
+}
+
+.captcha-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.captcha-container {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(51, 51, 51, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay p {
+  font-size: 12px;
+  color: white;
 }
 </style>
