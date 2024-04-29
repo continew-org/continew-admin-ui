@@ -27,11 +27,7 @@
               :class="{ checked: props.selectedFileIds.includes(item.id) }"
               @click.stop="handleCheckFile(item)"
             >
-              <a-checkbox
-                class="checkbox"
-                :model-value="props.selectedFileIds.includes(item.id)"
-                @change="handleCheckFile(item)"
-              ></a-checkbox>
+              <a-checkbox class="checkbox" :model-value="props.selectedFileIds.includes(item.id)"></a-checkbox>
             </section>
           </div>
         </a-grid-item>

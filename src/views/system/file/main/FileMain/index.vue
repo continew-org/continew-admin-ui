@@ -211,7 +211,7 @@ const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
       }
     })
   } else if (mode === 'rename') {
-    openFileRenameModal(fileInfo)
+    openFileRenameModal(fileInfo, search)
   } else if (mode === 'detail') {
     openFileDetailModal(fileInfo)
   } else if (mode === 'download') {
@@ -237,8 +237,8 @@ const handleMulDelete = () => {
     title: '提示',
     content: `是否确定删除所选的${selectedFileIds.value.length}个文件？`,
     hideCancel: false,
-    onOk: () => {
-      deleteFile(selectedFileIds.value)
+    onOk: async () => {
+      await deleteFile(selectedFileIds.value)
       Message.success('删除成功')
       search()
     }
