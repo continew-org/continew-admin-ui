@@ -3,7 +3,7 @@ import { ref, h } from 'vue'
 import { Modal, Message } from '@arco-design/web-vue'
 import ModalContent from './ModalContent.vue'
 
-export function openFileRenameModal(data: FileItem) {
+export function openFileRenameModal(data: FileItem, callback?: () => void) {
   const ModalContentRef = ref<InstanceType<typeof ModalContent>>()
   return Modal.open({
     title: '重命名',
@@ -22,6 +22,9 @@ export function openFileRenameModal(data: FileItem) {
       if (isInvalid) return false
       await updateFile({ name: modelParams?.name }, data.id)
       Message.success('重命名成功')
+      if (callback) {
+        callback()
+      }
       return true
     }
   })
