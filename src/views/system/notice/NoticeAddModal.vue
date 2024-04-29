@@ -154,7 +154,7 @@ const save = async () => {
   if (isInvalid) return false
   try {
     if (isUpdate.value) {
-      await updateNotice(form, announcementId.value)
+      await updateNotice(form, dataId.value)
       Message.success('修改成功')
     } else {
       await addNotice(form)
