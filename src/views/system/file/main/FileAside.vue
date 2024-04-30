@@ -16,11 +16,13 @@
         </a-sub-menu>
       </a-menu>
     </a-card>
+    <FileAsideStatistics />
   </div>
 </template>
 
 <script setup lang="ts">
 import { FileTypeList, type FileTypeListItem } from '@/constant/file'
+import FileAsideStatistics from '@/views/system/file/main/FileAsideStatistics.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -62,12 +64,5 @@ const onClickItem = (item: FileTypeListItem) => {
   .arco-progress-line-bar {
     border-radius: 0;
   }
-}
-
-.percent {
-  margin-top: 10px;
-  padding: 14px 12px;
-  box-sizing: border-box;
-  background-color: var(--color-bg-1);
 }
 </style>

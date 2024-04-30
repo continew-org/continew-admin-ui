@@ -17,3 +17,8 @@ export function updateFile(data: any, id: string) {
 export function deleteFile(ids: string | Array<string>) {
   return http.del(`${BASE_URL}/${ids}`)
 }
+
+/** @desc 查询文件资源统计 */
+export function statisticsFile() {
+  return http.get(`${BASE_URL}/statistics`)
+}
