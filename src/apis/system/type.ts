@@ -188,6 +188,14 @@ export interface FileQuery extends PageQuery {
   name?: string
   type?: string
 }
+/** 文件资源统计 */
+export interface FileStatisticsResp {
+  type: string
+  size: number
+  formattedSize: string
+  number: number
+  data: Array<FileStatisticsResp>
+}
 
 /** 系统存储类型 */
 export type StorageResp = {
