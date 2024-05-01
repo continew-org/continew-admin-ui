@@ -88,7 +88,7 @@ export function resetRouter() {
     router.getRoutes().forEach((route) => {
       const { name } = route
       // console.log('name', name, path)
-      if (name && name !== 'Home') {
+      if (name && !['Home', 'Setting', 'SettingProfile', 'SettingSecurity'].includes(name.toString())) {
         router.hasRoute(name) && router.removeRoute(name)
       }
     })
