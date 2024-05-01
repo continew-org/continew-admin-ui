@@ -133,9 +133,9 @@ const columns: TableInstanceColumns[] = [
   { title: '昵称', dataIndex: 'nickname', width: 120, ellipsis: true, tooltip: true },
   { title: '状态', slotName: 'status', align: 'center' },
   { title: '性别', slotName: 'gender', align: 'center' },
+  { title: '所属部门', dataIndex: 'deptName', ellipsis: true, tooltip: true },
   { title: '手机号', dataIndex: 'phone', width: 170, ellipsis: true, tooltip: true },
   { title: '邮箱', dataIndex: 'email', width: 170, ellipsis: true, tooltip: true },
-  { title: '所属部门', dataIndex: 'deptName', ellipsis: true, tooltip: true },
   { title: '系统内置', slotName: 'isSystem', width: 100, align: 'center', show: false },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
   { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
@@ -203,13 +203,7 @@ watch(deptName, (val) => {
 
 // 根据选中部门查询
 const handleSelectDept = (keys: Array<any>) => {
-  if (queryForm.deptId === keys[0]) {
-    queryForm.deptId = undefined
-    // 如已选中，再次点击则取消选中
-    treeRef.value?.selectNode(keys, false)
-  } else {
-    queryForm.deptId = keys.length === 1 ? keys[0] : undefined
-  }
+  queryForm.deptId = keys.length === 1 ? keys[0] : undefined
   search()
 }
 
