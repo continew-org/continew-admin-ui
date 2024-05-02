@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { exportLoginLog, listLog } from '@/apis'
+import { exportLoginLog, listLog, type LogQuery } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useTable, useDownload } from '@/hooks'
@@ -90,15 +90,12 @@ const columns: TableInstanceColumns[] = [
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
 
-const queryForm = reactive({
+const queryForm = reactive<LogQuery>({
   module: '登录',
-  ip: undefined,
-  createUserString: undefined,
   createTime: [
     dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
   ],
-  status: undefined,
   sort: ['createTime,desc']
 })
 

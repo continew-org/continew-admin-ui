@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { listLog, exportOperationLog, type LogResp } from '@/apis'
+import { listLog, exportOperationLog, type LogResp, type LogQuery } from '@/apis'
 import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
@@ -102,15 +102,11 @@ const columns: TableInstanceColumns[] = [
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
 
-const queryForm = reactive({
-  description: undefined,
-  ip: undefined,
-  createUserString: undefined,
+const queryForm = reactive<LogQuery>({
   createTime: [
     dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
   ],
-  status: undefined,
   sort: ['createTime,desc']
 })
 

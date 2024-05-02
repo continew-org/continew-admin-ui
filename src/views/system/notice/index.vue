@@ -57,7 +57,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { listNotice, deleteNotice, type NoticeResp } from '@/apis'
+import { listNotice, deleteNotice, type NoticeResp, type NoticeQuery } from '@/apis'
 import NoticeAddModal from './NoticeAddModal.vue'
 import NoticeDetailModal from './NoticeDetailModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
@@ -94,9 +94,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  title: undefined,
-  type: undefined,
+const queryForm = reactive<NoticeQuery>({
   sort: ['createTime,desc']
 })
 

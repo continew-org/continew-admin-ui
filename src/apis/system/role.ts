@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/role'
 
 /** @desc 查询角色列表 */
-export function listRole(query: System.RoleQuery) {
+export function listRole(query: System.RolePageQuery) {
   return http.get<PageRes<System.RoleResp[]>>(`${BASE_URL}`, query)
 }
 

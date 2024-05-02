@@ -107,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { listUser, deleteUser, exportUser, type UserResp } from '@/apis'
+import { listUser, deleteUser, exportUser, type UserResp, type UserQuery } from '@/apis'
 import UserAddModal from './UserAddModal.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
@@ -121,12 +121,7 @@ import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemUser' })
-interface queryFormType {
-  description?: string
-  status?: number
-  deptId?: string
-  sort: ['createTime,desc']
-}
+
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -165,7 +160,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive<queryFormType>({
+const queryForm = reactive<UserQuery>({
   sort: ['createTime,desc']
 })
 

@@ -133,8 +133,11 @@ const onOauth = async (source: string) => {
     &-logo {
       width: 100%;
       height: 104px;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 32px;
       display: flex;
-      padding: 0px 20px;
+      padding: 0 20px;
       align-items: center;
       justify-content: start;
       background-image: url('/src/assets/images/login_h5.jpg');
@@ -175,10 +178,7 @@ const onOauth = async (source: string) => {
       }
       :deep(.arco-tabs-tab) {
         color: var(--color-text-2);
-        margin-right: 20px;
-        margin-top: 0px;
-        margin-left: 0px;
-        margin-bottom: 0px;
+        margin: 0 20px 0 0;
       }
       :deep(.arco-tabs-tab-title) {
         font-size: 16px;

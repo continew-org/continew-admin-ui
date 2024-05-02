@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/file'
 
 /** @desc 查询文件列表 */
-export function listFile(query: System.FileQuery) {
+export function listFile(query: System.FilePageQuery) {
   return http.get<PageRes<System.FileItem[]>>(`${BASE_URL}`, query)
 }
 

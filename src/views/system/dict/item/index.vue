@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { listDictItem, deleteDictItem, type DictItemResp } from '@/apis'
+import { listDictItem, deleteDictItem, type DictItemResp, type DictItemQuery } from '@/apis'
 import DictItemAddModal from './DictItemAddModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -97,9 +97,7 @@ const columns: TableInstanceColumns[] = [
   { title: '操作', slotName: 'action', width: 130, align: 'center', fixed: !isMobile() ? 'right' : undefined }
 ]
 
-const queryForm = reactive({
-  description: undefined,
-  status: undefined,
+const queryForm = reactive<DictItemQuery>({
   sort: ['createTime,desc']
 })
 

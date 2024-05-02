@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { listRole, deleteRole, type RoleResp } from '@/apis'
+import { listRole, deleteRole, type RoleResp, type RoleQuery } from '@/apis'
 import RoleAddModal from './RoleAddModal.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
@@ -97,8 +97,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  description: undefined,
+const queryForm = reactive<RoleQuery>({
   sort: ['createTime,desc']
 })
 

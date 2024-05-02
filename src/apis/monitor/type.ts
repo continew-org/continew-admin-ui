@@ -13,10 +13,12 @@ export interface OnlineUserResp {
   createUserString: string
   createTime: string
 }
-export interface OnlineUserQuery extends PageQuery {
+export interface OnlineUserQuery {
   nickname?: string
   loginTime?: string
+  sort: Array<string>
 }
+export interface OnlineUserPageQuery extends OnlineUserQuery, PageQuery {}
 
 /** 系统日志类型 */
 export interface LogResp {
@@ -52,4 +54,4 @@ export interface LogQuery {
   status?: number
   sort: Array<string>
 }
-export interface LogPageQuery extends PageQuery, LogQuery {}
+export interface LogPageQuery extends LogQuery, PageQuery {}

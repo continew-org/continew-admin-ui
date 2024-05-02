@@ -17,5 +17,4 @@ interface PageRes<T> {
 interface PageQuery {
   page: number
   size: number
-  sort: Array<string>
 }

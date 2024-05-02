@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { listFile, uploadFile, deleteFile, type FileItem, type FileQuery } from '@/apis'
+import { listFile, uploadFile, deleteFile, type FileItem, type FileQuery, type FilePageQuery } from '@/apis'
 import { Message, Modal, type RequestOption } from '@arco-design/web-vue'
 import FileGrid from './FileGrid.vue'
 import {
@@ -108,6 +108,7 @@ import { ImageTypes } from '@/constant/file'
 import { api as viewerApi } from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
+
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 onMounted(() => {
   const fileMainDom = document.getElementById('fileMain')
@@ -138,7 +139,7 @@ const handleScroll = (event) => {
 const route = useRoute()
 const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 
-const queryForm = reactive({
+const queryForm = reactive<FileQuery>({
   name: undefined,
   type: route.query.type?.toString() || undefined,
   sort: ['updateTime,desc']
@@ -151,7 +152,7 @@ const fileList = ref<FileItem[]>([])
 const isBatchMode = ref(false)
 const loading = ref(false)
 // 查询文件列表
-const getFileList = async (query: FileQuery = { ...queryForm, page: pagination.page, size: pagination.size }) => {
+const getFileList = async (query: FilePageQuery = { ...queryForm, page: pagination.page, size: pagination.size }) => {
   try {
     loading.value = true
     isBatchMode.value = false

@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/dict'
 
 /** @desc 查询字典列表 */
-export function listDict(query: System.DictQuery) {
+export function listDict(query: System.DictPageQuery) {
   return http.get<PageRes<System.DictResp[]>>(`${BASE_URL}`, query)
 }
 
@@ -29,7 +29,7 @@ export function deleteDict(id: string) {
 }
 
 /** @desc 查询字典项列表 */
-export function listDictItem(query: System.DictItemQuery) {
+export function listDictItem(query: System.DictItemPageQuery) {
   return http.get<PageRes<System.DictItemResp[]>>(`${BASE_URL}/item`, query)
 }
 

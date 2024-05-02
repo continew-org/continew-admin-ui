@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { listOnlineUser, kickout } from '@/apis'
+import { listOnlineUser, kickout, type OnlineUserQuery } from '@/apis'
 import { Message } from '@arco-design/web-vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
@@ -79,9 +79,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  nickname: undefined,
-  loginTime: undefined,
+const queryForm = reactive<OnlineUserQuery>({
   sort: ['createTime,desc']
 })
 

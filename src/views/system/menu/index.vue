@@ -129,9 +129,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  title: undefined,
-  status: undefined,
+const queryForm = reactive<MenuQuery>({
   sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
 })
 

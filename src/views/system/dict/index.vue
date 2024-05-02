@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { listDict, deleteDict, type DictResp } from '@/apis'
+import { listDict, deleteDict, type DictResp, type DictQuery } from '@/apis'
 import DictAddModal from './DictAddModal.vue'
 import DictItemModal from '@/views/system/dict/item/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
@@ -87,8 +87,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  description: undefined,
+const queryForm = reactive<DictQuery>({
   sort: ['createTime,desc']
 })
 

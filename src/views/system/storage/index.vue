@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { listStorage, deleteStorage, type StorageResp } from '@/apis'
+import { listStorage, deleteStorage, type StorageResp, type StorageQuery } from '@/apis'
 import StorageAddModal from './StorageAddModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -111,9 +111,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  description: undefined,
-  status: undefined,
+const queryForm = reactive<StorageQuery>({
   sort: ['createTime,desc']
 })
 

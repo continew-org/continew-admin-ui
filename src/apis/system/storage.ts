@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/storage'
 
 /** @desc 查询存储列表 */
-export function listStorage(query: System.StorageQuery) {
+export function listStorage(query: System.StoragePageQuery) {
   return http.get<PageRes<System.StorageResp[]>>(`${BASE_URL}`, query)
 }
 

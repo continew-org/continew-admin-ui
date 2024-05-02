@@ -112,9 +112,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  description: undefined,
-  status: undefined,
+const queryForm = reactive<DeptQuery>({
   sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
 })
 

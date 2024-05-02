@@ -4,7 +4,7 @@ import type * as Monitor from './type'
 const BASE_URL = '/monitor/online'
 
 /** @desc 查询在线用户列表 */
-export function listOnlineUser(query: Monitor.OnlineUserQuery) {
+export function listOnlineUser(query: Monitor.OnlineUserPageQuery) {
   return http.get<PageRes<Monitor.OnlineUserResp[]>>(`${BASE_URL}`, query)
 }
 

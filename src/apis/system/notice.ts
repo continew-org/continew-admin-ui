@@ -4,7 +4,7 @@ import type * as System from './type'
 const BASE_URL = '/system/notice'
 
 /** @desc 查询公告列表 */
-export function listNotice(query: System.NoticeQuery) {
+export function listNotice(query: System.NoticePageQuery) {
   return http.get<PageRes<System.NoticeResp[]>>(`${BASE_URL}`, query)
 }
 
