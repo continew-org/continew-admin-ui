@@ -12,7 +12,7 @@
       >
         <a-carousel-item v-for="(image, idx) in imageList" :key="idx">
           <a :href="image.link" target="_blank" :title="image.title">
-            <img :src="image.src" style="width: 100%" :alt="image.title" />
+            <img :src="image.src" style="width: 100%; height: 100%" :alt="image.title" />
           </a>
         </a-carousel-item>
       </a-carousel>
