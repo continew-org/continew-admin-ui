@@ -6,7 +6,15 @@
           <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
             <template #prefix><icon-search /></template>
           </a-input>
-          <a-tree ref="treeRef" :data="deptList" default-expand-all show-line block-node @select="handleSelectDept">
+          <a-tree
+            ref="treeRef"
+            :data="deptList"
+            :selected-keys="selectedKeys"
+            default-expand-all
+            show-line
+            block-node
+            @select="handleSelectDept"
+          >
           </a-tree>
         </a-col>
         <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
@@ -113,7 +121,12 @@ import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemUser' })
-
+interface queryFormType {
+  description?: string
+  status?: number
+  deptId?: string
+  sort: ['createTime,desc']
+}
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -152,10 +165,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive({
-  description: undefined,
-  status: undefined,
-  deptId: undefined,
+const queryForm = reactive<queryFormType>({
   sort: ['createTime,desc']
 })
 
@@ -165,7 +175,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: false })
 
 // 重置
 const reset = () => {
@@ -194,8 +204,13 @@ const { deptList, getDeptList } = useDept({
   onSuccess: () => {
     nextTick(() => {
       treeRef.value?.expandAll(true)
+      queryForm.deptId = deptList.value[0]?.key as string
+      search()
     })
   }
+})
+const selectedKeys = computed(() => {
+  return [queryForm.deptId ? queryForm.deptId : '']
 })
 watch(deptName, (val) => {
   getDeptList(val)
