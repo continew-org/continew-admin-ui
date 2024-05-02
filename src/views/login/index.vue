@@ -16,7 +16,7 @@
         <div class="login-right">
           <h3 class="login-right__title" v-if="isEmailLogin">邮箱登录</h3>
           <EmailLogin v-if="isEmailLogin" />
-          <a-tabs v-else class="login-right__form">
+          <a-tabs v-else class="login-right__form" destroy-on-hide>
             <a-tab-pane title="账号登录" key="1">
               <AccountLogin />
             </a-tab-pane>
