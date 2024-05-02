@@ -88,7 +88,7 @@
                   删除
                 </a-link>
                 <a-dropdown>
-                  <a-button v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-button>
+                  <a-link v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-link>
                   <template #content>
                     <a-doption v-permission="['system:user:resetPwd']" @click="onResetPwd(record)">重置密码</a-doption>
                   </template>
