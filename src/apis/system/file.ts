@@ -18,7 +18,7 @@ export function deleteFile(ids: string | Array<string>) {
   return http.del(`${BASE_URL}/${ids}`)
 }
 
-/** @desc 查询文件资源统计 */
-export function statisticsFile() {
-  return http.get(`${BASE_URL}/statistics`)
+/** @desc 查询文件资源统计统计 */
+export function getFileStatistics() {
+  return http.get<System.FileStatisticsResp>(`${BASE_URL}/statistics`)
 }

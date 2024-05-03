@@ -243,6 +243,8 @@ export const formatFileSize = (fileSize: number) => {
   const size = srcSize / 1024 ** index
   return `${size.toFixed(2)} ${unitArr[index]}`
 }
+
+/** @desc 复制文本 */
 export const copyText = (text: any) => {
   const textarea = document.createElement('textarea')
   textarea.value = text

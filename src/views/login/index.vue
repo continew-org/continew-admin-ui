@@ -130,6 +130,7 @@ const onOauth = async (source: string) => {
     justify-content: start;
     align-items: center;
     background-color: var(--color-bg-5);
+    color: #121314;
     &-logo {
       width: 100%;
       height: 104px;
@@ -158,7 +159,6 @@ const onOauth = async (source: string) => {
   .login-right {
     width: 100%;
     height: 100%;
-    background: var(--color-bg-1);
     display: flex;
     flex-direction: column;
     padding: 30px 30px 0;

@@ -57,12 +57,4 @@ const onClickItem = (item: FileTypeListItem) => {
     padding-right: 0;
   }
 }
-
-:deep(.arco-progress) {
-  .arco-progress-line,
-  .arco-progress-line-bar-buffer,
-  .arco-progress-line-bar {
-    border-radius: 0;
-  }
-}
 </style>
