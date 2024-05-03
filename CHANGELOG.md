@@ -1,3 +1,31 @@
+## [v3.0.1](https://github.com/Charles7c/continew-admin-ui/compare/v3.0.0...v3.0.1) (2024-05-03)
+
+### ✨ 新特性
+
+* 新增表格全屏、尺寸工具 ([b8a84a3](https://github.com/Charles7c/continew-admin-ui/commit/b8a84a3a0890d4f6d0e39ecbe50c4f645bd0f106))
+* 新增验证码超时显示效果，超时后显示已过期请刷新 (GitHub#14) ([f99c8f1](https://github.com/Charles7c/continew-admin-ui/commit/f99c8f1b5a521f987b2822352f976fb0b1dc93b3))
+* 文件管理增加资源统计，统计总存储量、各类型文件存储占用 (GitHub#15) ([c70d1ad](https://github.com/Charles7c/continew-admin-ui/commit/c70d1adbf922d28853bf4e6cf8cc4e14ad5b0ac7))
+
+### 💎 功能优化
+
+- 统一性别约束/统一上级部门为必填 ([5264cf2](https://github.com/Charles7c/continew-admin-ui/commit/5264cf226fa3acd1398d9309e6a97d4d45b64850))
+- 一级部门不能修改上级部门 ([b2a1658](https://github.com/Charles7c/continew-admin-ui/commit/b2a1658e3730078cf2fbeb3032c23c0922544594))
+- 优化根据选中部门查询用户的点击效果 ([ca25285](https://github.com/Charles7c/continew-admin-ui/commit/ca252852373840b000c1f65ab925d18335a71fcb)) ([99c37d7](https://github.com/Charles7c/continew-admin-ui/commit/99c37d7de4a245836f89c29cf4b638032efae31f))
+- 登录页面，H5 端排版更换 ([05ab89d](https://github.com/Charles7c/continew-admin-ui/commit/05ab89d03fe6401994698ad9ecdeb8540ec49553))
+- 优化 queryForm 的 Query 类型使用 ([5b71369](https://github.com/Charles7c/continew-admin-ui/commit/5b713692516db586f2d401a163192c62a963137a))
+
+
+### 🐛 问题修复
+
+- 修复 Markdown 样式加载错误，改为全局统一加载 (GitHub#9) ([64648d0](https://github.com/Charles7c/continew-admin-ui/commit/64648d0c1d897d6e426199e7924ede9dfb40e8b8))
+- 修复由于文件组件名称错误导致的侧边栏筛选功能失效 ([81dbea8](https://github.com/Charles7c/continew-admin-ui/commit/81dbea879377054e3646c2d07b51c3352501bbce))
+- 修复文件管理数据不刷新和批量操作选中问题 (GitHub#13) ([724f60e](https://github.com/Charles7c/continew-admin-ui/commit/724f60eaf6b076cfb165ca0b1028c461146495ad))
+- 修复文件重命名时不能回显原值的问题 ([3dfa97e](https://github.com/Charles7c/continew-admin-ui/commit/3dfa97e785acb42edd3798117f7e8eea326b4b64))
+- 修复修改公告时保存按钮点击无效的问题 ([c0a5c2d](https://github.com/Charles7c/continew-admin-ui/commit/c0a5c2dffe50905b8610fbd066b8eecd5a4cbe89))
+- 修复账号管理、安全设置路由处理错误 ([c0c5ba8](https://github.com/Charles7c/continew-admin-ui/commit/c0c5ba8efdab009e7e38ad9a8f68a655aba28718))
+- 修复首页卡片显示问题 ([39465dc](https://github.com/Charles7c/continew-admin-ui/commit/39465dcaa38c9d79c820583a1dd82978e5588dec))
+- 修复 H5 下登录页面错位显示 ([9d570a8](https://github.com/Charles7c/continew-admin-ui/commit/9d570a808ce1a15a1513eac0e9ec355d683febef))
+
 ## v3.0.0 (2024-04-27)
 
 ### ✨ 新特性
