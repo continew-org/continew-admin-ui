@@ -13,19 +13,32 @@
 
 <script lang="ts" setup>
 import type { RouteLocationMatched } from 'vue-router'
+import { useRouteStore } from '@/stores'
+import { findTree } from 'xe-utils'
 
 const route = useRoute()
 const router = useRouter()
+const { routes } = useRouteStore()
+
+let home: RouteLocationMatched | null = null
+const getHome = () => {
+  if (!home) {
+    const cloneRoutes = JSON.parse(JSON.stringify(routes)) as RouteLocationMatched[]
+    const obj = findTree(cloneRoutes, (i) => i.path === '/home')
+    home = obj.item
+  }
+}
 
 const breadcrumbList = ref<RouteLocationMatched[]>([])
 function getBreadcrumbList() {
-  // 只显示有title标题的
-  const matched = route.matched.filter((item) => item.meta && item.meta.title)
-  const first = matched[0]
-  if (!isHome(first)) {
-    matched.unshift({ path: '/', meta: { title: '首页' } } as RouteLocationMatched)
+  getHome()
+  const cloneRoutes = JSON.parse(JSON.stringify(routes)) as RouteLocationMatched[]
+  const obj = findTree(cloneRoutes, (i) => i.path === route.path)
+  // 获取当前节点的所有上级节点集合，包含当前节点
+  const arr = obj.nodes.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+  if (home) {
+    breadcrumbList.value = [home, ...arr]
   }
-  breadcrumbList.value = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
 }
 getBreadcrumbList()
 
@@ -33,13 +46,6 @@ watchEffect(() => {
   if (route.path.startsWith('/redirect/')) return
   getBreadcrumbList()
 })
-
-// 判断是否为首页
-function isHome(route: RouteLocationMatched) {
-  const name = (route?.name as string) || ''
-  if (!name) return false
-  return name.trim() === 'Home'
-}
 
 // 路由跳转
 function handleLink(item: RouteLocationMatched) {
