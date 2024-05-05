@@ -249,7 +249,6 @@ continew-admin-ui      # 前端项目
 ├─ tsconfig.json
 ├─ vite.config.ts
 ├─ .gitignore（Git 忽略文件相关配置文件）
-├─ .gitee（Gitee 相关配置目录，实际开发时直接删除）
 ├─ .github（GitHub 相关配置目录，实际开发时直接删除）
 ├─ .idea
 │  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
