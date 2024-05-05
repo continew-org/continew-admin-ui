@@ -27,7 +27,7 @@
             :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
             :pagination="pagination"
             :disabledTools="['size']"
-            :disabledColumnKeys="['nickname']"
+            :disabledColumnKeys="['username']"
             @refresh="search"
           >
             <template #custom-left>
