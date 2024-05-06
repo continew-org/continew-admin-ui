@@ -6,7 +6,7 @@
     :mask-closable="false"
     :esc-to-close="false"
     :modal-style="{ maxWidth: '780px' }"
-    width="90%"
+    :width="width >= 600 ? '90%' : '100%'"
     ok-text="关闭"
     hide-cancel
   >
@@ -68,7 +68,9 @@ import DictItemAddModal from './DictItemAddModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
+import { useWindowSize } from '@vueuse/core'
 
+const { width } = useWindowSize()
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',

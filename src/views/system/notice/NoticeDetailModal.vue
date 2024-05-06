@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" width="70%" :footer="false" @close="reset">
+  <a-modal v-model:visible="visible" :width="width >= 600 ? '70%' : '100%'" :footer="false" @close="reset">
     <a-typography :style="{ marginTop: '-40px', textAlign: 'center' }">
       <a-typography-title>
         {{ dataDetail?.title }}
@@ -38,7 +38,9 @@
 <script setup lang="ts">
 import { getNotice, type NoticeResp } from '@/apis'
 import { MdPreview } from 'md-editor-v3'
+import { useWindowSize } from '@vueuse/core'
 
+const { width } = useWindowSize()
 const dataDetail = ref<NoticeResp>()
 const visible = ref(false)
 // 详情

@@ -4,7 +4,7 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    width="80%"
+    :width="width >= 600 ? '80%' : '100%'"
     @before-ok="save"
     @close="reset"
   >
@@ -69,7 +69,9 @@ import { Message, type FormInstance } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { MdEditor } from 'md-editor-v3'
+import { useWindowSize } from '@vueuse/core'
 
+const { width } = useWindowSize()
 const { notice_type } = useDict('notice_type')
 
 const dataId = ref('')
