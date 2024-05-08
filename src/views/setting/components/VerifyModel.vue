@@ -16,6 +16,7 @@
     </GiForm>
   </a-modal>
 </template>
+
 <script setup lang="ts">
 // import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
 import { Message } from '@arco-design/web-vue'

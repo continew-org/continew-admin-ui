@@ -56,6 +56,7 @@
     <NoticeDetailModal ref="NoticeDetailModalRef" />
   </div>
 </template>
+
 <script lang="ts" setup>
 import { listNotice, deleteNotice, type NoticeResp, type NoticeQuery } from '@/apis'
 import NoticeAddModal from './NoticeAddModal.vue'

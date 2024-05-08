@@ -36,7 +36,7 @@
           :color="appStore.themeColor"
           :sucker-hide="true"
           :colors-default="defaultColorList"
-          @changeColor="changeColor"
+          @change-color="changeColor"
         ></ColorPicker>
       </a-row>
 

@@ -3,6 +3,7 @@
     <icon-copy :size="16" @click="copyText" />
   </div>
 </template>
+
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
 interface Props {
@@ -19,6 +20,7 @@ const copyText = () => {
   Message.success('复制成功')
 }
 </script>
+
 <style scoped lang="scss">
 .content {
   display: inline-block;

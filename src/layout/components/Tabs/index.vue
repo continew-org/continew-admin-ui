@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs" v-if="appStore.tab">
+  <div v-if="appStore.tab" class="tabs">
     <a-tabs
       editable
       hide-content

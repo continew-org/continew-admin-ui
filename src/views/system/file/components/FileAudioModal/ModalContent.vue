@@ -1,8 +1,8 @@
 <template>
   <transition name="slide-dynamic-origin">
-    <div class="audio-box" ref="audioRef" :style="audioStyle" v-show="visible">
+    <div v-show="visible" ref="audioRef" class="audio-box" :style="audioStyle">
       <section style="padding: 10px 14px 14px 14px">
-        <div class="audio-box__header" ref="audioHeadRef">
+        <div ref="audioHeadRef" class="audio-box__header">
           <div class="audio-name">
             <icon-music :size="16" spin />
             <span>{{ props.data?.name }}.{{ props.data?.extension }}</span>

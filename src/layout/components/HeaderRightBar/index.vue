@@ -28,8 +28,8 @@
       <a-tooltip v-if="!isMobile()" content="全屏切换" position="bottom">
         <a-button size="mini" class="gi_hover_btn" @click="toggle">
           <template #icon>
-            <icon-fullscreen :size="18" v-if="!isFullscreen" />
-            <icon-fullscreen-exit :size="18" v-else />
+            <icon-fullscreen v-if="!isFullscreen" :size="18" />
+            <icon-fullscreen-exit v-else :size="18" />
           </template>
         </a-button>
       </a-tooltip>

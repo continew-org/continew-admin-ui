@@ -1,6 +1,6 @@
 <template>
   <div class="json_pretty_container">
-    <vue-json-pretty :path="'res'" :data="JSONObject" :show-length="true" />
+    <VueJsonPretty :path="'res'" :data="JSONObject" :show-length="true" />
     <icon-copy class="copy_icon" @click="onCopy(JSONObject)" />
   </div>
 </template>

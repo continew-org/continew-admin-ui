@@ -1,5 +1,5 @@
 <template>
-  <div class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }" ref="giTableRef">
+  <div ref="giTableRef" class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }">
     <a-row justify="space-between" align="center" class="gi-table__toolbar">
       <a-space wrap class="gi-table__toolbar-left" :size="[8, 8]">
         <slot name="custom-left"></slot>

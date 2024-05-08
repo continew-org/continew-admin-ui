@@ -43,7 +43,7 @@
 
         <section class="icon-list">
           <a-row wrap :gutter="4">
-            <a-col :span="isGridView ? 4 : 8" v-for="item of currentPageIconList" :key="item">
+            <a-col v-for="item of currentPageIconList" :key="item" :span="isGridView ? 4 : 8">
               <div class="icon-item" :class="{ active: modelValue === item }" @click="handleSelectedIcon(item)">
                 <GiSvgIcon :name="item" :size="20"></GiSvgIcon>
                 <div class="gi_line_1 icon-name">{{ item }}</div>

@@ -2,7 +2,7 @@
   <div class="error-page">
     <section class="error__container">
       <div class="error__img">
-        <component class="error__icon" :is="IconMap[props.code]"></component>
+        <component :is="IconMap[props.code]" class="error__icon"></component>
       </div>
 
       <div class="error__tip">

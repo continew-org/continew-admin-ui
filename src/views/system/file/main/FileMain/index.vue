@@ -66,7 +66,7 @@
     </a-row>
 
     <!-- 文件列表-宫格模式 -->
-    <a-spin class="file-main__list" id="fileMain" @scroll="handleScroll" :loading="loading">
+    <a-spin id="fileMain" class="file-main__list" :loading="loading" @scroll="handleScroll">
       <FileGrid
         v-show="fileList.length && mode == 'grid'"
         :data="fileList"

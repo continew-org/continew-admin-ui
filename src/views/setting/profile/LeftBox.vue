@@ -59,7 +59,7 @@
   <a-modal v-model:visible="visible" title="上传头像" :width="400" :footer="false" @close="reset">
     <a-row>
       <a-col :span="14" style="width: 200px; height: 200px">
-        <vue-cropper
+        <VueCropper
           ref="cropperRef"
           :img="options.img"
           :info="true"

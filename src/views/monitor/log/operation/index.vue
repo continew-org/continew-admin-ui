@@ -8,7 +8,7 @@
     :pagination="pagination"
     column-resizable
     :disabledTools="['size', 'setting']"
-    @filterChange="filterChange"
+    @filter-change="filterChange"
     @refresh="search"
   >
     <template #custom-left>

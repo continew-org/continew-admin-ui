@@ -14,13 +14,13 @@
       </a-col>
       <a-col :xs="24" :sm="12" :md="11">
         <div class="login-right">
-          <h3 class="login-right__title" v-if="isEmailLogin">邮箱登录</h3>
+          <h3 v-if="isEmailLogin" class="login-right__title">邮箱登录</h3>
           <EmailLogin v-show="isEmailLogin" />
           <a-tabs v-show="!isEmailLogin" class="login-right__form">
-            <a-tab-pane title="账号登录" key="1">
+            <a-tab-pane key="1" title="账号登录">
               <AccountLogin />
             </a-tab-pane>
-            <a-tab-pane title="手机号登录" key="2">
+            <a-tab-pane key="2" title="手机号登录">
               <PhoneLogin />
             </a-tab-pane>
           </a-tabs>
@@ -59,13 +59,13 @@
     <a-row align="stretch" class="login-box">
       <a-col :xs="24" :sm="12" :md="11">
         <div class="login-right">
-          <h3 class="login-right__title" v-if="isEmailLogin">邮箱登录</h3>
+          <h3 v-if="isEmailLogin" class="login-right__title">邮箱登录</h3>
           <EmailLogin v-show="isEmailLogin" />
           <a-tabs v-show="!isEmailLogin" class="login-right__form">
-            <a-tab-pane title="账号登录" key="1">
+            <a-tab-pane key="1" title="账号登录">
               <AccountLogin />
             </a-tab-pane>
-            <a-tab-pane title="手机号登录" key="2">
+            <a-tab-pane key="2" title="手机号登录">
               <PhoneLogin />
             </a-tab-pane>
           </a-tabs>

@@ -1,7 +1,7 @@
 <template>
   <a-card title="项目" :bordered="false" size="medium" class="gi_card_title" style="overflow: hidden">
     <a-row align="stretch">
-      <a-col :xs="12" :sm="8" :md="8" v-for="(item, index) in list" :key="item.name">
+      <a-col v-for="(item, index) in list" :key="item.name" :xs="12" :sm="8" :md="8">
         <a-card-grid class="w-full h-full">
           <a-card :bordered="false" hoverable :class="'animated-fade-up-' + index">
             <a :href="item.url" target="_blank">

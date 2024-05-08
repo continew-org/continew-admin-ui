@@ -26,6 +26,7 @@ module.exports = {
   extends: [
     'eslint:recommended', // 比如: 函数不能重名、对象不能出现重复key
     'plugin:vue/vue3-essential', // vue3语法规则
+    'plugin:vue/vue3-recommended',
     '@vue/eslint-config-typescript/recommended', // ts语法规则
     '@vue/eslint-config-prettier'
   ],
@@ -57,6 +58,11 @@ module.exports = {
     'vue/script-setup-uses-vars': 'error', // 防止<script setup>使用的变量<template>被标记为未使用
     'vue/no-mutating-props': 'off', // 不允许组件 prop 的改变
     'vue/no-reserved-component-names': 'off', // 不允许在组件定义中使用保留名称
-    'vue/attribute-hyphenation': 'off' // 对模板中的自定义组件强制执行属性命名样式
+    'vue/attribute-hyphenation': 'off', // 对模板中的自定义组件强制执行属性命名样式
+
+    'vue/padding-line-between-blocks': [2, 'always'], // 模板 template script style 之间空一行
+    'vue/component-name-in-template-casing': [2, 'PascalCase'], // 模板中的自定义组件名采用PascalCase方式
+    'vue/custom-event-name-casing': [2, 'kebab-case'], // emit事件名采用kebab-case方式
+    'vue/v-on-event-hyphenation': [1, 'always', { autofix: true }] // 组件事件名采用@kebab-case方式
   }
 }

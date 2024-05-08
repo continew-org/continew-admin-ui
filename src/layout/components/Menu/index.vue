@@ -7,9 +7,9 @@
     :breakpoint="appStore.layout === 'mix' ? 'xl' : undefined"
     :trigger-props="{ animationName: 'slide-dynamic-origin' }"
     :collapsed="!isDesktop ? false : appStore.menuCollapse"
+    :style="menuStyle"
     @menu-item-click="onMenuItemClick"
     @collapse="onCollapse"
-    :style="menuStyle"
   >
     <MenuItem v-for="(route, index) in sidebarRoutes" :key="route.path + index" :item="route"></MenuItem>
   </a-menu>
