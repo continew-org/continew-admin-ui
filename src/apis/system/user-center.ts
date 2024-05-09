@@ -19,12 +19,12 @@ export function updateUserPassword(data: { oldPassword: string; newPassword: str
 }
 
 /** @desc 修改手机号 */
-export function updateUserPhone(data: { newPhone: string; captcha: string; currentPassword: string }) {
+export function updateUserPhone(data: { phone: string; captcha: string; oldPassword: string }) {
   return http.patch(`${BASE_URL}/phone`, data)
 }
 
 /** @desc 修改邮箱 */
-export function updateUserEmail(data: { newEmail: string; captcha: string; currentPassword: string }) {
+export function updateUserEmail(data: { email: string; captcha: string; oldPassword: string }) {
   return http.patch(`${BASE_URL}/email`, data)
 }
 

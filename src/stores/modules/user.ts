@@ -27,7 +27,7 @@ const storeSetup = () => {
     phone: '',
     avatar: '',
     pwdResetTime: '',
-    passwordExpired: false,
+    pwdExpired: false,
     registrationDate: '',
     deptName: '',
     roles: [],
@@ -37,7 +37,7 @@ const storeSetup = () => {
   const avatar = computed(() => userInfo.avatar)
 
   const token = ref(getToken() || '')
-  const passwordExpiredShow = ref<boolean>(true)
+  const pwdExpiredShow = ref<boolean>(true)
   const roles = ref<string[]>([]) // 当前用户角色
   const permissions = ref<string[]>([]) // 当前角色权限标识集合
 
@@ -91,7 +91,7 @@ const storeSetup = () => {
   const logoutCallBack = async () => {
     roles.value = []
     permissions.value = []
-    passwordExpiredShow.value = true
+    pwdExpiredShow.value = true
     resetToken()
     resetRouter()
   }
@@ -114,7 +114,7 @@ const storeSetup = () => {
     token,
     roles,
     permissions,
-    passwordExpiredShow,
+    pwdExpiredShow,
     accountLogin,
     emailLogin,
     phoneLogin,
@@ -127,5 +127,5 @@ const storeSetup = () => {
 }
 
 export const useUserStore = defineStore('user', storeSetup, {
-  persist: { paths: ['token', 'roles', 'permissions', 'passwordExpiredShow'], storage: localStorage }
+  persist: { paths: ['token', 'roles', 'permissions', 'pwdExpiredShow'], storage: localStorage }
 })

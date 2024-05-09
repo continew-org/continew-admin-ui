@@ -51,7 +51,7 @@
         </a-row>
         <template #content>
           <a-doption @click="router.push('/setting/profile')">
-            <span>账号管理</span>
+            <span>个人中心</span>
           </a-doption>
           <a-divider :margin="0" />
           <a-doption @click="logout">
@@ -98,16 +98,14 @@ const logout = () => {
     }
   })
 }
-onMounted(() => {
-  checkPasswordExpired()
-})
+
 const checkPasswordExpired = () => {
-  if (!userStore.passwordExpiredShow || !userStore.userInfo.passwordExpired) {
+  if (!userStore.pwdExpiredShow || !userStore.userInfo.pwdExpired) {
     return
   }
   Modal.confirm({
     title: '提示',
-    content: '密码已过期，是否去修改？',
+    content: '密码已过期，需要跳转到修改密码页面？',
     hideCancel: false,
     closable: true,
     onBeforeOk: async () => {
@@ -120,10 +118,14 @@ const checkPasswordExpired = () => {
     },
     onCancel: () => {
       // 当前登录会话不再提示
-      userStore.passwordExpiredShow = false
+      userStore.pwdExpiredShow = false
     }
   })
 }
+
+onMounted(() => {
+  checkPasswordExpired()
+})
 </script>
 
 <style lang="scss" scoped>

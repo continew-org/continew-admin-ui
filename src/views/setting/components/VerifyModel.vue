@@ -19,15 +19,21 @@
 
 <script setup lang="ts">
 // import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
+import { updateUserPassword } from '@/apis'
 import { Message } from '@arco-design/web-vue'
-// import { encryptByRsa } from '@/utils/encrypt'
+import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import * as Regexp from '@/utils/regexp'
 
+const userStore = useUserStore()
+const userInfo = computed(() => userStore.userInfo)
+
 const verifyType = ref()
-const title = computed(() => (verifyType.value === 'phone' ? '修改手机号' : '修改邮箱'))
+const title = computed(
+  () => `修改${verifyType.value === 'phone' ? '手机号' : verifyType.value === 'email' ? '邮箱' : '密码'}`
+)
 const formRef = ref<InstanceType<typeof GiForm>>()
 
 const options: Options = {
@@ -39,7 +45,7 @@ const options: Options = {
 const columns: Columns = [
   {
     label: '手机号',
-    field: 'newPhone',
+    field: 'phone',
     type: 'input',
     rules: [
       { required: true, message: '请输入手机号' },
@@ -65,21 +71,50 @@ const columns: Columns = [
     label: '验证码',
     field: 'captcha',
     type: 'input',
-    rules: [{ required: true, message: '请输入验证码' }]
+    rules: [{ required: true, message: '请输入验证码' }],
+    hide: () => {
+      return !['phone', 'email'].includes(verifyType.value)
+    }
   },
   {
     label: '当前密码',
-    field: 'currentPassword',
-    type: 'input',
-    rules: [{ required: true, message: '请输入当前密码' }]
+    field: 'oldPassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请输入当前密码' }],
+    hide: () => {
+      return !userInfo.value.pwdResetTime
+    }
+  },
+  {
+    label: '新密码',
+    field: 'newPassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请输入新密码' }],
+    hide: () => {
+      return verifyType.value !== 'password'
+    }
+  },
+  {
+    label: '确认新密码',
+    field: 'rePassword',
+    type: 'input-password',
+    rules: [{ required: true, message: '请再次输入新密码' }],
+    props: {
+      placeholder: '请再次输入新密码'
+    },
+    hide: () => {
+      return verifyType.value !== 'password'
+    }
   }
 ]
 
 const { form, resetForm } = useForm({
-  newPhone: '',
+  phone: '',
+  email: '',
   captcha: '',
-  currentPassword: '',
-  email: ''
+  oldPassword: '',
+  newPassword: '',
+  rePassword: ''
 })
 
 // 重置
@@ -112,7 +147,7 @@ const onCaptcha = async () => {
     captchaBtnName.value = '发送中...'
     if (verifyType.value === 'phone') {
       // await getSmsCaptcha({
-      //   phone: form.newPhone
+      //   phone: form.phone
       // })
     } else if (verifyType.value === 'email') {
       // await getEmailCaptcha({
@@ -138,24 +173,36 @@ const onCaptcha = async () => {
   }
 }
 
-const userStore = useUserStore()
 // 保存
 const save = async () => {
   const isInvalid = await formRef.value?.formRef?.validate()
   if (isInvalid) return false
   try {
     if (verifyType.value === 'phone') {
-      // await updateUserEmail({
-      //   newEmail: form.email,
+      // await updateUserPhone({
+      //   phone: form.phone,
       //   captcha: form.captcha,
-      //   currentPassword: encryptByRsa(form.currentPassword) as string
+      //   oldPassword: encryptByRsa(form.oldPassword) as string
       // })
     } else if (verifyType.value === 'email') {
-      // await updateUserPhone({
-      //   newPhone: form.email,
+      // await updateUserEmail({
+      //   email: form.email,
       //   captcha: form.captcha,
-      //   currentPassword: encryptByRsa(form.currentPassword) as string
+      //   oldPassword: encryptByRsa(form.oldPassword) as string
       // })
+    } else if (verifyType.value === 'password') {
+      if (form.newPassword !== form.rePassword) {
+        Message.error('两次新密码不一致')
+        return false
+      }
+      if (form.newPassword === form.oldPassword) {
+        Message.error('新密码与旧密码不能相同')
+        return false
+      }
+      await updateUserPassword({
+        oldPassword: encryptByRsa(form.oldPassword) || '',
+        newPassword: encryptByRsa(form.newPassword) || ''
+      })
     }
     Message.success('修改成功')
     // 修改成功后，重新获取用户信息

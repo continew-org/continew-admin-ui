@@ -61,7 +61,7 @@ export const constantRoutes: RouteRecordRaw[] = [
         path: '/setting/profile',
         name: 'SettingProfile',
         component: () => import('@/views/setting/profile/index.vue'),
-        meta: { title: '账号管理', showInTabs: false }
+        meta: { title: '个人中心', showInTabs: false }
       }
     ]
   }

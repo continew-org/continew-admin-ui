@@ -1,5 +1,5 @@
 <template>
-  <a-card title="登录方式" bordered class="gradient-card">
+  <a-card title="第三方账号" bordered class="gradient-card">
     <div v-for="item in modeList" :key="item.title">
       <div class="item">
         <div class="icon-wrapper"><GiSvgIcon :name="item.icon" :size="26" /></div>
@@ -55,24 +55,6 @@ const userInfo = computed(() => userStore.userInfo)
 const socialList = ref<any>([])
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
-  {
-    title: '绑定手机',
-    icon: 'phone-color',
-    value: `${userInfo.value.phone + ' ' || '绑定后，'}`,
-    subtitle: `可通过手机验证码快捷登录`,
-    type: 'phone',
-    jumpMode: 'modal',
-    status: !!userInfo.value.phone
-  },
-  {
-    title: '绑定邮箱',
-    icon: 'email-color',
-    value: `${userInfo.value.email + ' ' || '绑定后，'}`,
-    subtitle: `可通过邮箱验证码进行登录`,
-    type: 'email',
-    jumpMode: 'modal',
-    status: !!userInfo.value.email
-  },
   {
     title: '绑定 Gitee',
     icon: 'gitee',

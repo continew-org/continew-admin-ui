@@ -17,9 +17,9 @@
 </template>
 
 <script setup lang="ts">
-import LeftBox from './LeftBox.vue'
-import RightBox from './RightBox.vue'
-import PasswordPolicy from './PasswordPolicy.vue'
+import LeftBox from './BasicInfo.vue'
+import RightBox from './Social.vue'
+import PasswordPolicy from './Security.vue'
 
 defineOptions({ name: 'SettingProfile' })
 </script>
