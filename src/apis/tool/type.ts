@@ -44,6 +44,7 @@ export interface GeneratorConfigResp {
   fieldConfigs: FieldConfigResp[]
 }
 export interface GeneratePreviewResp {
+  path: string
   fileName: string
   content: string
 }

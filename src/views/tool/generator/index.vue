@@ -22,15 +22,9 @@
           <a-space>
             <a-link @click="onConfig(record.tableName, record.comment)">配置</a-link>
             <a-link
-              :title="record.isConfiged ? '生成预览' : '请先进行生成配置'"
-              :disabled="!record.isConfiged"
-              @click="onPreview(record.tableName)"
-              >预览</a-link
-            >
-            <a-link
               :title="record.isConfiged ? '生成' : '请先进行生成配置'"
               :disabled="!record.isConfiged"
-              @click="onGenerate([record.tableName])"
+              @click="onPreview(record.tableName)"
               >生成</a-link
             >
           </a-space>
@@ -44,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { listGenerator, generate } from '@/apis'
+import { listGenerator } from '@/apis'
 import GenConfigDrawer from './GenConfigDrawer.vue'
 import GenPreviewModal from './GenPreviewModal.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
@@ -96,31 +90,6 @@ const GenPreviewModalRef = ref<InstanceType<typeof GenPreviewModal>>()
 // 预览
 const onPreview = (tableName: string) => {
   GenPreviewModalRef.value?.onPreview(tableName)
-}
-
-// 生成
-const onGenerate = async (tableNames: Array<string>) => {
-  const res = await generate(tableNames)
-  const contentDisposition = res.headers['content-disposition']
-  const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
-  const result = pattern.exec(contentDisposition) || ''
-  // 对名字进行解码
-  const fileName = window.decodeURI(result[1])
-  // 创建下载的链接
-  const blob = new Blob([res.data])
-  const downloadElement = document.createElement('a')
-  const href = window.URL.createObjectURL(blob)
-  downloadElement.style.display = 'none'
-  downloadElement.href = href
-  // 下载后文件名
-  downloadElement.download = fileName
-  document.body.appendChild(downloadElement)
-  // 点击下载
-  downloadElement.click()
-  // 下载完成，移除元素
-  document.body.removeChild(downloadElement)
-  // 释放掉 blob 对象
-  window.URL.revokeObjectURL(href)
 }
 </script>
 
