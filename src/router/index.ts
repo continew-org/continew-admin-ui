@@ -62,12 +62,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'SettingProfile',
         component: () => import('@/views/setting/profile/index.vue'),
         meta: { title: '账号管理', showInTabs: false }
-      },
-      {
-        path: '/setting/security',
-        name: 'SettingSecurity',
-        component: () => import('@/views/setting/security/index.vue'),
-        meta: { title: '安全设置', showInTabs: false }
       }
     ]
   }
@@ -88,7 +82,7 @@ export function resetRouter() {
     router.getRoutes().forEach((route) => {
       const { name } = route
       // console.log('name', name, path)
-      if (name && !['Home', 'Setting', 'SettingProfile', 'SettingSecurity'].includes(name.toString())) {
+      if (name && !['Home', 'Setting', 'SettingProfile'].includes(name.toString())) {
         router.hasRoute(name) && router.removeRoute(name)
       }
     })

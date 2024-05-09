@@ -8,6 +8,7 @@ export interface UserInfo {
   phone: string
   avatar: string
   pwdResetTime: string
+  passwordExpired: boolean
   registrationDate: string
   deptName: string
   roles: string[]
