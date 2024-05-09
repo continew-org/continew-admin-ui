@@ -94,33 +94,12 @@ const handleLogin = async () => {
     const { rememberMe } = loginConfig.value
     loginConfig.value.username = rememberMe ? form.username : ''
     Message.success('欢迎使用')
-    checkPasswordExpired()
   } catch (error) {
     getCaptcha()
     form.captcha = ''
   } finally {
     loading.value = false
   }
-}
-
-const checkPasswordExpired = () => {
-  if (!userStore.userInfo.passwordExpired) {
-    return
-  }
-  Modal.confirm({
-    title: '提示',
-    content: '密码已过期，是否去修改？',
-    hideCancel: false,
-    closable: true,
-    onBeforeOk: async () => {
-      try {
-        await router.push({ path: '/setting/profile' })
-        return true
-      } catch (error) {
-        return false
-      }
-    }
-  })
 }
 
 const captchaImgBase64 = ref()

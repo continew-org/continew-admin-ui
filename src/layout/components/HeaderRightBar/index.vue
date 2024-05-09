@@ -98,6 +98,32 @@ const logout = () => {
     }
   })
 }
+onMounted(() => {
+  checkPasswordExpired()
+})
+const checkPasswordExpired = () => {
+  if (!userStore.passwordExpiredShow || !userStore.userInfo.passwordExpired) {
+    return
+  }
+  Modal.confirm({
+    title: '提示',
+    content: '密码已过期，是否去修改？',
+    hideCancel: false,
+    closable: true,
+    onBeforeOk: async () => {
+      try {
+        await router.push({ path: '/setting/profile' })
+        return true
+      } catch (error) {
+        return false
+      }
+    },
+    onCancel: () => {
+      // 当前登录会话不再提示
+      userStore.passwordExpiredShow = false
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
