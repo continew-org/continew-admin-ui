@@ -251,6 +251,16 @@ export interface BasicConfigResp {
   site_copyright: string
 }
 
+/** 安全配置类型 */
+export interface SecurityConfigResp {
+  password_contain_name: OptionResp
+  password_error_count: OptionResp
+  password_lock_minutes: OptionResp
+  password_min_length: OptionResp
+  password_special_char: OptionResp
+  password_update_interval: OptionResp
+}
+
 /** 绑定三方账号信息*/
 export interface BindSocialAccountRes {
   source: string

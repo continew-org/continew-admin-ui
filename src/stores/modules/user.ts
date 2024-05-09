@@ -27,6 +27,7 @@ const storeSetup = () => {
     phone: '',
     avatar: '',
     pwdResetTime: '',
+    passwordExpired: false,
     registrationDate: '',
     deptName: '',
     roles: [],

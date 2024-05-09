@@ -261,7 +261,6 @@ continew-admin-ui      # 前端项目
 │  │  │  └─ online           # 在线用户
 │  │  ├─ setting         # 设置
 │  │  │  ├─ profile        # 账号管理
-│  │  │  └─ security       # 安全设置
 │  │  ├─ tool            # 系统工具
 │  │  │  └─ generator      # 代码生成
 │  │  └─ system          # 系统管理

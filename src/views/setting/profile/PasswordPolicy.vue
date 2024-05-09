@@ -17,17 +17,44 @@
         <div class="sub-text">
           密码至少包含
           <span class="sub-text-value">大写字母</span>
-          <span class="sub-text-value">大写字母</span>
           <span class="sub-text-value">小写字母</span>
           <span class="sub-text-value">数字</span>
-          <span class="sub-text-value">特殊字符</span>3种
+          <span class="sub-text-value" v-if="securityConfig.password_special_char.value == 1">特殊字符</span>
         </div>
-        <div class="sub-text">限制密码长度至少为<span class="sub-text-value">6</span>位</div>
-        <div class="sub-text">未设置密码有效期</div>
-        <div class="sub-text">新密码不能与历史前<span class="sub-text-value">N</span>次密码重复</div>
-        <div class="sub-text">1小时内密码错误可重试<span class="sub-text-value">N</span>次</div>
-        <div class="sub-text">超过错误密码重试次数账号将被锁定<span class="sub-text-value">N</span>分钟</div>
-        <a-link class="link">修改规则（未开放）</a-link>
+        <div class="sub-text" v-if="securityConfig.password_contain_name.value == 1">
+          密码不能包含<span class="sub-text-value">正反序用户名</span>
+        </div>
+        <div class="sub-text">
+          密码长度至少
+          <span class="sub-text-value">
+            {{ securityConfig.password_min_length.value }}
+          </span>
+          位
+        </div>
+        <div class="sub-text">
+          <div v-if="securityConfig.password_expiration_days.value == 0">未设置密码有效期</div>
+          <div v-else>
+            密码有效期
+            <span class="sub-text-value">
+              {{ securityConfig.password_expiration_days.value }}
+            </span>
+            天
+          </div>
+        </div>
+        <div class="sub-text">
+          连续密码错误可重试
+          <span class="sub-text-value">
+            {{ securityConfig.password_error_count.value }}
+          </span>
+          次
+        </div>
+        <div class="sub-text">
+          超过错误密码重试次数账号将被锁定
+          <span class="sub-text-value">
+            {{ securityConfig.password_lock_minutes.value }}
+          </span>
+          分钟
+        </div>
       </div>
     </div>
   </a-card>
@@ -38,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { updateUserPassword } from '@/apis'
+import { listOption, type OptionResp, type SecurityConfigResp, updateUserPassword } from '@/apis'
 import { Message } from '@arco-design/web-vue'
 import { encryptByRsa } from '@/utils/encrypt'
 import { type Columns, GiForm } from '@/components/GiForm'
@@ -60,7 +87,7 @@ const columns: Columns = [
     label: '当前密码',
     field: 'oldPassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请输入当前密码' }],
+    rules: [{ required: true, message: '密码长度不正确', maxLength: 32, minLength: 6 }],
     hide: () => {
       return userInfo.pwdResetTime
     }
@@ -69,13 +96,13 @@ const columns: Columns = [
     label: '新密码',
     field: 'newPassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请输入新密码' }]
+    rules: [{ required: true, message: '密码长度不正确', maxLength: 32, minLength: 6 }]
   },
   {
     label: '确认新密码',
     field: 'rePassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请再次输入新密码' }],
+    rules: [{ required: true, message: '密码长度不正确', maxLength: 32, minLength: 6 }],
     props: {
       placeholder: '请再次输入新密码'
     }
@@ -105,6 +132,14 @@ const onUpdate = async () => {
 const save = async () => {
   const isInvalid = await formRef.value?.formRef?.validate()
   if (isInvalid) return false
+  if (form.newPassword !== form.rePassword) {
+    Message.error('两次新密码不一致')
+    return false
+  }
+  if (form.newPassword === form.oldPassword) {
+    Message.error('新密码与旧密码不能相同')
+    return false
+  }
   try {
     await updateUserPassword({
       oldPassword: encryptByRsa(form.oldPassword) || '',
@@ -116,6 +151,28 @@ const save = async () => {
     return false
   }
 }
+
+const securityConfig = ref<SecurityConfigResp>({
+  password_contain_name: {},
+  password_error_count: {},
+  password_expiration_days: {},
+  password_lock_minutes: {},
+  password_min_length: {},
+  password_special_char: {},
+  password_update_interval: {}
+})
+
+// 查询列表数据
+const getDataList = async () => {
+  const { data } = await listOption({ code: Object.keys(securityConfig.value) })
+  securityConfig.value = data.reduce((obj: SecurityConfigResp, option: OptionResp) => {
+    obj[option.code] = { ...option, value: parseInt(option.value) }
+    return obj
+  }, {})
+}
+onMounted(() => {
+  getDataList()
+})
 </script>
 
 <style lang="scss" scoped></style>

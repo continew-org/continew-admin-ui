@@ -53,9 +53,6 @@
           <a-doption @click="router.push('/setting/profile')">
             <span>账号管理</span>
           </a-doption>
-          <a-doption @click="router.push('/setting/security')">
-            <span>安全设置</span>
-          </a-doption>
           <a-divider :margin="0" />
           <a-doption @click="logout">
             <span>退出登录</span>
@@ -111,10 +108,12 @@ const logout = () => {
 .user {
   cursor: pointer;
   color: var(--color-text-1);
+
   .username {
     margin-left: 10px;
     white-space: nowrap;
   }
+
   .arco-icon-down {
     transition: all 0.3s;
     margin-left: 2px;

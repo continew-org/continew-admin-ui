@@ -31,7 +31,9 @@
     </a-form-item>
     <a-form-item>
       <a-space direction="vertical" fill class="w-full">
-        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button>
+        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long
+          >立即登录
+        </a-button>
       </a-space>
     </a-form-item>
   </a-form>
@@ -39,7 +41,7 @@
 
 <script setup lang="ts">
 import { getImageCaptcha } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
+import { Message, type FormInstance, Modal } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
 import { useStorage } from '@vueuse/core'
 import { encryptByRsa } from '@/utils/encrypt'
@@ -92,12 +94,33 @@ const handleLogin = async () => {
     const { rememberMe } = loginConfig.value
     loginConfig.value.username = rememberMe ? form.username : ''
     Message.success('欢迎使用')
+    checkPasswordExpired()
   } catch (error) {
     getCaptcha()
     form.captcha = ''
   } finally {
     loading.value = false
   }
+}
+
+const checkPasswordExpired = () => {
+  if (!userStore.userInfo.passwordExpired) {
+    return
+  }
+  Modal.confirm({
+    title: '提示',
+    content: '密码已过期，是否去修改？',
+    hideCancel: false,
+    closable: true,
+    onBeforeOk: async () => {
+      try {
+        await router.push({ path: '/setting/profile' })
+        return true
+      } catch (error) {
+        return false
+      }
+    }
+  })
 }
 
 const captchaImgBase64 = ref()
@@ -151,6 +174,7 @@ onMounted(() => {
   background-color: rgb(var(--danger-1));
   border-color: rgb(var(--danger-3));
 }
+
 .arco-input-wrapper.arco-input-error:hover {
   background-color: rgb(var(--danger-1));
   border-color: rgb(var(--danger-6));
@@ -160,6 +184,7 @@ onMounted(() => {
   font-size: 13px;
   color: var(--color-text-1);
 }
+
 .arco-input-wrapper:hover {
   border-color: rgb(var(--arcoblue-6));
 }
