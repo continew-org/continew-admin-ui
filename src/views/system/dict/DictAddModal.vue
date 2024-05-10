@@ -14,11 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import { getDict, addDict, updateDict } from '@/apis'
 import { Message } from '@arco-design/web-vue'
-import { GiForm, type Columns } from '@/components/GiForm'
+import { addDict, getDict, updateDict } from '@/apis'
+import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const dataId = ref('')
 const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改字典' : '新增字典'))
@@ -90,10 +93,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

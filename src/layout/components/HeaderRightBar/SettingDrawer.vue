@@ -82,10 +82,10 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
 import { ColorPicker } from 'vue-color-kit'
 import 'vue-color-kit/dist/vue-color-kit.css'
 import LayoutItem from './components/LayoutItem.vue'
+import { useAppStore } from '@/stores'
 
 defineOptions({ name: 'SettingDrawer' })
 const appStore = useAppStore()
@@ -133,8 +133,8 @@ const defaultColorList = [
 
 type ColorObj = {
   hex: string
-  hsv: { h: number; s: number; v: number }
-  rgba: { r: number; g: number; b: number; a: number }
+  hsv: { h: number, s: number, v: number }
+  rgba: { r: number, g: number, b: number, a: number }
 }
 
 // 改变主题色

@@ -68,7 +68,7 @@
     <!-- 文件列表-宫格模式 -->
     <a-spin id="fileMain" class="file-main__list" :loading="loading" @scroll="handleScroll">
       <FileGrid
-        v-show="fileList.length && mode == 'grid'"
+        v-show="fileList.length && mode === 'grid'"
         :data="fileList"
         :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds"
@@ -79,7 +79,7 @@
 
       <!-- 文件列表-列表模式 -->
       <FileList
-        v-show="fileList.length && mode == 'list'"
+        v-show="fileList.length && mode === 'list'"
         :data="fileList"
         :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds"
@@ -94,48 +94,22 @@
 </template>
 
 <script setup lang="ts">
-import { listFile, uploadFile, deleteFile, type FileItem, type FileQuery, type FilePageQuery } from '@/apis'
 import { Message, Modal, type RequestOption } from '@arco-design/web-vue'
-import FileGrid from './FileGrid.vue'
+import { api as viewerApi } from 'v-viewer'
 import {
   openFileDetailModal,
   openFileRenameModal,
-  previewFileVideoModal,
-  previewFileAudioModal
+  previewFileAudioModal,
+  previewFileVideoModal
 } from '../../components/index'
+import FileGrid from './FileGrid.vue'
 import useFileManage from './useFileManage'
+import { type FileItem, type FilePageQuery, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
 import { ImageTypes } from '@/constant/file'
-import { api as viewerApi } from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
 
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
-onMounted(() => {
-  const fileMainDom = document.getElementById('fileMain')
-  fileMainDom.addEventListener('scrool', handleScroll)
-  console.table('fileMainDom', fileMainDom)
-})
-onUnmounted(() => {
-  // 移除事件监听
-  const fileMainDom = document.getElementById('fileMain')
-  fileMainDom.removeEventListener('scroll', handleScroll)
-})
-const timer = ref<any>()
-const handleScroll = (event) => {
-  const { clientHeight, scrollHeight, scrollTop } = event.target
-  const scrollLinerHeight = (clientHeight / scrollHeight) * scrollHeight
-  if (!timer.value) {
-    timer.value = setTimeout(() => {
-      if ((scrollTop + scrollLinerHeight) / scrollHeight >= 0.9 && !loading.value) {
-        ++pagination.page
-        getFileList()
-      }
-      timer.value = null
-    }, 1000)
-  }
-
-  console.log('event', event)
-}
 const route = useRoute()
 const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 
@@ -148,9 +122,11 @@ const pagination = reactive({
   page: 1,
   size: 30
 })
+
 const fileList = ref<FileItem[]>([])
 const isBatchMode = ref(false)
 const loading = ref(false)
+const timer = ref<any>()
 // 查询文件列表
 const getFileList = async (query: FilePageQuery = { ...queryForm, page: pagination.page, size: pagination.size }) => {
   try {
@@ -177,6 +153,12 @@ const getFileList = async (query: FilePageQuery = { ...queryForm, page: paginati
   } finally {
     loading.value = false
   }
+}
+
+// 查询
+const search = () => {
+  pagination.page = 1
+  getFileList()
 }
 
 // 点击文件
@@ -222,7 +204,6 @@ const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
   } else if (mode === 'detail') {
     openFileDetailModal(fileInfo)
   } else if (mode === 'download') {
-    console.log('fileInfo', fileInfo)
     const res = await downloadByUrl({
       url: fileInfo.url,
       target: '_self',
@@ -276,11 +257,29 @@ const handleUpload = (options: RequestOption) => {
   }
 }
 
-// 查询
-const search = () => {
-  pagination.page = 1
-  getFileList()
+const handleScroll = (event) => {
+  const { clientHeight, scrollHeight, scrollTop } = event.target
+  const scrollLinerHeight = (clientHeight / scrollHeight) * scrollHeight
+  if (!timer.value) {
+    timer.value = setTimeout(() => {
+      if ((scrollTop + scrollLinerHeight) / scrollHeight >= 0.9 && !loading.value) {
+        ++pagination.page
+        getFileList()
+      }
+      timer.value = null
+    }, 1000)
+  }
 }
+
+onMounted(() => {
+  const fileMainDom = document.getElementById('fileMain')
+  fileMainDom.addEventListener('scrool', handleScroll)
+})
+onUnmounted(() => {
+  // 移除事件监听
+  const fileMainDom = document.getElementById('fileMain')
+  fileMainDom.removeEventListener('scroll', handleScroll)
+})
 
 onBeforeRouteUpdate((to) => {
   if (!to.query.type) return

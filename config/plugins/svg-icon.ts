@@ -8,6 +8,6 @@ export default function createSvgIcon(isBuild) {
     iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
     // 指定 symbolId 格式
     symbolId: 'icon-[dir]-[name]',
-    svgoOptions: isBuild,
+    svgoOptions: isBuild
   })
 }

@@ -55,7 +55,7 @@
         <a-row justify="center" align="center">
           <a-pagination
             size="mini"
-            :pageSize="pageSize"
+            :page-size="pageSize"
             :total="total"
             :show-size-changer="false"
             @change="onPageChange"
@@ -69,21 +69,23 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
-// 自定义图标模块
-const SvgIconModules = import.meta.glob('@/assets/icons/*.svg')
 
 defineOptions({ name: 'GiIconSelector' })
-const emit = defineEmits(['select', 'update:modelValue'])
-
-interface Props {
-  modelValue?: string
-  enableCopy?: boolean
-}
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   enableCopy: false
 })
+
+const emit = defineEmits(['select', 'update:modelValue'])
+
+// 自定义图标模块
+const SvgIconModules = import.meta.glob('@/assets/icons/*.svg')
+
+interface Props {
+  modelValue?: string
+  enableCopy?: boolean
+}
 
 const searchValue = ref('') // 搜索词
 

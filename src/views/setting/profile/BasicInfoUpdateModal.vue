@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { updateUserBaseInfo } from '@/apis'
 import { Message } from '@arco-design/web-vue'
-import { GiForm, type Columns } from '@/components/GiForm'
+import { updateUserBaseInfo } from '@/apis'
+import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useUserStore } from '@/stores'
 

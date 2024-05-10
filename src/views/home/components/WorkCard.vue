@@ -26,10 +26,10 @@
 
 <script setup lang="ts">
 import NowTime from './NowTime/index.vue'
+import SupportCard from './SupportCard.vue'
 import { useDevice } from '@/hooks'
 import { useUserStore } from '@/stores'
 import { goodTimeText } from '@/utils'
-import SupportCard from './SupportCard.vue'
 
 const { isDesktop } = useDevice()
 const userStore = useUserStore()

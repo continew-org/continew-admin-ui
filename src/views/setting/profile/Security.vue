@@ -19,7 +19,7 @@
         </div>
         <div class="btn-wrapper">
           <a-button
-            v-if="item.jumpMode == 'modal'"
+            v-if="item.jumpMode === 'modal'"
             class="btn"
             :type="item.status ? 'secondary' : 'primary'"
             @click="onUpdate(item.type, item.status)"
@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts" setup>
-import { listOption, type OptionResp, type SecurityConfigResp } from '@/apis'
 import type { ModeItem } from '../type'
 import VerifyModel from '../components/VerifyModel.vue'
+import { type OptionResp, type SecurityConfigResp, listOption } from '@/apis'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
@@ -48,7 +48,7 @@ modeList.value = [
   {
     title: '安全手机',
     icon: 'phone-color',
-    value: `${userInfo.value.phone + ' ' || '手机号'}`,
+    value: `${`${userInfo.value.phone} ` || '手机号'}`,
     subtitle: `可用于身份验证、密码找回、通知接收`,
     type: 'phone',
     jumpMode: 'modal',
@@ -58,7 +58,7 @@ modeList.value = [
   {
     title: '安全邮箱',
     icon: 'email-color',
-    value: `${userInfo.value.email + ' ' || '邮箱'}`,
+    value: `${`${userInfo.value.email} ` || '邮箱'}`,
     subtitle: `可用于身份验证、密码找回、通知接收`,
     type: 'email',
     jumpMode: 'modal',
@@ -96,7 +96,7 @@ const securityConfig = ref<SecurityConfigResp>({
 const getDataList = async () => {
   const { data } = await listOption({ code: Object.keys(securityConfig.value) })
   securityConfig.value = data.reduce((obj: SecurityConfigResp, option: OptionResp) => {
-    obj[option.code] = { ...option, value: parseInt(option.value) }
+    obj[option.code] = { ...option, value: Number.parseInt(option.value) }
     return obj
   }, {})
 }

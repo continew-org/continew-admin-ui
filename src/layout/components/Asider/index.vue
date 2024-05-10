@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
 import Menu from '../Menu/index.vue'
 import Logo from '../Logo.vue'
+import { useAppStore } from '@/stores'
 import { useDevice } from '@/hooks'
 
 defineOptions({ name: 'Asider' })

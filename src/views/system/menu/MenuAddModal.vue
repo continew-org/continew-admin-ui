@@ -26,10 +26,10 @@
           allow-search
           :data="(menuSelectTree as any)"
           :fallback-option="false"
-          :fieldNames="{
+          :field-names="{
             key: 'id',
             title: 'title',
-            children: 'children'
+            children: 'children',
           }"
         />
       </a-form-item>
@@ -120,12 +120,12 @@
 </template>
 
 <script setup lang="ts">
-import { getMenu, addMenu, updateMenu, type MenuResp } from '@/apis'
+import { type FormInstance, Message } from '@arco-design/web-vue'
+import { mapTree } from 'xe-utils'
 import type { MenuForm } from './type'
-import { Message, type FormInstance } from '@arco-design/web-vue'
+import { type MenuResp, addMenu, getMenu, updateMenu } from '@/apis'
 import { useForm } from '@/hooks'
 import { filterTree, transformPathToName } from '@/utils'
-import { mapTree } from 'xe-utils'
 
 interface Props {
   menus: MenuResp[]
@@ -133,6 +133,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   menus: () => []
 })
+
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
 // 转换为菜单树
 const menuSelectTree = computed(() => {
@@ -176,6 +180,7 @@ const { form, resetForm } = useForm<MenuForm>({
   status: 1
 })
 const componentName = computed(() => transformPathToName(form.path))
+// eslint-disable-next-line vue/return-in-computed-property
 const formRules = computed(() => {
   if ([1, 2].includes(form.type)) {
     const { title, name, path } = rules
@@ -238,10 +243,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

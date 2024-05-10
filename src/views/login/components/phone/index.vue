@@ -25,8 +25,7 @@
     </a-form-item>
     <a-form-item>
       <a-space direction="vertical" fill class="w-full">
-        <a-button disabled class="btn" type="primary" :loading="loading" html-type="submit" size="large" long
-          >立即登录</a-button
+        <a-button disabled class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button
         >
       </a-space>
     </a-form-item>
@@ -35,7 +34,7 @@
 
 <script setup lang="ts">
 // import { getSmsCaptcha } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
+import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useUserStore } from '@/stores'
 import * as Regexp from '@/utils/regexp'
 

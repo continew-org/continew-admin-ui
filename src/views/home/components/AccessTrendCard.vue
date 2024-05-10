@@ -13,10 +13,27 @@
 </template>
 
 <script lang="ts" setup>
-import { listDashboardAccessTrend, type DashboardAccessTrendResp } from '@/apis'
 import VCharts from 'vue-echarts'
 import { graphic } from 'echarts'
+import { type DashboardAccessTrendResp, listDashboardAccessTrend } from '@/apis'
 import { useChart } from '@/hooks'
+
+// 提示框
+const tooltipItemsHtmlString = (items) => {
+  return items
+    .map(
+      (el) => `<div class="content-panel">
+        <p>
+          <span style="background-color: ${el.color}" class="tooltip-item-icon"></span>
+          <span>${el.seriesName}</span>
+        </p>
+        <span class="tooltip-value">
+        ${el.value}
+        </span>
+      </div>`
+    )
+    .join('')
+}
 
 const xData = ref<string[]>([])
 const pvStatisticsData = ref<number[]>([])
@@ -194,23 +211,6 @@ const getChartData = async (days: number) => {
 // 切换
 const onChange = (days: number) => {
   getChartData(days)
-}
-
-// 提示框
-const tooltipItemsHtmlString = (items) => {
-  return items
-    .map(
-      (el) => `<div class="content-panel">
-        <p>
-          <span style="background-color: ${el.color}" class="tooltip-item-icon"></span>
-          <span>${el.seriesName}</span>
-        </p>
-        <span class="tooltip-value">
-        ${el.value}
-        </span>
-      </div>`
-    )
-    .join('')
 }
 
 onMounted(() => {

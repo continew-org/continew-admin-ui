@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { FileItem } from '@/apis'
 
 type Mode = 'grid' | 'list'

@@ -3,7 +3,7 @@
     <a-row align="stretch">
       <a-col v-for="(item, index) in list" :key="item.name" :xs="12" :sm="8" :md="8">
         <a-card-grid class="w-full h-full">
-          <a-card :bordered="false" hoverable :class="'animated-fade-up-' + index">
+          <a-card :bordered="false" hoverable :class="`animated-fade-up-${index}`">
             <a :href="item.url" target="_blank">
               <section class="item">
                 <div class="item__header">

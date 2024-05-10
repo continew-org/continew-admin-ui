@@ -20,8 +20,8 @@ const route = useRoute()
 const router = useRouter()
 
 const PaneMap: Record<string, Component> = {
-  '1': LoginLog,
-  '2': OperationLog
+  1: LoginLog,
+  2: OperationLog
 }
 
 const activeKey = ref('1')

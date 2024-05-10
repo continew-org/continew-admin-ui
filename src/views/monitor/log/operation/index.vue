@@ -7,7 +7,7 @@
     :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
     :pagination="pagination"
     column-resizable
-    :disabledTools="['size', 'setting']"
+    :disabled-tools="['size', 'setting']"
     @filter-change="filterChange"
     @refresh="search"
   >
@@ -56,14 +56,42 @@
 </template>
 
 <script setup lang="ts">
-import { listLog, exportOperationLog, type LogResp, type LogQuery } from '@/apis'
+import dayjs from 'dayjs'
 import OperationLogDetailDrawer from './OperationLogDetailDrawer.vue'
+import { type LogQuery, type LogResp, exportOperationLog, listLog } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
-import { useTable, useDownload } from '@/hooks'
-import dayjs from 'dayjs'
+import { useDownload, useTable } from '@/hooks'
 
 defineOptions({ name: 'OperationLog' })
+
+const queryForm = reactive<LogQuery>({
+  createTime: [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ],
+  sort: ['createTime,desc']
+})
+
+const {
+  loading,
+  tableData: dataList,
+  pagination,
+  search
+} = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.ip = undefined
+  queryForm.createUserString = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
+  queryForm.status = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -102,21 +130,6 @@ const columns: TableInstanceColumns[] = [
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
 
-const queryForm = reactive<LogQuery>({
-  createTime: [
-    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
-  ],
-  sort: ['createTime,desc']
-})
-
-const {
-  loading,
-  tableData: dataList,
-  pagination,
-  search
-} = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
 // 过滤查询
 const filterChange = (dataIndex, filteredValues) => {
   try {
@@ -126,19 +139,6 @@ const filterChange = (dataIndex, filteredValues) => {
   } catch (error) {
     search()
   }
-}
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.ip = undefined
-  queryForm.createUserString = undefined
-  queryForm.createTime = [
-    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
-  ]
-  queryForm.status = undefined
-  search()
 }
 
 // 导出

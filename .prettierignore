@@ -1,7 +1,0 @@
-/dist/*
-.local
-/node_modules/**
-
-**/*.sh
-
-/public/*

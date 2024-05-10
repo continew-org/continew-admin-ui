@@ -21,13 +21,6 @@
 <script setup lang="ts">
 defineOptions({ name: 'GiOptionItem' })
 
-interface Props {
-  icon?: string
-  label?: string
-  more?: boolean
-  active?: boolean
-}
-
 const props = withDefaults(defineProps<Props>(), {
   icon: '',
   label: '',
@@ -38,6 +31,13 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'click'): void
 }>()
+
+interface Props {
+  icon?: string
+  label?: string
+  more?: boolean
+  active?: boolean
+}
 
 const handleClick = () => {
   emit('click')

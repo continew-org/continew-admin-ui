@@ -1,34 +1,27 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
   "compilerOptions": {
-    /* 基本选项 */
     "target": "ES2020", // 指定 ECMAScript 目标版本: 'ES3' (default), 'ES5', 'ES6'/'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'
-    "module": "ES2020", // 指定使用模块: 'commonjs', 'amd', 'system', 'umd' or 'es2015'
-    "lib": ["ES2020", "DOM"], // 指定要包含在编译中的库文件
-    "allowJs": true, // 允许编译 javascript 文件
-    "checkJs": true, // 报告 javascript 文件中的错误
     "jsx": "preserve", // 指定 jsx 代码的生成: 'preserve', 'react-native', or 'react'
     "jsxFactory": "h", // 当使用经典的JSX运行时编译JSX元素时，更改.js文件中调用的函数，默认：React.createElement
-    "jsxFragmentFactory": "Fragment", // 指定 JSX 片段工厂函数在指定了 jsxFactory 编译器选项的情况下针对 react JSX 发出时使用
-
-    /* 严格的类型检查选项 */
-    "strict": true, // 开启所有严格的类型检查
-
-    /* 模块解析选项 */
-    "moduleResolution": "node", // 选择模块解析策略： 'node' (Node.js) or 'classic' (TypeScript pre-1.6)
+    "jsxFragmentFactory": "Fragment", // 指定 JSX 片段工厂函数在指定了 jsxFactory 编译器选项的情况下针对 react JSX 发出时使用 指定使用模块: 'commonjs', 'amd', 'system', 'umd' or 'es2015'
+    "lib": ["ES2020", "DOM"], // 指定要包含在编译中的库文件
     "baseUrl": ".", // 用于解析非相对模块名称的基目录
+    "module": "ES2020", //
+    "moduleResolution": "node", // 选择模块解析策略： 'node' (Node.js) or 'classic' (TypeScript pre-1.6)
     "paths": {
       "@/*": ["src/*"] // 模块名到基于 baseUrl 的路径映射的列表
     },
-
-    /* 其他选项 */
-    "sourceMap": true, // 是否生成相应的Map映射的文件，默认：false
     "resolveJsonModule": true, // 是否解析 JSON 模块
+    "allowJs": true, // 允许编译 javascript 文件
+    "checkJs": true, // 报告 javascript 文件中的错误
+    "strict": true, // 开启所有严格的类型检查
+    "noImplicitAny": false,
+    "sourceMap": true, // 是否生成相应的Map映射的文件，默认：false
     "esModuleInterop": true, // 是否通过为所有导入模块创建命名空间对象，允许CommonJS和ES模块之间的互操作性，开启改选项时，也自动开启allowSyntheticDefaultImports选项，默认：false
     "skipLibCheck": true, // 是否跳过声明文件的类型检查，这可以在编译期间以牺牲类型系统准确性为代价来节省时间，默认：false
-    "ignoreDeprecations": "5.0", // 选项 importsNotUsedAsValues 已弃用，并将在 TypeScript 5.5 中停止工作。指定 compilerOption 的 "ignoreprecations ": "5.0" 来消除这个错误，使用 verbatimModuleSyntax 代替
-    "noImplicitAny": false
+    "ignoreDeprecations": "5.0" // 选项 importsNotUsedAsValues 已弃用，并将在 TypeScript 5.5 中停止工作。指定 compilerOption 的 "ignoreprecations ": "5.0" 来消除这个错误，使用 verbatimModuleSyntax 代替
   },
-  "extends": "@vue/tsconfig/tsconfig.web.json", // 指定要继承的配置文件
   "include": ["src/**/*", "src/**/*.vue", "vite.config.ts"], // 指定被编译文件所在的目录
   "exclude": ["node_modules", "dist", "**/*.js"] // 指定不需要被编译的目录
 }

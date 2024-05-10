@@ -8,8 +8,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledTools="['size']"
-        :disabledColumnKeys="['name']"
+        :disabled-tools="['size']"
+        :disabled-column-keys="['name']"
         @refresh="search"
       >
         <template #custom-left>
@@ -52,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import { listDict, deleteDict, type DictResp, type DictQuery } from '@/apis'
 import DictAddModal from './DictAddModal.vue'
+import { type DictQuery, type DictResp, deleteDict, listDict } from '@/apis'
 import DictItemModal from '@/views/system/dict/item/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -61,6 +61,24 @@ import { isMobile } from '@/utils'
 import has from '@/utils/has'
 
 defineOptions({ name: 'SystemDict' })
+
+const queryForm = reactive<DictQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -86,24 +104,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:dict:update', 'system:dict:delete'])
   }
 ]
-
-const queryForm = reactive<DictQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: DictResp) => {

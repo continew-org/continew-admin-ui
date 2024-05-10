@@ -95,10 +95,10 @@
 </template>
 
 <script setup lang="ts">
-import { uploadAvatar } from '@/apis'
-import BasicInfoUpdateModal from './BasicInfoUpdateModal.vue'
-import { Message, type FileItem } from '@arco-design/web-vue'
+import { type FileItem, Message } from '@arco-design/web-vue'
 import { VueCropper } from 'vue-cropper'
+import BasicInfoUpdateModal from './BasicInfoUpdateModal.vue'
+import { uploadAvatar } from '@/apis'
 import 'vue-cropper/dist/index.css'
 import { useUserStore } from '@/stores'
 import getAvatar from '@/utils/avatar'

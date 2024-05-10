@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import type { Columns, ColumnsItem, ColumnsItemPropsKey } from './type'
 import { Message } from '@arco-design/web-vue'
+import type { Columns, ColumnsItem, ColumnsItemPropsKey } from './type'
 
 export function useGiForm(initValue: Columns) {
   const getInitValue = () => cloneDeep(initValue)

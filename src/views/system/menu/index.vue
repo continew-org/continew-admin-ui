@@ -9,7 +9,7 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1700, maxHeight: '81vh' }"
         :pagination="false"
-        :disabledColumnKeys="['title']"
+        :disabled-column-keys="['title']"
         @refresh="search"
       >
         <template #expand-icon="{ expanded }">
@@ -92,9 +92,9 @@
 </template>
 
 <script setup lang="ts">
-import { listMenu, deleteMenu, type MenuResp, type MenuQuery } from '@/apis'
-import MenuAddModal from './MenuAddModal.vue'
 import { Message } from '@arco-design/web-vue'
+import MenuAddModal from './MenuAddModal.vue'
+import { type MenuQuery, type MenuResp, deleteMenu, listMenu } from '@/apis'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { DisEnableStatusList } from '@/constant/common'

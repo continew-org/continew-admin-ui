@@ -39,9 +39,9 @@
 </template>
 
 <script setup lang="ts">
-import { genPreview, type GeneratePreviewResp, generate } from '@/apis'
 import { Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useClipboard } from '@vueuse/core'
+import { type GeneratePreviewResp, genPreview, generate } from '@/apis'
 
 const { copy, copied } = useClipboard()
 const currentPreview = ref<GeneratePreviewResp>()
@@ -51,20 +51,35 @@ const visible = ref(false)
 const treeData = ref<TreeNodeData[]>([])
 const previewTableName = ref<string>('')
 
-// 打开
-const onPreview = async (tableName: string) => {
-  treeData.value = []
-  previewTableName.value = tableName
-  const res = await genPreview(tableName)
-  genPreviewList.value = res.data
-  for (const genPreview of genPreviewList.value) {
-    assembleTree(genPreview)
+const mergeDir = (parent: TreeNodeData) => {
+  // 合并目录
+  if (parent.children?.length === 1 && typeof parent.children[0].key === 'number') {
+    const mergeTitle = mergeDir(parent.children[0])
+    if (mergeTitle !== '') {
+      parent.title = `${parent.title}/${mergeTitle}`
+    }
+    parent.children = parent.children[0].children
+    return parent.title
   }
-  for (const valueElement of treeData.value) {
-    mergeDir(valueElement)
+  // 合并子目录
+  if (parent?.children) {
+    for (const child of parent.children) {
+      mergeDir(child)
+    }
   }
-  currentPreview.value = genPreviewList.value[0]
-  visible.value = true
+  return ''
+}
+
+const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) => {
+  if (children) {
+    for (const child of children) {
+      if (child.title === treeNode.title) {
+        return child.children
+      }
+    }
+  }
+  children?.push(treeNode)
+  return treeNode.children
 }
 
 // 自增的一个key 因为key相同的节点会出现一些问题
@@ -80,35 +95,20 @@ const assembleTree = (genPreview: GeneratePreviewResp) => {
   tempChildren?.push({ title: genPreview.fileName, key: genPreview.fileName, children: new Array<TreeNodeData>() })
 }
 
-const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) => {
-  if (children) {
-    for (const child of children) {
-      if (child.title === treeNode.title) {
-        return child.children
-      }
-    }
+// 打开
+const onPreview = async (tableName: string) => {
+  treeData.value = []
+  previewTableName.value = tableName
+  const res = await genPreview(tableName)
+  genPreviewList.value = res.data
+  for (const genPreview of genPreviewList.value) {
+    assembleTree(genPreview)
   }
-  children?.push(treeNode)
-  return treeNode.children
-}
-
-const mergeDir = (parent: TreeNodeData) => {
-  // 合并目录
-  if (parent.children?.length == 1 && typeof parent.children[0].key === 'number') {
-    const mergeTitle = mergeDir(parent.children[0])
-    if (mergeTitle != '') {
-      parent.title = parent.title + '/' + mergeTitle
-    }
-    parent.children = parent.children[0].children
-    return parent.title
+  for (const valueElement of treeData.value) {
+    mergeDir(valueElement)
   }
-  // 合并子目录
-  if (parent?.children) {
-    for (const child of parent.children) {
-      mergeDir(child)
-    }
-  }
-  return ''
+  currentPreview.value = genPreviewList.value[0]
+  visible.value = true
 }
 
 // 选择文件预览
@@ -134,7 +134,7 @@ watch(copied, () => {
 const onGenerate = async () => {
   const res = await generate([previewTableName.value])
   const contentDisposition = res.headers['content-disposition']
-  const pattern = new RegExp('filename=([^;]+\\.[^\.;]+);*')
+  const pattern = /filename=([^;]+\.[^.;]+);*/
   const result = pattern.exec(contentDisposition) || ''
   // 对名字进行解码
   const fileName = window.decodeURI(result[1])

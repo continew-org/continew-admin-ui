@@ -15,13 +15,13 @@
 <script lang="ts" setup>
 defineOptions({ name: 'GiCellGender' })
 
-interface Props {
-  gender: 1 | 2 | 0
-}
-
 const props = withDefaults(defineProps<Props>(), {
   gender: 1
 })
+
+interface Props {
+  gender: 1 | 2 | 0
+}
 </script>
 
 <style lang="scss" scoped></style>

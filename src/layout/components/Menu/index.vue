@@ -11,21 +11,23 @@
     @menu-item-click="onMenuItemClick"
     @collapse="onCollapse"
   >
-    <MenuItem v-for="(route, index) in sidebarRoutes" :key="route.path + index" :item="route"></MenuItem>
+    <MenuItem v-for="(item, index) in sidebarRoutes" :key="item.path + index" :item="item"></MenuItem>
   </a-menu>
 </template>
 
 <script setup lang="ts">
-import { useAppStore, useRouteStore } from '@/stores'
-import MenuItem from './MenuItem.vue'
-import { isExternal } from '@/utils/validate'
 import type { RouteRecordRaw } from 'vue-router'
 import type { CSSProperties } from 'vue'
+import MenuItem from './MenuItem.vue'
+import { useAppStore, useRouteStore } from '@/stores'
+import { isExternal } from '@/utils/validate'
 import { useDevice } from '@/hooks'
 
-defineOptions({ name: 'Menu' })
+defineOptions({ name: 'AppMenu' })
+const props = withDefaults(defineProps<Props>(), {})
+
 const emit = defineEmits<{
-  (e: 'menuItemClickAfter'): void
+  (e: 'menu-item-click-after'): void
 }>()
 
 interface Props {
@@ -33,15 +35,12 @@ interface Props {
   menuStyle?: CSSProperties
 }
 
-const props = withDefaults(defineProps<Props>(), {})
-
 const { isDesktop } = useDevice()
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const routeStore = useRouteStore()
 const sidebarRoutes = computed(() => (props.menus ? props.menus : routeStore.routes))
-// console.log('sidebarRoutes', sidebarRoutes.value)
 
 // 菜单垂直模式/水平模式
 const mode = computed(() => {
@@ -73,7 +72,7 @@ const onMenuItemClick = (key: string) => {
     return
   }
   router.push({ path: key })
-  emit('menuItemClickAfter')
+  emit('menu-item-click-after')
 }
 
 // 折叠状态改变时触发

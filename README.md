@@ -224,9 +224,9 @@ pnpm dev
 ## 项目结构
 
 ```
-continew-admin-ui      # 前端项目
-├─ config                # Vite 插件配置
-├─ public                # 公共静态资源（favicon.ico、logo.svg）
+continew-admin-ui
+├─ config              # Vite 插件配置
+├─ public              # 公共静态资源（favicon.ico、logo.svg）
 ├─ src
 │  ├─ apis             # 请求接口
 │  │  ├─ auth            # 认证模块
@@ -275,13 +275,10 @@ continew-admin-ui      # 前端项目
 │  │    └─ user            # 用户管理
 │  ├─ App.vue
 │  └─ main.ts
-├─ .env.development
-├─ .env.production
-├─ .env.test
-├─ .eslintignore
-├─ .eslintrc.cjs
-├─ .prettierignore
-├─ .prettierrc.js
+├─ .env.development    # 开发环境配置
+├─ .env.production     # 生产环境配置
+├─ .env.test           # 测试环境配置
+├─ eslint.config.js    # ESLint 配置
 ├─ index.html
 ├─ package.json
 ├─ package-lock.json

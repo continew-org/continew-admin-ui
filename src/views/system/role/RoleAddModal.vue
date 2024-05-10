@@ -86,12 +86,15 @@
 </template>
 
 <script setup lang="ts">
-import { getRole, addRole, updateRole } from '@/apis'
-import { Message, type FormInstance, type TreeNodeData } from '@arco-design/web-vue'
-import { useForm } from '@/hooks'
-import { useDict, useMenu, useDept } from '@/hooks/app'
+import { type FormInstance, Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
+import { addRole, getRole, updateRole } from '@/apis'
+import { useForm } from '@/hooks'
+import { useDept, useDict, useMenu } from '@/hooks/app'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const { width } = useWindowSize()
 const { data_scope_enum } = useDict('data_scope_enum')
 const { deptList, getDeptList } = useDept()
@@ -238,10 +241,6 @@ const onCheckAll = (type: string) => {
     deptTreeRef.value?.checkAll(isDeptCheckAll.value)
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

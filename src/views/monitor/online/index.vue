@@ -8,7 +8,7 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledTools="['size', 'setting']"
+        :disabled-tools="['size', 'setting']"
         @refresh="search"
       >
         <template #custom-left>
@@ -44,8 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import { listOnlineUser, kickout, type OnlineUserQuery } from '@/apis'
 import { Message } from '@arco-design/web-vue'
+import { type OnlineUserQuery, kickout, listOnlineUser } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useUserStore } from '@/stores'
@@ -57,6 +57,25 @@ defineOptions({ name: 'MonitorOnline' })
 
 const userStore = useUserStore()
 const currentToken = userStore.token
+
+const queryForm = reactive<OnlineUserQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search
+} = useTable((p) => listOnlineUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.nickname = undefined
+  queryForm.loginTime = undefined
+  search()
+}
+
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -78,24 +97,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['monitor:online:kickout'])
   }
 ]
-
-const queryForm = reactive<OnlineUserQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search
-} = useTable((p) => listOnlineUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置
-const reset = () => {
-  queryForm.nickname = undefined
-  queryForm.loginTime = undefined
-  search()
-}
 
 // 强退
 const handleKickout = (token: string) => {

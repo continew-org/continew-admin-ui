@@ -64,13 +64,16 @@
 </template>
 
 <script setup lang="ts">
-import { addNotice, updateNotice, getNotice } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
-import { useForm } from '@/hooks'
-import { useDict } from '@/hooks/app'
+import { type FormInstance, Message } from '@arco-design/web-vue'
 import { MdEditor } from 'md-editor-v3'
 import { useWindowSize } from '@vueuse/core'
+import { addNotice, getNotice, updateNotice } from '@/apis'
+import { useForm } from '@/hooks'
+import { useDict } from '@/hooks/app'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const { width } = useWindowSize()
 const { notice_type } = useDict('notice_type')
 
@@ -168,10 +171,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

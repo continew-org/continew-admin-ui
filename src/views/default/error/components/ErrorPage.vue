@@ -23,13 +23,12 @@ import Icon500 from '@/components/icons/Icon500.vue'
 
 defineOptions({ name: 'ErrorPage' })
 
-interface Props {
-  code: number
-}
 const props = withDefaults(defineProps<Props>(), {
   code: 403
 })
-
+interface Props {
+  code: number
+}
 const IconMap: Record<number, Component> = {
   403: Icon403,
   404: Icon404,

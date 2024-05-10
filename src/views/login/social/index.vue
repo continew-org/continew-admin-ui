@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { bindSocialAccount } from '@/apis'
 import { Message } from '@arco-design/web-vue'
 import { useRoute, useRouter } from 'vue-router'
+import { bindSocialAccount } from '@/apis'
 import { isLogin } from '@/utils/auth'
 
 const route = useRoute()

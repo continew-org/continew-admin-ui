@@ -15,21 +15,21 @@
 </template>
 
 <script setup lang="ts">
-import { getFileStatistics, type FileStatisticsResp } from '@/apis'
-import { useChart } from '@/hooks'
-import { FileTypeList } from '@/constant/file'
 import VCharts from 'vue-echarts'
 import { use } from 'echarts/core'
 import { PieChart } from 'echarts/charts'
-import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
+import { FileTypeList } from '@/constant/file'
+import { useChart } from '@/hooks'
+import { type FileStatisticsResp, getFileStatistics } from '@/apis'
 import { formatFileSize } from '@/utils'
 
 use([TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer])
 
 const totalData = ref<FileStatisticsResp>({})
 const chartData = ref<Array<FileStatisticsResp>>([])
-const statisticValueStyle = { color: '#5856D6', 'font-size': '18px' }
+const statisticValueStyle = { 'color': '#5856D6', 'font-size': '18px' }
 const { option } = useChart(() => {
   return {
     grid: {
@@ -50,7 +50,7 @@ const { option } = useChart(() => {
     },
     tooltip: {
       show: true,
-      formatter: function (params) {
+      formatter(params) {
         return `总计：${params.value}<br>${params.data.size}`
       }
     },
@@ -78,12 +78,12 @@ const getStatisticsData = async () => {
     const { data: resData } = await getFileStatistics()
     const formatSize = formatFileSize(resData.size).split(' ')
     totalData.value = {
-      size: parseFloat(formatSize[0]),
+      size: Number.parseFloat(formatSize[0]),
       number: resData.number,
       unit: formatSize[1]
     }
     resData.data.forEach((fs: FileStatisticsResp) => {
-      const matchedItem = FileTypeList.find((item) => item.value == fs.type)
+      const matchedItem = FileTypeList.find((item) => item.value === fs.type)
       chartData.value.unshift({
         name: matchedItem ? matchedItem.name : '',
         value: fs.number,

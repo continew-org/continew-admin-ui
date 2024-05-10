@@ -9,8 +9,8 @@
           :loading="loading"
           :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
           :pagination="pagination"
-          :disabledTools="['size']"
-          :disabledColumnKeys="['title']"
+          :disabled-tools="['size']"
+          :disabled-column-keys="['title']"
           @refresh="search"
         >
           <template #custom-left>
@@ -58,9 +58,9 @@
 </template>
 
 <script lang="ts" setup>
-import { listNotice, deleteNotice, type NoticeResp, type NoticeQuery } from '@/apis'
 import NoticeAddModal from './NoticeAddModal.vue'
 import NoticeDetailModal from './NoticeDetailModal.vue'
+import { type NoticeQuery, type NoticeResp, deleteNotice, listNotice } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -70,6 +70,25 @@ import has from '@/utils/has'
 defineOptions({ name: 'SystemNotice' })
 
 const { notice_type, notice_status_enum } = useDict('notice_type', 'notice_status_enum')
+
+const queryForm = reactive<NoticeQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listNotice({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.title = undefined
+  queryForm.type = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -94,25 +113,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:notice:update', 'system:notice:delete'])
   }
 ]
-
-const queryForm = reactive<NoticeQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listNotice({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置
-const reset = () => {
-  queryForm.title = undefined
-  queryForm.type = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: NoticeResp) => {

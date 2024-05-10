@@ -38,6 +38,8 @@
 </template>
 
 <script setup lang="ts">
+import type { RouteRecordRaw } from 'vue-router'
+import { searchTree } from 'xe-utils'
 import Main from './components/Main.vue'
 import Tabs from './components/Tabs/index.vue'
 import Menu from './components/Menu/index.vue'
@@ -45,9 +47,7 @@ import HeaderRightBar from './components/HeaderRightBar/index.vue'
 import Logo from './components/Logo.vue'
 import MenuFoldBtn from './components/MenuFoldBtn.vue'
 import { useAppStore, useRouteStore } from '@/stores'
-import type { RouteRecordRaw } from 'vue-router'
 import { isExternal } from '@/utils/validate'
-import { searchTree } from 'xe-utils'
 import { filterTree } from '@/utils'
 import { useDevice } from '@/hooks'
 
@@ -63,21 +63,9 @@ const menuRoutes = filterTree(routeStore.routes, (i) => i.meta?.hidden === false
 // 顶部一级菜单
 const topMenus = ref<RouteRecordRaw[]>([])
 topMenus.value = JSON.parse(JSON.stringify(menuRoutes))
-console.log('topMenus', toRaw(topMenus.value))
 
 const getMenuIcon = (item: RouteRecordRaw) => {
   return item.meta?.icon || item.children?.[0].meta?.icon
-}
-
-const onMenuItemClick = (key: string) => {
-  if (isExternal(key)) {
-    window.open(key)
-    return
-  }
-  setTimeout(() => getLeftMenus(key))
-  const obj = topMenus.value.find((i) => i.path === key)
-  if (obj && obj.redirect === 'noRedirect') return
-  router.push({ path: key })
 }
 
 // 克隆是菜单的路由
@@ -93,6 +81,17 @@ const getLeftMenus = (key: string) => {
   const obj = cloneMenuRoutes.find((i) => i.path === rootPath)
   activeMenu.value = obj ? [obj.path] : ['']
   leftMenus.value = obj ? (obj.children as RouteRecordRaw[]) : []
+}
+
+const onMenuItemClick = (key: string) => {
+  if (isExternal(key)) {
+    window.open(key)
+    return
+  }
+  setTimeout(() => getLeftMenus(key))
+  const obj = topMenus.value.find((i) => i.path === key)
+  if (obj && obj.redirect === 'noRedirect') return
+  router.push({ path: key })
 }
 
 watch(

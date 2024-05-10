@@ -17,6 +17,10 @@ import { githubLight } from '@ddietr/codemirror-themes/github-light'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { useAppStore } from '@/stores'
 
+const props = withDefaults(defineProps<Props>(), {
+  type: 'javascript',
+  codeJson: ''
+})
 const appStore = useAppStore()
 const isDark = computed(() => appStore.theme === 'dark')
 
@@ -24,11 +28,6 @@ interface Props {
   type?: 'javascript' | 'vue'
   codeJson: string
 }
-const props = withDefaults(defineProps<Props>(), {
-  type: 'javascript',
-  codeJson: ''
-})
-
 const defaultConfig = {
   tabSize: 2,
   basic: true,

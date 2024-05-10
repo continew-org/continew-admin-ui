@@ -36,11 +36,11 @@ export type ColumnsItemRequest<F = any> = (form: F) => Promise<any>
 export type ColumnsItemFormat<T = any> = (
   res: T
 ) =>
-  | A.SelectInstance['$props']['options']
-  | A.RadioGroupInstance['$props']['options']
-  | A.CheckboxGroupInstance['$props']['options']
-  | A.CascaderInstance['$props']['options']
-  | A.TreeSelectInstance['$props']['data']
+| A.SelectInstance['$props']['options']
+| A.RadioGroupInstance['$props']['options']
+| A.CheckboxGroupInstance['$props']['options']
+| A.CascaderInstance['$props']['options']
+| A.TreeSelectInstance['$props']['data']
 
 export type ColumnsItemOptionsOrData =
   | A.SelectInstance['$props']['options']
@@ -91,8 +91,8 @@ export interface Options {
   form: Omit<A.FormInstance['$props'], 'model'>
   row?: Partial<typeof import('@arco-design/web-vue')['Row']['__defaults']>
   col?: A.ColProps
-  btns?: { hide?: boolean; span?: number; col?: A.ColProps; searchBtnText?: string }
-  fold?: { enable?: boolean; index?: number; defaultCollapsed?: boolean }
+  btns?: { hide?: boolean, span?: number, col?: A.ColProps, searchBtnText?: string }
+  fold?: { enable?: boolean, index?: number, defaultCollapsed?: boolean }
 }
 
 export type Columns<F = any> = ColumnsItem<F>[]

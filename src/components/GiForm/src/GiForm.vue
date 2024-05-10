@@ -104,7 +104,7 @@
 
               <template v-if="item.type === 'date-picker'">
                 <a-date-picker
-                  :placeholder="`请选择日期`"
+                  placeholder="请选择日期"
                   v-bind="(item.props as A.DatePickerInstance['$props'])"
                   :model-value="modelValue[item.field as keyof typeof modelValue]"
                   @update:model-value="valueChange($event, item.field)"
@@ -113,7 +113,7 @@
 
               <template v-if="item.type === 'time-picker'">
                 <a-time-picker
-                  :placeholder="`请选择时间`"
+                  placeholder="请选择时间"
                   v-bind="(item.props as A.TimePickerInstance['$props'])"
                   :model-value="modelValue[item.field as keyof typeof modelValue]"
                   @update:model-value="valueChange($event, item.field)"
@@ -171,9 +171,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Options, Columns, ColumnsItemHide, ColumnsItemDisabled, ColumnsItem } from './type'
 import type * as A from '@arco-design/web-vue'
 import { cloneDeep } from 'lodash-es'
+import type { Columns, ColumnsItem, ColumnsItemDisabled, ColumnsItemHide, Options } from './type'
 
 interface Props {
   modelValue: any

@@ -41,8 +41,8 @@
 
 <script setup lang="ts">
 import type { RouteRecordRaw } from 'vue-router'
-import { useTabsStore, useAppStore } from '@/stores'
 import MagicIcon from './MagicIcon.vue'
+import { useAppStore, useTabsStore } from '@/stores'
 
 defineOptions({ name: 'Tabs' })
 const route = useRoute()
@@ -52,14 +52,6 @@ const tabsStore = useTabsStore()
 
 // 重置, 同时把 affix: true 的路由筛选出来
 tabsStore.reset()
-
-// 监听路由变化
-watch(
-  () => route.path,
-  () => {
-    handleRouteChange()
-  }
-)
 
 // 路由发生改变触发
 const handleRouteChange = () => {
@@ -71,6 +63,14 @@ const handleRouteChange = () => {
   // console.log('cacheList', toRaw(tabsStore.cacheList))
 }
 handleRouteChange()
+
+// 监听路由变化
+watch(
+  () => route.path,
+  () => {
+    handleRouteChange()
+  }
+)
 
 // 点击页签
 const handleTabClick = (key: string) => {

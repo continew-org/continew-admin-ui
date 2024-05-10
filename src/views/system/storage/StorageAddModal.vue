@@ -45,8 +45,8 @@
         :rules="[
           {
             required: true,
-            message: '请输入域名'
-          }
+            message: '请输入域名',
+          },
         ]"
       >
         <a-input v-model.trim="form.domain" placeholder="请输入域名" />
@@ -88,14 +88,17 @@
 </template>
 
 <script setup lang="ts">
-import { getStorage, addStorage, updateStorage } from '@/apis'
+import { type FormInstance, Message } from '@arco-design/web-vue'
+import { useWindowSize } from '@vueuse/core'
 import type { StorageReq } from './type'
-import { Message, type FormInstance } from '@arco-design/web-vue'
+import { addStorage, getStorage, updateStorage } from '@/apis'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
-import { useWindowSize } from '@vueuse/core'
 import { encryptByRsa } from '@/utils/encrypt'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const { width } = useWindowSize()
 const { storage_type_enum } = useDict('storage_type_enum')
 
@@ -174,10 +177,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 // import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
-import { updateUserPassword } from '@/apis'
 import { Message } from '@arco-design/web-vue'
+import { updateUserPassword } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm } from '@/components/GiForm'
@@ -117,13 +117,6 @@ const { form, resetForm } = useForm({
   rePassword: ''
 })
 
-// 重置
-const reset = () => {
-  formRef.value?.formRef?.resetFields()
-  resetForm()
-  resetCaptcha()
-}
-
 const captchaTimer = ref()
 const captchaTime = ref(60)
 const captchaBtnName = ref('获取验证码')
@@ -134,6 +127,13 @@ const resetCaptcha = () => {
   captchaTime.value = 60
   captchaBtnName.value = '获取验证码'
   captchaDisable.value = false
+}
+
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+  resetCaptcha()
 }
 
 const captchaLoading = ref(false)

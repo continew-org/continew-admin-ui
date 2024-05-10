@@ -20,7 +20,7 @@
       :drawer-style="{
         'border-right': '1px solid var(--color-border-2)',
         'box-sizing': 'border-box',
-        'background-color': 'var(--color-bg-1)'
+        'background-color': 'var(--color-bg-1)',
       }"
     >
       <Logo :collapsed="false"></Logo>

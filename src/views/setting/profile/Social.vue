@@ -21,7 +21,7 @@
         </div>
         <div class="btn-wrapper">
           <a-button
-            v-if="item.jumpMode == 'modal'"
+            v-if="item.jumpMode === 'modal'"
             class="btn"
             :type="item.status ? 'secondary' : 'primary'"
             @click="onUpdate(item.type, item.status)"
@@ -29,7 +29,7 @@
             {{ item.status ? '修改' : '绑定' }}
           </a-button>
           <a-button
-            v-else-if="item.jumpMode == 'link'"
+            v-else-if="item.jumpMode === 'link'"
             class="btn"
             :type="item.status ? 'secondary' : 'primary'"
             @click="onBinding(item.type, item.status)"
@@ -44,13 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { socialAuth, listUserSocial, unbindSocialAccount } from '@/apis'
 import type { ModeItem } from '../type'
 import VerifyModel from '../components/VerifyModel.vue'
+import { listUserSocial, socialAuth, unbindSocialAccount } from '@/apis'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
-const userInfo = computed(() => userStore.userInfo)
 
 const socialList = ref<any>([])
 const modeList = ref<ModeItem[]>([])
@@ -58,18 +57,18 @@ modeList.value = [
   {
     title: '绑定 Gitee',
     icon: 'gitee',
-    subtitle: `${socialList.value.some((el) => el == 'gitee') ? '' : '绑定后，'}可通过 Gitee 进行登录`,
+    subtitle: `${socialList.value.includes('gitee') ? '' : '绑定后，'}可通过 Gitee 进行登录`,
     jumpMode: 'link',
     type: 'gitee',
-    status: socialList.value.some((el) => el == 'gitee')
+    status: socialList.value.includes('gitee')
   },
   {
     title: '绑定 GitHub',
     icon: 'github',
-    subtitle: `${socialList.value.some((el) => el == 'gitee') ? '' : '绑定后，'}可通过 GitHub 进行登录`,
+    subtitle: `${socialList.value.includes('gitee') ? '' : '绑定后，'}可通过 GitHub 进行登录`,
     type: 'github',
     jumpMode: 'link',
-    status: socialList.value.some((el) => el == 'github')
+    status: socialList.value.includes('github')
   }
 ]
 
@@ -81,7 +80,7 @@ const onBinding = (type: string, status: boolean) => {
     })
   } else {
     unbindSocialAccount(type).then((res) => {
-      if (res.code == 200) {
+      if (res.code === 200) {
         userStore.getInfo()
       }
     })

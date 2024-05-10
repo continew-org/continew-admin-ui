@@ -8,8 +8,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1300 }"
         :pagination="pagination"
-        :disabledTools="['size']"
-        :disabledColumnKeys="['name']"
+        :disabled-tools="['size']"
+        :disabled-column-keys="['name']"
         @refresh="search"
       >
         <template #custom-left>
@@ -68,8 +68,8 @@
 </template>
 
 <script setup lang="ts">
-import { listStorage, deleteStorage, type StorageResp, type StorageQuery } from '@/apis'
 import StorageAddModal from './StorageAddModal.vue'
+import { type StorageQuery, type StorageResp, deleteStorage, listStorage } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -80,6 +80,25 @@ import { DisEnableStatusList } from '@/constant/common'
 defineOptions({ name: 'SystemStorage' })
 
 const { storage_type_enum } = useDict('storage_type_enum')
+
+const queryForm = reactive<StorageQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listStorage({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -110,25 +129,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:storage:update', 'system:storage:delete'])
   }
 ]
-
-const queryForm = reactive<StorageQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listStorage({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: StorageResp) => {

@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { RouteRecordRaw } from 'vue-router'
-import { constantRoutes } from '@/router'
-import ParentView from '@/components/ParentView/index.vue'
-import { getUserRoute, type RouteItem } from '@/apis'
 import { mapTree, toTreeArray } from 'xe-utils'
 import { cloneDeep, omit } from 'lodash-es'
+import { constantRoutes } from '@/router'
+import ParentView from '@/components/ParentView/index.vue'
+import { type RouteItem, getUserRoute } from '@/apis'
 import { transformPathToName } from '@/utils'
 
 const Layout = () => import('@/layout/index.vue')
@@ -58,7 +58,7 @@ const formatAsyncRoutes = (menus: RouteItem[]) => {
         title: item.title,
         hidden: item.isHidden,
         keepAlive: item.isCache,
-        alwaysShow: item.type == 1,
+        alwaysShow: item.type === 1,
         icon: item.icon
       }
     }

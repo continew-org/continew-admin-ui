@@ -8,8 +8,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledTools="['size']"
-        :disabledColumnKeys="['name']"
+        :disabled-tools="['size']"
+        :disabled-column-keys="['name']"
         @refresh="search"
       >
         <template #custom-left>
@@ -57,9 +57,9 @@
 </template>
 
 <script setup lang="ts">
-import { listRole, deleteRole, type RoleResp, type RoleQuery } from '@/apis'
 import RoleAddModal from './RoleAddModal.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
+import { type RoleQuery, type RoleResp, deleteRole, listRole } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -69,6 +69,24 @@ import has from '@/utils/has'
 defineOptions({ name: 'SystemRole' })
 
 const { data_scope_enum } = useDict('data_scope_enum')
+
+const queryForm = reactive<RoleQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listRole({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -96,24 +114,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:role:update', 'system:role:delete'])
   }
 ]
-
-const queryForm = reactive<RoleQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listRole({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: RoleResp) => {

@@ -261,7 +261,7 @@ export interface SecurityConfigResp {
   password_update_interval: OptionResp
 }
 
-/** 绑定三方账号信息*/
+/** 绑定三方账号信息 */
 export interface BindSocialAccountRes {
   source: string
   description: string

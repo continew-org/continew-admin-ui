@@ -1,12 +1,12 @@
 import axios from 'axios'
 import qs from 'query-string'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import NProgress from 'nprogress'
 import { useUserStore } from '@/stores'
 import { getToken } from '@/utils/auth'
 import modalErrorWrapper from '@/utils/modal-error-wrapper'
 import messageErrorWrapper from '@/utils/message-error-wrapper'
 import notificationErrorWrapper from '@/utils/notification-error-wrapper'
-import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import router from '@/router'
 
@@ -103,11 +103,11 @@ http.interceptors.response.use(
   (error) => {
     NProgress.done()
     const response = Object.assign({}, error.response)
-    response &&
-      messageErrorWrapper({
-        content: StatusCodeMessage[response.status] || '服务器暂时未响应，请刷新页面并重试。若无法解决，请联系管理员',
-        duration: 5 * 1000
-      })
+    response
+    && messageErrorWrapper({
+      content: StatusCodeMessage[response.status] || '服务器暂时未响应，请刷新页面并重试。若无法解决，请联系管理员',
+      duration: 5 * 1000
+    })
     return Promise.reject(error)
   }
 )

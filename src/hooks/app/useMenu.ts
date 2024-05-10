@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import { listMenuTree } from '@/apis'
 import type { TreeNodeData } from '@arco-design/web-vue'
+import { listMenuTree } from '@/apis'
 
 /** 菜单模块 */
 export function useMenu(options?: { onSuccess?: () => void }) {

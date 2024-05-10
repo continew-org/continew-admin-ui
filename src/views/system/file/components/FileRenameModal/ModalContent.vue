@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { FileItem } from '@/apis'
 import type { FormInstance } from '@arco-design/web-vue'
+import type { FileItem } from '@/apis'
 
 interface Props {
   data: FileItem

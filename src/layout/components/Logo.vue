@@ -9,6 +9,9 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores'
 
+const props = withDefaults(defineProps<Props>(), {
+  collapsed: false
+})
 const appStore = useAppStore()
 const title = computed(() => appStore.getTitle())
 const logo = computed(() => appStore.getLogo())
@@ -16,10 +19,6 @@ const logo = computed(() => appStore.getLogo())
 interface Props {
   collapsed?: boolean
 }
-const props = withDefaults(defineProps<Props>(), {
-  collapsed: false
-})
-
 const router = useRouter()
 // 跳转首页
 const toHome = () => {

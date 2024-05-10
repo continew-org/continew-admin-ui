@@ -67,15 +67,16 @@
 
 <script setup lang="ts">
 import { Modal } from '@arco-design/web-vue'
-import { useUserStore } from '@/stores'
+import { useFullscreen } from '@vueuse/core'
 import SettingDrawer from './SettingDrawer.vue'
 import Message from './Message.vue'
+import { useUserStore } from '@/stores'
 import { isMobile } from '@/utils'
-import { useFullscreen } from '@vueuse/core'
+
+defineOptions({ name: 'HeaderRight' })
 
 const { isFullscreen, toggle } = useFullscreen()
 
-defineOptions({ name: 'HeaderRight' })
 const router = useRouter()
 const userStore = useUserStore()
 const SettingDrawerRef = ref<InstanceType<typeof SettingDrawer>>()

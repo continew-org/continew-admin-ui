@@ -85,7 +85,7 @@
             v-model.trim="form.site_copyright"
             placeholder="请输入版权信息"
             :auto-size="{
-              minRows: 3
+              minRows: 3,
             }"
             show-word-limit
           />
@@ -130,8 +130,8 @@
 </template>
 
 <script lang="ts" setup>
-import { listOption, updateOption, resetOptionValue, uploadFile, type OptionResp } from '@/apis'
-import { Message, Modal, type FileItem, type FormInstance, type RequestOption } from '@arco-design/web-vue'
+import { type FileItem, type FormInstance, Message, Modal, type RequestOption } from '@arco-design/web-vue'
+import { type OptionResp, listOption, resetOptionValue, updateOption, uploadFile } from '@/apis'
 import { useAppStore } from '@/stores'
 import { useForm } from '@/hooks'
 

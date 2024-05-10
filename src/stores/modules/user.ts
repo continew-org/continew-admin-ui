@@ -1,19 +1,19 @@
 import { defineStore } from 'pinia'
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { resetRouter } from '@/router'
 import {
-  accountLogin as accountLoginApi,
-  phoneLogin as phoneLoginApi,
-  emailLogin as emailLoginApi,
-  socialLogin as socialLoginApi,
-  logout as logoutApi,
-  getUserInfo as getUserInfoApi,
   type AccountLoginReq,
-  type PhoneLoginReq,
   type EmailLoginReq,
-  type UserInfo
+  type PhoneLoginReq,
+  type UserInfo,
+  accountLogin as accountLoginApi,
+  emailLogin as emailLoginApi,
+  getUserInfo as getUserInfoApi,
+  logout as logoutApi,
+  phoneLogin as phoneLoginApi,
+  socialLogin as socialLoginApi
 } from '@/apis'
-import { setToken, clearToken, getToken } from '@/utils/auth'
+import { clearToken, getToken, setToken } from '@/utils/auth'
 import { resetHasRouteFlag } from '@/router/permission'
 import getAvatar from '@/utils/avatar'
 
@@ -76,6 +76,15 @@ const storeSetup = () => {
     token.value = res.data.token
   }
 
+  // 退出登录回调
+  const logoutCallBack = async () => {
+    roles.value = []
+    permissions.value = []
+    pwdExpiredShow.value = true
+    resetToken()
+    resetRouter()
+  }
+
   // 退出登录
   const logout = async () => {
     try {
@@ -85,15 +94,6 @@ const storeSetup = () => {
     } catch (error) {
       return false
     }
-  }
-
-  // 退出登录回调
-  const logoutCallBack = async () => {
-    roles.value = []
-    permissions.value = []
-    pwdExpiredShow.value = true
-    resetToken()
-    resetRouter()
   }
 
   // 获取用户信息

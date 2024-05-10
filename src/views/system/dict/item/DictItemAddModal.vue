@@ -22,11 +22,14 @@
 </template>
 
 <script setup lang="ts">
-import { getDictItem, addDictItem, updateDictItem } from '@/apis'
 import { Message } from '@arco-design/web-vue'
-import { GiForm, type Columns } from '@/components/GiForm'
+import { addDictItem, getDictItem, updateDictItem } from '@/apis'
+import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const dictId = ref('')
 const dataId = ref('')
 const isUpdate = computed(() => !!dataId.value)
@@ -125,10 +128,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

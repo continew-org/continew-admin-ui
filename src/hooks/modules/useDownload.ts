@@ -2,13 +2,13 @@ import { Message, Notification } from '@arco-design/web-vue'
 /**
  * @description 接收数据流生成 blob，创建链接，下载文件
  * @param {Function} api 导出表格的api方法 (必传)
- * @param {String} tempName 导出的文件名 (必传)
- * @param {Object} params 导出的参数 (默认{})
- * @param {Boolean} isNotify 是否有导出消息提示 (默认为 true)
- * @param {String} fileType 导出的文件格式 (默认为.xlsx)
- * */
+ * @param {string} tempName 导出的文件名 (必传)
+ * @param {object} params 导出的参数 (默认{})
+ * @param {boolean} isNotify 是否有导出消息提示 (默认为 true)
+ * @param {string} fileType 导出的文件格式 (默认为.xlsx)
+ */
 interface NavigatorWithMsSaveOrOpenBlob extends Navigator {
-  msSaveOrOpenBlob(blob: Blob, fileName: string): void
+  msSaveOrOpenBlob: (blob: Blob, fileName: string) => void
 }
 export const useDownload = async (api: () => Promise<any>, isNotify = true, tempName = '', fileType = '.xlsx') => {
   try {
@@ -16,7 +16,7 @@ export const useDownload = async (api: () => Promise<any>, isNotify = true, temp
     if (res.headers['content-disposition']) {
       tempName = decodeURI(res.headers['content-disposition'].split(';')[1].split('=')[1])
     } else {
-      tempName = tempName ? tempName : new Date().getTime() + fileType
+      tempName = tempName || new Date().getTime() + fileType
     }
     if (isNotify && !res?.code) {
       Notification.warning({
@@ -24,7 +24,7 @@ export const useDownload = async (api: () => Promise<any>, isNotify = true, temp
         content: '如果数据庞大会导致下载缓慢哦，请您耐心等待！'
       })
     }
-    if (res.status !== 200 || res.data === null || !(res.data instanceof Blob)) {
+    if (res.status !== 200 || res.data == null || !(res.data instanceof Blob)) {
       Message.error('导出失败，请稍后再试！')
       return
     }
@@ -44,6 +44,6 @@ export const useDownload = async (api: () => Promise<any>, isNotify = true, temp
     document.body.removeChild(exportFile)
     window.URL.revokeObjectURL(blobUrl)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }

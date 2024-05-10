@@ -31,19 +31,17 @@
     </a-form-item>
     <a-form-item>
       <a-space direction="vertical" fill class="w-full">
-        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long
-          >立即登录
-        </a-button>
+        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button>
       </a-space>
     </a-form-item>
   </a-form>
 </template>
 
 <script setup lang="ts">
-import { getImageCaptcha } from '@/apis'
-import { Message, type FormInstance, Modal } from '@arco-design/web-vue'
-import { useUserStore } from '@/stores'
+import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useStorage } from '@vueuse/core'
+import { getImageCaptcha } from '@/apis'
+import { useUserStore } from '@/stores'
 import { encryptByRsa } from '@/utils/encrypt'
 
 const loginConfig = useStorage('login-config', {
@@ -62,11 +60,44 @@ const form = reactive({
   uuid: '',
   expired: false
 })
-
 const rules: FormInstance['rules'] = {
   username: [{ required: true, message: '请输入用户名' }],
   password: [{ required: true, message: '请输入密码' }],
   captcha: [{ required: true, message: '请输入验证码' }]
+}
+
+// 验证码过期定时器
+let timer
+const startTimer = (expireTime: number) => {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  const remainingTime = expireTime - Date.now()
+  if (remainingTime <= 0) {
+    form.expired = true
+    return
+  }
+  timer = setTimeout(() => {
+    form.expired = true
+  }, remainingTime)
+}
+// 组件销毁时清理定时器
+onBeforeUnmount(() => {
+  if (timer) {
+    clearTimeout(timer)
+  }
+})
+
+const captchaImgBase64 = ref()
+// 获取验证码
+const getCaptcha = () => {
+  getImageCaptcha().then((res) => {
+    const { uuid, img, expireTime } = res.data
+    form.uuid = uuid
+    captchaImgBase64.value = img
+    form.expired = false
+    startTimer(expireTime)
+  })
 }
 
 const userStore = useUserStore()
@@ -101,40 +132,6 @@ const handleLogin = async () => {
     loading.value = false
   }
 }
-
-const captchaImgBase64 = ref()
-// 获取验证码
-const getCaptcha = () => {
-  getImageCaptcha().then((res) => {
-    const { uuid, img, expireTime } = res.data
-    form.uuid = uuid
-    captchaImgBase64.value = img
-    form.expired = false
-    startTimer(expireTime)
-  })
-}
-
-// 验证码过期定时器
-let timer
-const startTimer = (expireTime: number) => {
-  if (timer) {
-    clearTimeout(timer)
-  }
-  const remainingTime = expireTime - Date.now()
-  if (remainingTime <= 0) {
-    form.expired = true
-    return
-  }
-  timer = setTimeout(() => {
-    form.expired = true
-  }, remainingTime)
-}
-// 组件销毁时清理定时器
-onBeforeUnmount(() => {
-  if (timer) {
-    clearTimeout(timer)
-  }
-})
 
 onMounted(() => {
   getCaptcha()

@@ -1,5 +1,5 @@
 <template>
-  <a-form style="margin-top: 20px" ref="formRef" :model="form" size="small" label-align="left" :disabled="!isUpdate">
+  <a-form ref="formRef" style="margin-top: 20px" :model="form" size="small" label-align="left" :disabled="!isUpdate">
     <a-list size="small" :bordered="false">
       <a-list-item style="border: none">
         <a-form-item
@@ -7,43 +7,43 @@
           :label="form.password_expiration_days.name"
           field="password_expiration_days"
         >
-          <a-input-number class="input-width" :min="0" :max="999" v-model="form.password_expiration_days.value">
+          <a-input-number v-model="form.password_expiration_days.value" class="input-width" :min="0" :max="999">
             <template #append>天</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_min_length.description" :label="form.password_min_length.name">
-          <a-input-number class="input-width" :min="8" :max="32" v-model="form.password_min_length.value" />
+          <a-input-number v-model="form.password_min_length.value" class="input-width" :min="8" :max="32" />
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_update_interval.description" :label="form.password_update_interval.name">
-          <a-input-number class="input-width" :min="0" :max="9999" v-model="form.password_update_interval.value">
+          <a-input-number v-model="form.password_update_interval.value" class="input-width" :min="0" :max="9999">
             <template #append>分钟</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_error_count.description" :label="form.password_error_count.name">
-          <a-input-number class="input-width" :min="0" :max="9999" v-model="form.password_error_count.value" />
+          <a-input-number v-model="form.password_error_count.value" class="input-width" :min="0" :max="9999" />
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_lock_minutes.description" :label="form.password_lock_minutes.name">
-          <a-input-number class="input-width" :min="0" :max="9999" v-model="form.password_lock_minutes.value">
+          <a-input-number v-model="form.password_lock_minutes.value" class="input-width" :min="0" :max="9999">
             <template #append>分钟</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_special_char.description" :label="form.password_special_char.name">
-          <a-switch type="round" :checked-value="1" :unchecked-value="0" v-model="form.password_special_char.value" />
+          <a-switch v-model="form.password_special_char.value" type="round" :checked-value="1" :unchecked-value="0" />
         </a-form-item>
       </a-list-item>
       <a-list-item style="border: none">
         <a-form-item :help="form.password_contain_name.description" :label="form.password_contain_name.name">
-          <a-switch type="round" :checked-value="1" :unchecked-value="0" v-model="form.password_contain_name.value" />
+          <a-switch v-model="form.password_contain_name.value" type="round" :checked-value="1" :unchecked-value="0" />
         </a-form-item>
       </a-list-item>
       <a-list-item style="padding-top: 13px; border: none">
@@ -85,8 +85,8 @@
 </template>
 
 <script setup lang="ts">
-import { listOption, updateOption, resetOptionValue, type SecurityConfigResp, type OptionResp } from '@/apis'
-import { Message, Modal, type FormInstance } from '@arco-design/web-vue'
+import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
+import { type OptionResp, type SecurityConfigResp, listOption, resetOptionValue, updateOption } from '@/apis'
 
 const formRef = ref<FormInstance>()
 
@@ -100,21 +100,10 @@ const form = ref<SecurityConfigResp>({
   password_update_interval: {}
 })
 
-// 重置
-const reset = () => {
-  getDataList()
-}
-
 const isUpdate = ref(false)
 // 修改
 const onUpdate = () => {
   isUpdate.value = true
-}
-
-// 取消
-const handleCancel = () => {
-  reset()
-  isUpdate.value = false
 }
 
 const queryForm = {
@@ -124,9 +113,20 @@ const queryForm = {
 const getDataList = async () => {
   const { data } = await listOption(queryForm)
   form.value = data.reduce((obj: SecurityConfigResp, option: OptionResp) => {
-    obj[option.code] = { ...option, value: parseInt(option.value) }
+    obj[option.code] = { ...option, value: Number.parseInt(option.value) }
     return obj
   }, {})
+}
+
+// 重置
+const reset = () => {
+  getDataList()
+}
+
+// 取消
+const handleCancel = () => {
+  reset()
+  isUpdate.value = false
 }
 
 // 保存

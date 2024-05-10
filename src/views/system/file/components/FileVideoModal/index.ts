@@ -8,6 +8,6 @@ export function previewFileVideoModal(data: FileItem) {
     title: '视频播放',
     width: 'auto',
     modalStyle: {},
-    content: () => h(ModalContent, { data: data })
+    content: () => h(ModalContent, { data })
   })
 }

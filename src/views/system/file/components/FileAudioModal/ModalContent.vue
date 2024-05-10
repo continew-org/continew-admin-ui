@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDraggable, useWindowSize, useElementSize } from '@vueuse/core'
+import { useDraggable, useElementSize, useWindowSize } from '@vueuse/core'
 import type { FileItem } from '@/apis'
 
 interface Props {
@@ -71,8 +71,8 @@ const audioStyle = computed(() => {
   }
   sessionStorage.setItem('AudioDialogXY', JSON.stringify({ top, left }))
   return {
-    left: left + 'px',
-    top: top + 'px'
+    left: `${left}px`,
+    top: `${top}px`
   }
 })
 

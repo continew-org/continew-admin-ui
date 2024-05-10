@@ -46,7 +46,7 @@
         <a-table-column title="修改时间" data-index="updateTime" :width="200"></a-table-column>
         <a-table-column title="操作" :width="120" align="center">
           <template #cell="{ record }">
-            <a-popover trigger="click" position="bottom" :content-style="{ padding: 0, 'margin-top': 0 }">
+            <a-popover trigger="click" position="bottom" :content-style="{ 'padding': 0, 'margin-top': 0 }">
               <a-button type="text" @click.stop><icon-more :size="16" /></a-button>
               <template #content>
                 <FileRightMenu
@@ -64,10 +64,10 @@
 </template>
 
 <script setup lang="ts">
-import type { FileItem } from '@/apis'
-import type { TableRowSelection, TableInstance } from '@arco-design/web-vue'
+import type { TableInstance, TableRowSelection } from '@arco-design/web-vue'
 import FileImage from './FileImage.vue'
 import FileRightMenu from './FileRightMenu.vue'
+import type { FileItem } from '@/apis'
 import { formatFileSize } from '@/utils'
 
 interface Props {
@@ -82,16 +82,16 @@ const props = withDefaults(defineProps<Props>(), {
   isBatchMode: false // 是否是批量模式
 })
 
-const rowSelection: TableRowSelection = reactive({
-  type: 'checkbox',
-  showCheckedAll: true
-})
-
 const emit = defineEmits<{
   (e: 'click', record: FileItem): void
   (e: 'select', record: FileItem): void
   (e: 'right-menu-click', mode: string, item: FileItem): void
 }>()
+
+const rowSelection: TableRowSelection = reactive({
+  type: 'checkbox',
+  showCheckedAll: true
+})
 
 // 多选
 const select: TableInstance['onSelect'] = (rowKeys, rowKey, record) => {

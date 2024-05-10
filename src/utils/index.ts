@@ -1,7 +1,7 @@
-import { isExternal } from '@/utils/validate'
 import { browse, mapTree } from 'xe-utils'
-import { upperFirst, camelCase } from 'lodash-es'
+import { camelCase, upperFirst } from 'lodash-es'
 import { Message } from '@arco-design/web-vue'
+import { isExternal } from '@/utils/validate'
 
 export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key]
@@ -14,16 +14,17 @@ export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
  * pos="both": 去除两边空格
  * pos="left": 去除左边空格
  * pos="right": 去除右边空格
- * pos="all": 去除所有空格 */
+ * pos="all": 去除所有空格
+ */
 type Pos = 'both' | 'left' | 'right' | 'all'
 export function trim(str: string, pos: Pos = 'both'): string {
-  if (pos == 'both') {
+  if (pos === 'both') {
     return str.replace(/^\s+|\s+$/g, '')
-  } else if (pos == 'left') {
+  } else if (pos === 'left') {
     return str.replace(/^\s*/, '')
-  } else if (pos == 'right') {
+  } else if (pos === 'right') {
     return str.replace(/(\s*$)/g, '')
-  } else if (pos == 'all') {
+  } else if (pos === 'all') {
     return str.replace(/\s+/g, '')
   } else {
     return str
@@ -32,7 +33,8 @@ export function trim(str: string, pos: Pos = 'both'): string {
 
 /**
  * 根据数字获取对应的汉字
- * @param {number} num - 数字(0-10) */
+ * @param {number} num - 数字(0-10)
+ */
 export function getHanByNumber(num: number): string {
   const str = '零一二三四五六七八九十'
   return str.charAt(num)
@@ -41,7 +43,8 @@ export function getHanByNumber(num: number): string {
 /**
  * 获取指定整数范围内的随机整数
  * @param {number} start - 开始范围
- * @param {number} end - 结束范围 */
+ * @param {number} end - 结束范围
+ */
 export function getRandomInterger(start = 0, end: number): number {
   const range = end - start
   return Math.floor(Math.random() * range + start)
@@ -59,30 +62,31 @@ export function getTypeOf(value: any) {
 
 /**
  * @desc 格式化电话号码
- * @demo 183-7983-6654 */
+  @demo 183-7983-6654 */
 export function formatPhone(mobile: string, formatStr = '-') {
   return mobile.replace(/(?=(\d{4})+$)/g, formatStr)
 }
 
 /**
  * @desc 手机号脱敏
- * @demo 155****8810  */
+  @demo 155****8810  */
 export function hidePhone(phone: string) {
   return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
 }
 
 /** @desc 检测数据是否为空数据 */
 export function isEmpty(data: unknown) {
-  if (data === '' || data === 'undefined' || data === undefined || data === null || data === 'null') {
+  if (data === '' || data === 'undefined' || data === undefined || data == null || data === 'null') {
     return true
   }
-  return JSON.stringify(data) == '{}' || JSON.stringify(data) == '[]' || JSON.stringify(data) == '[{}]'
+  return JSON.stringify(data) === '{}' || JSON.stringify(data) === '[]' || JSON.stringify(data) === '[{}]'
 }
 
 /**
  * @desc 大小写转换
  * @param {string} str 待转换的字符串
- * @param {number} type 1:全大写 2:全小写 3:首字母大写 */
+ * @param {number} type 1:全大写 2:全小写 3:首字母大写
+ */
 export function toCase(str: string, type: number) {
   switch (type) {
     case 1:
@@ -100,39 +104,39 @@ export function toCase(str: string, type: number) {
  * @desc 获取随机数
  * @param {number} min 最小值
  * @param {number} max 最大值
- * */
+ */
 export const randomNum = (min: number, max: number) => {
   return Math.floor(min + Math.random() * (max + 1 - min))
 }
 
 /**
- * @desc 获取最大值 */
+  @desc 获取最大值 */
 export const max = (arr: number[]) => {
   return Math.max.apply(null, arr)
 }
 
 /**
- * @desc 获取最小值 */
+  @desc 获取最小值 */
 export const min = (arr: number[]) => {
   return Math.min.apply(null, arr)
 }
 
 /**
- * @desc 求和 */
+  @desc 求和 */
 export const sum = (arr: number[]) => {
   return arr.reduce((pre, cur) => pre + cur)
 }
 
 /**
- * @desc 获取平均值 */
+  @desc 获取平均值 */
 export const average = (arr: number[]) => {
   return sum(arr) / arr.length
 }
 
 /**
- * @desc 深拷贝 */
+  @desc 深拷贝 */
 export const deepClone = (data: any) => {
-  if (typeof data !== 'object' || data === null) return '不是对象'
+  if (typeof data !== 'object' || data == null) return '不是对象'
   const newData: any = Array.isArray(data) ? [] : {}
   for (const key in data) {
     newData[key] = typeof data[key] === 'object' ? deepClone(data[key]) : data[key]
@@ -142,35 +146,38 @@ export const deepClone = (data: any) => {
 
 /**
  * @desc 判断是否是闰年
- * @param {number} year 年份 */
+ * @param {number} year 年份
+ */
 export const isLeapYear = (year: number) => {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 }
 
 /**
  * @desc 判断是否是奇数
- * @param {number} num 数字 */
+ * @param {number} num 数字
+ */
 export const isOdd = (num: number) => {
   return num % 2 !== 0
 }
 
 /**
  * @desc 判断是否是偶数
- * @param {number} num 数字 */
+ * @param {number} num 数字
+ */
 export const isEven = (num: number) => {
   return !isOdd(num)
 }
 
 /**
- * @desc 将RGB转化为十六机制 */
+  @desc 将RGB转化为十六机制 */
 export const rgbToHex = (r: number, g: number, b: number) => {
-  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
 }
 
 /**
- * @desc 获取随机十六进制颜色 */
+  @desc 获取随机十六进制颜色 */
 export const randomHex = () => {
-  return `#${Math.floor(Math.random() * 0xffffff)
+  return `#${Math.floor(Math.random() * 0xFFFFFF)
     .toString(16)
     .padEnd(6, '0')}`
 }
@@ -206,7 +213,7 @@ export const filterTree: FilterTree = (values, fn) => {
   return data
 }
 
-type SortTree = <T extends { sort: number; children?: T[] }>(array: T[]) => T[]
+type SortTree = <T extends { sort: number, children?: T[] }>(array: T[]) => T[]
 /**
  * @desc 排序树
  * @param values /
@@ -238,7 +245,7 @@ export const formatFileSize = (fileSize: number) => {
   }
   const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   let index = 0
-  const srcSize = parseFloat(fileSize.toString())
+  const srcSize = Number.parseFloat(fileSize.toString())
   index = Math.floor(Math.log(srcSize) / Math.log(1024))
   const size = srcSize / 1024 ** index
   return `${size.toFixed(2)} ${unitArr[index]}`

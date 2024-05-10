@@ -1,7 +1,7 @@
 <template>
   <a-modal
     v-model:visible="visible"
-    :title="'字典项管理(' + dictCode + ')'"
+    :title="`字典项管理(${dictCode})`"
     title-align="start"
     :mask-closable="false"
     :esc-to-close="false"
@@ -11,15 +11,14 @@
     hide-cancel
   >
     <GiTable
-      ref="tableRef"
       row-key="id"
       :data="dataList"
       :columns="columns"
       :loading="loading"
       :scroll="{ x: '100%', y: '100%', minWidth: 800 }"
       :pagination="pagination"
-      :disabledTools="['size']"
-      :disabledColumnKeys="['label']"
+      :disabled-tools="['size']"
+      :disabled-column-keys="['label']"
       @refresh="search"
     >
       <template #custom-left>
@@ -63,14 +62,38 @@
 </template>
 
 <script lang="ts" setup>
-import { listDictItem, deleteDictItem, type DictItemResp, type DictItemQuery } from '@/apis'
+import { useWindowSize } from '@vueuse/core'
 import DictItemAddModal from './DictItemAddModal.vue'
+import { type DictItemQuery, type DictItemResp, deleteDictItem, listDictItem } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
-import { useWindowSize } from '@vueuse/core'
 
 const { width } = useWindowSize()
+
+const dictId = ref('')
+
+const queryForm = reactive<DictItemQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listDictItem({ ...queryForm, dictId: dictId.value, page: p.page, size: p.size }), {
+  immediate: true
+})
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
+
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -99,11 +122,6 @@ const columns: TableInstanceColumns[] = [
   { title: '操作', slotName: 'action', width: 130, align: 'center', fixed: !isMobile() ? 'right' : undefined }
 ]
 
-const queryForm = reactive<DictItemQuery>({
-  sort: ['createTime,desc']
-})
-
-const dictId = ref('')
 const dictCode = ref('')
 const visible = ref(false)
 // 打开
@@ -115,23 +133,6 @@ const open = (id: string, code: string) => {
   search()
 }
 defineExpose({ open })
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listDictItem({ ...queryForm, dictId: dictId.value, page: p.page, size: p.size }), {
-  immediate: true
-})
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: DictItemResp) => {

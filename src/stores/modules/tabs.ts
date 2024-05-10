@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import router from '@/router'
-import type { RouteRecordRaw, RouteRecordName } from 'vue-router'
-import { useRouteStore } from '@/stores'
+import type { RouteRecordName, RouteRecordRaw } from 'vue-router'
 import _XEUtils_ from 'xe-utils'
+import router from '@/router'
+import { useRouteStore } from '@/stores'
 
 const storeSetup = () => {
   const tagList = ref<RouteRecordRaw[]>([]) // 保存页签tab的数组

@@ -1,7 +1,7 @@
-import { updateFile, type FileItem } from '@/apis'
-import { ref, h } from 'vue'
-import { Modal, Message } from '@arco-design/web-vue'
+import { h, ref } from 'vue'
+import { Message, Modal } from '@arco-design/web-vue'
 import ModalContent from './ModalContent.vue'
+import { type FileItem, updateFile } from '@/apis'
 
 export function openFileRenameModal(data: FileItem, callback?: () => void) {
   const ModalContentRef = ref<InstanceType<typeof ModalContent>>()

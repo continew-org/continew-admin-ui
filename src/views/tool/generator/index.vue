@@ -8,8 +8,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledTools="['size', 'setting']"
-        :disabledColumnKeys="['tableName']"
+        :disabled-tools="['size', 'setting']"
+        :disabled-column-keys="['tableName']"
         @refresh="search"
       >
         <template #custom-left>
@@ -25,8 +25,9 @@
               :title="record.isConfiged ? '生成' : '请先进行生成配置'"
               :disabled="!record.isConfiged"
               @click="onPreview(record.tableName)"
-              >生成</a-link
             >
+              生成
+            </a-link>
           </a-space>
         </template>
       </GiTable>
@@ -38,14 +39,26 @@
 </template>
 
 <script setup lang="ts">
-import { listGenerator } from '@/apis'
 import GenConfigDrawer from './GenConfigDrawer.vue'
 import GenPreviewModal from './GenPreviewModal.vue'
+import { listGenerator } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 
 defineOptions({ name: 'Generator' })
+
+const queryForm = reactive({
+  tableName: undefined,
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search
+} = useTable((p) => listGenerator({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {
@@ -61,18 +74,6 @@ const columns: TableInstanceColumns[] = [
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
   { title: '操作', slotName: 'action', width: 180, align: 'center', fixed: !isMobile() ? 'right' : undefined }
 ]
-
-const queryForm = reactive({
-  tableName: undefined,
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search
-} = useTable((p) => listGenerator({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
 // 重置
 const reset = () => {

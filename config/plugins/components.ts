@@ -6,6 +6,6 @@ export default function createComponents() {
     dirs: ['src/components'],
     extensions: ['vue', 'tsx'],
     // 配置文件生成位置
-    dts: './src/types/components.d.ts',
+    dts: './src/types/components.d.ts'
   })
 }

@@ -18,14 +18,14 @@ export const Code_6 = /^\d{6}$/
 export const Code_4 = /^\d{4}$/
 
 /** @desc 正则-url链接 */
-export const Url =
-  /(((^https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)$/
+export const Url
+  = /(((^https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)$/
 
 /** @desc 正则-16进颜色值 #333 #8c8c8c */
 export const ColorRegex = /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/
 
 /** @desc 正则-只能是中文 */
-export const OnlyCh = /^[\u4e00-\u9fa5]+$/gi
+export const OnlyCh = /^[\u4E00-\u9FA5]+$/gi
 
 /** @desc 正则-只能是英文 */
 export const OnlyEn = /^[a-zA-Z]*$/

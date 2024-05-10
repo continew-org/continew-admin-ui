@@ -42,8 +42,8 @@
           :loading="loading"
           :scroll="{ x: '100%', y: 800, minWidth: 900 }"
           :pagination="false"
-          :disabledTools="['setting', 'refresh']"
-          :disabledColumnKeys="['tableName']"
+          :disabled-tools="['setting', 'refresh']"
+          :disabled-column-keys="['tableName']"
         >
           <template #custom-left>
             <a-popconfirm
@@ -57,7 +57,7 @@
                   status="success"
                   size="small"
                   title="同步"
-                  :disabled="dataList.length !== 0 && dataList[0].createTime === null"
+                  :disabled="dataList.length !== 0 && dataList[0].createTime == null"
                 >
                   <template #icon><icon-sync /></template>同步
                 </a-button>
@@ -111,13 +111,16 @@
 </template>
 
 <script setup lang="ts">
-import { listFieldConfig, getGenConfig, saveGenConfig, type FieldConfigResp, type GeneratorConfigResp } from '@/apis'
-import { Message, type FormInstance } from '@arco-design/web-vue'
+import { type FormInstance, Message } from '@arco-design/web-vue'
+import { useWindowSize } from '@vueuse/core'
+import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, saveGenConfig } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
-import { useWindowSize } from '@vueuse/core'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const { width } = useWindowSize()
 const { form_type_enum, query_type_enum } = useDict('form_type_enum', 'query_type_enum')
 
@@ -207,10 +210,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onConfig })
 </script>

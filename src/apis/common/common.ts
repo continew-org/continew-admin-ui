@@ -1,6 +1,6 @@
+import type { TreeNodeData } from '@arco-design/web-vue'
 import http from '@/utils/http'
 import type { LabelValueState } from '@/types/global'
-import type { TreeNodeData } from '@arco-design/web-vue'
 import type { OptionQuery } from '@/apis'
 
 const BASE_URL = '/common'
@@ -16,7 +16,7 @@ export function listMenuTree(query: { description: string }) {
 }
 
 /** @desc 查询角色列表 */
-export function listRoleDict(query?: { name: string; status: number }) {
+export function listRoleDict(query?: { name: string, status: number }) {
   return http.get<LabelValueState[]>(`${BASE_URL}/dict/role`, query)
 }
 

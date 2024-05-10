@@ -7,7 +7,7 @@
       v-for="(item, index) in list"
       :key="index"
       align="right"
-      :class="'animated-fade-up-' + index"
+      :class="`animated-fade-up-${index}`"
       style="overflow: hidden"
     >
       <template #content>

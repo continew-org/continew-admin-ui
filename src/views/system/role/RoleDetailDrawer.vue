@@ -22,7 +22,6 @@
     >
       <a-descriptions-item :span="2">
         <a-tree
-          ref="menuTreeRef"
           :checked-keys="dataDetail?.menuIds"
           :data="menuList"
           default-expand-all
@@ -41,7 +40,6 @@
     >
       <a-descriptions-item :span="2">
         <a-tree
-          ref="deptTreeRef"
           :checked-keys="dataDetail?.deptIds"
           :data="deptList"
           default-expand-all
@@ -54,9 +52,9 @@
 </template>
 
 <script lang="ts" setup>
-import { getRole, type RoleDetailResp } from '@/apis'
-import { useDict, useMenu, useDept } from '@/hooks/app'
 import { useWindowSize } from '@vueuse/core'
+import { type RoleDetailResp, getRole } from '@/apis'
+import { useDept, useDict, useMenu } from '@/hooks/app'
 
 const { width } = useWindowSize()
 const { data_scope_enum } = useDict('data_scope_enum')

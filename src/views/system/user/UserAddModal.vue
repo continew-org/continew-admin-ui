@@ -76,21 +76,24 @@
 </template>
 
 <script setup lang="ts">
-import { getUser, addUser, updateUser } from '@/apis'
+import { type FormInstance, Message, type TreeNodeData } from '@arco-design/web-vue'
+import { useWindowSize } from '@vueuse/core'
+import { addUser, getUser, updateUser } from '@/apis'
 import type { Gender, Status } from '@/types/global'
-import { Message, type FormInstance, type TreeNodeData } from '@arco-design/web-vue'
 import { useForm } from '@/hooks'
 import { useDept, useRole } from '@/hooks/app'
-import { useWindowSize } from '@vueuse/core'
 import { encryptByRsa } from '@/utils/encrypt'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const { width } = useWindowSize()
 const { roleList, getRoleList } = useRole()
 const { deptList, getDeptList } = useDept()
 // 过滤部门
 const filterDeptOptions = (searchKey: string, nodeData: TreeNodeData) => {
   if (nodeData.title) {
-    return nodeData.title.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
+    return nodeData.title.toLowerCase().includes(searchKey.toLowerCase())
   }
   return false
 }
@@ -181,10 +184,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

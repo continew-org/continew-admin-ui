@@ -2,9 +2,9 @@
   <template v-if="!item.meta?.hidden">
     <a-menu-item
       v-if="
-        isOneShowingChild &&
-        (!onlyOneChild?.children || onlyOneChild?.meta?.noShowingChildren) &&
-        !item?.meta?.alwaysShow
+        isOneShowingChild
+        && (!onlyOneChild?.children || onlyOneChild?.meta?.noShowingChildren)
+        && !item?.meta?.alwaysShow
       "
       v-bind="attrs"
       :key="onlyOneChild?.path"
@@ -32,13 +32,13 @@ import type { RouteRecordRaw } from 'vue-router'
 import MenuIcon from './MenuIcon.vue'
 
 defineOptions({ name: 'MenuItem' })
+const props = withDefaults(defineProps<Props>(), {})
+
 const attrs = useAttrs()
 
 interface Props {
   item: RouteRecordRaw
 }
-
-const props = withDefaults(defineProps<Props>(), {})
 
 // 如果hidden: false那么代表这个路由项显示在左侧菜单栏中
 // 如果props.item的子项chidren只有一个hidden: false的子元素, 那么onlyOneChild就表示这个子元素

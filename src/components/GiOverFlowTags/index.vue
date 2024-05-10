@@ -21,12 +21,12 @@
 <script lang="ts" setup>
 defineOptions({ name: 'GiOverFlowTags' })
 
-interface Props {
-  data: string[]
-}
 withDefaults(defineProps<Props>(), {
   data: () => []
 })
+interface Props {
+  data: string[]
+}
 </script>
 
 <style lang="scss" scoped></style>

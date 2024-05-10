@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import type { FileItem } from '@/apis'
 import FileImage from '../../main/FileMain/FileImage.vue'
+import type { FileItem } from '@/apis'
 import { formatFileSize } from '@/utils'
 
 interface Props {

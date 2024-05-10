@@ -12,13 +12,13 @@
 <script lang="ts" setup>
 defineOptions({ name: 'GiCellStatus' })
 
-interface Props {
-  status: 0 | 1
-}
-
 const props = withDefaults(defineProps<Props>(), {
   status: 1
 })
+
+interface Props {
+  status: 0 | 1
+}
 </script>
 
 <style lang="scss" scoped></style>

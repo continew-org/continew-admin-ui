@@ -14,12 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { getDept, addDept, updateDept } from '@/apis'
-import type { DeptReq } from './type'
 import { Message } from '@arco-design/web-vue'
-import { GiForm, type Columns } from '@/components/GiForm'
+import type { DeptReq } from './type'
+import { addDept, getDept, updateDept } from '@/apis'
+import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useDept } from '@/hooks/app'
+
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
 const { deptList, getDeptList } = useDept()
 
@@ -49,7 +53,7 @@ const columns: Columns = [
       fallbackOption: false,
       filterTreeNode(searchKey, nodeData) {
         if (nodeData.title) {
-          return nodeData.title.toLowerCase().indexOf(searchKey.toLowerCase()) > -1
+          return nodeData.title.toLowerCase().includes(searchKey.toLowerCase())
         }
         return false
       }
@@ -146,10 +150,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onAdd, onUpdate })
 </script>

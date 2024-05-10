@@ -5,9 +5,9 @@
 <script lang="ts" setup>
 import { useAppStore } from '@/stores'
 
-const appStore = useAppStore()
-
 defineOptions({ name: 'GiFooter' })
+
+const appStore = useAppStore()
 </script>
 
 <style lang="scss" scoped>

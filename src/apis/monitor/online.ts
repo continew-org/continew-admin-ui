@@ -1,5 +1,5 @@
-import http from '@/utils/http'
 import type * as Monitor from './type'
+import http from '@/utils/http'
 
 const BASE_URL = '/monitor/online'
 

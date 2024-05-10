@@ -8,7 +8,7 @@
       v-for="(item, index) in dataList"
       :key="index"
       align="right"
-      :class="'animated-fade-up-' + index"
+      :class="`animated-fade-up-${index}`"
       style="overflow: hidden"
     >
       <template #content>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { listDashboardNotice, type DashboardNoticeResp } from '@/apis'
+import { type DashboardNoticeResp, listDashboardNotice } from '@/apis'
 import { useDict } from '@/hooks/app'
 import NoticeDetailModal from '@/views/system/notice/NoticeDetailModal.vue'
 

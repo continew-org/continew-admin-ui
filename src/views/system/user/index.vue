@@ -19,15 +19,14 @@
         </a-col>
         <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
           <GiTable
-            ref="tableRef"
             row-key="id"
             :data="dataList"
             :columns="columns"
             :loading="loading"
             :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
             :pagination="pagination"
-            :disabledTools="['size']"
-            :disabledColumnKeys="['username']"
+            :disabled-tools="['size']"
+            :disabled-column-keys="['username']"
             @refresh="search"
           >
             <template #custom-left>
@@ -107,13 +106,13 @@
 </template>
 
 <script setup lang="ts">
-import { listUser, deleteUser, exportUser, type UserResp, type UserQuery } from '@/apis'
+import type { TreeInstance } from '@arco-design/web-vue'
 import UserAddModal from './UserAddModal.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
-import type { TreeInstance } from '@arco-design/web-vue'
+import { type UserQuery, type UserResp, deleteUser, exportUser, listUser } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { useTable, useDownload } from '@/hooks'
+import { useDownload, useTable } from '@/hooks'
 import { useDept } from '@/hooks/app'
 import { isMobile } from '@/utils'
 import getAvatar from '@/utils/avatar'
@@ -121,6 +120,25 @@ import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemUser' })
+
+const queryForm = reactive<UserQuery>({
+  sort: ['createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  pagination,
+  search,
+  handleDelete
+} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: false })
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
 
 const columns: TableInstanceColumns[] = [
   {
@@ -159,25 +177,6 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:user:update', 'system:user:delete', 'system:user:resetPwd'])
   }
 ]
-
-const queryForm = reactive<UserQuery>({
-  sort: ['createTime,desc']
-})
-
-const {
-  tableData: dataList,
-  loading,
-  pagination,
-  search,
-  handleDelete
-} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: false })
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
-}
 
 // 删除
 const onDelete = (item: UserResp) => {

@@ -14,12 +14,15 @@
 </template>
 
 <script setup lang="ts">
-import { resetUserPwd } from '@/apis'
 import { Message } from '@arco-design/web-vue'
-import { GiForm, type Columns } from '@/components/GiForm'
+import { resetUserPwd } from '@/apis'
+import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
 
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 const dataId = ref('')
 const formRef = ref<InstanceType<typeof GiForm>>()
 
@@ -64,10 +67,6 @@ const save = async () => {
     return false
   }
 }
-
-const emit = defineEmits<{
-  (e: 'save-success'): void
-}>()
 
 defineExpose({ onReset })
 </script>

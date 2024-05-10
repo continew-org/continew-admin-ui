@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
+
 interface Props {
   value: any
 }

@@ -1,4 +1,4 @@
-import { defineComponent, computed, type PropType } from 'vue'
+import { type PropType, computed, defineComponent } from 'vue'
 import './tag.scss'
 
 type TPropsType = 'dark' | 'light' | 'outline' | 'light-outline'

@@ -13,8 +13,8 @@
 
 <script lang="ts" setup>
 import type { RouteLocationMatched } from 'vue-router'
-import { useRouteStore } from '@/stores'
 import { findTree } from 'xe-utils'
+import { useRouteStore } from '@/stores'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,4 +1,4 @@
-import { defineComponent, type PropType } from 'vue'
+import { type PropType, defineComponent } from 'vue'
 import './dot.scss'
 
 type TPropsType = 'primary' | 'success' | 'warning' | 'danger' | 'info'

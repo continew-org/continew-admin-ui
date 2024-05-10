@@ -9,8 +9,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="false"
-        :disabledTools="['size']"
-        :disabledColumnKeys="['name']"
+        :disabled-tools="['size']"
+        :disabled-column-keys="['name']"
         @refresh="search"
       >
         <template #expand-icon="{ expanded }">
@@ -80,9 +80,9 @@
 </template>
 
 <script setup lang="ts">
-import { listDept, deleteDept, exportDept, type DeptResp, type DeptQuery } from '@/apis'
-import DeptAddModal from './DeptAddModal.vue'
 import { Message } from '@arco-design/web-vue'
+import DeptAddModal from './DeptAddModal.vue'
+import { type DeptQuery, type DeptResp, deleteDept, exportDept, listDept } from '@/apis'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload } from '@/hooks'

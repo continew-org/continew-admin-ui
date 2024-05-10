@@ -11,12 +11,6 @@
 <script lang="ts" setup>
 defineOptions({ name: 'GiCellAvatar' })
 
-interface Props {
-  avatar: string
-  name: string
-  isLink?: boolean
-}
-
 const props = withDefaults(defineProps<Props>(), {
   avatar: '',
   name: '',
@@ -26,6 +20,12 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'click'): void
 }>()
+
+interface Props {
+  avatar: string
+  name: string
+  isLink?: boolean
+}
 </script>
 
 <style lang="scss" scoped></style>

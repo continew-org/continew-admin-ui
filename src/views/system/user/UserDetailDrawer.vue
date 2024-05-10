@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { getUser, type UserDetailResp } from '@/apis'
 import { useWindowSize } from '@vueuse/core'
+import { type UserDetailResp, getUser } from '@/apis'
 
 const { width } = useWindowSize()
 

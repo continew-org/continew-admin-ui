@@ -1,5 +1,5 @@
 <template>
-  <div ref="giTableRef" class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }">
+  <div class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }">
     <a-row justify="space-between" align="center" class="gi-table__toolbar">
       <a-space wrap class="gi-table__toolbar-left" :size="[8, 8]">
         <slot name="custom-left"></slot>
@@ -18,9 +18,11 @@
             </a-button>
           </a-tooltip>
           <template #content>
-            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">{{
+            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">
+{{
               item.label
-            }}</a-doption>
+            }}
+</a-doption>
           </template>
         </a-dropdown>
         <a-popover
@@ -38,7 +40,7 @@
           </a-tooltip>
           <template #content>
             <div class="gi-table__draggable">
-              <VueDraggable ref="el" v-model="settingColumnList">
+              <VueDraggable v-model="settingColumnList">
                 <div v-for="item in settingColumnList" :key="item.title" class="drag-item">
                   <div class="drag-item__move"><icon-drag-dot-vertical /></div>
                   <a-checkbox v-model:model-value="item.show" :disabled="item.disabled">{{ item.title }}</a-checkbox>
@@ -73,17 +75,23 @@
         v-bind="{ ...attrs, columns: _columns }"
       >
         <template v-for="key in Object.keys(slots)" :key="key" #[key]="scoped">
-          <slot :key="key" :name="key" v-bind="scoped"></slot> </template
-      ></a-table>
+          <slot :key="key" :name="key" v-bind="scoped"></slot>
+        </template>
+      </a-table>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { TableInstance, TableColumnData, DropdownInstance } from '@arco-design/web-vue'
+import type { DropdownInstance, TableColumnData, TableInstance } from '@arco-design/web-vue'
 import { VueDraggable } from 'vue-draggable-plus'
 
 defineOptions({ name: 'GiTable', inheritAttrs: false })
+const props = withDefaults(defineProps<Props>(), {
+  disabledTools: () => [], // 禁止显示的工具
+  disabledColumnKeys: () => [] // 禁止控制显示隐藏的列
+})
+
 const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
@@ -96,18 +104,13 @@ interface Props {
   disabledColumnKeys?: string[]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  disabledTools: () => [], // 禁止显示的工具
-  disabledColumnKeys: () => [] // 禁止控制显示隐藏的列
-})
-
 const tableRef = ref<TableInstance | null>(null)
 const stripe = ref(false)
 const size = ref<TableInstance['size']>('medium')
 const isBordered = ref(false)
 const isFullscreen = ref(false)
 
-type SizeItem = { label: string; value: TableInstance['size'] }
+type SizeItem = { label: string, value: TableInstance['size'] }
 const sizeList: SizeItem[] = [
   { label: '紧凑', value: 'small' },
   { label: '默认', value: 'medium' }
@@ -127,7 +130,7 @@ const showFullscreenBtn = computed(() => !props.disabledTools.includes('fullscre
 const showSettingColumnBtn = computed(
   () => !props.disabledTools.includes('setting') && attrs?.columns && (attrs?.columns as TableColumnData[])?.length
 )
-type SettingColumnItem = { title: string; key: string; show: boolean; disabled: boolean }
+type SettingColumnItem = { title: string, key: string, show: boolean, disabled: boolean }
 const settingColumnList = ref<SettingColumnItem[]>([])
 
 // 重置配置列
