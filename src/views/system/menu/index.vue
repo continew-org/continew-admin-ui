@@ -7,7 +7,7 @@
         :data="dataList"
         :columns="columns"
         :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1700 }"
+        :scroll="{ x: '100%', y: '100%', minWidth: 1700, maxHeight: '81vh' }"
         :pagination="false"
         :disabledColumnKeys="['title']"
         @refresh="search"
