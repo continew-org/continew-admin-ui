@@ -153,6 +153,9 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.1.3
         version: 0.1.3(@types/node@20.11.30)
+      boxen:
+        specifier: ^7.1.1
+        version: 7.1.1
       eslint:
         specifier: ^9.0.0
         version: 9.2.0
@@ -165,6 +168,9 @@ importers:
       lint-staged:
         specifier: ^15.2.2
         version: 15.2.2
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.0.0
       sass:
         specifier: ^1.62.1
         version: 1.72.0
@@ -1363,6 +1369,9 @@ packages:
   animate.css@4.1.1:
     resolution: {integrity: sha512-+mRmCTv6SbCmtYJCN4faJMNFVNN5EuCTTprDTAo7YzIGji2KADmakjVA3+8mVDkZ2Bf09vayB35lSQIex2+QaQ==}
 
+  ansi-align@3.0.1:
+    resolution: {integrity: sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w==}
+
   ansi-escapes@6.2.1:
     resolution: {integrity: sha512-4nJ3yixlEthEJ9Rk4vPcdBRkZvQZlYyu8j4/Mqz5sgIkddmEnH2Yj2ZrnP9S3tQOvSNRUIgVNF/1yPpRAGNRig==}
     engines: {node: '>=14.16'}
@@ -1467,6 +1476,10 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
+  boxen@7.1.1:
+    resolution: {integrity: sha512-2hCgjEmP8YLWQ130n2FerGv7rYpfBmnmp9Uy2Le1vge6X3gZIfSmEzP5QTDElFxcvVcXlEn8Aq6MU/PZygIOog==}
+    engines: {node: '>=14.16'}
+
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
 
@@ -1518,6 +1531,10 @@ packages:
   camelcase@6.3.0:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
+
+  camelcase@7.0.1:
+    resolution: {integrity: sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==}
+    engines: {node: '>=14.16'}
 
   caniuse-lite@1.0.30001599:
     resolution: {integrity: sha512-LRAQHZ4yT1+f9LemSMeqdMpMxZcc4RMWdj4tiFe3G8tNkWK+E58g+/tzotb5cU6TbcVJLr4fySiAW7XmxQvZQA==}
@@ -1572,6 +1589,10 @@ packages:
   clean-regexp@1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
     engines: {node: '>=4'}
+
+  cli-boxes@3.0.0:
+    resolution: {integrity: sha512-/lzGpEWL/8PfI0BmBOPRwp0c/wFNX1RdUML3jK/RcSBA9T8mZDdQpqYBKtCFTOfQbwPqWEOpjqW+Fnayc0969g==}
+    engines: {node: '>=10'}
 
   cli-cursor@4.0.0:
     resolution: {integrity: sha512-VGtlMu3x/4DOtIUwEkRezxUZ2lBacNJCHash0N0WeZDBS+7Ux1dm3XWAgWYxLJFMMdOeXMHXorshEFhbMSGelg==}
@@ -1845,6 +1866,9 @@ packages:
   draggabilly@2.4.1:
     resolution: {integrity: sha512-HHHLPEPZqRXIDQDFRFdK7RONZausNlJ4WkA73ST7Z6O2HPWttxFHVwHo8nccuDLzXWwiVKRVuc6fTkW+CQA++A==}
 
+  eastasianwidth@0.2.0:
+    resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
   echarts@5.5.0:
     resolution: {integrity: sha512-rNYnNCzqDAPCr4m/fqyUFv7fD9qIsd50S6GDFgO1DxZhncCsNsG7IfUlAlvZe5oSEQxtsjnHiUuppzccry93Xw==}
 
@@ -1859,6 +1883,9 @@ packages:
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
+
+  emoji-regex@9.2.2:
+    resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
   emojis-list@3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
@@ -3739,6 +3766,10 @@ packages:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
 
+  string-width@5.1.2:
+    resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
+    engines: {node: '>=12'}
+
   string-width@7.1.0:
     resolution: {integrity: sha512-SEIJCWiX7Kg4c129n48aDRwLbFb2LJmXXFrWBG4NGaRtMQ3myKPKbwrD1BKqQn74oCoNMBVrfDEr5M9YxCsrkw==}
     engines: {node: '>=18'}
@@ -3912,6 +3943,10 @@ packages:
   type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+
+  type-fest@2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
 
   type@2.7.2:
     resolution: {integrity: sha512-dzlvlNlt6AXU7EBSfpAscydQ7gXB+pPGsPnfJnZpiNJBDj7IaJzQlBZYGdEi4R9HmPdBv2XmWJ6YUtoTa7lmCw==}
@@ -4233,12 +4268,20 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
+  widest-line@4.0.1:
+    resolution: {integrity: sha512-o0cyEG0e8GPzT4iGHphIOh0cJOV8fivsXxddQasHPHfoZf1ZexrfeA21w2NaEN1RHE+fXlfISmOE8R9N3u3Qig==}
+    engines: {node: '>=12'}
+
   wildcard@1.1.2:
     resolution: {integrity: sha512-DXukZJxpHA8LuotRwL0pP1+rS6CS7FF2qStDDE1C7DDg2rLud2PXRMuEDYIPhgEezwnlHNL4c+N6MfMTjCGTng==}
 
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
+
+  wrap-ansi@8.1.0:
+    resolution: {integrity: sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==}
+    engines: {node: '>=12'}
 
   wrap-ansi@9.0.0:
     resolution: {integrity: sha512-G8ura3S+3Z2G+mkgNRq8dqaFZAuxfsxpBB8OCTGRTCtp+l/v9nbFNmCUP1BZMts3G1142MsZfn6eeUKrr4PD1Q==}
@@ -5250,7 +5293,7 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 8.56.6
+      '@types/eslint': 8.56.10
       '@types/estree': 1.0.5
 
   '@types/eslint@8.56.10':
@@ -5817,6 +5860,10 @@ snapshots:
 
   animate.css@4.1.1: {}
 
+  ansi-align@3.0.1:
+    dependencies:
+      string-width: 4.2.3
+
   ansi-escapes@6.2.1: {}
 
   ansi-regex@2.1.1: {}
@@ -5893,6 +5940,17 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  boxen@7.1.1:
+    dependencies:
+      ansi-align: 3.0.1
+      camelcase: 7.0.1
+      chalk: 5.3.0
+      cli-boxes: 3.0.0
+      string-width: 5.1.2
+      type-fest: 2.19.0
+      widest-line: 4.0.1
+      wrap-ansi: 8.1.0
+
   brace-expansion@1.1.11:
     dependencies:
       balanced-match: 1.0.2
@@ -5966,6 +6024,8 @@ snapshots:
       tslib: 2.6.2
 
   camelcase@6.3.0: {}
+
+  camelcase@7.0.1: {}
 
   caniuse-lite@1.0.30001599: {}
 
@@ -6043,6 +6103,8 @@ snapshots:
   clean-regexp@1.0.0:
     dependencies:
       escape-string-regexp: 1.0.5
+
+  cli-boxes@3.0.0: {}
 
   cli-cursor@4.0.0:
     dependencies:
@@ -6316,6 +6378,8 @@ snapshots:
       get-size: 2.0.3
       unidragger: 2.4.0
 
+  eastasianwidth@0.2.0: {}
+
   echarts@5.5.0:
     dependencies:
       tslib: 2.3.0
@@ -6328,6 +6392,8 @@ snapshots:
   emoji-regex@10.3.0: {}
 
   emoji-regex@8.0.0: {}
+
+  emoji-regex@9.2.2: {}
 
   emojis-list@3.0.0: {}
 
@@ -8261,6 +8327,12 @@ snapshots:
       is-fullwidth-code-point: 3.0.0
       strip-ansi: 6.0.1
 
+  string-width@5.1.2:
+    dependencies:
+      eastasianwidth: 0.2.0
+      emoji-regex: 9.2.2
+      strip-ansi: 7.1.0
+
   string-width@7.1.0:
     dependencies:
       emoji-regex: 10.3.0
@@ -8424,6 +8496,8 @@ snapshots:
   type-fest@0.6.0: {}
 
   type-fest@0.8.1: {}
+
+  type-fest@2.19.0: {}
 
   type@2.7.2: {}
 
@@ -8796,6 +8870,10 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
+  widest-line@4.0.1:
+    dependencies:
+      string-width: 5.1.2
+
   wildcard@1.1.2: {}
 
   wrap-ansi@7.0.0:
@@ -8803,6 +8881,12 @@ snapshots:
       ansi-styles: 4.3.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
+
+  wrap-ansi@8.1.0:
+    dependencies:
+      ansi-styles: 6.2.1
+      string-width: 5.1.2
+      strip-ansi: 7.1.0
 
   wrap-ansi@9.0.0:
     dependencies:
