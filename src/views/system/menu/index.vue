@@ -74,14 +74,7 @@
             <a-link v-if="[1, 2].includes(record.type)" v-permission="['system:menu:add']" @click="onAdd(record.id)">
               新增
             </a-link>
-            <a-popconfirm
-              type="warning"
-              content="是否确定删除该条数据？"
-              :ok-button-props="{ status: 'danger' }"
-              @ok="onDelete(record)"
-            >
-              <a-link v-permission="['system:menu:delete']" status="danger">删除</a-link>
-            </a-popconfirm>
+            <a-link v-permission="['system:menu:delete']" status="danger" @click="onDelete(record)">删除</a-link>
           </a-space>
         </template>
       </GiTable>
@@ -92,7 +85,6 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
 import MenuAddModal from './MenuAddModal.vue'
 import { type MenuQuery, type MenuResp, deleteMenu, listMenu } from '@/apis'
 import type GiTable from '@/components/GiTable/index.vue'
@@ -100,8 +92,20 @@ import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { DisEnableStatusList } from '@/constant/common'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
+import { useTable } from '@/hooks'
 
 defineOptions({ name: 'SystemMenu' })
+
+const queryForm = reactive<MenuQuery>({
+  sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
+})
+
+const {
+  tableData: dataList,
+  loading,
+  search,
+  handleDelete
+} = useTable(() => listMenu(queryForm), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   { title: '菜单标题', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },
@@ -129,28 +133,6 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive<MenuQuery>({
-  sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
-})
-
-const dataList = ref<MenuResp[]>([])
-const loading = ref(false)
-// 查询列表数据
-const getDataList = async (query: MenuQuery = { ...queryForm }) => {
-  try {
-    loading.value = true
-    const res = await listMenu(query)
-    dataList.value = res.data
-  } finally {
-    loading.value = false
-  }
-}
-
-// 查询
-const search = () => {
-  getDataList()
-}
-
 // 重置
 const reset = () => {
   queryForm.title = undefined
@@ -159,10 +141,11 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = async (item: MenuResp) => {
-  await deleteMenu(item.id)
-  Message.success('删除成功')
-  search()
+const onDelete = (item: MenuResp) => {
+  return handleDelete(() => deleteMenu(item.id), {
+    content: `是否确定删除 [${item.title}]？`,
+    showModal: true
+  })
 }
 
 const isExpanded = ref(false)
@@ -183,10 +166,6 @@ const onAdd = (parentId?: string) => {
 const onUpdate = (item: MenuResp) => {
   MenuAddModalRef.value?.onUpdate(item.id)
 }
-
-onMounted(() => {
-  search()
-})
 </script>
 
 <style lang="scss" scoped></style>

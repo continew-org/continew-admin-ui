@@ -18,11 +18,7 @@
             </a-button>
           </a-tooltip>
           <template #content>
-            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">
-{{
-              item.label
-            }}
-</a-doption>
+            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">{{ item.label }}</a-doption>
           </template>
         </a-dropdown>
         <a-popover

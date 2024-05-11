@@ -83,13 +83,6 @@ const {
   handleDelete
 } = useTable((p) => listNotice({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.title = undefined
-  queryForm.type = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -113,6 +106,13 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:notice:update', 'system:notice:delete'])
   }
 ]
+
+// 重置
+const reset = () => {
+  queryForm.title = undefined
+  queryForm.type = undefined
+  search()
+}
 
 // 删除
 const onDelete = (item: NoticeResp) => {

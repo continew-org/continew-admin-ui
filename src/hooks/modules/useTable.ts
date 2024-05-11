@@ -10,28 +10,29 @@ interface Options<T> {
 }
 
 type PaginationParams = { page: number, size: number }
-type Api<T> = (params: PaginationParams) => Promise<ApiRes<PageRes<T[]>>>
+type Api<T> = (params: PaginationParams) => Promise<ApiRes<PageRes<T[]>>> | Promise<ApiRes<T[]>>
 
 export function useTable<T>(api: Api<T>, options?: Options<T>) {
   const { formatResult, onSuccess, immediate, rowKey } = options || {}
-  // eslint-disable-next-line ts/no-use-before-define
   const { pagination, setTotal } = usePagination(() => getTableData())
   const loading = ref(false)
   const tableData = ref<T[]>([])
 
-  const getTableData = async () => {
+  async function getTableData() {
     try {
       loading.value = true
       const res = await api({ page: pagination.current, size: pagination.pageSize })
-      tableData.value = formatResult ? formatResult(res.data.list) : res.data.list
-      setTotal(res.data.total)
+      const data = !Array.isArray(res.data) ? res.data.list : res.data
+      tableData.value = formatResult ? formatResult(data) : data
+      const total = !Array.isArray(res.data) ? res.data.total : data.length
+      setTotal(total)
       onSuccess && onSuccess()
     } finally {
       loading.value = false
     }
   }
 
-  // 是否立即出发
+  // 是否立即触发
   const isImmediate = immediate ?? true
   isImmediate && getTableData()
 
@@ -67,9 +68,9 @@ export function useTable<T>(api: Api<T>, options?: Options<T>) {
           selectedKeys.value = []
           getTableData()
         }
-        return true
+        return res.success
       } catch (error) {
-        return true
+        return false
       }
     }
     const flag = options?.showModal ?? true // 是否显示对话框

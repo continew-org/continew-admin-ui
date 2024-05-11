@@ -69,13 +69,6 @@ const {
   search
 } = useTable((p) => listOnlineUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.nickname = undefined
-  queryForm.loginTime = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -97,6 +90,13 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['monitor:online:kickout'])
   }
 ]
+
+// 重置
+const reset = () => {
+  queryForm.nickname = undefined
+  queryForm.loginTime = undefined
+  search()
+}
 
 // 强退
 const handleKickout = (token: string) => {

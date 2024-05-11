@@ -82,12 +82,6 @@ const {
   handleDelete
 } = useTable((p) => listRole({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -115,9 +109,15 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  search()
+}
+
 // 删除
 const onDelete = (item: RoleResp) => {
-  return handleDelete(() => deleteRole(item.id), { content: `是否确定删除角色 [${item.name}]？`, showModal: true })
+  return handleDelete(() => deleteRole(item.id), { content: `是否确定删除 [${item.name}]？`, showModal: true })
 }
 
 const RoleAddModalRef = ref<InstanceType<typeof RoleAddModal>>()

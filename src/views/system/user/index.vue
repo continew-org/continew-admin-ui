@@ -131,14 +131,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: false })
-
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
-}
+} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {
@@ -178,10 +171,17 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
+
 // 删除
 const onDelete = (item: UserResp) => {
   return handleDelete(() => deleteUser(item.id), {
-    content: `是否确定删除用户 [${item.nickname}(${item.username})]？`,
+    content: `是否确定删除 [${item.nickname}(${item.username})]？`,
     showModal: true
   })
 }

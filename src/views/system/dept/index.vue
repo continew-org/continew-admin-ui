@@ -55,21 +55,15 @@
           <a-space>
             <a-link v-permission="['system:dept:update']" @click="onUpdate(record)">修改</a-link>
             <a-link v-permission="['system:dept:add']" @click="onAdd(record.id)">新增</a-link>
-            <a-popconfirm
-              type="warning"
-              content="是否确定删除该条数据？"
-              :ok-button-props="{ status: 'danger' }"
-              @ok="onDelete(record)"
+            <a-link
+              v-permission="['system:dept:delete']"
+              status="danger"
+              :title="record.isSystem ? '系统内置数据不能删除' : undefined"
+              :disabled="record.disabled"
+              @click="onDelete(record)"
             >
-              <a-link
-                v-permission="['system:dept:delete']"
-                status="danger"
-                :title="record.isSystem ? '系统内置数据不能删除' : undefined"
-                :disabled="record.disabled"
-              >
-                删除
-              </a-link>
-            </a-popconfirm>
+              删除
+            </a-link>
           </a-space>
         </template>
       </GiTable>
@@ -80,12 +74,11 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
 import DeptAddModal from './DeptAddModal.vue'
 import { type DeptQuery, type DeptResp, deleteDept, exportDept, listDept } from '@/apis'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { useDownload } from '@/hooks'
+import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
 import { DisEnableStatusList } from '@/constant/common'
@@ -116,27 +109,20 @@ const queryForm = reactive<DeptQuery>({
   sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
 })
 
-const dataList = ref<DeptResp[]>([])
-const loading = ref(false)
 const tableRef = ref<InstanceType<typeof GiTable>>()
-// 查询列表数据
-const getDataList = async (query: DeptQuery = { ...queryForm }) => {
-  try {
-    loading.value = true
-    const res = await listDept(query)
-    dataList.value = res.data
-    await nextTick(() => {
+const {
+  tableData: dataList,
+  loading,
+  search,
+  handleDelete
+} = useTable(() => listDept(queryForm), {
+  immediate: true,
+  onSuccess: () => {
+    nextTick(() => {
       tableRef.value?.tableRef?.expandAll(true)
     })
-  } finally {
-    loading.value = false
   }
-}
-
-// 查询
-const search = () => {
-  getDataList()
-}
+})
 
 // 重置
 const reset = () => {
@@ -146,10 +132,11 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = async (item: DeptResp) => {
-  await deleteDept(item.id)
-  Message.success('删除成功')
-  search()
+const onDelete = (item: DeptResp) => {
+  return handleDelete(() => deleteDept(item.id), {
+    content: `是否确定删除 [${item.name}]？`,
+    showModal: true
+  })
 }
 
 // 导出
@@ -167,10 +154,6 @@ const onAdd = (parentId?: string) => {
 const onUpdate = (item: DeptResp) => {
   DeptAddModalRef.value?.onUpdate(item.id)
 }
-
-onMounted(() => {
-  search()
-})
 </script>
 
 <style lang="scss" scoped></style>

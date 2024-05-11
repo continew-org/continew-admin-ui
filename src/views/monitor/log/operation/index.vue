@@ -80,19 +80,6 @@ const {
   search
 } = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.ip = undefined
-  queryForm.createUserString = undefined
-  queryForm.createTime = [
-    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
-  ]
-  queryForm.status = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -129,6 +116,19 @@ const columns: TableInstanceColumns[] = [
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true }
 ]
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.ip = undefined
+  queryForm.createUserString = undefined
+  queryForm.createTime = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
+  queryForm.status = undefined
+  search()
+}
 
 // 过滤查询
 const filterChange = (dataIndex, filteredValues) => {

@@ -13,16 +13,16 @@
         @refresh="search"
       >
         <template #custom-left>
-          <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
-          </a-button>
-        </template>
-        <template #custom-right>
           <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
             <template #prefix><icon-search /></template>
           </a-input>
           <a-button @click="reset">重置</a-button>
+        </template>
+        <template #custom-right>
+          <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
+            <template #icon><icon-plus /></template>
+            <span>新增</span>
+          </a-button>
         </template>
         <template #isSystem="{ record }">
           <a-tag v-if="record.isSystem" color="red">是</a-tag>
@@ -74,12 +74,6 @@ const {
   handleDelete
 } = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -104,6 +98,12 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:dict:update', 'system:dict:delete'])
   }
 ]
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  search()
+}
 
 // 删除
 const onDelete = (item: DictResp) => {

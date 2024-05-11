@@ -93,13 +93,6 @@ const {
   handleDelete
 } = useTable((p) => listStorage({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
   {
     title: '序号',
@@ -129,6 +122,13 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['system:storage:update', 'system:storage:delete'])
   }
 ]
+
+// 重置
+const reset = () => {
+  queryForm.description = undefined
+  queryForm.status = undefined
+  search()
+}
 
 // 删除
 const onDelete = (item: StorageResp) => {
