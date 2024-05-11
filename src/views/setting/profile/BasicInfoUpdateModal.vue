@@ -1,15 +1,26 @@
 <template>
-  <a-modal v-model:visible="visible" title="修改基本信息" @before-ok="save" @close="reset">
+  <a-modal
+    v-model:visible="visible"
+    title="修改基本信息"
+    :mask-closable="false"
+    :esc-to-close="false"
+    :width="width >= 500 ? 500 : '100%'"
+    @before-ok="save"
+    @close="reset"
+  >
     <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
   </a-modal>
 </template>
 
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
 import { updateUserBaseInfo } from '@/apis'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useUserStore } from '@/stores'
+
+const { width } = useWindowSize()
 
 const options: Options = {
   form: {},

@@ -1,5 +1,13 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" @before-ok="save" @close="reset">
+  <a-modal
+    v-model:visible="visible"
+    :title="title"
+    :mask-closable="false"
+    :esc-to-close="false"
+    :width="width >= 500 ? 500 : '100%'"
+    @before-ok="save"
+    @close="reset"
+  >
     <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
       <template #captcha>
         <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
@@ -18,8 +26,9 @@
 </template>
 
 <script setup lang="ts">
-// import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
+import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
+// import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
 import { updateUserPassword } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
@@ -27,6 +36,7 @@ import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import * as Regexp from '@/utils/regexp'
 
+const { width } = useWindowSize()
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 
