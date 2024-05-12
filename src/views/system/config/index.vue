@@ -6,7 +6,7 @@
           <BasicSetting />
         </a-tab-pane>
         <a-tab-pane key="2" title="邮件配置(暂未开放)" disabled></a-tab-pane>
-        <a-tab-pane key="3" title="安全设置">
+        <a-tab-pane key="3" title="安全配置">
           <SecuritySetting />
         </a-tab-pane>
       </a-tabs>

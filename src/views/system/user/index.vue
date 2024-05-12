@@ -1,103 +1,108 @@
 <template>
-  <div class="gi_page">
-    <a-card title="用户管理" class="general-card">
-      <a-row :gutter="16">
-        <a-col :xs="0" :md="4" :lg="4" :xl="4" :xxl="4">
-          <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <a-tree
-            ref="treeRef"
-            :data="deptList"
-            :selected-keys="selectedKeys"
-            default-expand-all
-            show-line
-            block-node
-            @select="handleSelectDept"
-          >
-          </a-tree>
-        </a-col>
-        <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
-          <GiTable
-            row-key="id"
-            :data="dataList"
-            :columns="columns"
-            :loading="loading"
-            :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
-            :pagination="pagination"
-            :disabled-tools="['size']"
-            :disabled-column-keys="['username']"
-            @refresh="search"
-          >
-            <template #custom-left>
-              <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
-                <template #prefix><icon-search /></template>
-              </a-input>
-              <a-select
-                v-model="queryForm.status"
-                :options="DisEnableStatusList"
-                placeholder="请选择状态"
-                allow-clear
-                style="width: 150px"
-                @change="search"
-              />
-              <a-button @click="reset">重置</a-button>
-            </template>
-            <template #custom-right>
-              <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
-                <template #icon><icon-plus /></template>
-                <span>新增</span>
+  <div class="table-page">
+    <a-row justify="space-between" align="center" class="header">
+      <a-space wrap>
+        <slot name="custom-title">
+          <div class="title">用户管理</div>
+        </slot>
+      </a-space>
+    </a-row>
+    <a-row :gutter="16">
+      <a-col :xs="0" :md="4" :lg="4" :xl="4" :xxl="4">
+        <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        <a-tree
+          ref="treeRef"
+          :data="deptList"
+          :selected-keys="selectedKeys"
+          default-expand-all
+          show-line
+          block-node
+          @select="handleSelectDept"
+        >
+        </a-tree>
+      </a-col>
+      <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
+        <GiTable
+          row-key="id"
+          :data="dataList"
+          :columns="columns"
+          :loading="loading"
+          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
+          :pagination="pagination"
+          :disabled-tools="['size']"
+          :disabled-column-keys="['username']"
+          @refresh="search"
+        >
+          <template #custom-left>
+            <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+              <template #prefix><icon-search /></template>
+            </a-input>
+            <a-select
+              v-model="queryForm.status"
+              :options="DisEnableStatusList"
+              placeholder="请选择状态"
+              allow-clear
+              style="width: 150px"
+              @change="search"
+            />
+            <a-button @click="reset">重置</a-button>
+          </template>
+          <template #custom-right>
+            <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
+              <template #icon><icon-plus /></template>
+              <span>新增</span>
+            </a-button>
+            <a-tooltip content="导出">
+              <a-button v-permission="['system:user:export']" class="gi_hover_btn-border" @click="onExport">
+                <template #icon>
+                  <icon-download />
+                </template>
               </a-button>
-              <a-tooltip content="导出">
-                <a-button v-permission="['system:user:export']" class="gi_hover_btn-border" @click="onExport">
-                  <template #icon>
-                    <icon-download />
-                  </template>
-                </a-button>
-              </a-tooltip>
-            </template>
-            <template #username="{ record }">
-              <GiCellAvatar
-                :avatar="getAvatar(record.avatar, record.gender)"
-                :name="record.username"
-                is-link
-                @click="onDetail(record)"
-              />
-            </template>
-            <template #gender="{ record }">
-              <GiCellGender :gender="record.gender" />
-            </template>
-            <template #status="{ record }">
-              <GiCellStatus :status="record.status" />
-            </template>
-            <template #isSystem="{ record }">
-              <a-tag v-if="record.isSystem" color="red" size="small">是</a-tag>
-              <a-tag v-else color="arcoblue" size="small">否</a-tag>
-            </template>
-            <template #action="{ record }">
-              <a-space>
-                <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
-                <a-link
-                  v-permission="['system:user:delete']"
-                  status="danger"
-                  :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-                  :disabled="record.disabled"
-                  @click="onDelete(record)"
-                >
-                  删除
-                </a-link>
-                <a-dropdown>
-                  <a-link v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-link>
-                  <template #content>
-                    <a-doption v-permission="['system:user:resetPwd']" @click="onResetPwd(record)">重置密码</a-doption>
-                  </template>
-                </a-dropdown>
-              </a-space>
-            </template>
-          </GiTable>
-        </a-col>
-      </a-row>
-    </a-card>
+            </a-tooltip>
+          </template>
+          <template #username="{ record }">
+            <GiCellAvatar
+              :avatar="getAvatar(record.avatar, record.gender)"
+              :name="record.username"
+              is-link
+              @click="onDetail(record)"
+            />
+          </template>
+          <template #gender="{ record }">
+            <GiCellGender :gender="record.gender" />
+          </template>
+          <template #status="{ record }">
+            <GiCellStatus :status="record.status" />
+          </template>
+          <template #isSystem="{ record }">
+            <a-tag v-if="record.isSystem" color="red" size="small">是</a-tag>
+            <a-tag v-else color="arcoblue" size="small">否</a-tag>
+          </template>
+          <template #action="{ record }">
+            <a-space>
+              <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
+              <a-link
+                v-permission="['system:user:delete']"
+                status="danger"
+                :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+                :disabled="record.disabled"
+                @click="onDelete(record)"
+              >
+                删除
+              </a-link>
+              <a-dropdown>
+                <a-link v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-link>
+                <template #content>
+                  <a-doption v-permission="['system:user:resetPwd']" @click="onResetPwd(record)">重置密码</a-doption>
+                </template>
+              </a-dropdown>
+            </a-space>
+          </template>
+        </GiTable>
+      </a-col>
+    </a-row>
 
     <UserAddModal ref="UserAddModalRef" @save-success="search" />
     <UserDetailDrawer ref="UserDetailDrawerRef" />

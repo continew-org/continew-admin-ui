@@ -1,14 +1,19 @@
 <template>
-  <div class="gi_page">
-    <a-card title="系统日志" class="general-card">
-      <a-tabs type="card-gutter" size="large" :active-key="activeKey" @change="change">
-        <a-tab-pane key="1" title="登录日志" />
-        <a-tab-pane key="2" title="操作日志" />
-      </a-tabs>
-      <keep-alive>
-        <component :is="PaneMap[activeKey]" />
-      </keep-alive>
-    </a-card>
+  <div class="table-page">
+    <a-row justify="space-between" align="center" class="header">
+      <a-space wrap>
+        <slot name="custom-title">
+          <div class="title">系统日志</div>
+        </slot>
+      </a-space>
+    </a-row>
+    <a-tabs type="card-gutter" size="large" :active-key="activeKey" @change="change">
+      <a-tab-pane key="1" title="登录日志" />
+      <a-tab-pane key="2" title="操作日志" />
+    </a-tabs>
+    <keep-alive>
+      <component :is="PaneMap[activeKey]" />
+    </keep-alive>
   </div>
 </template>
 

@@ -181,17 +181,50 @@
   }
 }
 
-.gi_table_box {
-  max-height: 100%;
-  overflow: hidden;
-}
-
-// 使用场景，页面内容超出高度会自动滚动
+// 普通页面（使用场景，页面内容超出高度会自动滚动）
 .gi_page {
   flex: 1;
   padding: $margin;
   box-sizing: border-box;
   overflow-y: auto;
+}
+
+// 表格页面
+.table-page {
+  height: 100%;
+  overflow: hidden;
+  margin: $margin;
+  background: var(--color-bg-1);
+  padding: $padding;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .header {
+    padding: 0 0 10px;
+    .title {
+      color: var(--color-text-1);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+  }
+  &:after {
+    content: '';
+    height: 20px;
+    font-size: 12px;
+    color: var(--color-text-3);
+    margin-top: 12px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.gi_table_box {
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .gi_card_title {
@@ -263,11 +296,17 @@
   overflow-y: auto;
   & > .arco-card-header {
     height: auto;
-    padding: 20px;
+    padding: $padding;
     border: none;
+    .arco-card-header-title {
+      color: var(--color-text-1);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
   }
   & > .arco-card-body {
-    padding: 0 20px 20px 20px;
+    padding: 0 $padding $padding $padding;
   }
 }
 

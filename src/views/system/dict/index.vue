@@ -1,50 +1,49 @@
 <template>
-  <div class="gi_page">
-    <a-card title="字典管理" class="general-card">
-      <GiTable
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size']"
-        :disabled-column-keys="['name']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #custom-right>
-          <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
-          </a-button>
-        </template>
-        <template #isSystem="{ record }">
-          <a-tag v-if="record.isSystem" color="red">是</a-tag>
-          <a-tag v-else color="arcoblue">否</a-tag>
-        </template>
-        <template #action="{ record }">
-          <a-space>
-            <a-link @click="onViewDictItem(record)">管理</a-link>
-            <a-link v-permission="['system:dict:update']" @click="onUpdate(record)">修改</a-link>
-            <a-link
-              v-permission="['system:dict:delete']"
-              status="danger"
-              :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-              :disabled="record.disabled"
-              @click="onDelete(record)"
-            >
-              删除
-            </a-link>
-          </a-space>
-        </template>
-      </GiTable>
-    </a-card>
+  <div class="table-page">
+    <GiTable
+      row-key="id"
+      title="字典管理"
+      :data="dataList"
+      :columns="columns"
+      :loading="loading"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :pagination="pagination"
+      :disabled-tools="['size']"
+      :disabled-column-keys="['name']"
+      @refresh="search"
+    >
+      <template #custom-left>
+        <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        <a-button @click="reset">重置</a-button>
+      </template>
+      <template #custom-right>
+        <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
+          <template #icon><icon-plus /></template>
+          <span>新增</span>
+        </a-button>
+      </template>
+      <template #isSystem="{ record }">
+        <a-tag v-if="record.isSystem" color="red">是</a-tag>
+        <a-tag v-else color="arcoblue">否</a-tag>
+      </template>
+      <template #action="{ record }">
+        <a-space>
+          <a-link @click="onViewDictItem(record)">管理</a-link>
+          <a-link v-permission="['system:dict:update']" @click="onUpdate(record)">修改</a-link>
+          <a-link
+            v-permission="['system:dict:delete']"
+            status="danger"
+            :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+            :disabled="record.disabled"
+            @click="onDelete(record)"
+          >
+            删除
+          </a-link>
+        </a-space>
+      </template>
+    </GiTable>
 
     <DictAddModal ref="DictAddModalRef" @save-success="search" />
     <DictItemModal ref="DictItemModalRef" />

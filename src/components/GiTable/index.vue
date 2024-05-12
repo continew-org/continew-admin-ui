@@ -1,5 +1,12 @@
 <template>
   <div class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }">
+    <a-row v-if="props.title" justify="space-between" align="center" class="gi-table__header">
+      <a-space wrap>
+        <slot name="custom-title">
+          <div class="gi-table__header-title">{{ props.title }}</div>
+        </slot>
+      </a-space>
+    </a-row>
     <a-row justify="space-between" align="center" class="gi-table__toolbar">
       <a-space wrap class="gi-table__toolbar-left" :size="[8, 8]">
         <slot name="custom-left"></slot>
@@ -84,6 +91,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 
 defineOptions({ name: 'GiTable', inheritAttrs: false })
 const props = withDefaults(defineProps<Props>(), {
+  title: '',
   disabledTools: () => [], // 禁止显示的工具
   disabledColumnKeys: () => [] // 禁止控制显示隐藏的列
 })
@@ -96,6 +104,7 @@ const attrs = useAttrs()
 const slots = useSlots()
 
 interface Props {
+  title?: string
   disabledTools?: string[]
   disabledColumnKeys?: string[]
 }
@@ -200,6 +209,15 @@ defineExpose({ tableRef })
   &__container {
     max-height: 100%;
     overflow: hidden;
+  }
+  &__header {
+    padding: 0 0 10px;
+    &-title {
+      color: var(--color-text-1);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
   }
   &__toolbar {
     :deep(.arco-form-item-layout-inline) {
