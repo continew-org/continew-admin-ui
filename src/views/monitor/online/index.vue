@@ -8,7 +8,7 @@
       :loading="loading"
       :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
       :pagination="pagination"
-      :disabled-tools="['size', 'setting']"
+      :disabled-tools="['size']"
       @refresh="search"
     >
       <template #custom-left>
@@ -80,7 +80,8 @@ const columns: TableInstanceColumns[] = [
   { title: '登录地点', dataIndex: 'address', ellipsis: true, tooltip: true },
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true },
-  { title: '登录时间', dataIndex: 'loginTime', width: 180 },
+  { title: '最后活跃时间', dataIndex: 'lastActiveTime', width: 180 },
+  { title: '登录时间', dataIndex: 'loginTime', width: 180, show: false },
   {
     title: '操作',
     slotName: 'action',
