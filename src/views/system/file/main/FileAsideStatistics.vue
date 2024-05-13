@@ -9,8 +9,10 @@
       </a-statistic>
       <a-statistic class="statistic-item" title="数量" :value="totalData.number" :value-style="statisticValueStyle" />
     </a-space>
-    <a-divider />
-    <VCharts :option="option" autoresize :style="{ height: '120px', width: '150px' }" />
+    <div v-if="chartData.length > 0">
+      <a-divider />
+      <VCharts :option="option" autoresize :style="{ height: '120px', width: '150px' }" />
+    </div>
   </section>
 </template>
 
@@ -27,8 +29,14 @@ import { formatFileSize } from '@/utils'
 
 use([TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer])
 
-const totalData = ref<FileStatisticsResp>({})
-const chartData = ref<Array<FileStatisticsResp>>([])
+const totalData = ref<FileStatisticsResp>({
+  type: '',
+  size: 0,
+  number: 0,
+  unit: '',
+  data: []
+})
+const chartData = ref<Array<{ name: string, value: number, size: string }>>([])
 const statisticValueStyle = { 'color': '#5856D6', 'font-size': '18px' }
 const { option } = useChart(() => {
   return {
@@ -74,13 +82,14 @@ const getStatisticsData = async () => {
   try {
     loading.value = true
     chartData.value = []
-    totalData.value = {}
     const { data: resData } = await getFileStatistics()
     const formatSize = formatFileSize(resData.size).split(' ')
     totalData.value = {
+      type: '',
       size: Number.parseFloat(formatSize[0]),
-      number: resData.number,
-      unit: formatSize[1]
+      number: resData.number ?? 0,
+      unit: formatSize[1],
+      data: []
     }
     resData.data.forEach((fs: FileStatisticsResp) => {
       const matchedItem = FileTypeList.find((item) => item.value === fs.type)
