@@ -71,7 +71,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listDict({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

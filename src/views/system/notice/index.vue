@@ -78,7 +78,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listNotice({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listNotice({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

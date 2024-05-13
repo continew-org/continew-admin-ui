@@ -90,7 +90,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listStorage({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listStorage({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

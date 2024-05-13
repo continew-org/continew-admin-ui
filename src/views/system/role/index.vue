@@ -79,7 +79,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listRole({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listRole({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

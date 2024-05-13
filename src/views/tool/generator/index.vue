@@ -57,7 +57,7 @@ const {
   loading,
   pagination,
   search
-} = useTable((p) => listGenerator({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listGenerator({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

@@ -66,7 +66,7 @@ const {
   loading,
   pagination,
   search
-} = useTable((p) => listOnlineUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listOnlineUser({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

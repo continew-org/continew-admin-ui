@@ -136,7 +136,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listUser({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {
