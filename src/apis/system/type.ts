@@ -204,6 +204,8 @@ export type FileItem = {
   name: string
   size: number
   url: string
+  thumbnailSize: number
+  thumbnailUrl: string
   extension: string
   type: number
   storageId: string
