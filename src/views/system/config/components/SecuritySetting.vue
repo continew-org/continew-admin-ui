@@ -1,52 +1,102 @@
 <template>
-  <a-form ref="formRef" style="margin-top: 20px" :model="form" size="small" label-align="left" :disabled="!isUpdate">
+  <a-form
+    ref="formRef"
+    :model="form"
+    size="small"
+    :auto-label-width="true"
+    label-align="left"
+    :layout="width >= 500 ? 'horizontal' : 'vertical'"
+    :disabled="!isUpdate"
+    style="margin-top: 10px"
+  >
     <a-list size="small" :bordered="false">
-      <a-list-item style="border: none">
+      <a-list-item>
         <a-form-item
-          :help="form.password_expiration_days.description"
-          :label="form.password_expiration_days.name"
-          field="password_expiration_days"
+          :label="form.PASSWORD_ERROR_LOCK_COUNT.name"
+          field="PASSWORD_ERROR_LOCK_COUNT"
+          :help="form.PASSWORD_ERROR_LOCK_COUNT.description"
         >
-          <a-input-number v-model="form.password_expiration_days.value" class="input-width" :min="0" :max="999">
+          <a-input-number v-model="form.PASSWORD_ERROR_LOCK_COUNT.value" class="input-width" :min="0" :max="10">
+            <template #append>次</template>
+          </a-input-number>
+        </a-form-item>
+      </a-list-item>
+     <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_ERROR_LOCK_MINUTES.name"
+          field="PASSWORD_ERROR_LOCK_MINUTES"
+          :help="form.PASSWORD_ERROR_LOCK_MINUTES.description"
+        >
+          <a-input-number v-model="form.PASSWORD_ERROR_LOCK_MINUTES.value" class="input-width" :min="1" :max="1440">
+            <template #append>分钟</template>
+          </a-input-number>
+        </a-form-item>
+      </a-list-item>
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_EXPIRATION_WARNING_DAYS.name"
+          field="PASSWORD_EXPIRATION_WARNING_DAYS"
+          :help="form.PASSWORD_EXPIRATION_WARNING_DAYS.description"
+        >
+          <a-input-number v-model="form.PASSWORD_EXPIRATION_WARNING_DAYS.value" class="input-width" :min="0">
             <template #append>天</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_min_length.description" :label="form.password_min_length.name">
-          <a-input-number v-model="form.password_min_length.value" class="input-width" :min="8" :max="32" />
-        </a-form-item>
-      </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_update_interval.description" :label="form.password_update_interval.name">
-          <a-input-number v-model="form.password_update_interval.value" class="input-width" :min="0" :max="9999">
-            <template #append>分钟</template>
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_EXPIRATION_DAYS.name"
+          field="PASSWORD_EXPIRATION_DAYS"
+          :help="form.PASSWORD_EXPIRATION_DAYS.description"
+        >
+          <a-input-number v-model="form.PASSWORD_EXPIRATION_DAYS.value" class="input-width" :min="0" :max="999">
+            <template #append>天</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_error_count.description" :label="form.password_error_count.name">
-          <a-input-number v-model="form.password_error_count.value" class="input-width" :min="0" :max="9999" />
-        </a-form-item>
-      </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_lock_minutes.description" :label="form.password_lock_minutes.name">
-          <a-input-number v-model="form.password_lock_minutes.value" class="input-width" :min="0" :max="9999">
-            <template #append>分钟</template>
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_REUSE_POLICY.name"
+          field="PASSWORD_REUSE_POLICY"
+          :help="form.PASSWORD_REUSE_POLICY.description"
+        >
+          <a-input-number v-model="form.PASSWORD_REUSE_POLICY.value" class="input-width" :min="3" :max="32">
+            <template #append>次</template>
           </a-input-number>
         </a-form-item>
       </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_special_char.description" :label="form.password_special_char.name">
-          <a-switch v-model="form.password_special_char.value" type="round" :checked-value="1" :unchecked-value="0" />
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_MIN_LENGTH.name"
+          field="PASSWORD_MIN_LENGTH"
+          :help="form.PASSWORD_MIN_LENGTH.description"
+        >
+          <a-input-number v-model="form.PASSWORD_MIN_LENGTH.value" class="input-width" :min="8" :max="32" />
         </a-form-item>
       </a-list-item>
-      <a-list-item style="border: none">
-        <a-form-item :help="form.password_contain_name.description" :label="form.password_contain_name.name">
-          <a-switch v-model="form.password_contain_name.value" type="round" :checked-value="1" :unchecked-value="0" />
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_ALLOW_CONTAIN_USERNAME.name"
+          field="PASSWORD_ALLOW_CONTAIN_USERNAME"
+        >
+          <a-switch v-model="form.PASSWORD_ALLOW_CONTAIN_USERNAME.value" type="round" :checked-value="1" :unchecked-value="0">
+            <template #checked>是</template>
+            <template #unchecked>否</template>
+          </a-switch>
         </a-form-item>
       </a-list-item>
-      <a-list-item style="padding-top: 13px; border: none">
+      <a-list-item>
+        <a-form-item
+          :label="form.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name"
+          field="PASSWORD_CONTAIN_SPECIAL_CHARACTERS"
+        >
+          <a-switch v-model="form.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.value" type="round" :checked-value="1" :unchecked-value="0">
+            <template #checked>是</template>
+            <template #unchecked>否</template>
+          </a-switch>
+        </a-form-item>
+      </a-list-item>
+      <a-list-item>
         <a-space>
           <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
             <template #icon>
@@ -85,26 +135,23 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
 import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
-import { type OptionResp, type SecurityConfigResp, listOption, resetOptionValue, updateOption } from '@/apis'
+import { type OptionResp, type SecurityConfig, listOption, resetOptionValue, updateOption } from '@/apis'
+
+const { width } = useWindowSize()
 
 const formRef = ref<FormInstance>()
-
-const form = ref<SecurityConfigResp>({
-  password_contain_name: {},
-  password_error_count: {},
-  password_expiration_days: {},
-  password_lock_minutes: {},
-  password_min_length: {},
-  password_special_char: {},
-  password_update_interval: {}
+const form = ref<SecurityConfig>({
+  PASSWORD_ERROR_LOCK_COUNT: {},
+  PASSWORD_ERROR_LOCK_MINUTES: {},
+  PASSWORD_EXPIRATION_WARNING_DAYS: {},
+  PASSWORD_EXPIRATION_DAYS: {},
+  PASSWORD_REUSE_POLICY: {},
+  PASSWORD_MIN_LENGTH: {},
+  PASSWORD_ALLOW_CONTAIN_USERNAME: {},
+  PASSWORD_CONTAIN_SPECIAL_CHARACTERS: {}
 })
-
-const isUpdate = ref(false)
-// 修改
-const onUpdate = () => {
-  isUpdate.value = true
-}
 
 const queryForm = {
   code: Object.keys(form.value)
@@ -112,10 +159,16 @@ const queryForm = {
 // 查询列表数据
 const getDataList = async () => {
   const { data } = await listOption(queryForm)
-  form.value = data.reduce((obj: SecurityConfigResp, option: OptionResp) => {
+  form.value = data.reduce((obj: SecurityConfig, option: OptionResp) => {
     obj[option.code] = { ...option, value: Number.parseInt(option.value) }
     return obj
   }, {})
+}
+
+const isUpdate = ref(false)
+// 修改
+const onUpdate = () => {
+  isUpdate.value = true
 }
 
 // 重置
@@ -155,12 +208,17 @@ const onResetValue = () => {
     onOk: handleResetValue
   })
 }
+
 onMounted(() => {
   getDataList()
 })
 </script>
 
 <style lang="scss" scoped>
+:deep(.arco-list-item:not(:last-child)) {
+  border-bottom: none;
+}
+
 .input-width {
   width: 130px;
 }

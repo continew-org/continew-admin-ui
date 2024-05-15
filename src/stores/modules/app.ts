@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, reactive, toRefs } from 'vue'
 import { generate, getRgbStr } from '@arco-design/color'
-import { type BasicConfigResp, listOptionDict } from '@/apis'
+import { type BasicConfig, listOptionDict } from '@/apis'
 import defaultSettings from '@/config/setting.json'
 
 const storeSetup = () => {
@@ -55,48 +55,48 @@ const storeSetup = () => {
   }
 
   // 系统配置配置
-  const siteConfig = reactive({}) as BasicConfigResp
+  const siteConfig = reactive({}) as BasicConfig
   // 初始化系统配置
   const initSiteConfig = () => {
     listOptionDict({
-      code: ['site_favicon', 'site_logo', 'site_title', 'site_copyright']
+      code: ['SITE_FAVICON', 'SITE_LOGO', 'SITE_TITLE', 'SITE_COPYRIGHT']
     }).then((res) => {
       const resMap = new Map()
       res.data.forEach((item) => {
         resMap.set(item.label, item.value)
       })
-      siteConfig.site_logo = resMap.get('site_logo')
-      siteConfig.site_favicon = resMap.get('site_favicon')
-      siteConfig.site_title = resMap.get('site_title')
-      siteConfig.site_copyright = resMap.get('site_copyright')
-      document.title = resMap.get('site_title')
+      siteConfig.SITE_FAVICON = resMap.get('SITE_FAVICON')
+      siteConfig.SITE_LOGO = resMap.get('SITE_LOGO')
+      siteConfig.SITE_TITLE = resMap.get('SITE_TITLE')
+      siteConfig.SITE_COPYRIGHT = resMap.get('SITE_COPYRIGHT')
+      document.title = resMap.get('SITE_TITLE')
       document
         .querySelector('link[rel="shortcut icon"]')
-        ?.setAttribute('href', resMap.get('site_favicon') || '/favicon.ico')
+        ?.setAttribute('href', resMap.get('SITE_FAVICON') || '/favicon.ico')
     })
   }
 
   // 设置系统配置
-  const setSiteConfig = (config: BasicConfigResp) => {
+  const setSiteConfig = (config: BasicConfig) => {
     Object.assign(siteConfig, config)
-    document.title = config.site_title || ''
-    document.querySelector('link[rel="shortcut icon"]')?.setAttribute('href', config.site_favicon || '/favicon.ico')
+    document.title = config.SITE_TITLE || ''
+    document.querySelector('link[rel="shortcut icon"]')?.setAttribute('href', config.SITE_FAVICON || '/favicon.ico')
   }
 
   const getFavicon = () => {
-    return siteConfig.site_favicon
+    return siteConfig.SITE_FAVICON
   }
 
   const getLogo = () => {
-    return siteConfig.site_logo
+    return siteConfig.SITE_LOGO
   }
 
   const getTitle = () => {
-    return siteConfig.site_title
+    return siteConfig.SITE_TITLE
   }
 
   const getCopyright = () => {
-    return siteConfig.site_copyright
+    return siteConfig.SITE_COPYRIGHT
   }
 
   return {

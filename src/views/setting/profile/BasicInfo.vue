@@ -56,7 +56,7 @@
     <div class="footer">注册于 {{ userInfo.registrationDate }}</div>
   </a-card>
 
-  <a-modal v-model:visible="visible" title="上传头像" :width="400" :footer="false" @close="reset">
+  <a-modal v-model:visible="visible" title="上传头像" :width="width >= 400 ? 400 : '100%'" :footer="false" @close="reset">
     <a-row>
       <a-col :span="14" style="width: 200px; height: 200px">
         <VueCropper
@@ -95,6 +95,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
 import { type FileItem, Message } from '@arco-design/web-vue'
 import { VueCropper } from 'vue-cropper'
 import BasicInfoUpdateModal from './BasicInfoUpdateModal.vue'
@@ -103,6 +104,7 @@ import 'vue-cropper/dist/index.css'
 import { useUserStore } from '@/stores'
 import getAvatar from '@/utils/avatar'
 
+const { width } = useWindowSize()
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 

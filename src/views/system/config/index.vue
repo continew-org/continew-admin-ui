@@ -5,7 +5,9 @@
         <a-tab-pane key="1" title="基础配置">
           <BasicSetting />
         </a-tab-pane>
-        <a-tab-pane key="2" title="邮件配置(暂未开放)" disabled></a-tab-pane>
+        <a-tab-pane key="2" title="邮件配置">
+          <MailSetting />
+        </a-tab-pane>
         <a-tab-pane key="3" title="安全配置">
           <SecuritySetting />
         </a-tab-pane>
@@ -16,6 +18,7 @@
 
 <script setup lang="ts">
 import BasicSetting from './components/BasicSetting.vue'
+import MailSetting from './components/MailSetting.vue'
 import SecuritySetting from './components/SecuritySetting.vue'
 
 defineOptions({ name: 'SystemConfig' })
@@ -24,5 +27,9 @@ defineOptions({ name: 'SystemConfig' })
 <style scoped lang="less">
 :deep(.arco-tabs-content) {
   padding-top: 5px;
+}
+
+:deep(.arco-tabs-tab) {
+  background-color: var(--color-fill-2);
 }
 </style>

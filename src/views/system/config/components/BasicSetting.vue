@@ -2,7 +2,7 @@
   <a-form ref="formRef" :model="form" :rules="rules" size="large" layout="vertical" :disabled="!isUpdate">
     <a-list class="list-layout" :bordered="false">
       <a-list-item>
-        <a-form-item class="image-item" hide-label field="site_favicon">
+        <a-form-item class="image-item" hide-label field="SITE_FAVICON">
           {{ siteFavicon?.name }}
           <template #extra>
             {{ siteFavicon?.description }}
@@ -41,7 +41,7 @@
         </a-form-item>
       </a-list-item>
       <a-list-item>
-        <a-form-item class="image-item" hide-label field="site_logo">
+        <a-form-item class="image-item" hide-label field="SITE_LOGO">
           {{ siteLogo?.name }}
           <template #extra>
             {{ siteLogo?.description }}
@@ -77,12 +77,12 @@
         </a-form-item>
       </a-list-item>
       <a-list-item style="padding-top: 13px; border: none">
-        <a-form-item class="input-item" :label="siteTitle?.name" field="site_title">
-          <a-input v-model.trim="form.site_title" placeholder="请输入网站标题" :max-length="18" />
+        <a-form-item class="input-item" :label="siteTitle?.name" field="SITE_TITLE">
+          <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入网站标题" :max-length="18" />
         </a-form-item>
-        <a-form-item class="input-item" :label="siteCopyright?.name" field="site_copyright" tooltip="支持HTML标签">
+        <a-form-item class="input-item" :label="siteCopyright?.name" field="SITE_COPYRIGHT" tooltip="支持HTML标签">
           <a-textarea
-            v-model.trim="form.site_copyright"
+            v-model.trim="form.SITE_COPYRIGHT"
             placeholder="请输入版权信息"
             :auto-size="{
               minRows: 3,
@@ -137,15 +137,15 @@ import { useForm } from '@/hooks'
 
 const formRef = ref<FormInstance>()
 const rules: FormInstance['rules'] = {
-  site_title: [{ required: true, message: '请输入系统标题' }],
-  site_copyright: [{ required: true, message: '请输入版权信息' }]
+  SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
+  SITE_COPYRIGHT: [{ required: true, message: '请输入版权信息' }]
 }
 
 const { form } = useForm({
-  site_favicon: '',
-  site_logo: '',
-  site_title: '',
-  site_copyright: ''
+  SITE_FAVICON: '',
+  SITE_LOGO: '',
+  SITE_TITLE: '',
+  SITE_COPYRIGHT: ''
 })
 
 const siteFavicon = ref<OptionResp>()
@@ -156,10 +156,10 @@ const faviconFile = ref<FileItem>({ uid: '-1' })
 const logoFile = ref<FileItem>({ uid: '-2' })
 // 重置
 const reset = () => {
-  form.site_favicon = siteFavicon.value?.value || ''
-  form.site_logo = siteLogo.value?.value || ''
-  form.site_title = siteTitle.value?.value || ''
-  form.site_copyright = siteCopyright.value?.value || ''
+  form.SITE_FAVICON = siteFavicon.value?.value || ''
+  form.SITE_LOGO = siteLogo.value?.value || ''
+  form.SITE_TITLE = siteTitle.value?.value || ''
+  form.SITE_COPYRIGHT = siteCopyright.value?.value || ''
   faviconFile.value.url = siteFavicon.value?.value
   logoFile.value.url = siteLogo.value?.value
 }
@@ -177,16 +177,16 @@ const handleCancel = () => {
 
 const dataList = ref<OptionResp[]>([])
 const queryForm = reactive({
-  code: ['site_title', 'site_copyright', 'site_logo', 'site_favicon']
+  code: ['SITE_TITLE', 'SITE_COPYRIGHT', 'SITE_LOGO', 'SITE_FAVICON']
 })
 // 查询列表数据
 const getDataList = async () => {
   const res = await listOption(queryForm)
   dataList.value = res.data
-  siteFavicon.value = dataList.value.find((option) => option.code === 'site_favicon')
-  siteLogo.value = dataList.value.find((option) => option.code === 'site_logo')
-  siteTitle.value = dataList.value.find((option) => option.code === 'site_title')
-  siteCopyright.value = dataList.value.find((option) => option.code === 'site_copyright')
+  siteFavicon.value = dataList.value.find((option) => option.code === 'SITE_FAVICON')
+  siteLogo.value = dataList.value.find((option) => option.code === 'SITE_LOGO')
+  siteTitle.value = dataList.value.find((option) => option.code === 'SITE_TITLE')
+  siteCopyright.value = dataList.value.find((option) => option.code === 'SITE_COPYRIGHT')
   reset()
 }
 
@@ -236,7 +236,7 @@ const handleUploadFavicon = (options: RequestOption) => {
     uploadFile(formData)
       .then((res) => {
         onSuccess(res)
-        form.site_favicon = res.data.url
+        form.SITE_FAVICON = res.data.url
         Message.success('上传成功')
       })
       .catch((error) => {
@@ -266,7 +266,7 @@ const handleUploadLogo = (options: RequestOption) => {
     uploadFile(formData)
       .then((res) => {
         onSuccess(res)
-        form.site_logo = res.data.url
+        form.SITE_LOGO = res.data.url
         Message.success('上传成功')
       })
       .catch((error) => {
