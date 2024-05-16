@@ -8,7 +8,7 @@
     @before-ok="save"
     @close="reset"
   >
-    <a-tabs>
+    <a-tabs v-model:active-key="activeKey">
       <a-tab-pane key="1" title="生成配置">
         <a-form ref="formRef" :model="form" :rules="rules" class="gen-config" size="large">
           <a-form-item label="作者名称" field="author">
@@ -194,11 +194,15 @@ const handleRefresh = async (tableName: string) => {
   await getDataList(tableName, true)
 }
 
+const activeKey = ref('1')
 // 保存
 const save = async () => {
   try {
     const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return false
+    if (isInvalid) {
+      activeKey.value = '1'
+      return false
+    }
     await saveGenConfig(form.tableName, {
       genConfig: form,
       fieldConfigs: dataList.value
