@@ -34,7 +34,7 @@ const onCopy = (data: object) => {
     position: absolute;
     right: 10px;
     top: 10px;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
   }
 }
