@@ -17,3 +17,13 @@ export function getSmsCaptcha(query: { phone: string }) {
 export function getEmailCaptcha(query: { email: string }) {
   return http.get<boolean>(`${BASE_URL}/mail`, query)
 }
+
+/** @desc 获取行为验证码 */
+export function getBehaviorCaptcha(params: any) {
+  return http.get<Common.BehaviorCaptchaRes>(`${BASE_URL}/behavior`, {params});
+}
+
+/** @desc 校验行为验证码 */
+export function checkBehaviorCaptcha(params: any) {
+  return http.post<Common.CheckBehaviorCaptchaRes>(`${BASE_URL}/behavior`, params);
+}

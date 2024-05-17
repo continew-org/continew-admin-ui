@@ -18,3 +18,27 @@ export interface DashboardNoticeResp {
   title: string
   type: number
 }
+
+/* 行为验证码类型 */
+export interface BehaviorCaptchaReq {
+  captchaType?: string
+  captchaVerification?: string
+  clientUid?: string
+}
+
+export interface BehaviorCaptchaRes {
+  originalImageBase64: string
+  point: {
+    x: number
+    y: number
+  }
+  jigsawImageBase64: string
+  token: string
+  secretKey: string
+  wordList: string[]
+}
+
+export interface CheckBehaviorCaptchaRes {
+  repCode: string
+  repMsg: string
+}

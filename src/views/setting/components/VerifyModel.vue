@@ -16,12 +16,19 @@
           :loading="captchaLoading"
           :disabled="captchaDisable"
           size="large"
-          @click="onCaptcha"
+          @click="handleOpenBehaviorCaptcha"
         >
           {{ captchaBtnName }}
         </a-button>
       </template>
     </GiForm>
+    <Verify
+        ref="VerifyRef"
+        :mode="captchaMode"
+        :captcha-type="captchaType"
+        :img-size="{ width: '330px', height: '155px' }"
+        @success="onCaptcha"
+    ></Verify>
   </a-modal>
 </template>
 
@@ -127,10 +134,22 @@ const { form, resetForm } = useForm({
   rePassword: ''
 })
 
+const VerifyRef = ref<InstanceType<any>>()
+const captchaType = ref('blockPuzzle')
+const captchaMode = ref('pop')
 const captchaTimer = ref()
 const captchaTime = ref(60)
 const captchaBtnName = ref('获取验证码')
 const captchaDisable = ref(false)
+const captchaLoading = ref(false)
+
+// 弹出行为验证码
+const handleOpenBehaviorCaptcha = async () => {
+  const isInvalid = await formRef.value?.formRef?.validateField(verifyType.value === 'phone' ? 'phone' : 'email')
+  if (isInvalid) return
+  VerifyRef.value.show()
+}
+
 // 重置验证码
 const resetCaptcha = () => {
   window.clearInterval(captchaTimer.value)
@@ -146,11 +165,8 @@ const reset = () => {
   resetCaptcha()
 }
 
-const captchaLoading = ref(false)
 // 获取验证码
 const onCaptcha = async () => {
-  const isInvalid = await formRef.value?.formRef?.validateField(verifyType.value === 'phone' ? 'newPhone' : 'email')
-  if (isInvalid) return false
   // 发送验证码
   try {
     captchaLoading.value = true

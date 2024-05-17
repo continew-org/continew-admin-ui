@@ -18,7 +18,7 @@
         :loading="captchaLoading"
         :disabled="captchaDisable"
         size="large"
-        @click="onCaptcha"
+        @click="handleOpenBehaviorCaptcha"
       >
         {{ captchaBtnName }}
       </a-button>
@@ -30,6 +30,13 @@
       </a-space>
     </a-form-item>
   </a-form>
+  <Verify
+      ref="VerifyRef"
+      :mode="captchaMode"
+      :captcha-type="captchaType"
+      :img-size="{ width: '330px', height: '155px' }"
+      @success="onCaptcha"
+  ></Verify>
 </template>
 
 <script setup lang="ts">
@@ -77,10 +84,25 @@ const handleLogin = async () => {
   }
 }
 
+const VerifyRef = ref<InstanceType<any>>()
+const captchaType = ref('blockPuzzle')
+const captchaMode = ref('pop')
 const captchaTimer = ref()
 const captchaTime = ref(60)
 const captchaBtnName = ref('获取验证码')
 const captchaDisable = ref(false)
+const captchaLoading = ref(false)
+
+// 弹出行为验证码
+const handleOpenBehaviorCaptcha = () => {
+  if (captchaLoading.value) return
+  formRef.value?.validateField('phone', (valid: any) => {
+    if (!valid) {
+      VerifyRef.value.show()
+    }
+  })
+}
+
 // 重置验证码
 const resetCaptcha = () => {
   window.clearInterval(captchaTimer.value)
@@ -89,7 +111,6 @@ const resetCaptcha = () => {
   captchaDisable.value = false
 }
 
-const captchaLoading = ref(false)
 // 获取验证码
 const onCaptcha = async () => {
   if (captchaLoading.value) return
