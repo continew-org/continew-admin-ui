@@ -73,6 +73,9 @@
           <template #gender="{ record }">
             <GiCellGender :gender="record.gender" />
           </template>
+          <template #roleNames="{ record }">
+            <GiCellTags :data="record.roleNames" />
+          </template>
           <template #status="{ record }">
             <GiCellStatus :status="record.status" />
           </template>
@@ -155,16 +158,17 @@ const columns: TableInstanceColumns[] = [
     fixed: !isMobile() ? 'left' : undefined
   },
   { title: '昵称', dataIndex: 'nickname', width: 120, ellipsis: true, tooltip: true },
-  { title: '状态', slotName: 'status', align: 'center' },
-  { title: '性别', slotName: 'gender', align: 'center' },
-  { title: '所属部门', dataIndex: 'deptName', ellipsis: true, tooltip: true },
+  { title: '状态', slotName: 'status', align: 'center', width: 80 },
+  { title: '性别', slotName: 'gender', align: 'center', width: 100 },
+  { title: '所属部门', dataIndex: 'deptName', ellipsis: true, tooltip: true, width: 180 },
+  { title: '角色', dataIndex: 'roleNames', slotName: 'roleNames', width: 160 },
   { title: '手机号', dataIndex: 'phone', width: 170, ellipsis: true, tooltip: true },
   { title: '邮箱', dataIndex: 'email', width: 170, ellipsis: true, tooltip: true },
   { title: '系统内置', slotName: 'isSystem', width: 100, align: 'center', show: false },
   { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
-  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
+  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, width: 140, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
+  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, width: 140, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
   {
     title: '操作',

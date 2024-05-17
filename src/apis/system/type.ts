@@ -16,12 +16,12 @@ export interface UserResp {
   updateTime: string
   deptId: string
   deptName: string
+  roleIds: Array<number>
+  roleNames: Array<string>
   disabled: boolean
 }
 
 export type UserDetailResp = UserResp & {
-  roleIds?: Array<number>
-  roleNames: string
   pwdResetTime?: string
 }
 
