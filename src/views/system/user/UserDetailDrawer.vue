@@ -2,7 +2,9 @@
   <a-drawer v-model:visible="visible" title="用户详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
-      <a-descriptions-item label="用户名"><a-typography-paragraph copyable>{{ dataDetail?.username }}</a-typography-paragraph></a-descriptions-item>
+      <a-descriptions-item label="用户名">
+        <a-typography-paragraph :copyable="!!dataDetail?.username">{{ dataDetail?.username }}</a-typography-paragraph>
+      </a-descriptions-item>
       <a-descriptions-item label="昵称">{{ dataDetail?.nickname }}</a-descriptions-item>
       <a-descriptions-item label="性别">
         <span v-if="dataDetail?.gender === 1">男</span>
@@ -13,8 +15,12 @@
         <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
         <a-tag v-else color="red">禁用</a-tag>
       </a-descriptions-item>
-      <a-descriptions-item label="手机号"><a-typography-paragraph copyable>{{ dataDetail?.phone }}</a-typography-paragraph></a-descriptions-item>
-      <a-descriptions-item label="邮箱"><a-typography-paragraph copyable>{{ dataDetail?.email }}</a-typography-paragraph></a-descriptions-item>
+      <a-descriptions-item label="手机号">
+        <a-typography-paragraph :copyable="!!dataDetail?.phone">{{ dataDetail?.phone || '暂无' }}</a-typography-paragraph>
+      </a-descriptions-item>
+      <a-descriptions-item label="邮箱">
+        <a-typography-paragraph :copyable="!!dataDetail?.email">{{ dataDetail?.email || '暂无' }}</a-typography-paragraph>
+      </a-descriptions-item>
       <a-descriptions-item label="所属部门">{{ dataDetail?.deptName }}</a-descriptions-item>
       <a-descriptions-item label="角色">{{ dataDetail?.roleNames }}</a-descriptions-item>
       <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
