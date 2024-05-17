@@ -28,7 +28,7 @@ export function encryptByRsa(txt: string) {
 
 const defaultKeyWork = 'XwKsGlMcdPMEhR1B'
 
-export function aesEncrypt(word, keyWord = defaultKeyWork) {
+export function encryptByAes(word, keyWord = defaultKeyWork) {
   const key = CryptoJS.enc.Utf8.parse(keyWord)
   const arcs = CryptoJS.enc.Utf8.parse(word)
   const encrypted = CryptoJS.AES.encrypt(arcs, key, {

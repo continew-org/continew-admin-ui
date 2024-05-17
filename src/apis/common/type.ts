@@ -20,13 +20,7 @@ export interface DashboardNoticeResp {
 }
 
 /* 行为验证码类型 */
-export interface BehaviorCaptchaReq {
-  captchaType?: string
-  captchaVerification?: string
-  clientUid?: string
-}
-
-export interface BehaviorCaptchaRes {
+export interface BehaviorCaptchaResp {
   originalImageBase64: string
   point: {
     x: number
@@ -38,7 +32,7 @@ export interface BehaviorCaptchaRes {
   wordList: string[]
 }
 
-export interface CheckBehaviorCaptchaRes {
+export interface CheckBehaviorCaptchaResp {
   repCode: string
   repMsg: string
 }

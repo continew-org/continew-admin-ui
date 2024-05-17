@@ -19,11 +19,11 @@ export function getEmailCaptcha(query: { email: string }) {
 }
 
 /** @desc 获取行为验证码 */
-export function getBehaviorCaptcha(params: any) {
-  return http.get<Common.BehaviorCaptchaRes>(`${BASE_URL}/behavior`, {params});
+export function getBehaviorCaptcha(req: any) {
+  return http.get<Common.BehaviorCaptchaResp>(`${BASE_URL}/behavior`, req)
 }
 
 /** @desc 校验行为验证码 */
-export function checkBehaviorCaptcha(params: any) {
-  return http.post<Common.CheckBehaviorCaptchaRes>(`${BASE_URL}/behavior`, params);
+export function checkBehaviorCaptcha(req: any) {
+  return http.post<Common.CheckBehaviorCaptchaResp>(`${BASE_URL}/behavior`, req)
 }

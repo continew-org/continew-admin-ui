@@ -108,7 +108,7 @@ import {
   checkBehaviorCaptcha,
   getBehaviorCaptcha
 } from '@/apis/common/captcha'
-import { aesEncrypt } from '@/utils/encrypt'
+import { encryptByAes } from '@/utils/encrypt'
 import { resetSize } from '@/utils/verify'
 
 export default {
@@ -283,7 +283,7 @@ export default {
         const data = {
           captchaType: captchaType.value,
           pointJson: secretKey.value
-            ? aesEncrypt(
+            ? encryptByAes(
               JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
               secretKey.value
             )
@@ -310,7 +310,7 @@ export default {
                 / 1000
             ).toFixed(2)}s验证成功`
             const captchaVerification = secretKey.value
-              ? aesEncrypt(
+              ? encryptByAes(
                     `${backToken.value}---${JSON.stringify({
                       x: moveLeftDistance,
                       y: 5.0
