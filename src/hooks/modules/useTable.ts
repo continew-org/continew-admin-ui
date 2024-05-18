@@ -80,6 +80,7 @@ export function useTable<T>(api: Api<T>, options?: Options<T>) {
     Modal.warning({
       title: options?.title || '提示',
       content: options?.content || '是否确定删除该条数据？',
+      okButtonProps: { status: 'danger' },
       hideCancel: false,
       maskClosable: false,
       onBeforeOk: onDelete
