@@ -172,22 +172,21 @@ const onUpdate = () => {
 
 // 取消
 const handleCancel = () => {
+  reset()
   isUpdate.value = false
 }
 
-const dataList = ref<OptionResp[]>([])
 const queryForm = reactive({
   code: ['SITE_TITLE', 'SITE_COPYRIGHT', 'SITE_LOGO', 'SITE_FAVICON']
 })
 // 查询列表数据
 const getDataList = async () => {
-  const res = await listOption(queryForm)
-  dataList.value = res.data
-  siteFavicon.value = dataList.value.find((option) => option.code === 'SITE_FAVICON')
-  siteLogo.value = dataList.value.find((option) => option.code === 'SITE_LOGO')
-  siteTitle.value = dataList.value.find((option) => option.code === 'SITE_TITLE')
-  siteCopyright.value = dataList.value.find((option) => option.code === 'SITE_COPYRIGHT')
-  reset()
+  const { data } = await listOption(queryForm)
+  siteFavicon.value = data.find((option) => option.code === 'SITE_FAVICON')
+  siteLogo.value = data.find((option) => option.code === 'SITE_LOGO')
+  siteTitle.value = data.find((option) => option.code === 'SITE_TITLE')
+  siteCopyright.value = data.find((option) => option.code === 'SITE_COPYRIGHT')
+  handleCancel()
 }
 
 const appStore = useAppStore()
@@ -204,7 +203,7 @@ const handleSave = async () => {
     })
   )
   appStore.setSiteConfig(form)
-  handleCancel()
+  await getDataList()
   Message.success('保存成功')
 }
 
