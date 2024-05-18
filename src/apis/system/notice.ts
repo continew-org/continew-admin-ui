@@ -27,3 +27,6 @@ export function updateNotice(data: any, id: string) {
 export function deleteNotice(ids: string | Array<number>) {
   return http.del(`${BASE_URL}/${ids}`)
 }
+export function getNoticeList(type: string | Array<number>) {
+  return http.get(`/system/message?page=1&size=10&sort=createTime,desc&isRead=false&type=${type}`,)
+}
