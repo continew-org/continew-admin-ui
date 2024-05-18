@@ -59,6 +59,15 @@ const options: Options = {
   btns: { hide: true }
 }
 
+const { form, resetForm } = useForm({
+  phone: '',
+  email: '',
+  captcha: '',
+  oldPassword: '',
+  newPassword: '',
+  rePassword: ''
+})
+
 const columns: Columns = [
   {
     label: '手机号',
@@ -106,7 +115,18 @@ const columns: Columns = [
     label: '新密码',
     field: 'newPassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请输入新密码' }],
+    rules: [
+      { required: true, message: '请输入新密码' },
+      {
+        validator: (value, callback) => {
+          if (value === form.oldPassword) {
+            callback('新密码不能与当前密码相同')
+          } else {
+            callback()
+          }
+        }
+      }
+    ],
     hide: () => {
       return verifyType.value !== 'password'
     }
@@ -115,24 +135,26 @@ const columns: Columns = [
     label: '确认新密码',
     field: 'rePassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请再次输入新密码' }],
     props: {
       placeholder: '请再次输入新密码'
     },
+    rules: [
+      { required: true, message: '请再次输入新密码' },
+      {
+        validator: (value, callback) => {
+          if (value !== form.newPassword) {
+            callback('两次输入的密码不一致')
+          } else {
+            callback()
+          }
+        }
+      }
+    ],
     hide: () => {
       return verifyType.value !== 'password'
     }
   }
 ]
-
-const { form, resetForm } = useForm({
-  phone: '',
-  email: '',
-  captcha: '',
-  oldPassword: '',
-  newPassword: '',
-  rePassword: ''
-})
 
 const VerifyRef = ref<InstanceType<any>>()
 const captchaType = ref('blockPuzzle')
