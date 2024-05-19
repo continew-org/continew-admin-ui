@@ -48,7 +48,6 @@
         </a-space>
       </template>
     </GiTable>
-
     <NoticeAddModal ref="NoticeAddModalRef" @save-success="search" />
     <NoticeDetailModal ref="NoticeDetailModalRef" />
   </div>

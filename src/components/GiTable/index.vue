@@ -25,15 +25,14 @@
             </a-button>
           </a-tooltip>
           <template #content>
-            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">{{ item.label }}</a-doption>
+            <a-doption v-for="item in sizeList" :key="item.value" :value="item.value" :active="item.value === size">
+              {{
+                item.label }}
+            </a-doption>
           </template>
         </a-dropdown>
-        <a-popover
-          v-if="showSettingColumnBtn"
-          trigger="click"
-          position="br"
-          :content-style="{ minWidth: '120px', padding: '6px 8px 10px' }"
-        >
+        <a-popover v-if="showSettingColumnBtn" trigger="click" position="br"
+          :content-style="{ minWidth: '120px', padding: '6px 8px 10px' }">
           <a-tooltip content="列设置">
             <a-button class="gi_hover_btn-border">
               <template #icon>
@@ -69,18 +68,22 @@
         </a-tooltip>
       </a-space>
     </a-row>
-    <div class="gi-table__container">
-      <a-table
-        ref="tableRef"
-        :stripe="stripe"
-        :size="size"
-        :bordered="{ cell: isBordered }"
-        v-bind="{ ...attrs, columns: _columns }"
-      >
-        <template v-for="key in Object.keys(slots)" :key="key" #[key]="scoped">
-          <slot :key="key" :name="key" v-bind="scoped"></slot>
-        </template>
-      </a-table>
+    <div class="gi-table__body" :class="`gi-table__body-pagination-${attrs['page-position']}`">
+      <div class="gi-table__container">
+        <a-table ref="tableRef" :stripe="stripe" :size="size" :bordered="{ cell: isBordered }"
+          v-bind="{ ...attrs, columns: _columns }" :scrollbar="false" :pagination="false">
+          <template v-for="key in Object.keys(slots)" :key="key" #[key]="scoped">
+            <slot :key="key" :name="key" v-bind="scoped"></slot>
+          </template>
+        </a-table>
+      </div>
+      <template v-if="attrs.pagination">
+        <slot name="pagination-left"></slot>
+        <slot name="custom-pagination" :pagination-props="attrs.pagination">
+          <a-pagination v-bind="attrs.pagination" />
+        </slot>
+        <slot name="pagination-right"></slot>
+      </template>
     </div>
   </div>
 </template>
@@ -196,7 +199,9 @@ defineExpose({ tableRef })
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 100%;
   background: var(--color-bg-1);
+
   &--fullscreen {
     padding: $padding;
     position: fixed;
@@ -206,12 +211,89 @@ defineExpose({ tableRef })
     bottom: 0;
     z-index: 1001;
   }
+
   &__container {
     max-height: 100%;
     overflow: hidden;
+    flex: 1;
   }
+
+  &__body {
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    //如果为空时，将表格铺满
+    :deep(.arco-table-element):has(tbody .arco-table-tr-empty) {
+      height: 100%;
+    }
+
+    // 分页默认位置
+    :deep(.arco-pagination) {
+      margin-top: 10px;
+      justify-content: end;
+    }
+
+    &-pagination-top {
+      flex-direction: column-reverse;
+
+      :deep(.arco-pagination) {
+        margin-bottom: 10px;
+        justify-content: center;
+      }
+    }
+
+    // 上
+    &-pagination-t {
+      &l {
+        flex-direction: column-reverse;
+
+        :deep(.arco-pagination) {
+          margin-bottom: 10px;
+          justify-content: start;
+        }
+      }
+
+      &r {
+        flex-direction: column-reverse;
+
+        :deep(.arco-pagination) {
+          margin-bottom: 10px;
+          justify-content: end;
+        }
+      }
+    }
+
+    //下
+    &-pagination-bottom {
+      :deep(.arco-pagination) {
+        margin-top: 10px;
+        justify-content: center;
+      }
+    }
+
+    &-pagination-b {
+      &l {
+        :deep(.arco-pagination) {
+          margin-top: 10px;
+          justify-content: start;
+        }
+      }
+
+      &r {
+        :deep(.arco-pagination) {
+          margin-top: 10px;
+          justify-content: end;
+        }
+      }
+    }
+  }
+
   &__header {
     padding: 0 0 10px;
+
     &-title {
       color: var(--color-text-1);
       font-size: 18px;
@@ -219,17 +301,21 @@ defineExpose({ tableRef })
       line-height: 1.5;
     }
   }
+
   &__toolbar {
     :deep(.arco-form-item-layout-inline) {
       margin-right: 8px;
+
       &:last-of-type {
         margin-right: 0;
       }
     }
+
     :deep(.arco-form-layout-inline .arco-form-item) {
       margin-bottom: 0;
     }
   }
+
   &__draggable {
     padding: 1px 0; // 解决 max-height 和 overflow:auto 始终显示垂直滚动条问题
     max-height: 250px;
@@ -244,21 +330,38 @@ defineExpose({ tableRef })
   align-items: center;
 
   cursor: pointer;
+
   &:hover {
     background-color: var(--color-fill-2);
   }
+
   &__move {
     padding-left: 2px;
     padding-right: 2px;
     cursor: move;
   }
+
   :deep(.arco-checkbox) {
     width: 100%;
     font-size: 12px;
+
     .arco-checkbox-icon {
       width: 14px;
       height: 14px;
     }
   }
+}
+
+// 控制table高度占满
+:deep(.arco-table-border:not(.arco-table-border-cell) .arco-table-container) {
+  height: 100%;
+}
+
+:deep(.arco-table .arco-table-element) {
+  border: 1px solid var(--color-border-table);
+}
+
+:deep(.arco-table-body) {
+  height: 100%;
 }
 </style>

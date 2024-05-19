@@ -7,46 +7,25 @@
         </slot>
       </a-space>
     </a-row>
-    <a-row :gutter="16">
+    <a-row :gutter="16" class="h-full">
       <a-col :xs="0" :md="4" :lg="4" :xl="4" :xxl="4">
         <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-tree
-          ref="treeRef"
-          :data="deptList"
-          :selected-keys="selectedKeys"
-          default-expand-all
-          show-line
-          block-node
-          @select="handleSelectDept"
-        >
+        <a-tree ref="treeRef" :data="deptList" :selected-keys="selectedKeys" default-expand-all show-line block-node
+          @select="handleSelectDept">
         </a-tree>
       </a-col>
-      <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20">
-        <GiTable
-          row-key="id"
-          :data="dataList"
-          :columns="columns"
-          :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
-          :pagination="pagination"
-          :disabled-tools="['size']"
-          :disabled-column-keys="['username']"
-          @refresh="search"
-        >
+      <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20" class="h-full">
+        <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading"
+          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }" :pagination="pagination" :disabled-tools="['size']"
+          :disabled-column-keys="['username']" @refresh="search">
           <template #custom-left>
             <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
               <template #prefix><icon-search /></template>
             </a-input>
-            <a-select
-              v-model="queryForm.status"
-              :options="DisEnableStatusList"
-              placeholder="请选择状态"
-              allow-clear
-              style="width: 150px"
-              @change="search"
-            />
+            <a-select v-model="queryForm.status" :options="DisEnableStatusList" placeholder="请选择状态" allow-clear
+              style="width: 150px" @change="search" />
             <a-button @click="reset">重置</a-button>
           </template>
           <template #custom-right>
@@ -63,12 +42,8 @@
             </a-tooltip>
           </template>
           <template #username="{ record }">
-            <GiCellAvatar
-              :avatar="getAvatar(record.avatar, record.gender)"
-              :name="record.username"
-              is-link
-              @click="onDetail(record)"
-            />
+            <GiCellAvatar :avatar="getAvatar(record.avatar, record.gender)" :name="record.username" is-link
+              @click="onDetail(record)" />
           </template>
           <template #gender="{ record }">
             <GiCellGender :gender="record.gender" />
@@ -86,13 +61,8 @@
           <template #action="{ record }">
             <a-space>
               <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
-              <a-link
-                v-permission="['system:user:delete']"
-                status="danger"
-                :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-                :disabled="record.disabled"
-                @click="onDelete(record)"
-              >
+              <a-link v-permission="['system:user:delete']" status="danger"
+                :title="record.isSystem ? '系统内置数据不能删除' : '删除'" :disabled="record.disabled" @click="onDelete(record)">
                 删除
               </a-link>
               <a-dropdown>
