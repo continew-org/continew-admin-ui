@@ -47,10 +47,7 @@ const columns: Columns = [
   }
 ]
 
-const { form, resetForm } = useForm({
-  name: '',
-  code: ''
-})
+const { form, resetForm } = useForm({})
 
 // 重置
 const reset = () => {

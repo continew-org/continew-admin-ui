@@ -112,18 +112,8 @@ const rules: FormInstance['rules'] = {
 }
 
 const { form, resetForm } = useForm({
-  id: '',
-  username: '',
-  nickname: '',
   gender: 1 as Gender,
-  phone: '',
-  email: '',
-  deptId: '',
-  roleIds: [] as string[],
-  description: '',
-  status: 1 as Status,
-  type: 2 as 1 | 2,
-  disabled: false
+  status: 1 as Status
 })
 
 // 重置

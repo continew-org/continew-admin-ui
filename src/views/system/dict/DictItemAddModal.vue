@@ -79,9 +79,7 @@ const columns: Columns = [
 ]
 
 const { form, resetForm } = useForm({
-  label: '',
-  value: '',
-  color: '',
+  color: 'blue',
   sort: 999,
   status: 1
 })

@@ -109,7 +109,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((page) => listUser({ ...queryForm, ...page }), { immediate: true })
+} = useTable((page) => listUser({ ...queryForm, ...page }), { immediate: false })
 
 const columns: TableInstanceColumns[] = [
   {
@@ -135,7 +135,7 @@ const columns: TableInstanceColumns[] = [
   { title: '手机号', dataIndex: 'phone', width: 170, ellipsis: true, tooltip: true },
   { title: '邮箱', dataIndex: 'email', width: 170, ellipsis: true, tooltip: true },
   { title: '系统内置', slotName: 'isSystem', width: 100, align: 'center', show: false },
-  { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
+  { title: '描述', dataIndex: 'description', width: 130, ellipsis: true, tooltip: true },
   { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, width: 140, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
   { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, width: 140, show: false },

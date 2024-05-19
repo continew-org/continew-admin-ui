@@ -122,7 +122,6 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { mapTree } from 'xe-utils'
-import type { MenuForm } from './type'
 import { type MenuResp, addMenu, getMenu, updateMenu } from '@/apis'
 import { useForm } from '@/hooks'
 import { filterTree, transformPathToName } from '@/utils'
@@ -163,20 +162,12 @@ const rules: FormInstance['rules'] = {
   permission: [{ required: true, message: '请输入权限标识' }]
 }
 
-const { form, resetForm } = useForm<MenuForm>({
+const { form, resetForm } = useForm({
   type: 1,
-  icon: '',
-  title: '',
   sort: 999,
-  permission: '',
-  path: '',
-  name: '',
-  component: '',
-  redirect: '',
   isExternal: false,
   isCache: false,
   isHidden: false,
-  parentId: '',
   status: 1
 })
 const componentName = computed(() => transformPathToName(form.path))

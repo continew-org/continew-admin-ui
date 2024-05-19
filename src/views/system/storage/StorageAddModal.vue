@@ -90,7 +90,6 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import type { StorageReq } from './type'
 import { addStorage, getStorage, updateStorage } from '@/apis'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -117,16 +116,8 @@ const rules: FormInstance['rules'] = {
   bucketName: [{ required: true, message: '请输入桶名称' }]
 }
 
-const { form, resetForm } = useForm<StorageReq>({
-  name: '',
-  code: '',
+const { form, resetForm } = useForm({
   type: 2,
-  accessKey: undefined,
-  secretKey: undefined,
-  endpoint: undefined,
-  bucketName: undefined,
-  domain: undefined,
-  description: undefined,
   isDefault: false,
   sort: 999,
   status: 1
