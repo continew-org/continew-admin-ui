@@ -142,10 +142,10 @@ const rules: FormInstance['rules'] = {
 }
 
 const { form } = useForm({
-  SITE_FAVICON: '',
-  SITE_LOGO: '',
-  SITE_TITLE: '',
-  SITE_COPYRIGHT: ''
+  SITE_FAVICON: undefined,
+  SITE_LOGO: undefined,
+  SITE_TITLE: undefined,
+  SITE_COPYRIGHT: undefined
 })
 
 const siteFavicon = ref<OptionResp>()

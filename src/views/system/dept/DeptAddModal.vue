@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
-import type { DeptReq } from './type'
 import { addDept, getDept, updateDept } from '@/apis'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
@@ -93,9 +92,7 @@ const columns: Columns = [
   }
 ]
 
-const { form, resetForm } = useForm<DeptReq>({
-  name: '',
-  parentId: undefined,
+const { form, resetForm } = useForm({
   sort: 999,
   status: 1
 })

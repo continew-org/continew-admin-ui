@@ -112,13 +112,8 @@ const rules: FormInstance['rules'] = {
 }
 
 const { form, resetForm } = useForm({
-  name: '',
-  code: '',
   sort: 999,
-  description: undefined,
-  menuIds: undefined,
-  dataScope: 4,
-  deptIds: undefined
+  dataScope: 4
 })
 
 const menuTreeRef = ref()

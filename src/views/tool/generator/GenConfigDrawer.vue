@@ -160,11 +160,6 @@ const rules: FormInstance['rules'] = {
 }
 
 const { form, resetForm } = useForm({
-  author: '',
-  businessName: '',
-  moduleName: '',
-  packageName: '',
-  tablePrefix: '',
   isOverride: false
 })
 

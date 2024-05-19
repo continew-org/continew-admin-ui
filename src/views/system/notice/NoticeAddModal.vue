@@ -122,13 +122,7 @@ const rules: FormInstance['rules'] = {
   content: [{ required: true, message: '请输入内容' }]
 }
 
-const { form, resetForm } = useForm({
-  title: '',
-  content: '',
-  type: '',
-  effectiveTime: undefined,
-  terminateTime: undefined
-})
+const { form, resetForm } = useForm({})
 
 // 重置
 const reset = () => {
