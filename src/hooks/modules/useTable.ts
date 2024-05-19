@@ -1,5 +1,6 @@
 import type { TableData, TableInstance } from '@arco-design/web-vue'
 import { Message, Modal } from '@arco-design/web-vue'
+import type { Options as paginationOptions } from './usePagination'
 import { usePagination } from '@/hooks'
 
 interface Options<T> {
@@ -7,6 +8,7 @@ interface Options<T> {
   onSuccess?: () => void
   immediate?: boolean
   rowKey?: keyof T
+  paginationOption: paginationOptions
 }
 
 type PaginationParams = { page: number, size: number }
@@ -14,7 +16,7 @@ type Api<T> = (params: PaginationParams) => Promise<ApiRes<PageRes<T[]>>> | Prom
 
 export function useTable<T>(api: Api<T>, options?: Options<T>) {
   const { formatResult, onSuccess, immediate, rowKey } = options || {}
-  const { pagination, setTotal } = usePagination(() => getTableData())
+  const { pagination, setTotal } = usePagination(() => getTableData(), options?.paginationOption)
   const loading = ref(false)
   const tableData = ref<T[]>([])
 
