@@ -224,6 +224,7 @@ defineExpose({ tableRef })
     display: flex;
     flex-direction: column;
     flex: 1;
+    overflow: auto;
 
     //如果为空时，将表格铺满
     :deep(.arco-table-element):has(tbody .arco-table-tr-empty) {
