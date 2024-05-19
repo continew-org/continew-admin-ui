@@ -201,6 +201,7 @@ defineExpose({ tableRef })
   overflow: hidden;
   height: 100%;
   background: var(--color-bg-1);
+  position: relative;
 
   &--fullscreen {
     padding: $padding;
@@ -216,6 +217,21 @@ defineExpose({ tableRef })
     max-height: 100%;
     overflow: hidden;
     flex: 1;
+
+    // 控制table高度占满
+    :deep(.arco-table-border:not(.arco-table-border-cell) .arco-table-container) {
+      height: 100%;
+    }
+
+    :deep(.arco-table-body) {
+      height: 100%;
+    }
+
+    // 控制表格最后一行的下边框显示
+    :deep(.arco-table-border .arco-table-scroll-y .arco-table-body .arco-table-tr:last-of-type .arco-table-td,
+      .arco-table-border .arco-table-scroll-y tfoot .arco-table-tr:last-of-type .arco-table-td) {
+      border-bottom: 1px solid var(--color-border-table);
+    }
   }
 
   &__body {
@@ -351,18 +367,5 @@ defineExpose({ tableRef })
       height: 14px;
     }
   }
-}
-
-// 控制table高度占满
-:deep(.arco-table-border:not(.arco-table-border-cell) .arco-table-container) {
-  height: 100%;
-}
-
-:deep(.arco-table .arco-table-element) {
-  border: 1px solid var(--color-border-table);
-}
-
-:deep(.arco-table-body) {
-  height: 100%;
 }
 </style>
