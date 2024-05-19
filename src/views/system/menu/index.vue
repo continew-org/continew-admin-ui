@@ -71,7 +71,7 @@
       <template #action="{ record }">
         <a-space>
           <a-link v-permission="['system:menu:update']" @click="onUpdate(record)">修改</a-link>
-          <a-link v-if="[1, 2].includes(record.type)" v-permission="['system:menu:add']" @click="onAdd(record.id)">
+          <a-link v-permission="['system:menu:add']" :disabled="![1, 2].includes(record.type)" @click="onAdd(record.id)">
             新增
           </a-link>
           <a-link v-permission="['system:menu:delete']" status="danger" @click="onDelete(record)">删除</a-link>

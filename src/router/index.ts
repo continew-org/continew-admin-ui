@@ -63,6 +63,12 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'SettingProfile',
         component: () => import('@/views/setting/profile/index.vue'),
         meta: { title: '个人中心', showInTabs: false }
+      },
+      {
+        path: '/setting/message',
+        name: 'SettingMessage',
+        component: () => import('@/views/setting/message/index.vue'),
+        meta: { title: '消息中心', showInTabs: false }
       }
     ]
   }
