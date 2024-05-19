@@ -5,42 +5,28 @@
         <template #prefix><icon-search /></template>
       </a-input>
     </div>
-    <div class="dict-tree_tree">
-      <a-scrollbar style="height: 100%; overflow: auto" outer-style="height: 100%">
-        <a-tree
-          :data="(treeData as unknown as TreeNodeData[])"
-          :field-names="{ key: 'id' }"
-          block-node
-          @select="select"
-        >
+    <div class="dict-tree__container">
+      <div class="dict-tree__tree">
+        <a-tree :data="(treeData as unknown as TreeNodeData[])" :field-names="{ key: 'id' }" block-node
+          @select="select">
           <template #title="node">
-            <a-trigger
-              v-model:popup-visible="node.popupVisible"
-              trigger="contextMenu"
-              align-point
-              animation-name="slide-dynamic-origin"
-              auto-fit-transform-origin
-              position="bl"
-              scroll-to-close
-            >
+            <a-trigger v-model:popup-visible="node.popupVisible" trigger="contextMenu" align-point
+              animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
               <div @contextmenu="onContextmenu(node)">{{ node.name }}（{{ node.code }}）</div>
               <template #content>
-                <RightMenu
-                  v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])"
-                  :data="node"
-                  @on-menu-item-click="onMenuItemClick"
-                 />
+                <RightMenu v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" :data="node"
+                  @on-menu-item-click="onMenuItemClick" />
               </template>
             </a-trigger>
           </template>
         </a-tree>
-        <a-affix :offset-bottom="30">
-          <a-button v-permission="['system:dict:add']" type="primary" style="width: 100%" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
-          </a-button>
-        </a-affix>
-      </a-scrollbar>
+      </div>
+    </div>
+    <div>
+      <a-button v-permission="['system:dict:add']" type="primary" style="width: 100%" @click="onAdd">
+        <template #icon><icon-plus /></template>
+        <span>新增</span>
+      </a-button>
     </div>
   </div>
 
@@ -59,15 +45,12 @@ import has from '@/utils/has'
 interface Props {
   placeholder?: string
 }
-
 const props = withDefaults(defineProps<Props>(), {
   placeholder: '请输入关键词'
 })
-
 const emit = defineEmits<{
   (e: 'node-click', keys: Array<any>): void
 }>()
-
 // 选中节点
 const select = (keys: Array<any>) => {
   emit('node-click', keys)
@@ -175,6 +158,7 @@ onMounted(() => {
 
   .arco-tree-node-title {
     border-radius: var(--border-radius-medium);
+
     &:hover {
       background-color: var(--color-secondary-hover);
     }
@@ -184,6 +168,7 @@ onMounted(() => {
 :deep(.arco-tree-node-selected) {
   .arco-tree-node-title {
     background-color: rgba(var(--primary-6), 0.1);
+
     &:hover {
       background-color: rgba(var(--primary-6), 0.1);
     }
@@ -197,16 +182,28 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  height: 100%;
 
   &__search {
     margin-bottom: 10px;
   }
 
-  &__tree {
+  &__container {
     flex: 1;
     overflow: hidden;
     background-color: var(--color-bg-1);
     position: relative;
+    height: 100%;
+    margin-bottom:10px;
+  }
+
+  &__tree {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto
   }
 }
 </style>

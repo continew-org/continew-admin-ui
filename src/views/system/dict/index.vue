@@ -7,7 +7,7 @@
         </slot>
       </a-space>
     </a-row>
-    <a-row align="stretch" :gutter="14" class="pane">
+    <a-row align="stretch" :gutter="14" class="h-full">
       <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
         <DictTree placeholder="请输入关键词" @node-click="handleSelectDict" />
       </a-col>
@@ -83,7 +83,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((page) => listDictItem({ ...queryForm, ...page }), { immediate: true })
+} = useTable((page) => listDictItem({ ...queryForm, ...page }), { immediate: false })
 
 const columns: TableInstanceColumns[] = [
   {
