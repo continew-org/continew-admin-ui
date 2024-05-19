@@ -7,23 +7,13 @@
           <template #extra>
             {{ siteFavicon?.description }}
             <br />
-            <a-upload
-              :file-list="faviconFile ? [faviconFile] : []"
-              accept="image/*"
-              :show-file-list="false"
-              :custom-request="handleUploadFavicon"
-              @change="handleChangeFavicon"
-            >
+            <a-upload :file-list="faviconFile ? [faviconFile] : []" accept="image/*" :show-file-list="false"
+              :custom-request="handleUploadFavicon" @change="handleChangeFavicon">
               <template #upload-button>
-                <div
-                  :class="`arco-upload-list-item${
-                    faviconFile && faviconFile.status === 'error' ? ' arco-upload-list-item-error' : ''
-                  }`"
-                >
-                  <div
-                    v-if="faviconFile && faviconFile.url"
-                    class="arco-upload-list-picture custom-upload-avatar favicon"
-                  >
+                <div :class="`arco-upload-list-item${faviconFile && faviconFile.status === 'error' ? ' arco-upload-list-item-error' : ''
+                  }`">
+                  <div v-if="faviconFile && faviconFile.url"
+                    class="arco-upload-list-picture custom-upload-avatar favicon">
                     <img :src="faviconFile.url" alt="favicon" />
                     <div v-if="isUpdate" class="arco-upload-list-picture-mask favicon">
                       <IconEdit />
@@ -46,19 +36,11 @@
           <template #extra>
             {{ siteLogo?.description }}
             <br />
-            <a-upload
-              :file-list="logoFile ? [logoFile] : []"
-              accept="image/*"
-              :show-file-list="false"
-              :custom-request="handleUploadLogo"
-              @change="handleChangeLogo"
-            >
+            <a-upload :file-list="logoFile ? [logoFile] : []" accept="image/*" :show-file-list="false"
+              :custom-request="handleUploadLogo" @change="handleChangeLogo">
               <template #upload-button>
-                <div
-                  :class="`arco-upload-list-item${
-                    logoFile && logoFile.status === 'error' ? ' arco-upload-list-item-error' : ''
-                  }`"
-                >
+                <div :class="`arco-upload-list-item${logoFile && logoFile.status === 'error' ? ' arco-upload-list-item-error' : ''
+                  }`">
                   <div v-if="logoFile && logoFile.url" class="arco-upload-list-picture custom-upload-avatar logo">
                     <img :src="logoFile.url" alt="Logo" />
                     <div v-if="isUpdate" class="arco-upload-list-picture-mask logo">
@@ -81,14 +63,9 @@
           <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入网站标题" :max-length="18" />
         </a-form-item>
         <a-form-item class="input-item" :label="siteCopyright?.name" field="SITE_COPYRIGHT" tooltip="支持HTML标签">
-          <a-textarea
-            v-model.trim="form.SITE_COPYRIGHT"
-            placeholder="请输入版权信息"
-            :auto-size="{
-              minRows: 3,
-            }"
-            show-word-limit
-          />
+          <a-textarea v-model.trim="form.SITE_COPYRIGHT" placeholder="请输入版权信息" :auto-size="{
+            minRows: 3,
+          }" show-word-limit />
         </a-form-item>
         <div style="margin-top: 20px">
           <a-space>
@@ -135,6 +112,7 @@ import { type OptionResp, listOption, resetOptionValue, updateOption, uploadFile
 import { useAppStore } from '@/stores'
 import { useForm } from '@/hooks'
 
+defineOptions({ name: 'BasicSetting' })
 const formRef = ref<FormInstance>()
 const rules: FormInstance['rules'] = {
   SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
@@ -227,21 +205,21 @@ const onResetValue = () => {
 // 上传 favicon
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
-  ;(async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
-      .then((res) => {
-        onSuccess(res)
-        form.SITE_FAVICON = res.data.url
-        Message.success('上传成功')
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  })()
+    ; (async function requestWrap() {
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name as string, fileItem.file as Blob)
+      uploadFile(formData)
+        .then((res) => {
+          onSuccess(res)
+          form.SITE_FAVICON = res.data.url
+          Message.success('上传成功')
+        })
+        .catch((error) => {
+          onError(error)
+        })
+    })()
   return {
     abort() {
       controller.abort()
@@ -257,21 +235,21 @@ const handleChangeFavicon = (_: any, currentFile: any) => {
 // 上传 Logo
 const handleUploadLogo = (options: RequestOption) => {
   const controller = new AbortController()
-  ;(async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
-      .then((res) => {
-        onSuccess(res)
-        form.SITE_LOGO = res.data.url
-        Message.success('上传成功')
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  })()
+    ; (async function requestWrap() {
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name as string, fileItem.file as Blob)
+      uploadFile(formData)
+        .then((res) => {
+          onSuccess(res)
+          form.SITE_LOGO = res.data.url
+          Message.success('上传成功')
+        })
+        .catch((error) => {
+          onError(error)
+        })
+    })()
   return {
     abort() {
       controller.abort()

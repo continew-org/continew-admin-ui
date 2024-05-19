@@ -7,7 +7,7 @@
         </slot>
       </a-space>
     </a-row>
-    <a-tabs type="card-gutter" size="large" :active-key="activeKey" @change="change">
+    <a-tabs v-model:active-key="activeKey" type="card-gutter" size="large" @change="change">
       <a-tab-pane key="1" title="登录日志" />
       <a-tab-pane key="2" title="操作日志" />
     </a-tabs>
