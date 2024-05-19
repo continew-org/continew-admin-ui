@@ -13,9 +13,9 @@
             <a-trigger v-model:popup-visible="node.popupVisible" trigger="contextMenu" align-point
               animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
               <a-tooltip v-if="node.description" :content="node.description" background-color="rgb(var(--primary-6))" position="right">
-                <div @contextmenu="onContextmenu(node)">{{ node.name }}（{{ node.code }}）</div>
+                <div @contextmenu="onContextmenu(node)">{{ node.name }} ({{ node.code }})</div>
               </a-tooltip>
-              <div v-else @contextmenu="onContextmenu(node)">{{ node.name }}（{{ node.code }}）</div>
+              <div v-else @contextmenu="onContextmenu(node)">{{ node.name }} ({{ node.code }})</div>
               <template #content>
                 <RightMenu v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" :data="node"
                   @on-menu-item-click="onMenuItemClick" />

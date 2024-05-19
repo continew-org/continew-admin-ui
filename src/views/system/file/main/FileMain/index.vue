@@ -85,7 +85,7 @@ import {
 import FileGrid from './FileGrid.vue'
 import useFileManage from './useFileManage'
 import { useTable } from '@/hooks'
-import { type FileItem, type FilePageQuery, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
+import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
 import { ImageTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
@@ -187,19 +187,19 @@ const handleMulDelete = () => {
 const handleUpload = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      try {
-        const res = await uploadFile(formData)
-        Message.success('上传成功')
-        onSuccess(res)
-        search()
-      } catch (error) {
-        onError(error)
-      }
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    try {
+      const res = await uploadFile(formData)
+      Message.success('上传成功')
+      onSuccess(res)
+      search()
+    } catch (error) {
+      onError(error)
+    }
+  })()
   return {
     abort() {
       controller.abort()
@@ -243,7 +243,7 @@ onMounted(() => {
   }
 
   .pagination {
-    margin: 10px 0;
+    padding: 0 var(--padding) var(--padding);
 
     :deep(.arco-pagination) {
       justify-content: end;

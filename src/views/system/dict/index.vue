@@ -94,7 +94,7 @@ const columns: TableInstanceColumns[] = [
   },
   { title: '标签', dataIndex: 'label', slotName: 'label', width: 100, align: 'center' },
   { title: '值', dataIndex: 'value', width: 100, align: 'center', ellipsis: true, tooltip: true },
-  { title: '状态', slotName: 'status', width: 90, align: 'center' },
+  { title: '状态', slotName: 'status', width: 80, align: 'center' },
   {
     title: '排序',
     dataIndex: 'sort',
