@@ -146,9 +146,6 @@ export interface DictQuery {
   sort: Array<string>
 }
 
-export interface DictPageQuery extends DictQuery, PageQuery {
-}
-
 export type DictItemResp = {
   id: string
   label: string
