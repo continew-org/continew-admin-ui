@@ -1,45 +1,44 @@
 <template>
-  <div class="gi_page">
-    <a-card title="在线用户" class="general-card">
-      <GiTable
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size', 'setting']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <a-input v-model="queryForm.nickname" placeholder="请输入用户名或昵称" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <DateRangePicker v-model="queryForm.loginTime" @change="search" />
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #nickname="{ record }">{{ record.nickname }}（{{ record.username }}）</template>
-        <template #action="{ record }">
-          <a-space>
-            <a-popconfirm
-              type="warning"
-              content="是否确定强退该用户？"
-              :ok-button-props="{ status: 'danger' }"
-              @ok="handleKickout(record.token)"
+  <div class="table-page">
+    <GiTable
+      row-key="id"
+      title="在线用户"
+      :data="dataList"
+      :columns="columns"
+      :loading="loading"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :pagination="pagination"
+      :disabled-tools="['size']"
+      @refresh="search"
+    >
+      <template #custom-left>
+        <a-input v-model="queryForm.nickname" placeholder="请输入用户名或昵称" allow-clear @change="search">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        <DateRangePicker v-model="queryForm.loginTime" @change="search" />
+        <a-button @click="reset">重置</a-button>
+      </template>
+      <template #nickname="{ record }">{{ record.nickname }}（{{ record.username }}）</template>
+      <template #action="{ record }">
+        <a-space>
+          <a-popconfirm
+            type="warning"
+            content="是否确定强退该用户？"
+            :ok-button-props="{ status: 'danger' }"
+            @ok="handleKickout(record.token)"
+          >
+            <a-link
+              v-permission="['monitor:online:kickout']"
+              status="danger"
+              :title="currentToken === record.token ? '不能强退自己' : '强退'"
+              :disabled="currentToken === record.token"
             >
-              <a-link
-                v-permission="['monitor:online:kickout']"
-                status="danger"
-                :title="currentToken === record.token ? '不能强退自己' : '强退'"
-                :disabled="currentToken === record.token"
-              >
-                强退
-              </a-link>
-            </a-popconfirm>
-          </a-space>
-        </template>
-      </GiTable>
-    </a-card>
+              强退
+            </a-link>
+          </a-popconfirm>
+        </a-space>
+      </template>
+    </GiTable>
   </div>
 </template>
 
@@ -67,7 +66,7 @@ const {
   loading,
   pagination,
   search
-} = useTable((p) => listOnlineUser({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listOnlineUser({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {
@@ -82,6 +81,7 @@ const columns: TableInstanceColumns[] = [
   { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
   { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true },
   { title: '登录时间', dataIndex: 'loginTime', width: 180 },
+  { title: '最后活跃时间', dataIndex: 'lastActiveTime', width: 180 },
   {
     title: '操作',
     slotName: 'action',

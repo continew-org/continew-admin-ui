@@ -5,8 +5,9 @@
     </div>
   </a-row>
   <a-row style="margin-top: 15px">
-    <a-descriptions :column="1" title="详细信息" layout="inline-vertical">
-      <a-descriptions-item :label="data.name">{{ formatFileSize(data.size) }}</a-descriptions-item>
+    <a-descriptions :column="1" layout="inline-vertical">
+      <a-descriptions-item label="名称">{{ getFileName(data) }}</a-descriptions-item>
+      <a-descriptions-item label="大小">{{ formatFileSize(data.size) }}</a-descriptions-item>
       <a-descriptions-item label="创建时间">{{ data.createTime }}</a-descriptions-item>
       <a-descriptions-item label="修改时间">{{ data.updateTime }}</a-descriptions-item>
     </a-descriptions>
@@ -23,6 +24,11 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {})
+
+// 文件名称带后缀
+const getFileName = (item: FileItem) => {
+  return `${item.name}${item.extension ? `.${item.extension}` : ''}`
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,60 +1,70 @@
 <template>
-  <div class="gi_page">
-    <a-card title="字典管理" class="general-card">
-      <GiTable
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size']"
-        :disabled-column-keys="['name']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #custom-right>
-          <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
-          </a-button>
-        </template>
-        <template #isSystem="{ record }">
-          <a-tag v-if="record.isSystem" color="red">是</a-tag>
-          <a-tag v-else color="arcoblue">否</a-tag>
-        </template>
-        <template #action="{ record }">
-          <a-space>
-            <a-link @click="onViewDictItem(record)">管理</a-link>
-            <a-link v-permission="['system:dict:update']" @click="onUpdate(record)">修改</a-link>
-            <a-link
-              v-permission="['system:dict:delete']"
-              status="danger"
-              :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-              :disabled="record.disabled"
-              @click="onDelete(record)"
-            >
-              删除
-            </a-link>
-          </a-space>
-        </template>
-      </GiTable>
-    </a-card>
+  <div class="table-page">
+    <a-row justify="space-between" align="center" class="header">
+      <a-space wrap>
+        <slot name="custom-title">
+          <div class="title">字典管理</div>
+        </slot>
+      </a-space>
+    </a-row>
+    <a-row align="stretch" :gutter="14" class="h-full">
+      <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
+        <DictTree placeholder="请输入关键词" @node-click="handleSelectDict" />
+      </a-col>
+      <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
+        <GiTable
+          row-key="id"
+          :data="dataList"
+          :columns="columns"
+          :loading="loading"
+          :scroll="{ x: '100%', y: '100%', minWidth: 600 }"
+          :pagination="pagination"
+          :disabled-tools="['size']"
+          :disabled-column-keys="['label']"
+          @refresh="search"
+        >
+          <template #custom-left>
+            <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+              <template #prefix><icon-search /></template>
+            </a-input>
+            <a-button @click="reset">重置</a-button>
+          </template>
+          <template #custom-right>
+            <a-button v-permission="['system:dict:item:add']" type="primary" @click="onAdd">
+              <template #icon><icon-plus /></template>
+              <span>新增</span>
+            </a-button>
+          </template>
+          <template #label="{ record }">
+            <a-tag :color="record.color">{{ record.label }}</a-tag>
+          </template>
+          <template #status="{ record }">
+            <GiCellStatus :status="record.status" />
+          </template>
+          <template #action="{ record }">
+            <a-space>
+              <a-link v-permission="['system:dict:item:update']" @click="onUpdate(record)">修改</a-link>
+              <a-link
+                v-permission="['system:dict:item:delete']"
+                status="danger"
+                @click="onDelete(record)"
+              >
+                删除
+              </a-link>
+            </a-space>
+          </template>
+        </GiTable>
+      </a-col>
+    </a-row>
 
-    <DictAddModal ref="DictAddModalRef" @save-success="search" />
-    <DictItemModal ref="DictItemModalRef" />
+    <DictItemAddModal ref="DictItemAddModalRef" @save-success="search" />
   </div>
 </template>
 
 <script setup lang="ts">
-import DictAddModal from './DictAddModal.vue'
-import { type DictQuery, type DictResp, deleteDict, listDict } from '@/apis'
-import DictItemModal from '@/views/system/dict/item/index.vue'
+import DictTree from './tree/index.vue'
+import DictItemAddModal from './DictItemAddModal.vue'
+import { type DictItemQuery, type DictItemResp, deleteDictItem, listDictItem } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
@@ -62,7 +72,8 @@ import has from '@/utils/has'
 
 defineOptions({ name: 'SystemDict' })
 
-const queryForm = reactive<DictQuery>({
+const queryForm = reactive<DictItemQuery>({
+  dictId: '',
   sort: ['createTime,desc']
 })
 
@@ -72,7 +83,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listDict({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listDictItem({ ...queryForm, ...page }), { immediate: false })
 
 const columns: TableInstanceColumns[] = [
   {
@@ -81,50 +92,60 @@ const columns: TableInstanceColumns[] = [
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize)
   },
-  { title: '名称', dataIndex: 'name', ellipsis: true, tooltip: true },
-  { title: '编码', dataIndex: 'code', width: 170, ellipsis: true, tooltip: true },
-  { title: '系统内置', slotName: 'isSystem', align: 'center', show: false },
-  { title: '描述', dataIndex: 'description', ellipsis: true, tooltip: true },
-  { title: '创建人', dataIndex: 'createUserString', ellipsis: true, tooltip: true, show: false },
+  { title: '标签', dataIndex: 'label', slotName: 'label', width: 100, align: 'center' },
+  { title: '值', dataIndex: 'value', width: 100, align: 'center', ellipsis: true, tooltip: true },
+  { title: '状态', slotName: 'status', width: 80, align: 'center' },
+  {
+    title: '排序',
+    dataIndex: 'sort',
+    width: 90,
+    align: 'center',
+    sortable: {
+      sortDirections: ['ascend', 'descend']
+    }
+  },
+  { title: '描述', dataIndex: 'description', width: 130, ellipsis: true, tooltip: true },
+  { title: '创建人', dataIndex: 'createUserString', width: 140, ellipsis: true, tooltip: true, show: false },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
-  { title: '修改人', dataIndex: 'updateUserString', ellipsis: true, tooltip: true, show: false },
+  { title: '修改人', dataIndex: 'updateUserString', width: 140, ellipsis: true, tooltip: true, show: false },
   { title: '修改时间', dataIndex: 'updateTime', width: 180, show: false },
   {
     title: '操作',
     slotName: 'action',
-    width: 180,
+    width: 130,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['system:dict:update', 'system:dict:delete'])
+    show: has.hasPermOr(['system:dict:item:update', 'system:dict:item:delete'])
   }
 ]
 
 // 重置
 const reset = () => {
   queryForm.description = undefined
+  queryForm.status = undefined
   search()
 }
 
 // 删除
-const onDelete = (item: DictResp) => {
-  return handleDelete(() => deleteDict(item.id), { content: `是否确定删除字典 [${item.name}]？`, showModal: true })
+const onDelete = (item: DictItemResp) => {
+  return handleDelete(() => deleteDictItem(item.id), { content: `是否确定删除 [${item.label}]？`, showModal: true })
 }
 
-const DictAddModalRef = ref<InstanceType<typeof DictAddModal>>()
+// 根据选中字典查询
+const handleSelectDict = (keys: Array<any>) => {
+  queryForm.dictId = keys.length === 1 ? keys[0] : undefined
+  search()
+}
+
+const DictItemAddModalRef = ref<InstanceType<typeof DictItemAddModal>>()
 // 新增
 const onAdd = () => {
-  DictAddModalRef.value?.onAdd()
+  DictItemAddModalRef.value?.onAdd(queryForm.dictId)
 }
 
 // 修改
-const onUpdate = (item: DictResp) => {
-  DictAddModalRef.value?.onUpdate(item.id)
-}
-
-const DictItemModalRef = ref<InstanceType<typeof DictItemModal>>()
-// 查看字典项
-const onViewDictItem = (item: DictResp) => {
-  DictItemModalRef.value?.open(item.id, item.code)
+const onUpdate = (item: DictItemResp) => {
+  DictItemAddModalRef.value?.onUpdate(item.id)
 }
 </script>
 

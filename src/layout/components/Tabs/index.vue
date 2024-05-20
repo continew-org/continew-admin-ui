@@ -56,8 +56,8 @@ tabsStore.reset()
 // 路由发生改变触发
 const handleRouteChange = () => {
   const item = { ...route } as unknown as RouteRecordRaw
-  tabsStore.addTagItem(item)
-  tabsStore.addCacheItem(item)
+  tabsStore.addTagItem(toRaw(item))
+  tabsStore.addCacheItem(toRaw(item))
   // console.log('路由对象', toRaw(item))
   // console.log('tagList', toRaw(tabsStore.tagList))
   // console.log('cacheList', toRaw(tabsStore.cacheList))

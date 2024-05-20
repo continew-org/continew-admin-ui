@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import type { ModeItem } from '../type'
 import VerifyModel from '../components/VerifyModel.vue'
-import { type OptionResp, type SecurityConfigResp, listOption } from '@/apis'
+import { type OptionResp, type SecurityConfig, listOption } from '@/apis'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
@@ -82,20 +82,21 @@ const onUpdate = (type: string) => {
   verifyModelRef.value?.open(type)
 }
 
-const securityConfig = ref<SecurityConfigResp>({
-  password_contain_name: {},
-  password_error_count: {},
-  password_expiration_days: {},
-  password_lock_minutes: {},
-  password_min_length: {},
-  password_special_char: {},
-  password_update_interval: {}
+const securityConfig = ref<SecurityConfig>({
+  PASSWORD_ERROR_LOCK_COUNT: {},
+  PASSWORD_ERROR_LOCK_MINUTES: {},
+  PASSWORD_EXPIRATION_WARNING_DAYS: {},
+  PASSWORD_EXPIRATION_DAYS: {},
+  PASSWORD_REUSE_POLICY: {},
+  PASSWORD_MIN_LENGTH: {},
+  PASSWORD_ALLOW_CONTAIN_USERNAME: {},
+  PASSWORD_CONTAIN_SPECIAL_CHARACTERS: {}
 })
 
 // 查询列表数据
 const getDataList = async () => {
   const { data } = await listOption({ code: Object.keys(securityConfig.value) })
-  securityConfig.value = data.reduce((obj: SecurityConfigResp, option: OptionResp) => {
+  securityConfig.value = data.reduce((obj: SecurityConfig, option: OptionResp) => {
     obj[option.code] = { ...option, value: Number.parseInt(option.value) }
     return obj
   }, {})

@@ -25,8 +25,13 @@ const props = defineProps({
   }
 })
 
-const dictItem = computed(() =>
-  props.dict.find((d) => d.value === String(props.value) || d.value === Number(props.value))
+const dictItem = computed(() => {
+  try {
+    return props.dict.find((d) => d.value === String(props.value) || d.value === Number(props.value))
+  } catch (error) {
+    return []
+  }
+}
 )
 </script>
 

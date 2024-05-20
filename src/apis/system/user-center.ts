@@ -1,5 +1,5 @@
+import type * as System from './type'
 import http from '@/utils/http'
-import type * as System from '@/apis/system/type'
 
 const BASE_URL = '/system/user'
 

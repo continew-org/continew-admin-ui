@@ -17,13 +17,7 @@
         </a-dropdown>
 
         <a-input-group>
-          <a-input
-            v-model="queryForm.name"
-            placeholder="请输入文件名"
-            allow-clear
-            style="width: 200px"
-            @change="search"
-          />
+          <a-input v-model="queryForm.name" placeholder="请输入文件名" allow-clear style="width: 200px" @change="search" />
           <a-button type="primary" @click="search">
             <template #icon>
               <icon-search />
@@ -35,13 +29,8 @@
 
       <!-- 右侧区域 -->
       <a-space wrap>
-        <a-button
-          v-if="isBatchMode"
-          :disabled="!selectedFileIds.length"
-          type="primary"
-          status="danger"
-          @click="handleMulDelete"
-        >
+        <a-button v-if="isBatchMode" :disabled="!selectedFileIds.length" type="primary" status="danger"
+          @click="handleMulDelete">
           <template #icon>
             <icon-delete />
           </template>
@@ -67,29 +56,20 @@
 
     <!-- 文件列表-宫格模式 -->
     <a-spin id="fileMain" class="file-main__list" :loading="loading" @scroll="handleScroll">
-      <FileGrid
-        v-show="fileList.length && mode === 'grid'"
-        :data="fileList"
-        :is-batch-mode="isBatchMode"
-        :selected-file-ids="selectedFileIds"
-        @click="handleClickFile"
-        @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"
-      ></FileGrid>
+      <FileGrid v-show="fileList.length && mode === 'grid'" :data="fileList" :is-batch-mode="isBatchMode"
+        :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
+        @right-menu-click="handleRightMenuClick"></FileGrid>
 
       <!-- 文件列表-列表模式 -->
-      <FileList
-        v-show="fileList.length && mode === 'list'"
-        :data="fileList"
-        :is-batch-mode="isBatchMode"
-        :selected-file-ids="selectedFileIds"
-        @click="handleClickFile"
-        @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"
-      ></FileList>
+      <FileList v-show="fileList.length && mode === 'list'" :data="fileList" :is-batch-mode="isBatchMode"
+        :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
+        @right-menu-click="handleRightMenuClick"></FileList>
 
       <a-empty v-show="!fileList.length"></a-empty>
     </a-spin>
+    <div class="pagination">
+      <a-pagination v-bind="pagination" />
+    </div>
   </div>
 </template>
 
@@ -104,7 +84,8 @@ import {
 } from '../../components/index'
 import FileGrid from './FileGrid.vue'
 import useFileManage from './useFileManage'
-import { type FileItem, type FilePageQuery, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
+import { useTable } from '@/hooks'
+import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
 import { ImageTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
@@ -118,48 +99,17 @@ const queryForm = reactive<FileQuery>({
   type: route.query.type?.toString() || undefined,
   sort: ['updateTime,desc']
 })
-const pagination = reactive({
-  page: 1,
-  size: 30
+const paginationOption = reactive({
+  defaultPageSize: 30,
+  defaultSizeOptions: [30, 40, 50, 100, 120]
 })
-
-const fileList = ref<FileItem[]>([])
 const isBatchMode = ref(false)
-const loading = ref(false)
-const timer = ref<any>()
-// 查询文件列表
-const getFileList = async (query: FilePageQuery = { ...queryForm, page: pagination.page, size: pagination.size }) => {
-  try {
-    loading.value = true
-    isBatchMode.value = false
-    query.type = query.type === '0' ? undefined : query.type
-    const res = await listFile(query)
-    if (res.data.list) {
-      if (query.page === 1) {
-        fileList.value = res.data.list
-        timer.value = setTimeout(() => {
-          clearTimeout(timer.value)
-          timer.value = null
-        }, 1000)
-      } else {
-        fileList.value = [...fileList.value, ...res.data.list]
-      }
-    } else {
-      --pagination.page
-    }
-  } catch (error) {
-    --pagination.page
-    return error
-  } finally {
-    loading.value = false
-  }
-}
-
-// 查询
-const search = () => {
-  pagination.page = 1
-  getFileList()
-}
+const {
+  tableData: fileList,
+  loading,
+  pagination,
+  search
+} = useTable((page) => listFile({ ...queryForm, ...page }), { immediate: false, paginationOption })
 
 // 点击文件
 const handleClickFile = (item: FileItem) => {
@@ -236,7 +186,7 @@ const handleMulDelete = () => {
 // 上传
 const handleUpload = (options: RequestOption) => {
   const controller = new AbortController()
-  ;(async function requestWrap() {
+    ; (async function requestWrap() {
     const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
     onProgress(20)
     const formData = new FormData()
@@ -256,30 +206,6 @@ const handleUpload = (options: RequestOption) => {
     }
   }
 }
-
-const handleScroll = (event) => {
-  const { clientHeight, scrollHeight, scrollTop } = event.target
-  const scrollLinerHeight = (clientHeight / scrollHeight) * scrollHeight
-  if (!timer.value) {
-    timer.value = setTimeout(() => {
-      if ((scrollTop + scrollLinerHeight) / scrollHeight >= 0.9 && !loading.value) {
-        ++pagination.page
-        getFileList()
-      }
-      timer.value = null
-    }, 1000)
-  }
-}
-
-onMounted(() => {
-  const fileMainDom = document.getElementById('fileMain')
-  fileMainDom.addEventListener('scrool', handleScroll)
-})
-onUnmounted(() => {
-  // 移除事件监听
-  const fileMainDom = document.getElementById('fileMain')
-  fileMainDom.removeEventListener('scroll', handleScroll)
-})
 
 onBeforeRouteUpdate((to) => {
   if (!to.query.type) return
@@ -314,6 +240,14 @@ onMounted(() => {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+  }
+
+  .pagination {
+    padding: 0 var(--padding) var(--padding);
+
+    :deep(.arco-pagination) {
+      justify-content: end;
+    }
   }
 }
 </style>

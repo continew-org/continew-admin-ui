@@ -1,4 +1,5 @@
 import { type RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router'
+import { useRouteStore } from '@/stores'
 
 /** 默认布局 */
 const Layout = () => import('@/layout/index.vue')
@@ -62,6 +63,12 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'SettingProfile',
         component: () => import('@/views/setting/profile/index.vue'),
         meta: { title: '个人中心', showInTabs: false }
+      },
+      {
+        path: '/setting/message',
+        name: 'SettingMessage',
+        component: () => import('@/views/setting/message/index.vue'),
+        meta: { title: '消息中心', showInTabs: false }
       }
     ]
   }
@@ -79,10 +86,10 @@ const router = createRouter({
  */
 export function resetRouter() {
   try {
-    router.getRoutes().forEach((route) => {
+    const routeStore = useRouteStore()
+    routeStore.asyncRoutes.forEach((route) => {
       const { name } = route
-      // console.log('name', name, path)
-      if (name && !['Home', 'Setting', 'SettingProfile'].includes(name.toString())) {
+      if (name) {
         router.hasRoute(name) && router.removeRoute(name)
       }
     })

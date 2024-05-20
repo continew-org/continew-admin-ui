@@ -22,6 +22,13 @@
         </a-button>
       </template>
     </GiForm>
+    <Verify
+      ref="VerifyRef"
+      :captcha-type="captchaType"
+      :mode="captchaMode"
+      :img-size="{ width: '330px', height: '155px' }"
+      @success="getCaptcha"
+    />
   </a-modal>
 </template>
 
@@ -51,6 +58,15 @@ const options: Options = {
   col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
   btns: { hide: true }
 }
+
+const { form, resetForm } = useForm({
+  phone: '',
+  email: '',
+  captcha: '',
+  oldPassword: '',
+  newPassword: '',
+  rePassword: ''
+})
 
 const columns: Columns = [
   {
@@ -99,7 +115,18 @@ const columns: Columns = [
     label: '新密码',
     field: 'newPassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请输入新密码' }],
+    rules: [
+      { required: true, message: '请输入新密码' },
+      {
+        validator: (value, callback) => {
+          if (value === form.oldPassword) {
+            callback('新密码不能与当前密码相同')
+          } else {
+            callback()
+          }
+        }
+      }
+    ],
     hide: () => {
       return verifyType.value !== 'password'
     }
@@ -108,24 +135,38 @@ const columns: Columns = [
     label: '确认新密码',
     field: 'rePassword',
     type: 'input-password',
-    rules: [{ required: true, message: '请再次输入新密码' }],
     props: {
       placeholder: '请再次输入新密码'
     },
+    rules: [
+      { required: true, message: '请再次输入新密码' },
+      {
+        validator: (value, callback) => {
+          if (value !== form.newPassword) {
+            callback('两次输入的密码不一致')
+          } else {
+            callback()
+          }
+        }
+      }
+    ],
     hide: () => {
       return verifyType.value !== 'password'
     }
   }
 ]
 
-const { form, resetForm } = useForm({
-  phone: '',
-  email: '',
-  captcha: '',
-  oldPassword: '',
-  newPassword: '',
-  rePassword: ''
-})
+const VerifyRef = ref<InstanceType<any>>()
+const captchaType = ref('blockPuzzle')
+const captchaMode = ref('pop')
+const captchaLoading = ref(false)
+// 弹出行为验证码
+const onCaptcha = async () => {
+  if (captchaLoading.value) return
+  const isInvalid = await formRef.value?.formRef?.validateField(verifyType.value === 'phone' ? 'phone' : 'email')
+  if (isInvalid) return
+  VerifyRef.value.show()
+}
 
 const captchaTimer = ref()
 const captchaTime = ref(60)
@@ -146,11 +187,8 @@ const reset = () => {
   resetCaptcha()
 }
 
-const captchaLoading = ref(false)
 // 获取验证码
-const onCaptcha = async () => {
-  const isInvalid = await formRef.value?.formRef?.validateField(verifyType.value === 'phone' ? 'newPhone' : 'email')
-  if (isInvalid) return false
+const getCaptcha = async () => {
   // 发送验证码
   try {
     captchaLoading.value = true

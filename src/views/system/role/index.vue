@@ -1,58 +1,57 @@
 <template>
-  <div class="gi_page">
-    <a-card title="角色管理" class="general-card">
-      <GiTable
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size']"
-        :disabled-column-keys="['name']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #custom-right>
-          <a-button v-permission="['system:role:add']" type="primary" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
-          </a-button>
-        </template>
-        <template #name="{ record }">
-          <a-link @click="onDetail(record)">{{ record.name }}</a-link>
-        </template>
-        <template #dataScope="{ record }">
-          <GiCellTag :value="record.dataScope" :dict="data_scope_enum" />
-        </template>
-        <template #isSystem="{ record }">
-          <a-tag v-if="record.isSystem" color="red" size="small">是</a-tag>
-          <a-tag v-else color="arcoblue" size="small">否</a-tag>
-        </template>
-        <template #action="{ record }">
-          <a-space>
-            <a-link v-permission="['system:role:update']" @click="onUpdate(record)">修改</a-link>
-            <a-link
-              v-permission="['system:role:delete']"
-              status="danger"
-              :title="record.isSystem ? '系统内置数据不能删除' : undefined"
-              :disabled="record.disabled"
-              @click="onDelete(record)"
-            >
-              删除
-            </a-link>
-          </a-space>
-        </template>
-      </GiTable>
+  <div class="table-page">
+    <GiTable
+      row-key="id"
+      title="角色管理"
+      :data="dataList"
+      :columns="columns"
+      :loading="loading"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :pagination="pagination"
+      :disabled-tools="['size']"
+      :disabled-column-keys="['name']"
+      @refresh="search"
+    >
+      <template #custom-left>
+        <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        <a-button @click="reset">重置</a-button>
+      </template>
+      <template #custom-right>
+        <a-button v-permission="['system:role:add']" type="primary" @click="onAdd">
+          <template #icon><icon-plus /></template>
+          <span>新增</span>
+        </a-button>
+      </template>
+      <template #name="{ record }">
+        <a-link @click="onDetail(record)">{{ record.name }}</a-link>
+      </template>
+      <template #dataScope="{ record }">
+        <GiCellTag :value="record.dataScope" :dict="data_scope_enum" />
+      </template>
+      <template #isSystem="{ record }">
+        <a-tag v-if="record.isSystem" color="red" size="small">是</a-tag>
+        <a-tag v-else color="arcoblue" size="small">否</a-tag>
+      </template>
+      <template #action="{ record }">
+        <a-space>
+          <a-link v-permission="['system:role:update']" @click="onUpdate(record)">修改</a-link>
+          <a-link
+            v-permission="['system:role:delete']"
+            status="danger"
+            :title="record.isSystem ? '系统内置数据不能删除' : undefined"
+            :disabled="record.disabled"
+            @click="onDelete(record)"
+          >
+            删除
+          </a-link>
+        </a-space>
+      </template>
+    </GiTable>
 
-      <RoleAddModal ref="RoleAddModalRef" @save-success="search" />
-      <RoleDetailDrawer ref="RoleDetailDrawerRef" />
-    </a-card>
+    <RoleAddModal ref="RoleAddModalRef" @save-success="search" />
+    <RoleDetailDrawer ref="RoleDetailDrawerRef" />
   </div>
 </template>
 
@@ -80,7 +79,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => listRole({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listRole({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

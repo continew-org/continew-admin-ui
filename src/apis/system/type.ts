@@ -16,20 +16,24 @@ export interface UserResp {
   updateTime: string
   deptId: string
   deptName: string
+  roleIds: Array<number>
+  roleNames: Array<string>
   disabled: boolean
 }
+
 export type UserDetailResp = UserResp & {
-  roleIds?: Array<number>
-  roleNames: string
   pwdResetTime?: string
 }
+
 export interface UserQuery {
   description?: string
   status?: number
   deptId?: string
   sort: Array<string>
 }
-export interface UserPageQuery extends UserQuery, PageQuery {}
+
+export interface UserPageQuery extends UserQuery, PageQuery {
+}
 
 /** 系统角色类型 */
 export interface RoleResp {
@@ -46,6 +50,7 @@ export interface RoleResp {
   updateTime: string
   disabled: boolean
 }
+
 export interface RoleDetailResp {
   id: string
   name: string
@@ -62,11 +67,14 @@ export interface RoleDetailResp {
   updateTime: string
   disabled: boolean
 }
+
 export interface RoleQuery {
   description?: string
   sort: Array<string>
 }
-export interface RolePageQuery extends RoleQuery, PageQuery {}
+
+export interface RolePageQuery extends RoleQuery, PageQuery {
+}
 
 /** 系统菜单类型 */
 export interface MenuResp {
@@ -91,6 +99,7 @@ export interface MenuResp {
   updateTime: string
   children: MenuResp[]
 }
+
 export interface MenuQuery {
   title?: string
   status?: number
@@ -112,6 +121,7 @@ export interface DeptResp {
   parentId: string
   children: DeptResp[]
 }
+
 export interface DeptQuery {
   description?: string
   status?: number
@@ -130,11 +140,12 @@ export interface DictResp {
   updateUserString: string
   updateTime: string
 }
+
 export interface DictQuery {
   description?: string
   sort: Array<string>
 }
-export interface DictPageQuery extends DictQuery, PageQuery {}
+
 export type DictItemResp = {
   id: string
   label: string
@@ -149,13 +160,16 @@ export type DictItemResp = {
   updateUserString: string
   updateTime: string
 }
+
 export interface DictItemQuery {
   description?: string
   status?: number
   sort: Array<string>
   dictId: string
 }
-export interface DictItemPageQuery extends DictItemQuery, PageQuery {}
+
+export interface DictItemPageQuery extends DictItemQuery, PageQuery {
+}
 
 /** 系统公告类型 */
 export interface NoticeResp {
@@ -171,12 +185,15 @@ export interface NoticeResp {
   updateUserString: string
   updateTime: string
 }
+
 export interface NoticeQuery {
   title?: string
   type?: string
   sort: Array<string>
 }
-export interface NoticePageQuery extends NoticeQuery, PageQuery {}
+
+export interface NoticePageQuery extends NoticeQuery, PageQuery {
+}
 
 /** 系统文件类型 */
 export type FileItem = {
@@ -184,6 +201,8 @@ export type FileItem = {
   name: string
   size: number
   url: string
+  thumbnailSize: number
+  thumbnailUrl: string
   extension: string
   type: number
   storageId: string
@@ -192,19 +211,24 @@ export type FileItem = {
   updateUserString: string
   updateTime: string
 }
+
 /** 文件资源统计信息 */
 export interface FileStatisticsResp {
   type: string
-  size: number
+  size: any
   number: number
+  unit: string
   data: Array<FileStatisticsResp>
 }
+
 export interface FileQuery {
   name?: string
   type?: string
   sort: Array<string>
 }
-export interface FilePageQuery extends FileQuery, PageQuery {}
+
+export interface FilePageQuery extends FileQuery, PageQuery {
+}
 
 /** 系统存储类型 */
 export type StorageResp = {
@@ -226,12 +250,15 @@ export type StorageResp = {
   updateUserString: string
   updateTime: string
 }
+
 export interface StorageQuery {
   description?: string
   status?: number
   sort: Array<string>
 }
-export interface StoragePageQuery extends StorageQuery, PageQuery {}
+
+export interface StoragePageQuery extends StorageQuery, PageQuery {
+}
 
 /** 系统参数类型 */
 export interface OptionResp {
@@ -240,29 +267,55 @@ export interface OptionResp {
   value: string
   description: string
 }
+
 export interface OptionQuery {
   code: Array<string>
 }
+
 /** 基础配置类型 */
-export interface BasicConfigResp {
-  site_favicon: string
-  site_logo: string
-  site_title: string
-  site_copyright: string
+export interface BasicConfig {
+  SITE_FAVICON: string
+  SITE_LOGO: string
+  SITE_TITLE: string
+  SITE_COPYRIGHT: string
 }
 
 /** 安全配置类型 */
-export interface SecurityConfigResp {
-  password_contain_name: OptionResp
-  password_error_count: OptionResp
-  password_lock_minutes: OptionResp
-  password_min_length: OptionResp
-  password_special_char: OptionResp
-  password_update_interval: OptionResp
+export interface SecurityConfig {
+  PASSWORD_ERROR_LOCK_COUNT: OptionResp
+  PASSWORD_ERROR_LOCK_MINUTES: OptionResp
+  PASSWORD_EXPIRATION_DAYS: OptionResp
+  PASSWORD_EXPIRATION_WARNING_DAYS: OptionResp
+  PASSWORD_REUSE_POLICY: OptionResp
+  PASSWORD_MIN_LENGTH: OptionResp
+  PASSWORD_ALLOW_CONTAIN_USERNAME: OptionResp
+  PASSWORD_CONTAIN_SPECIAL_CHARACTERS: OptionResp
 }
 
 /** 绑定三方账号信息 */
 export interface BindSocialAccountRes {
   source: string
   description: string
+}
+
+/** 系统消息类型 */
+export interface MessageResp {
+  id: string
+  title: string
+  content: string
+  type: number
+  isRead: boolean
+  readTime: string
+  createUserString: string
+  createTime: string
+}
+
+export interface MessageQuery {
+  title?: string
+  type?: number
+  isRead?: boolean
+  sort: Array<string>
+}
+
+export interface MessagePageQuery extends MessageQuery, PageQuery {
 }

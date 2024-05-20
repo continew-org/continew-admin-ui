@@ -30,6 +30,13 @@
       </a-space>
     </a-form-item>
   </a-form>
+  <Verify
+    ref="VerifyRef"
+    :captcha-type="captchaType"
+    :mode="captchaMode"
+    :img-size="{ width: '330px', height: '155px' }"
+    @success="getCaptcha"
+  />
 </template>
 
 <script setup lang="ts">
@@ -57,9 +64,9 @@ const router = useRouter()
 const loading = ref(false)
 // 登录
 const handleLogin = async () => {
+  const isInvalid = await formRef.value?.validate()
+  if (isInvalid) return
   try {
-    const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return
     loading.value = true
     await userStore.phoneLogin(form)
     const { redirect, ...othersQuery } = router.currentRoute.value.query
@@ -77,6 +84,18 @@ const handleLogin = async () => {
   }
 }
 
+const VerifyRef = ref<InstanceType<any>>()
+const captchaType = ref('blockPuzzle')
+const captchaMode = ref('pop')
+const captchaLoading = ref(false)
+// 弹出行为验证码
+const onCaptcha = async () => {
+  if (captchaLoading.value) return
+  const isInvalid = await formRef.value?.validateField('phone')
+  if (isInvalid) return
+  VerifyRef.value.show()
+}
+
 const captchaTimer = ref()
 const captchaTime = ref(60)
 const captchaBtnName = ref('获取验证码')
@@ -89,12 +108,8 @@ const resetCaptcha = () => {
   captchaDisable.value = false
 }
 
-const captchaLoading = ref(false)
 // 获取验证码
-const onCaptcha = async () => {
-  if (captchaLoading.value) return
-  const isInvalid = await formRef.value?.validateField('phone')
-  if (isInvalid) return
+const getCaptcha = async () => {
   try {
     captchaLoading.value = true
     captchaBtnName.value = '发送中...'

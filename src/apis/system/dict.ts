@@ -4,8 +4,8 @@ import http from '@/utils/http'
 const BASE_URL = '/system/dict'
 
 /** @desc 查询字典列表 */
-export function listDict(query: System.DictPageQuery) {
-  return http.get<PageRes<System.DictResp[]>>(`${BASE_URL}`, query)
+export function listDict(query: System.DictQuery) {
+  return http.get<System.DictResp[]>(`${BASE_URL}/list`, query)
 }
 
 /** @desc 查询字典详情 */

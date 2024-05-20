@@ -55,6 +55,12 @@ const onClickItem = (item: FileTypeListItem) => {
     margin: 0 16px;
     padding-left: 0;
     padding-right: 0;
+    .arco-card-header-title {
+      color: var(--color-text-1);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
   }
 }
 </style>

@@ -36,9 +36,7 @@ const columns: Columns = [
   { label: '密码', field: 'newPassword', type: 'input-password', rules: [{ required: true, message: '请输入密码' }] }
 ]
 
-const { form, resetForm } = useForm({
-  newPassword: ''
-})
+const { form, resetForm } = useForm({})
 
 // 重置
 const reset = () => {
