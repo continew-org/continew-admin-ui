@@ -59,7 +59,7 @@
             v-permission="['system:dept:delete']"
             status="danger"
             :title="record.isSystem ? '系统内置数据不能删除' : undefined"
-            :disabled="record.disabled"
+            :disabled="record.isSystem"
             @click="onDelete(record)"
           >
             删除
