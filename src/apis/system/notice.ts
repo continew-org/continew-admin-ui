@@ -30,3 +30,6 @@ export function deleteNotice(ids: string | Array<number>) {
 export function getNoticeList(type: string | Array<number>) {
   return http.get(`/system/message?page=1&size=10&sort=createTime,desc&isRead=false&type=${type}`,)
 }
+export function endAllMessage() {
+  return http.patch(`/system/message/read`,)
+} 

@@ -5,6 +5,7 @@
         <template #title>通知({{ props.list.length }})</template>
         <section>
           <a-comment
+            v-if="props.list.length > 0"
             v-for="(item, index) in props.list"
             :key="index"
             :author="item.createUserString"
@@ -13,12 +14,14 @@
           >
             <template #actions></template>
           </a-comment>
+          <Empty v-if="props.list.length === 0" />
         </section>
       </a-tab-pane>
       <a-tab-pane key="2">
-        <template #title>关注({{ props.todulist?.length || 0 }})</template>
+        <template #title>关注({{ props.follwlist?.length || 0 }})</template>
         <section>
           <a-comment
+            v-if="props.follwlist.length > 0"
             v-for="(item, index) in props.follwlist"
             :key="index"
             :author="item.createUserString"
@@ -27,6 +30,7 @@
           >
             <template #actions></template>
           </a-comment>
+          <Empty v-if="props.follwlist.length === 0" />
         </section>
       </a-tab-pane>
       <a-tab-pane key="3">
@@ -35,6 +39,7 @@
         <section>
           <a-comment
             v-for="(item, index) in props.todulist"
+            v-if="props.todulist.length > 0"
             :key="index"
             :author="item.createUserString"
             :content="item.content"
@@ -42,6 +47,7 @@
           >
             <template #actions></template>
           </a-comment>
+          <Empty v-if="props.todulist.length === 0" />
         </section>
       </a-tab-pane>
     </a-tabs>
@@ -49,10 +55,20 @@
 </template>
 
 <script setup lang="ts">
+import Empty from "./empty.vue";
+
 defineOptions({ name: "Message" });
 const props = defineProps({
   list: {
-    type: Array as PropType<Array<{ name: string }>>, // 简化数据结构以便测试
+    type: Array as PropType<any>, // 简化数据结构以便测试
+    required: true,
+  },
+  todulist: {
+    type: Array as PropType<any>, // 简化数据结构以便测试
+    required: true,
+  },
+  follwlist: {
+    type: Array as PropType<any>, // 简化数据结构以便测试
     required: true,
   },
 });

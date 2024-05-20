@@ -11,7 +11,7 @@
       </a-tooltip>
 
       <!-- 消息通知 -->
-      <a-popover position="bottom">
+      <a-popover position="bottom"  trigger="click"> 
         <a-badge :count="9" dot>
           <a-button size="mini" class="gi_hover_btn" @click="handleClick">
             <template #icon>
@@ -98,8 +98,8 @@ const createWebSocket = (token) => {
   };
 
   socket.onmessage = (event) => {
-    const messageData = JSON.parse(event.data);
-    const data = JSON.parse(messageData.content);
+    const messageData = event.data;
+    const data = messageData.content;
     if (data.type === sys) {
       list.value.unshift({
         createUserString: messageData.fromName,
@@ -191,11 +191,13 @@ onMounted(() => {
   fetchData();
 });
 const handleClick = () => {
-  window.open("/setting/message");
+  window.open("/#/setting/message");
+
 };
 </script>
 
 <style lang="scss" scoped>
+
 .arco-dropdown-open .arco-icon-down {
   transform: rotate(180deg);
 }
