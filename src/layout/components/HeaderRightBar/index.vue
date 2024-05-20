@@ -11,9 +11,9 @@
       </a-tooltip>
 
       <!-- 消息通知 -->
-      <a-popover position="bottom" trigger="click">
+      <a-popover position="bottom">
         <a-badge :count="9" dot>
-          <a-button size="mini" class="gi_hover_btn">
+          <a-button size="mini" class="gi_hover_btn" @click="handleClick">
             <template #icon>
               <icon-notification :size="18" />
             </template>
@@ -83,6 +83,7 @@ defineOptions({ name: "HeaderRight" });
 const list = ref<Array<{ name: string }>>([]);
 const follwlist = ref<Array<{ name: string }>>([]);
 const todulist = ref<Array<{ name: string }>>([]);
+const hover = ref<boolean>(false);
 
 onBeforeUnmount(() => {
   if (socket) {
@@ -118,6 +119,7 @@ const createWebSocket = (token) => {
     console.log("WebSocket connection closed");
   };
 };
+
 const fetchData = async () => {
   try {
     const token = getToken();
@@ -188,6 +190,9 @@ onMounted(() => {
   checkPasswordExpired();
   fetchData();
 });
+const handleClick = () => {
+  window.open("https://www.baidu.com/");
+};
 </script>
 
 <style lang="scss" scoped>
