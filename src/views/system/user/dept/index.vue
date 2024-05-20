@@ -172,22 +172,22 @@ onMounted(() => {
 
 :deep(.arco-tree-node) {
   line-height: normal;
-  .arco-tree-node-title {
-    border-radius: var(--border-radius-medium);
+  border-radius: var(--border-radius-medium);
+  &:hover {
+    background-color: var(--color-secondary-hover);
+  }
 
+  .arco-tree-node-title {
     &:hover {
-      background-color: var(--color-secondary-hover);
+      background-color: transparent;
     }
   }
 }
 
 :deep(.arco-tree-node-selected) {
-  .arco-tree-node-title {
+  background-color: rgba(var(--primary-6), 0.1);
+  &:hover {
     background-color: rgba(var(--primary-6), 0.1);
-
-    &:hover {
-      background-color: rgba(var(--primary-6), 0.1);
-    }
   }
 }
 
