@@ -80,9 +80,9 @@ let socket: WebSocket;
 const sys = "SYSTEM";
 defineOptions({ name: "HeaderRight" });
 
-const list = ref<Array<{ name: string }>>([]);
-const follwlist = ref<Array<{ name: string }>>([]);
-const todulist = ref<Array<{ name: string }>>([]);
+const list = ref<Array<any>>([]);
+const follwlist = ref<Array<any>>([]);
+const todulist = ref<Array<any>>([]);
 const hover = ref<boolean>(false);
 
 onBeforeUnmount(() => {
@@ -191,7 +191,7 @@ onMounted(() => {
   fetchData();
 });
 const handleClick = () => {
-  window.open("https://www.baidu.com/");
+  window.open("/setting/message");
 };
 </script>
 
