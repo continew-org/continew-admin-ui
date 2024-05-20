@@ -10,8 +10,7 @@ const storeSetup = () => {
   const cacheList = ref<RouteRecordName[]>([]) // keep-alive缓存的数组, 元素是组件名
 
   // 添加一个页签, 如果当前路由已经打开, 则不再重复添加
-  const addTagItem = (route: RouteRecordRaw) => {
-    const item = JSON.parse(JSON.stringify(route))
+  const addTagItem = (item: RouteRecordRaw) => {
     if (tagList.value.some((i) => i.path === item.path)) return
     if (item.meta?.showInTabs ?? true) {
       tagList.value.push(item)
@@ -36,7 +35,7 @@ const storeSetup = () => {
     const arr: RouteRecordRaw[] = []
     _XEUtils_.eachTree(routeStore.routes, (item) => {
       if (item.meta?.affix ?? false) {
-        arr.push(JSON.parse(JSON.stringify(item)))
+        arr.push(item)
       }
     })
     tagList.value = arr

@@ -67,7 +67,7 @@ const {
   loading,
   pagination,
   search
-} = useTable((p) => listLog({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listLog({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

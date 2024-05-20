@@ -57,7 +57,7 @@ const toHome = () => {
     flex-shrink: 0;
   }
   .system-name {
-    padding-left: 8px;
+    padding-left: 6px;
     white-space: nowrap;
     transition: color 0.3s;
     &:hover {

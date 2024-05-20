@@ -3,11 +3,12 @@ import { useBreakpoint } from '@/hooks'
 
 type Callback = () => void
 
-type Options = {
+export type Options = {
   defaultPageSize: number
+  defaultSizeOptions: number[]
 }
 
-export function usePagination(callback: Callback, options: Options = { defaultPageSize: 10 }) {
+export function usePagination(callback: Callback, options: Options = { defaultPageSize: 10, defaultSizeOptions: [10, 20, 30, 40, 50] }) {
   const { breakpoint } = useBreakpoint()
 
   const pagination = reactive({
@@ -15,6 +16,7 @@ export function usePagination(callback: Callback, options: Options = { defaultPa
     showTotal: true,
     current: 1,
     pageSize: options.defaultPageSize,
+    pageSizeOptions: options.defaultSizeOptions,
     total: 0,
     simple: false,
     onChange: (size: number) => {

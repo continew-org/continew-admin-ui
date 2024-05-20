@@ -1,37 +1,36 @@
 <template>
-  <div class="gi_page">
-    <a-card title="代码生成" class="general-card">
-      <GiTable
-        row-key="tableName"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size', 'setting']"
-        :disabled-column-keys="['tableName']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <a-input v-model="queryForm.tableName" placeholder="请输入表名称" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #action="{ record }">
-          <a-space>
-            <a-link @click="onConfig(record.tableName, record.comment)">配置</a-link>
-            <a-link
-              :title="record.isConfiged ? '生成' : '请先进行生成配置'"
-              :disabled="!record.isConfiged"
-              @click="onPreview(record.tableName)"
-            >
-              生成
-            </a-link>
-          </a-space>
-        </template>
-      </GiTable>
-    </a-card>
+  <div class="table-page">
+    <GiTable
+      row-key="tableName"
+      title="代码生成"
+      :data="dataList"
+      :columns="columns"
+      :loading="loading"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :pagination="pagination"
+      :disabled-tools="['size', 'setting']"
+      :disabled-column-keys="['tableName']"
+      @refresh="search"
+    >
+      <template #custom-left>
+        <a-input v-model="queryForm.tableName" placeholder="请输入表名称" allow-clear @change="search">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        <a-button @click="reset">重置</a-button>
+      </template>
+      <template #action="{ record }">
+        <a-space>
+          <a-link @click="onConfig(record.tableName, record.comment)">配置</a-link>
+          <a-link
+            :title="record.isConfiged ? '生成' : '请先进行生成配置'"
+            :disabled="!record.isConfiged"
+            @click="onPreview(record.tableName)"
+          >
+            生成
+          </a-link>
+        </a-space>
+      </template>
+    </GiTable>
 
     <GenConfigDrawer ref="GenConfigDrawerRef" @save-success="search" />
     <GenPreviewModal ref="GenPreviewModalRef" @generate="onGenerate" />
@@ -58,7 +57,7 @@ const {
   loading,
   pagination,
   search
-} = useTable((p) => listGenerator({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => listGenerator({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
   {

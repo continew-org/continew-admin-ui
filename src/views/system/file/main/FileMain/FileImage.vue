@@ -1,5 +1,5 @@
 <template>
-  <img v-if="isImage" class="file-image" :src="props.data.url" alt="" />
+  <img v-if="isImage" class="file-image" :src="props.data.thumbnailUrl" alt="" />
   <GiSvgIcon v-else size="100%" :name="getFileImg"></GiSvgIcon>
 </template>
 
