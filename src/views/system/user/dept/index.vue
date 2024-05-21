@@ -185,6 +185,7 @@ onMounted(() => {
 }
 
 :deep(.arco-tree-node-selected) {
+  font-weight: bold;
   background-color: rgba(var(--primary-6), 0.1);
   &:hover {
     background-color: rgba(var(--primary-6), 0.1);

@@ -55,7 +55,7 @@
     </a-row>
 
     <!-- 文件列表-宫格模式 -->
-    <a-spin id="fileMain" class="file-main__list" :loading="loading" @scroll="handleScroll">
+    <a-spin id="fileMain" class="file-main__list" :loading="loading">
       <FileGrid v-show="fileList.length && mode === 'grid'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
         @right-menu-click="handleRightMenuClick"></FileGrid>
@@ -65,7 +65,7 @@
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
         @right-menu-click="handleRightMenuClick"></FileList>
 
-      <a-empty v-show="!fileList.length"></a-empty>
+      <a-empty v-if="!fileList.length" />
     </a-spin>
     <div class="pagination">
       <a-pagination v-bind="pagination" />
@@ -187,19 +187,19 @@ const handleMulDelete = () => {
 const handleUpload = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      try {
-        const res = await uploadFile(formData)
-        Message.success('上传成功')
-        onSuccess(res)
-        search()
-      } catch (error) {
-        onError(error)
-      }
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    try {
+      const res = await uploadFile(formData)
+      Message.success('上传成功')
+      onSuccess(res)
+      search()
+    } catch (error) {
+      onError(error)
+    }
+  })()
   return {
     abort() {
       controller.abort()

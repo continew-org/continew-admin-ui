@@ -144,37 +144,35 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.arco-tree-node-title) {
-  margin-left: 0;
-}
-
 :deep(.arco-tree-node-title-text) {
   width: 100%;
   white-space: nowrap;
 }
 
 :deep(.arco-tree-node) {
+  line-height: normal;
+  border-radius: var(--border-radius-medium);
+  &:hover {
+    background-color: var(--color-secondary-hover);
+  }
+
   .arco-tree-node-switcher {
     width: 0;
     margin-right: 0;
   }
 
   .arco-tree-node-title {
-    border-radius: var(--border-radius-medium);
-
     &:hover {
-      background-color: var(--color-secondary-hover);
+      background-color: transparent;
     }
   }
 }
 
 :deep(.arco-tree-node-selected) {
-  .arco-tree-node-title {
+  font-weight: bold;
+  background-color: rgba(var(--primary-6), 0.1);
+  &:hover {
     background-color: rgba(var(--primary-6), 0.1);
-
-    &:hover {
-      background-color: rgba(var(--primary-6), 0.1);
-    }
   }
 }
 
