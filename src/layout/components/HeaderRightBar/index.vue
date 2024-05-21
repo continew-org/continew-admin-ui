@@ -98,18 +98,19 @@ const createWebSocket = (token) => {
   }
 
   socket.onmessage = (event) => {
-    fetchData()
-    // const messageData = event.data
+    // fetchData()
+    const data = JSON.parse(event.data)
     // const data = messageData.content
-    // if (data.type === sys) {
-    //   list.value.unshift({
-    //     createUserString: messageData.fromName,
-    //     content: data?.content,
-    //     createTime:
-    //       messageData?.sendTime
-    //       && moment(messageData.sendTime).format('YYYY-MM-DD HH:mm:ss')
-    //   })
-    // }
+    console.log(data)
+    if (data.msgType === 1) {
+      list.value.unshift({
+        createUserString: data.fromName,
+        content: data?.content,
+        createTime:
+          data?.sendTime
+          && moment(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
+      })
+    }
   }
 
   socket.onerror = (error) => {
