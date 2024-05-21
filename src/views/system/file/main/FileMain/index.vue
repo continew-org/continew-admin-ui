@@ -96,7 +96,7 @@ const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage
 
 const queryForm = reactive<FileQuery>({
   name: undefined,
-  type: route.query.type?.toString() || undefined,
+  type: route.query.type?.toString() !== '0' ? route.query.type?.toString() : undefined,
   sort: ['updateTime,desc']
 })
 const paginationOption = reactive({
@@ -187,19 +187,19 @@ const handleMulDelete = () => {
 const handleUpload = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    try {
-      const res = await uploadFile(formData)
-      Message.success('上传成功')
-      onSuccess(res)
-      search()
-    } catch (error) {
-      onError(error)
-    }
-  })()
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name as string, fileItem.file as Blob)
+      try {
+        const res = await uploadFile(formData)
+        Message.success('上传成功')
+        onSuccess(res)
+        search()
+      } catch (error) {
+        onError(error)
+      }
+    })()
   return {
     abort() {
       controller.abort()
@@ -209,7 +209,12 @@ const handleUpload = (options: RequestOption) => {
 
 onBeforeRouteUpdate((to) => {
   if (!to.query.type) return
-  queryForm.type = to.query.type?.toString()
+  if (to.query.type === '0') {
+    queryForm.type = undefined
+  } else {
+    queryForm.type = to.query.type?.toString()
+  }
+
   search()
 })
 
