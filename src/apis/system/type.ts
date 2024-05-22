@@ -280,6 +280,17 @@ export interface BasicConfig {
   SITE_COPYRIGHT: string
 }
 
+/** 邮箱配置类型 */
+export interface MailConfig {
+  MAIL_SEND_TYPE: string
+  MAIL_SMTP_SERVER: string
+  MAIL_SMTP_PORT: string
+  MAIL_SMTP_USERNAME: string
+  MAIL_SMTP_PASSWORD: string
+  MAIL_SMTP_VERIFY_TYPE: string
+  MAIL_FROM: string
+}
+
 /** 安全配置类型 */
 export interface SecurityConfig {
   PASSWORD_ERROR_LOCK_COUNT: OptionResp
