@@ -55,7 +55,7 @@
     </a-row>
 
     <!-- 文件列表-宫格模式 -->
-    <a-spin id="fileMain" class="file-main__list" :loading="loading" @scroll="handleScroll">
+    <a-spin id="fileMain" class="file-main__list" :loading="loading">
       <FileGrid v-show="fileList.length && mode === 'grid'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
         @right-menu-click="handleRightMenuClick"></FileGrid>
@@ -65,7 +65,7 @@
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
         @right-menu-click="handleRightMenuClick"></FileList>
 
-      <a-empty v-show="!fileList.length"></a-empty>
+      <a-empty v-if="!fileList.length" />
     </a-spin>
     <div class="pagination">
       <a-pagination v-bind="pagination" />
@@ -96,7 +96,7 @@ const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage
 
 const queryForm = reactive<FileQuery>({
   name: undefined,
-  type: route.query.type?.toString() || undefined,
+  type: route.query.type?.toString() !== '0' ? route.query.type?.toString() : undefined,
   sort: ['updateTime,desc']
 })
 const paginationOption = reactive({
@@ -209,7 +209,12 @@ const handleUpload = (options: RequestOption) => {
 
 onBeforeRouteUpdate((to) => {
   if (!to.query.type) return
-  queryForm.type = to.query.type?.toString()
+  if (to.query.type === '0') {
+    queryForm.type = undefined
+  } else {
+    queryForm.type = to.query.type?.toString()
+  }
+
   search()
 })
 

@@ -7,25 +7,34 @@
         </slot>
       </a-space>
     </a-row>
-    <a-row :gutter="16" class="h-full">
-      <a-col :xs="0" :md="4" :lg="4" :xl="4" :xxl="4">
-        <a-input v-model="deptName" placeholder="请输入部门名称" allow-clear style="margin-bottom: 10px">
-          <template #prefix><icon-search /></template>
-        </a-input>
-        <a-tree ref="treeRef" :data="deptList" :selected-keys="selectedKeys" default-expand-all show-line block-node
-          @select="handleSelectDept">
-        </a-tree>
+    <a-row align="stretch" :gutter="14" class="h-full">
+      <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
+        <DeptTree placeholder="请输入关键词" @node-click="handleSelectDept" />
       </a-col>
-      <a-col :xs="24" :md="20" :lg="20" :xl="20" :xxl="20" class="h-full">
-        <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }" :pagination="pagination" :disabled-tools="['size']"
-          :disabled-column-keys="['username']" @refresh="search">
+      <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
+        <GiTable
+          row-key="id"
+          :data="dataList"
+          :columns="columns"
+          :loading="loading"
+          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
+          :pagination="pagination"
+          :disabled-tools="['size']"
+          :disabled-column-keys="['username']"
+          @refresh="search"
+        >
           <template #custom-left>
             <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
               <template #prefix><icon-search /></template>
             </a-input>
-            <a-select v-model="queryForm.status" :options="DisEnableStatusList" placeholder="请选择状态" allow-clear
-              style="width: 150px" @change="search" />
+            <a-select
+              v-model="queryForm.status"
+              :options="DisEnableStatusList"
+              placeholder="请选择状态"
+              allow-clear
+              style="width: 150px"
+              @change="search"
+            />
             <a-button @click="reset">重置</a-button>
           </template>
           <template #custom-right>
@@ -84,14 +93,13 @@
 </template>
 
 <script setup lang="ts">
-import type { TreeInstance } from '@arco-design/web-vue'
+import DeptTree from './dept/index.vue'
 import UserAddModal from './UserAddModal.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
 import { type UserQuery, type UserResp, deleteUser, exportUser, listUser } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
-import { useDept } from '@/hooks/app'
 import { isMobile } from '@/utils'
 import getAvatar from '@/utils/avatar'
 import has from '@/utils/has'
@@ -100,7 +108,7 @@ import { DisEnableStatusList } from '@/constant/common'
 defineOptions({ name: 'SystemUser' })
 
 const queryForm = reactive<UserQuery>({
-  sort: ['createTime,desc']
+  sort: ['t1.createTime,desc']
 })
 
 const {
@@ -170,25 +178,6 @@ const onExport = () => {
   useDownload(() => exportUser(queryForm))
 }
 
-const treeRef = ref<TreeInstance>()
-const deptName = ref('')
-// 查询部门列表
-const { deptList, getDeptList } = useDept({
-  onSuccess: () => {
-    nextTick(() => {
-      treeRef.value?.expandAll(true)
-      queryForm.deptId = deptList.value[0]?.key as string
-      search()
-    })
-  }
-})
-const selectedKeys = computed(() => {
-  return [queryForm.deptId ? queryForm.deptId : '']
-})
-watch(deptName, (val) => {
-  getDeptList(val)
-})
-
 // 根据选中部门查询
 const handleSelectDept = (keys: Array<any>) => {
   queryForm.deptId = keys.length === 1 ? keys[0] : undefined
@@ -217,10 +206,6 @@ const UserResetPwdModalRef = ref<InstanceType<typeof UserResetPwdModal>>()
 const onResetPwd = (item: UserResp) => {
   UserResetPwdModalRef.value?.onReset(item.id)
 }
-
-onMounted(() => {
-  getDeptList()
-})
 </script>
 
 <style lang="scss" scoped></style>
