@@ -206,20 +206,20 @@ const onResetValue = () => {
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
-      .then((res) => {
-        onSuccess(res)
-        form.SITE_FAVICON = res.data.url
-        Message.success('上传成功')
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  })()
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name as string, fileItem.file as Blob)
+      uploadFile(formData)
+        .then((res) => {
+          onSuccess(res)
+          form.SITE_FAVICON = res.data.url
+          Message.success('上传成功')
+        })
+        .catch((error) => {
+          onError(error)
+        })
+    })()
   return {
     abort() {
       controller.abort()
@@ -236,20 +236,20 @@ const handleChangeFavicon = (_: any, currentFile: any) => {
 const handleUploadLogo = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
-      .then((res) => {
-        onSuccess(res)
-        form.SITE_LOGO = res.data.url
-        Message.success('上传成功')
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  })()
+      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+      onProgress(20)
+      const formData = new FormData()
+      formData.append(name as string, fileItem.file as Blob)
+      uploadFile(formData)
+        .then((res) => {
+          onSuccess(res)
+          form.SITE_LOGO = res.data.url
+          Message.success('上传成功')
+        })
+        .catch((error) => {
+          onError(error)
+        })
+    })()
   return {
     abort() {
       controller.abort()

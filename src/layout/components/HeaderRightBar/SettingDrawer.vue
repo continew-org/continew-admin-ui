@@ -139,7 +139,7 @@ type ColorObj = {
 
 // 改变主题色
 const changeColor = (colorObj: ColorObj) => {
-  if (!/^#[0-9A-Z]{6}/i.test(colorObj.hex)) return
+  if (!/^#[0-9A-Za-z]{6}/.test(colorObj.hex)) return
   appStore.setThemeColor(colorObj.hex)
 }
 </script>
