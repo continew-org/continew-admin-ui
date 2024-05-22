@@ -1,7 +1,7 @@
-name: "\U0001F41E Bug 报告"
+name: 🐞 Bug 报告
 description: Create a report to help us improve
-title: "[Bug] "
-labels: ["bug"]
+title: '[Bug] '
+labels: [bug]
 body:
   - type: markdown
     attributes:
@@ -38,7 +38,7 @@ body:
       description: |
         examples:
           - **ContiNew Admin version(s)**: v3.0.1
-      value: "ContiNew Admin version(s):"
+      value: 'ContiNew Admin version(s):'
       render: markdown
     validations:
       required: true

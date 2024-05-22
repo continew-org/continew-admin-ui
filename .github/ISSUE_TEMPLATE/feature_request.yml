@@ -1,7 +1,7 @@
-name: "\U0001F680 新 Feature 建议"
+name: 🚀 新 Feature 建议
 description: Suggest an idea for this project
-title: "[Feature] "
-labels: ["feature"]
+title: '[Feature] '
+labels: [feature]
 body:
   - type: markdown
     attributes:

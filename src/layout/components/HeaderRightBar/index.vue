@@ -11,16 +11,16 @@
       </a-tooltip>
 
       <!-- 消息通知 -->
-      <a-popover position="bottom" trigger="click">
-        <a-badge :count="9" dot>
-          <a-button size="mini" class="gi_hover_btn">
+      <a-popover position="bottom">
+        <a-badge :count="list.length > 0 || todulist.length > 0 || follwlist.length > 0 ? 9 : 0" dot>
+          <a-button size="mini" class="gi_hover_btn" @click="handleClick">
             <template #icon>
               <icon-notification :size="18" />
             </template>
           </a-button>
         </a-badge>
         <template #content>
-          <Message></Message>
+          <Message :fetch="fetchData" :list="list" :follwlist="follwlist" :todulist="todulist"></Message>
         </template>
       </a-popover>
 
@@ -68,12 +68,76 @@
 <script setup lang="ts">
 import { Modal } from '@arco-design/web-vue'
 import { useFullscreen } from '@vueuse/core'
+import { onMounted, ref } from 'vue'
+import moment from 'moment'
 import SettingDrawer from './SettingDrawer.vue'
 import Message from './Message.vue'
 import { useUserStore } from '@/stores'
 import { isMobile } from '@/utils'
+import { getToken } from '@/utils/auth'
+import { getNoticeList } from '@/apis'
 
 defineOptions({ name: 'HeaderRight' })
+let socket: WebSocket
+const sys = 'SYSTEM'
+const list = ref<Array<any>>([])
+const follwlist = ref<Array<any>>([])
+const todulist = ref<Array<any>>([])
+const hover = ref<boolean>(false)
+
+onBeforeUnmount(() => {
+  if (socket) {
+    socket.close()
+  }
+})
+const createWebSocket = (token) => {
+  socket = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/ws?token=${token}`)
+
+  socket.onopen = () => {
+    console.log('WebSocket connection opened')
+  }
+
+  socket.onmessage = (event) => {
+    // fetchData()
+    const data = JSON.parse(event.data)
+    // const data = messageData.content
+    console.log(data)
+    if (data.msgType === 1) {
+      list.value.unshift({
+        createUserString: data.fromName,
+        content: data?.content,
+        createTime:
+          data?.sendTime
+          && moment(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
+      })
+    }
+  }
+
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error)
+  }
+
+  socket.onclose = () => {
+    console.log('WebSocket connection closed')
+  }
+}
+
+const fetchData = async () => {
+  try {
+    const token = getToken()
+    const response = await getNoticeList('1')
+    list.value = response?.data?.list || []
+    if (token) {
+      createWebSocket(token)
+    }
+    const follwResponse = await getNoticeList('2')
+    const toduResponse = await getNoticeList('3')
+    follwlist.value = follwResponse?.data?.list || []
+    todulist.value = toduResponse?.data?.list || []
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
+}
 
 const { isFullscreen, toggle } = useFullscreen()
 
@@ -126,7 +190,11 @@ const checkPasswordExpired = () => {
 
 onMounted(() => {
   checkPasswordExpired()
+  fetchData()
 })
+const handleClick = () => {
+  window.open('/#/setting/message')
+}
 </script>
 
 <style lang="scss" scoped>
