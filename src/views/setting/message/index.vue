@@ -46,8 +46,9 @@
         <a-tooltip :content="record.content"><span>{{ record.title }}</span></a-tooltip>
       </template>
       <template #isRead="{ record }">
-        <a-tag v-if="record.isRead">已读</a-tag>
-        <a-tag v-else color="arcoblue">未读</a-tag>
+        <a-tag :color="record.isRead ? '' : 'arcoblue'">
+          {{ record.isRead ? '已读' : '未读' }}
+        </a-tag>
       </template>
       <template #type="{ record }">
         <GiCellTag :value="record.type" :dict="message_type" />
