@@ -316,8 +316,8 @@ export interface MessageResp {
   content: string
   type: number
   isRead: boolean
-  readTime: string
-  createUserString: string
+  readTime?: string
+  createUserString?: string
   createTime: string
 }
 

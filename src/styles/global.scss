@@ -149,10 +149,12 @@
 
   &:hover {
     background: var(--color-secondary-hover) !important;
+    border-radius: 50%;
   }
 
   &:active {
     background: var(--color-secondary-active) !important;
+    border-radius: 50%;
   }
 }
 

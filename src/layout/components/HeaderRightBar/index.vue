@@ -11,16 +11,21 @@
       </a-tooltip>
 
       <!-- 消息通知 -->
-      <a-popover position="bottom">
-        <a-badge :count="list.length > 0 || todulist.length > 0 || follwlist.length > 0 ? 9 : 0" dot>
-          <a-button size="mini" class="gi_hover_btn" @click="handleClick">
+      <a-popover
+        position="bottom"
+        trigger="click"
+        :content-style="{ marginTop: '-5px', padding: 0, border: 'none' }"
+        :arrow-style="{ width: 0, height: 0 }"
+      >
+        <a-badge :count="messageData.length" dot>
+          <a-button size="mini" class="gi_hover_btn">
             <template #icon>
               <icon-notification :size="18" />
             </template>
           </a-button>
         </a-badge>
         <template #content>
-          <Message :fetch="fetchData" :list="list" :follwlist="follwlist" :todulist="todulist"></Message>
+          <Message :fetch="getMessageData" :data="messageData" />
         </template>
       </a-popover>
 
@@ -69,73 +74,65 @@
 import { Modal } from '@arco-design/web-vue'
 import { useFullscreen } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
-import moment from 'moment'
-import SettingDrawer from './SettingDrawer.vue'
+import dayjs from 'dayjs'
 import Message from './Message.vue'
+import SettingDrawer from './SettingDrawer.vue'
+import { listMessage } from '@/apis'
 import { useUserStore } from '@/stores'
 import { isMobile } from '@/utils'
 import { getToken } from '@/utils/auth'
-import { getNoticeList } from '@/apis'
 
 defineOptions({ name: 'HeaderRight' })
-let socket: WebSocket
-const sys = 'SYSTEM'
-const list = ref<Array<any>>([])
-const follwlist = ref<Array<any>>([])
-const todulist = ref<Array<any>>([])
-const hover = ref<boolean>(false)
 
+let socket: WebSocket
 onBeforeUnmount(() => {
   if (socket) {
     socket.close()
   }
 })
+
+const messageData = ref<Array<any>>([])
 const createWebSocket = (token) => {
   socket = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/ws?token=${token}`)
-
   socket.onopen = () => {
-    console.log('WebSocket connection opened')
+    // console.log('WebSocket connection opened')
   }
 
   socket.onmessage = (event) => {
-    // fetchData()
     const data = JSON.parse(event.data)
-    // const data = messageData.content
-    console.log(data)
-    if (data.msgType === 1) {
-      list.value.unshift({
-        createUserString: data.fromName,
-        content: data?.content,
-        createTime:
-          data?.sendTime
-          && moment(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
-      })
-    }
+    messageData.value.unshift({
+      id: data?.id,
+      title: data?.content,
+      type: data?.type,
+      isRead: data?.isRead,
+      createTime:
+        data?.sendTime
+        && dayjs(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
+    })
   }
 
-  socket.onerror = (error) => {
-    console.error('WebSocket error:', error)
+  socket.onerror = () => {
+    // console.error('WebSocket error:', error)
   }
 
   socket.onclose = () => {
-    console.log('WebSocket connection closed')
+    // console.log('WebSocket connection closed')
   }
 }
 
-const fetchData = async () => {
-  try {
-    const token = getToken()
-    const response = await getNoticeList('1')
-    list.value = response?.data?.list || []
-    if (token) {
-      createWebSocket(token)
-    }
-    const follwResponse = await getNoticeList('2')
-    const toduResponse = await getNoticeList('3')
-    follwlist.value = follwResponse?.data?.list || []
-    todulist.value = toduResponse?.data?.list || []
-  } catch (error) {
-    console.error('Error fetching data:', error)
+// 查询消息通知
+const queryMessageParam = reactive({
+  isRead: false,
+  sort: ['createTime,desc'],
+  page: 1,
+  size: 5
+})
+const getMessageData = async () => {
+  const token = getToken()
+  const { data } = await listMessage(queryMessageParam)
+  messageData.value = data.list
+  if (token) {
+    createWebSocket(token)
   }
 }
 
@@ -190,11 +187,8 @@ const checkPasswordExpired = () => {
 
 onMounted(() => {
   checkPasswordExpired()
-  fetchData()
+  getMessageData()
 })
-const handleClick = () => {
-  window.open('/#/setting/message')
-}
 </script>
 
 <style lang="scss" scoped>
