@@ -27,7 +27,10 @@
                 <div class="file-image">
                   <FileImage :data="record"></FileImage>
                 </div>
-                <span>{{ getFileName(record) }}</span>
+                <a-typography-paragraph copyable :copy-text="record.url">
+                  <template #copy-tooltip>复制链接</template>
+                  {{ getFileName(record) }}
+                </a-typography-paragraph>
               </section>
               <template #content>
                 <FileRightMenu :data="record" @click="handleRightMenuClick($event, record)"></FileRightMenu>
@@ -38,7 +41,8 @@
         <a-table-column title="大小" data-index="size" :width="150">
           <template #cell="{ record }">{{ formatFileSize(record.size) }}</template>
         </a-table-column>
-        <a-table-column title="修改时间" data-index="updateTime" :width="200"></a-table-column>
+        <a-table-column title="存储名称" data-index="storageName" :width="200" />
+        <a-table-column title="修改时间" data-index="updateTime" :width="200" />
         <a-table-column title="操作" :width="120" align="center">
           <template #cell="{ record }">
             <a-popover trigger="click" position="bottom" :content-style="{ 'padding': 0, 'margin-top': 0 }">
@@ -48,7 +52,7 @@
                   :file-info="record"
                   :shadow="false"
                   @click="handleRightMenuClick($event, record)"
-                ></FileRightMenu>
+                />
               </template>
             </a-popover>
           </template>

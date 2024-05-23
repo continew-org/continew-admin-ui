@@ -6,7 +6,7 @@ import type { FileItem } from '@/apis'
 /** 打开 详情 弹窗 */
 export function openFileDetailModal(fileItem: FileItem) {
   return Modal.open({
-    title: fileItem.extension ? `${fileItem.name}.${fileItem.extension}` : `${fileItem.name}`,
+    title: '文件详情',
     titleAlign: 'start',
     modalAnimationName: 'el-fade',
     modalStyle: { maxWidth: '320px' },

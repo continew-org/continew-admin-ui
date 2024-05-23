@@ -206,6 +206,7 @@ export type FileItem = {
   extension: string
   type: number
   storageId: string
+  storageName: string
   createUserString: string
   createTime: string
   updateUserString: string
