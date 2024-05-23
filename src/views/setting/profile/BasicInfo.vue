@@ -36,11 +36,11 @@
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-phone /><span style="margin-left: 5px">手机</span></template>
-            {{ userInfo.phone }}
+            {{ userInfo.phone || '暂无' }}
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-email /><span style="margin-left: 5px">邮箱</span></template>
-            {{ userInfo.email }}
+            {{ userInfo.email || '暂无' }}
           </a-descriptions-item>
           <a-descriptions-item :span="4">
             <template #label> <icon-mind-mapping /><span style="margin-left: 5px">部门</span></template>
