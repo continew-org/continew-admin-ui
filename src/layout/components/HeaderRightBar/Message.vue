@@ -1,8 +1,8 @@
 <template>
   <div class="message">
-    <a-list>
+    <a-list :loading="loading">
       <template #header>通知</template>
-      <a-list-item v-for="item in props.data" :key="item.id">
+      <a-list-item v-for="item in messageList" :key="item.id">
         <div class="content-wrapper" @click="open">
           <div class="content">{{ item.title }}</div>
           <div class="date">{{ item.createTime }}</div>
@@ -19,18 +19,32 @@
 </template>
 
 <script setup lang="ts">
-import { readMessage } from '@/apis'
+import { onMounted } from 'vue'
+import { type MessageResp, listMessage, readMessage } from '@/apis'
 
-const props = defineProps({
-  data: {
-    type: Array as PropType<any>, // 简化数据结构以便测试
-    required: true
-  },
-  fetch: {
-    type: Function, // 简化数据结构以便测试
-    required: true
-  }
+const emit = defineEmits<{
+  (e: 'readall-success'): void
+}>()
+
+const queryParam = reactive({
+  isRead: false,
+  sort: ['createTime,desc'],
+  page: 1,
+  size: 5
 })
+
+const messageList = ref<MessageResp[]>()
+const loading = ref(false)
+// 查询消息数据
+const getMessageData = async () => {
+  try {
+    loading.value = true
+    const { data } = await listMessage(queryParam)
+    messageList.value = data.list
+  } finally {
+    loading.value = false
+  }
+}
 
 // 打开消息中心
 const open = () => {
@@ -40,8 +54,13 @@ const open = () => {
 // 全部已读
 const readAll = async () => {
   await readMessage()
-  props.fetch()
+  await getMessageData()
+  emit('readall-success')
 }
+
+onMounted(() => {
+  getMessageData()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -71,9 +90,6 @@ const readAll = async () => {
 
     &:hover {
       background-color: var(--color-bg-4);
-    }
-
-    &:active {
       color: rgb(var(--arcoblue-6));
     }
   }

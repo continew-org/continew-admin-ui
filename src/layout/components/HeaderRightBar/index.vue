@@ -17,7 +17,7 @@
         :content-style="{ marginTop: '-5px', padding: 0, border: 'none' }"
         :arrow-style="{ width: 0, height: 0 }"
       >
-        <a-badge :count="messageData.length" dot>
+        <a-badge :count="unreadMessageCount" dot>
           <a-button size="mini" class="gi_hover_btn">
             <template #icon>
               <icon-notification :size="18" />
@@ -25,7 +25,7 @@
           </a-button>
         </a-badge>
         <template #content>
-          <Message :fetch="getMessageData" :data="messageData" />
+          <Message @readall-success="getMessageCount" />
         </template>
       </a-popover>
 
@@ -74,10 +74,9 @@
 import { Modal } from '@arco-design/web-vue'
 import { useFullscreen } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
-import dayjs from 'dayjs'
 import Message from './Message.vue'
 import SettingDrawer from './SettingDrawer.vue'
-import { listMessage } from '@/apis'
+import { getUnreadMessageCount } from '@/apis'
 import { useUserStore } from '@/stores'
 import { isMobile } from '@/utils'
 import { getToken } from '@/utils/auth'
@@ -91,8 +90,9 @@ onBeforeUnmount(() => {
   }
 })
 
-const messageData = ref<Array<any>>([])
-const createWebSocket = (token) => {
+const unreadMessageCount = ref(0)
+// 初始化 WebSocket
+const initWebSocket = (token: string) => {
   socket = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/ws?token=${token}`)
   socket.onopen = () => {
     // console.log('WebSocket connection opened')
@@ -100,15 +100,7 @@ const createWebSocket = (token) => {
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
-    messageData.value.unshift({
-      id: data?.id,
-      title: data?.content,
-      type: data?.type,
-      isRead: data?.isRead,
-      createTime:
-        data?.sendTime
-        && dayjs(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
-    })
+    unreadMessageCount.value = Number.parseInt(data?.content)
   }
 
   socket.onerror = () => {
@@ -120,19 +112,13 @@ const createWebSocket = (token) => {
   }
 }
 
-// 查询消息通知
-const queryMessageParam = reactive({
-  isRead: false,
-  sort: ['createTime,desc'],
-  page: 1,
-  size: 5
-})
-const getMessageData = async () => {
+// 查询未读消息数量
+const getMessageCount = async () => {
+  const { data } = await getUnreadMessageCount()
+  unreadMessageCount.value = data.total
   const token = getToken()
-  const { data } = await listMessage(queryMessageParam)
-  messageData.value = data.list
   if (token) {
-    createWebSocket(token)
+    initWebSocket(token)
   }
 }
 
@@ -187,7 +173,7 @@ const checkPasswordExpired = () => {
 
 onMounted(() => {
   checkPasswordExpired()
-  getMessageData()
+  getMessageCount()
 })
 </script>
 

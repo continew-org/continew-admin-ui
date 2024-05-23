@@ -17,3 +17,8 @@ export function deleteMessage(ids: string | Array<string>) {
 export function readMessage(ids?: string | Array<string>) {
   return http.patch(`${BASE_URL}/read`, ids)
 }
+
+/** @desc 查询未读消息数量 */
+export function getUnreadMessageCount() {
+  return http.get(`${BASE_URL}/unread`)
+}

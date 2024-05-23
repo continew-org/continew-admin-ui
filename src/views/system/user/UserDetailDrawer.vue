@@ -1,7 +1,9 @@
 <template>
   <a-drawer v-model:visible="visible" title="用户详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
-      <a-descriptions-item label="ID" :span="2">{{ dataDetail?.id }}</a-descriptions-item>
+      <a-descriptions-item label="ID" :span="2">
+        <a-typography-paragraph copyable>{{ dataDetail?.id }}</a-typography-paragraph>
+      </a-descriptions-item>
       <a-descriptions-item label="用户名">
         <a-typography-paragraph :copyable="!!dataDetail?.username">{{ dataDetail?.username }}</a-typography-paragraph>
       </a-descriptions-item>
