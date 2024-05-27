@@ -11,17 +11,17 @@
           :disabled="!isUpdate">
     <a-row>
       <a-col :span="6">
-        <a-form-item field="MAIL_SEND_TYPE" :label="mailSendType?.name" :disabled="true">
-          <a-select v-model.trim="form.MAIL_SEND_TYPE">
-            <a-option value="SMTP" label="SMTP" />
+        <a-form-item field="MAIL_PROTOCOL" :label="mailProtocol?.name" :disabled="true">
+          <a-select v-model.trim="form.MAIL_PROTOCOL">
+            <a-option value="smtp" label="smtp" />
           </a-select>
         </a-form-item>
       </a-col>
     </a-row>
     <a-row>
       <a-col :span="6">
-        <a-form-item field="MAIL_SMTP_SERVER" :label="mailServer?.name">
-          <a-input v-model.trim="form.MAIL_SMTP_SERVER" />
+        <a-form-item field="MAIL_HOST" :label="mailHost?.name">
+          <a-input v-model.trim="form.MAIL_HOST" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -48,10 +48,18 @@
     </a-row>
     <a-row>
       <a-col :span="6">
-        <a-form-item field="MAIL_SMTP_VERIFY_TYPE" :label="mailVerifyType?.name" :disabled="true">
-          <a-select v-model.trim="form.MAIL_SMTP_VERIFY_TYPE">
-            <a-option value="SSL" label="SSL" />
-          </a-select>
+        <a-form-item field="MAIL_SSL_ENABLE" :label="mailSslEnable?.name">
+          <a-radio-group v-model:model-value="form.MAIL_SSL_ENABLE">
+            <a-radio value="1">启用</a-radio>
+            <a-radio value="2">禁用</a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="6">
+        <a-form-item v-if="form.MAIL_SSL_ENABLE === '1'" field="MAIL_SSL_PORT" :label="mailSslPort?.name" :disabled="isUpdate ? form.MAIL_SSL_ENABLE === '2' : !isUpdate">
+          <a-input v-model.number="form.MAIL_SSL_PORT" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -109,27 +117,29 @@ defineOptions({ name: 'MailSetting' })
 const formRef = ref<FormInstance>()
 
 const { form } = useForm<MailConfig>({
-  MAIL_SEND_TYPE: '',
-  MAIL_SMTP_SERVER: '',
+  MAIL_PROTOCOL: '',
+  MAIL_HOST: '',
   MAIL_SMTP_PORT: '',
   MAIL_SMTP_USERNAME: '',
   MAIL_SMTP_PASSWORD: '',
-  MAIL_SMTP_VERIFY_TYPE: '',
-  MAIL_FROM: ''
+  MAIL_FROM: '',
+  MAIL_SSL_ENABLE: '',
+  MAIL_SSL_PORT: ''
 })
 // 表单初始化
 onMounted(() => {
-  getDataList()
+  getDataList() // 获取配置
 })
 const { width } = useWindowSize()
 
-const mailSendType = ref<OptionResp>()
-const mailServer = ref<OptionResp>()
+const mailProtocol = ref<OptionResp>()
+const mailHost = ref<OptionResp>()
 const mailPort = ref<OptionResp>()
 const mailUsername = ref<OptionResp>()
 const mailPassword = ref<OptionResp>()
-const mailVerifyType = ref<OptionResp>()
 const mailFrom = ref<OptionResp>()
+const mailSslEnable = ref<OptionResp>()
+const mailSslPort = ref<OptionResp>()
 // 参数校验规则
 const rules: FormInstance['rules'] = {
   SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
@@ -150,12 +160,12 @@ const handleSave = async () => {
   const isInvalid = await formRef.value?.validate()
   if (isInvalid) return false
   await updateOption(
-      Object.entries(form).map((item) => {
-        return {
-          code: item[0],
-          value: item[1]
-        }
-      })
+    Object.entries(form).map((item) => {
+      return {
+        code: item[0],
+        value: item[1]
+      }
+    })
   )
   // appStore.setSiteConfig(form)
   await getDataList()
@@ -163,7 +173,7 @@ const handleSave = async () => {
 }
 // 查询参数
 const queryForm = reactive({
-  code: ['MAIL_FROM', 'MAIL_SMTP_PASSWORD', 'MAIL_SMTP_PORT', 'MAIL_SEND_TYPE', 'MAIL_SMTP_SERVER', 'MAIL_SMTP_USERNAME', 'MAIL_SMTP_VERIFY_TYPE']
+  code: ['MAIL_FROM', 'MAIL_SMTP_PASSWORD', 'MAIL_SMTP_PORT', 'MAIL_PROTOCOL', 'MAIL_HOST', 'MAIL_SMTP_USERNAME', 'MAIL_SSL_ENABLE', 'MAIL_SSL_PORT']
 })
 // 接收参数类型
 const dataList = ref<OptionResp[]>([])
@@ -171,13 +181,14 @@ const dataList = ref<OptionResp[]>([])
 const getDataList = async () => {
   const res = await listOption(queryForm)
   dataList.value = res.data
-  mailSendType.value = dataList.value.find((option) => option.code === 'MAIL_SEND_TYPE')
-  mailServer.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_SERVER')
+  mailProtocol.value = dataList.value.find((option) => option.code === 'MAIL_PROTOCOL')
+  mailHost.value = dataList.value.find((option) => option.code === 'MAIL_HOST')
   mailPort.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_PORT')
   mailUsername.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_USERNAME')
   mailPassword.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_PASSWORD')
-  mailVerifyType.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_VERIFY_TYPE')
   mailFrom.value = dataList.value.find((option) => option.code === 'MAIL_FROM')
+  mailSslEnable.value = dataList.value.find((option) => option.code === 'MAIL_SSL_ENABLE')
+  mailSslPort.value = dataList.value.find((option) => option.code === 'MAIL_SSL_PORT')
   reset()
 }
 
@@ -197,13 +208,14 @@ const onResetValue = () => {
   })
 }
 const reset = () => {
-  form.MAIL_SEND_TYPE = mailSendType.value?.value || ''
-  form.MAIL_SMTP_SERVER = mailServer.value?.value || ''
+  form.MAIL_PROTOCOL = mailProtocol.value?.value || ''
+  form.MAIL_HOST = mailHost.value?.value || ''
   form.MAIL_SMTP_PORT = mailPort.value?.value || ''
   form.MAIL_SMTP_USERNAME = mailUsername.value?.value || ''
   form.MAIL_SMTP_PASSWORD = mailPassword.value?.value || ''
-  form.MAIL_SMTP_VERIFY_TYPE = mailVerifyType.value?.value || ''
   form.MAIL_FROM = mailFrom.value?.value || ''
+  form.MAIL_SSL_ENABLE = mailSslEnable.value?.value || ''
+  form.MAIL_SSL_PORT = mailSslPort.value?.value || ''
 }
 </script>
 

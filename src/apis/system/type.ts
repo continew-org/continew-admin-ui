@@ -283,13 +283,14 @@ export interface BasicConfig {
 
 /** 邮箱配置类型 */
 export interface MailConfig {
-  MAIL_SEND_TYPE: string
-  MAIL_SMTP_SERVER: string
+  MAIL_PROTOCOL: string
+  MAIL_HOST: string
   MAIL_SMTP_PORT: string
   MAIL_SMTP_USERNAME: string
   MAIL_SMTP_PASSWORD: string
-  MAIL_SMTP_VERIFY_TYPE: string
   MAIL_FROM: string
+  MAIL_SSL_ENABLE: string
+  MAIL_SSL_PORT: string
 }
 
 /** 安全配置类型 */
