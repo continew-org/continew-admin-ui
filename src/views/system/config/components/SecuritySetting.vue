@@ -6,27 +6,26 @@
       :rules="rules"
       auto-label-width
       label-align="left"
-      size="small"
       :layout="width >= 500 ? 'horizontal' : 'vertical'"
       :disabled="!isUpdate"
       scroll-to-first-error
       class="form"
     >
-      <a-form-item :label="securityConfig.PASSWORD_ERROR_LOCK_COUNT.name" field="PASSWORD_ERROR_LOCK_COUNT"
+      <a-form-item field="PASSWORD_ERROR_LOCK_COUNT" :label="securityConfig.PASSWORD_ERROR_LOCK_COUNT.name"
         :help="securityConfig.PASSWORD_ERROR_LOCK_COUNT.description" hide-asterisk>
         <a-input-number v-model="form.PASSWORD_ERROR_LOCK_COUNT" class="input-width" :default-value="0" :precision="0"
           :min="0" :max="10">
           <template #append>次</template>
         </a-input-number>
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.name" field="PASSWORD_ERROR_LOCK_MINUTES"
+      <a-form-item field="PASSWORD_ERROR_LOCK_MINUTES" :label="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.name"
         :help="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.description" hide-asterisk>
         <a-input-number v-model="form.PASSWORD_ERROR_LOCK_MINUTES" class="input-width" :precision="0" :min="1"
           :max="1440">
           <template #append>分钟</template>
         </a-input-number>
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_EXPIRATION_DAYS.name" field="PASSWORD_EXPIRATION_DAYS"
+      <a-form-item field="PASSWORD_EXPIRATION_DAYS" :label="securityConfig.PASSWORD_EXPIRATION_DAYS.name"
         :help="securityConfig.PASSWORD_EXPIRATION_DAYS.description" hide-asterisk>
         <a-input-number v-model="form.PASSWORD_EXPIRATION_DAYS" class="input-width" :precision="0" :min="0"
           :max="999">
@@ -41,25 +40,23 @@
           <template #append>天</template>
         </a-input-number>
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_REUSE_POLICY.name" field="PASSWORD_REUSE_POLICY"
+      <a-form-item field="PASSWORD_REUSE_POLICY" :label="securityConfig.PASSWORD_REUSE_POLICY.name"
         :help="securityConfig.PASSWORD_REUSE_POLICY.description" hide-asterisk>
         <a-input-number v-model="form.PASSWORD_REUSE_POLICY" class="input-width" :precision="0" :min="3" :max="32">
           <template #append>次</template>
         </a-input-number>
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_MIN_LENGTH.name" field="PASSWORD_MIN_LENGTH"
+      <a-form-item field="PASSWORD_MIN_LENGTH" :label="securityConfig.PASSWORD_MIN_LENGTH.name"
         :help="securityConfig.PASSWORD_MIN_LENGTH.description" hide-asterisk>
         <a-input-number v-model="form.PASSWORD_MIN_LENGTH" class="input-width" :precision="0" :min="8" :max="32" />
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_ALLOW_CONTAIN_USERNAME.name"
-        field="PASSWORD_ALLOW_CONTAIN_USERNAME">
+      <a-form-item field="PASSWORD_ALLOW_CONTAIN_USERNAME" :label="securityConfig.PASSWORD_ALLOW_CONTAIN_USERNAME.name">
         <a-switch v-model="form.PASSWORD_ALLOW_CONTAIN_USERNAME" type="round" :checked-value="1" :unchecked-value="0">
           <template #checked>是</template>
           <template #unchecked>否</template>
         </a-switch>
       </a-form-item>
-      <a-form-item :label="securityConfig.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name"
-        field="PASSWORD_CONTAIN_SPECIAL_CHARACTERS">
+      <a-form-item field="PASSWORD_CONTAIN_SPECIAL_CHARACTERS" :label="securityConfig.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name">
         <a-switch v-model="form.PASSWORD_CONTAIN_SPECIAL_CHARACTERS" type="round" :checked-value="1"
           :unchecked-value="0">
           <template #checked>是</template>
@@ -139,6 +136,7 @@ const securityConfig = ref<SecurityConfig>({
 })
 // 重置
 const reset = () => {
+  formRef.value?.resetFields()
   form.PASSWORD_ERROR_LOCK_COUNT = securityConfig.value.PASSWORD_ERROR_LOCK_COUNT.value || 0
   form.PASSWORD_ERROR_LOCK_MINUTES = securityConfig.value.PASSWORD_ERROR_LOCK_MINUTES.value || 0
   form.PASSWORD_EXPIRATION_DAYS = securityConfig.value.PASSWORD_EXPIRATION_DAYS.value || 0
@@ -196,7 +194,7 @@ const handleResetValue = async () => {
 const onResetValue = () => {
   Modal.warning({
     title: '警告',
-    content: '确认恢复基础配置为默认值吗？',
+    content: '确认恢复安全配置为默认值吗？',
     hideCancel: false,
     maskClosable: false,
     onOk: handleResetValue
@@ -211,6 +209,10 @@ onMounted(() => {
 <style lang="scss" scoped>
 .form {
   margin: 20px 0 0 20px;
+}
+
+.input-width {
+  width: 196px;
 }
 
 :deep(.arco-form-item.arco-form-item-has-help) {

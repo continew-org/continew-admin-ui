@@ -1,224 +1,182 @@
 <template>
-  <a-form ref="formRef"
-          :model="form"
-          :auto-label-width="true"
-          label-align="left"
-          :rules="rules"
-          size="small"
-          :layout="width >= 500 ? 'horizontal' : 'vertical' "
-          scroll-to-first-error
-          style="margin-top: 30px"
-          :disabled="!isUpdate">
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_PROTOCOL" :label="mailProtocol?.name" :disabled="true">
-          <a-select v-model.trim="form.MAIL_PROTOCOL">
-            <a-option value="smtp" label="smtp" />
-          </a-select>
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_HOST" :label="mailHost?.name">
-          <a-input v-model.trim="form.MAIL_HOST" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_SMTP_PORT" :label="mailPort?.name">
-          <a-input v-model.number="form.MAIL_SMTP_PORT" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_SMTP_USERNAME" :label="mailUsername?.name">
-          <a-input v-model.trim="form.MAIL_SMTP_USERNAME" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_SMTP_PASSWORD" :label="mailPassword?.name">
-          <a-input v-model.trim="form.MAIL_SMTP_PASSWORD" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_SSL_ENABLE" :label="mailSslEnable?.name">
-          <a-radio-group v-model:model-value="form.MAIL_SSL_ENABLE">
-            <a-radio value="1">启用</a-radio>
-            <a-radio value="2">禁用</a-radio>
-          </a-radio-group>
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item v-if="form.MAIL_SSL_ENABLE === '1'" field="MAIL_SSL_PORT" :label="mailSslPort?.name" :disabled="isUpdate ? form.MAIL_SSL_ENABLE === '2' : !isUpdate">
-          <a-input v-model.number="form.MAIL_SSL_PORT" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="6">
-        <a-form-item field="MAIL_FROM" :label="mailFrom?.name">
-          <a-input v-model.trim="form.MAIL_FROM" />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <div style="margin-top: 20px">
+  <a-space wrap :size="30">
+    <a-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      auto-label-width
+      label-align="left"
+      :layout="width >= 500 ? 'horizontal' : 'vertical' "
+      :disabled="!isUpdate"
+      scroll-to-first-error
+      class="form"
+    >
+      <a-form-item field="MAIL_SMTP_HOST" :label="mailConfig.MAIL_SMTP_HOST.name" hide-asterisk>
+        <a-input v-model.trim="form.MAIL_SMTP_HOST" />
+      </a-form-item>
+      <a-form-item field="MAIL_SMTP_PORT" :label="mailConfig.MAIL_SMTP_PORT.name" hide-asterisk>
+        <a-input-number v-model="form.MAIL_SMTP_PORT" :min="0" />
+      </a-form-item>
+      <a-form-item field="MAIL_SMTP_USERNAME" :label="mailConfig.MAIL_SMTP_USERNAME.name" hide-asterisk>
+        <a-input v-model.trim="form.MAIL_SMTP_USERNAME" />
+      </a-form-item>
+      <a-form-item field="MAIL_SMTP_PASSWORD" :label="mailConfig.MAIL_SMTP_PASSWORD?.name" hide-asterisk>
+        <a-input-password v-model.trim="form.MAIL_SMTP_PASSWORD" />
+      </a-form-item>
+      <a-form-item field="MAIL_SSL_ENABLED" :label="mailConfig.MAIL_SSL_ENABLED?.name" hide-asterisk>
+        <a-radio-group v-model:model-value="form.MAIL_SSL_ENABLED">
+          <a-radio value="1">启用</a-radio>
+          <a-radio value="0">禁用</a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item v-if="form.MAIL_SSL_ENABLED === '1'" field="MAIL_SSL_PORT" :label="mailConfig.MAIL_SSL_PORT.name" hide-asterisk>
+        <a-input-number v-model="form.MAIL_SSL_PORT" :min="0" />
+      </a-form-item>
+      <a-form-item field="MAIL_FROM" :label="mailConfig.MAIL_FROM.name" hide-asterisk>
+        <a-input v-model.trim="form.MAIL_FROM" />
+      </a-form-item>
       <a-space>
-        <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
-          <template #icon>
-            <icon-undo />
-          </template>
-          恢复默认
-        </a-button>
         <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
-          <template #icon>
-            <icon-edit />
-          </template>
-          修改
+          <template #icon><icon-edit /></template>修改
+        </a-button>
+        <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
+          <template #icon><icon-undo /></template>恢复默认
         </a-button>
         <a-button v-if="isUpdate" type="primary" @click="handleSave">
-          <template #icon>
-            <icon-save />
-          </template>
-          保存
+          <template #icon><icon-save /></template>保存
         </a-button>
         <a-button v-if="isUpdate" @click="reset">
-          <template #icon>
-            <icon-refresh />
-          </template>
-          重置
+          <template #icon><icon-refresh /></template>重置
         </a-button>
         <a-button v-if="isUpdate" @click="handleCancel">
-          <template #icon>
-            <icon-undo />
-          </template>
-          取消
+          <template #icon><icon-undo /></template>取消
         </a-button>
       </a-space>
-    </div>
-  </a-form>
+    </a-form>
+  </a-space>
 </template>
 
 <script lang="ts" setup>
-import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
+import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
+import {
+  type MailConfig,
+  type OptionResp,
+  listOption,
+  resetOptionValue,
+  updateOption
+} from '@/apis'
 import { useForm } from '@/hooks'
-import { type MailConfig, type OptionResp, listOption, resetOptionValue, updateOption } from '@/apis'
 
 defineOptions({ name: 'MailSetting' })
-const formRef = ref<FormInstance>()
-
-const { form } = useForm<MailConfig>({
-  MAIL_PROTOCOL: '',
-  MAIL_HOST: '',
-  MAIL_SMTP_PORT: '',
-  MAIL_SMTP_USERNAME: '',
-  MAIL_SMTP_PASSWORD: '',
-  MAIL_FROM: '',
-  MAIL_SSL_ENABLE: '',
-  MAIL_SSL_PORT: ''
-})
-// 表单初始化
-onMounted(() => {
-  getDataList() // 获取配置
-})
 const { width } = useWindowSize()
 
-const mailProtocol = ref<OptionResp>()
-const mailHost = ref<OptionResp>()
-const mailPort = ref<OptionResp>()
-const mailUsername = ref<OptionResp>()
-const mailPassword = ref<OptionResp>()
-const mailFrom = ref<OptionResp>()
-const mailSslEnable = ref<OptionResp>()
-const mailSslPort = ref<OptionResp>()
-// 参数校验规则
+const formRef = ref<FormInstance>()
+const { form } = useForm({
+  MAIL_SMTP_HOST: '',
+  MAIL_SMTP_PORT: 0,
+  MAIL_SMTP_USERNAME: '',
+  MAIL_SMTP_PASSWORD: '',
+  MAIL_SSL_ENABLED: '',
+  MAIL_SSL_PORT: 0,
+  MAIL_FROM: ''
+})
 const rules: FormInstance['rules'] = {
-  SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
-  SITE_COPYRIGHT: [{ required: true, message: '请输入版权信息' }]
+  MAIL_SMTP_HOST: [{ required: true, message: '请输入值' }],
+  MAIL_SMTP_PORT: [{ required: true, message: '请输入值' }],
+  MAIL_SMTP_USERNAME: [{ required: true, message: '请输入值' }],
+  MAIL_SMTP_PASSWORD: [{ required: true, message: '请输入值' }],
+  MAIL_SSL_PORT: [{ required: true, message: '请输入值' }],
+  MAIL_FROM: [{ required: true, message: '请输入值' }]
 }
+
+const mailConfig = ref<MailConfig>({
+  MAIL_SMTP_HOST: {},
+  MAIL_SMTP_PORT: {},
+  MAIL_SMTP_USERNAME: {},
+  MAIL_SMTP_PASSWORD: {},
+  MAIL_SSL_ENABLED: {},
+  MAIL_SSL_PORT: {},
+  MAIL_FROM: {}
+})
+
+// 重置
+const reset = () => {
+  formRef.value?.resetFields()
+  form.MAIL_SMTP_HOST = mailConfig.value.MAIL_SMTP_HOST.value || ''
+  form.MAIL_SMTP_PORT = mailConfig.value.MAIL_SMTP_PORT.value || 0
+  form.MAIL_SMTP_USERNAME = mailConfig.value.MAIL_SMTP_USERNAME.value || ''
+  form.MAIL_SMTP_PASSWORD = mailConfig.value.MAIL_SMTP_PASSWORD?.value || ''
+  form.MAIL_SSL_ENABLED = mailConfig.value.MAIL_SSL_ENABLED.value || ''
+  form.MAIL_SSL_PORT = mailConfig.value.MAIL_SSL_PORT.value || 0
+  form.MAIL_FROM = mailConfig.value.MAIL_FROM.value || ''
+}
+
 const isUpdate = ref(false)
 // 修改
 const onUpdate = () => {
   isUpdate.value = true
 }
+
 // 取消
 const handleCancel = () => {
   reset()
   isUpdate.value = false
 }
+
+const queryForm = {
+  code: Object.keys(mailConfig.value)
+}
+// 查询列表数据
+const getDataList = async () => {
+  const { data } = await listOption(queryForm)
+  mailConfig.value = data.reduce((obj: MailConfig, option: OptionResp) => {
+    obj[option.code] = { ...option, value: ['MAIL_SMTP_PORT', 'MAIL_SSL_PORT'].includes(option.code) ? Number.parseInt(option.value) : option.value }
+    return obj
+  }, {})
+  handleCancel()
+}
+
 // 保存
 const handleSave = async () => {
   const isInvalid = await formRef.value?.validate()
   if (isInvalid) return false
   await updateOption(
-    Object.entries(form).map((item) => {
-      return {
-        code: item[0],
-        value: item[1]
-      }
+    Object.entries(form).map(([key, value]) => {
+      return { code: key, value }
     })
   )
-  // appStore.setSiteConfig(form)
   await getDataList()
   Message.success('保存成功')
 }
-// 查询参数
-const queryForm = reactive({
-  code: ['MAIL_FROM', 'MAIL_SMTP_PASSWORD', 'MAIL_SMTP_PORT', 'MAIL_PROTOCOL', 'MAIL_HOST', 'MAIL_SMTP_USERNAME', 'MAIL_SSL_ENABLE', 'MAIL_SSL_PORT']
-})
-// 接收参数类型
-const dataList = ref<OptionResp[]>([])
-// 从数据库中获取配置
-const getDataList = async () => {
-  const res = await listOption(queryForm)
-  dataList.value = res.data
-  mailProtocol.value = dataList.value.find((option) => option.code === 'MAIL_PROTOCOL')
-  mailHost.value = dataList.value.find((option) => option.code === 'MAIL_HOST')
-  mailPort.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_PORT')
-  mailUsername.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_USERNAME')
-  mailPassword.value = dataList.value.find((option) => option.code === 'MAIL_SMTP_PASSWORD')
-  mailFrom.value = dataList.value.find((option) => option.code === 'MAIL_FROM')
-  mailSslEnable.value = dataList.value.find((option) => option.code === 'MAIL_SSL_ENABLE')
-  mailSslPort.value = dataList.value.find((option) => option.code === 'MAIL_SSL_PORT')
-  reset()
-}
 
+// 恢复默认
 const handleResetValue = async () => {
   await resetOptionValue(queryForm)
   Message.success('恢复成功')
   await getDataList()
-  // appStore.setSiteConfig(form)
 }
 const onResetValue = () => {
   Modal.warning({
     title: '警告',
-    content: '确认恢复基础配置为默认值吗？',
+    content: '确认恢复邮件配置为默认值吗？',
     hideCancel: false,
     maskClosable: false,
     onOk: handleResetValue
   })
 }
-const reset = () => {
-  form.MAIL_PROTOCOL = mailProtocol.value?.value || ''
-  form.MAIL_HOST = mailHost.value?.value || ''
-  form.MAIL_SMTP_PORT = mailPort.value?.value || ''
-  form.MAIL_SMTP_USERNAME = mailUsername.value?.value || ''
-  form.MAIL_SMTP_PASSWORD = mailPassword.value?.value || ''
-  form.MAIL_FROM = mailFrom.value?.value || ''
-  form.MAIL_SSL_ENABLE = mailSslEnable.value?.value || ''
-  form.MAIL_SSL_PORT = mailSslPort.value?.value || ''
-}
+
+onMounted(() => {
+  getDataList()
+})
 </script>
 
 <style lang="scss" scoped>
+.form {
+  margin: 20px 0 0 20px;
+}
 
+:deep(.arco-form-item.arco-form-item-has-help) {
+  margin-bottom: 5px;
+}
 </style>
