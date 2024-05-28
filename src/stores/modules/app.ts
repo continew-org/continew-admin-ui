@@ -59,7 +59,7 @@ const storeSetup = () => {
   // 初始化系统配置
   const initSiteConfig = () => {
     listOptionDict({
-      code: ['SITE_FAVICON', 'SITE_LOGO', 'SITE_TITLE', 'SITE_COPYRIGHT']
+      category: 'SITE'
     }).then((res) => {
       const resMap = new Map()
       res.data.forEach((item) => {

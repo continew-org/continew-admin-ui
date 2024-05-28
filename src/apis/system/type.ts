@@ -263,6 +263,7 @@ export interface StoragePageQuery extends StorageQuery, PageQuery {
 
 /** 系统参数类型 */
 export interface OptionResp {
+  id: string
   name: string
   code: string
   value: string
@@ -270,7 +271,8 @@ export interface OptionResp {
 }
 
 export interface OptionQuery {
-  code: Array<string>
+  code?: Array<string>
+  category?: string
 }
 
 /** 基础配置类型 */

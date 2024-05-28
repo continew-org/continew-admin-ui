@@ -125,7 +125,7 @@ const handleCancel = () => {
 }
 
 const queryForm = {
-  code: Object.keys(mailConfig.value)
+  category: 'MAIL'
 }
 // 查询列表数据
 const getDataList = async () => {
@@ -143,7 +143,7 @@ const handleSave = async () => {
   if (isInvalid) return false
   await updateOption(
     Object.entries(form).map(([key, value]) => {
-      return { code: key, value }
+      return { id: mailConfig.value[key].id, code: key, value }
     })
   )
   await getDataList()
