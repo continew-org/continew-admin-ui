@@ -59,7 +59,15 @@ const columns: Columns = [
     },
     rules: [{ required: true, message: '请选择上级部门' }]
   },
-  { label: '名称', field: 'name', type: 'input', rules: [{ required: true, message: '请输入名称' }] },
+  {
+    label: '名称',
+    field: 'name',
+    type: 'input',
+    rules: [{ required: true, message: '请输入名称' }],
+    props: {
+      maxLength: 30
+    }
+  },
   {
     label: '排序',
     field: 'sort',
