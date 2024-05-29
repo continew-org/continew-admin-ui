@@ -283,6 +283,14 @@ export interface BasicConfig {
   SITE_COPYRIGHT: string
 }
 
+/** 基础配置类型 */
+export interface SiteConfig {
+  SITE_FAVICON: OptionResp
+  SITE_LOGO: OptionResp
+  SITE_TITLE: OptionResp
+  SITE_COPYRIGHT: OptionResp
+}
+
 /** 邮箱配置类型 */
 export interface MailConfig {
   MAIL_SMTP_HOST: OptionResp

@@ -2,10 +2,10 @@
   <a-form ref="formRef" :model="form" :rules="rules" size="large" layout="vertical" :disabled="!isUpdate">
     <a-list class="list-layout" :bordered="false">
       <a-list-item>
-        <a-form-item class="image-item" hide-label field="SITE_FAVICON">
-          {{ siteFavicon?.name }}
+        <a-form-item class="image-item" field="SITE_FAVICON" hide-label>
+          {{ siteConfig.SITE_FAVICON.name }}
           <template #extra>
-            {{ siteFavicon?.description }}
+            {{ siteConfig.SITE_FAVICON.description }}
             <br />
             <a-upload :file-list="faviconFile ? [faviconFile] : []" accept="image/*" :show-file-list="false"
               :custom-request="handleUploadFavicon" @change="handleChangeFavicon">
@@ -31,10 +31,10 @@
         </a-form-item>
       </a-list-item>
       <a-list-item>
-        <a-form-item class="image-item" hide-label field="SITE_LOGO">
-          {{ siteLogo?.name }}
+        <a-form-item class="image-item" field="SITE_LOGO" hide-label>
+          {{ siteConfig.SITE_LOGO.name }}
           <template #extra>
-            {{ siteLogo?.description }}
+            {{ siteConfig.SITE_LOGO.description }}
             <br />
             <a-upload :file-list="logoFile ? [logoFile] : []" accept="image/*" :show-file-list="false"
               :custom-request="handleUploadLogo" @change="handleChangeLogo">
@@ -59,45 +59,38 @@
         </a-form-item>
       </a-list-item>
       <a-list-item style="padding-top: 13px; border: none">
-        <a-form-item class="input-item" :label="siteTitle?.name" field="SITE_TITLE">
+        <a-form-item class="input-item" field="SITE_TITLE" :label="siteConfig.SITE_TITLE.name">
           <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入网站标题" :max-length="18" />
         </a-form-item>
-        <a-form-item class="input-item" :label="siteCopyright?.name" field="SITE_COPYRIGHT" tooltip="支持HTML标签">
-          <a-textarea v-model.trim="form.SITE_COPYRIGHT" placeholder="请输入版权信息" :auto-size="{
-            minRows: 3,
-          }" show-word-limit />
+        <a-form-item class="input-item" field="SITE_COPYRIGHT" :label="siteConfig.SITE_COPYRIGHT.name">
+          <a-input v-model.trim="form.SITE_COPYRIGHT" placeholder="请输入版权信息" />
         </a-form-item>
         <div style="margin-top: 20px">
           <a-space>
-            <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
-              <template #icon>
-                <icon-undo />
-              </template>
-              恢复默认
-            </a-button>
             <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
               <template #icon>
                 <icon-edit />
-              </template>
-              修改
+              </template>修改
+            </a-button>
+            <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
+              <template #icon>
+                <icon-undo />
+              </template>恢复默认
             </a-button>
             <a-button v-if="isUpdate" type="primary" @click="handleSave">
               <template #icon>
                 <icon-save />
-              </template>
-              保存
+              </template>保存
             </a-button>
             <a-button v-if="isUpdate" @click="reset">
               <template #icon>
                 <icon-refresh />
-              </template>
-              重置
+              </template>重置
             </a-button>
             <a-button v-if="isUpdate" @click="handleCancel">
               <template #icon>
                 <icon-undo />
-              </template>
-              取消
+              </template>取消
             </a-button>
           </a-space>
         </div>
@@ -108,38 +101,48 @@
 
 <script lang="ts" setup>
 import { type FileItem, type FormInstance, Message, Modal, type RequestOption } from '@arco-design/web-vue'
-import { type OptionResp, listOption, resetOptionValue, updateOption, uploadFile } from '@/apis'
+import {
+  type OptionResp,
+  type SiteConfig,
+  listOption,
+  resetOptionValue,
+  updateOption,
+  uploadFile
+} from '@/apis'
 import { useAppStore } from '@/stores'
 import { useForm } from '@/hooks'
 
 defineOptions({ name: 'BasicSetting' })
+
 const formRef = ref<FormInstance>()
+const { form } = useForm({
+  SITE_FAVICON: '',
+  SITE_LOGO: '',
+  SITE_TITLE: '',
+  SITE_COPYRIGHT: ''
+})
 const rules: FormInstance['rules'] = {
   SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
   SITE_COPYRIGHT: [{ required: true, message: '请输入版权信息' }]
 }
 
-const { form } = useForm({
-  SITE_FAVICON: undefined,
-  SITE_LOGO: undefined,
-  SITE_TITLE: undefined,
-  SITE_COPYRIGHT: undefined
+const siteConfig = ref<SiteConfig>({
+  SITE_FAVICON: {},
+  SITE_LOGO: {},
+  SITE_TITLE: {},
+  SITE_COPYRIGHT: {}
 })
-
-const siteFavicon = ref<OptionResp>()
-const siteLogo = ref<OptionResp>()
-const siteTitle = ref<OptionResp>()
-const siteCopyright = ref<OptionResp>()
 const faviconFile = ref<FileItem>({ uid: '-1' })
 const logoFile = ref<FileItem>({ uid: '-2' })
 // 重置
 const reset = () => {
-  form.SITE_FAVICON = siteFavicon.value?.value || ''
-  form.SITE_LOGO = siteLogo.value?.value || ''
-  form.SITE_TITLE = siteTitle.value?.value || ''
-  form.SITE_COPYRIGHT = siteCopyright.value?.value || ''
-  faviconFile.value.url = siteFavicon.value?.value
-  logoFile.value.url = siteLogo.value?.value
+  formRef.value?.resetFields()
+  form.SITE_FAVICON = siteConfig.value.SITE_FAVICON.value || ''
+  form.SITE_LOGO = siteConfig.value.SITE_LOGO.value || ''
+  form.SITE_TITLE = siteConfig.value.SITE_TITLE.value || ''
+  form.SITE_COPYRIGHT = siteConfig.value.SITE_COPYRIGHT.value || ''
+  faviconFile.value.url = siteConfig.value.SITE_FAVICON.value
+  logoFile.value.url = siteConfig.value.SITE_LOGO.value
 }
 
 const isUpdate = ref(false)
@@ -155,15 +158,15 @@ const handleCancel = () => {
 }
 
 const queryForm = reactive({
-  code: ['SITE_TITLE', 'SITE_COPYRIGHT', 'SITE_LOGO', 'SITE_FAVICON']
+  category: 'SITE'
 })
 // 查询列表数据
 const getDataList = async () => {
   const { data } = await listOption(queryForm)
-  siteFavicon.value = data.find((option) => option.code === 'SITE_FAVICON')
-  siteLogo.value = data.find((option) => option.code === 'SITE_LOGO')
-  siteTitle.value = data.find((option) => option.code === 'SITE_TITLE')
-  siteCopyright.value = data.find((option) => option.code === 'SITE_COPYRIGHT')
+  siteConfig.value = data.reduce((obj: SiteConfig, option: OptionResp) => {
+    obj[option.code] = { ...option }
+    return obj
+  }, {})
   handleCancel()
 }
 
@@ -173,11 +176,8 @@ const handleSave = async () => {
   const isInvalid = await formRef.value?.validate()
   if (isInvalid) return false
   await updateOption(
-    Object.entries(form).map((item) => {
-      return {
-        code: item[0],
-        value: item[1]
-      }
+    Object.entries(form).map(([key, value]) => {
+      return { id: siteConfig.value[key].id, code: key, value }
     })
   )
   appStore.setSiteConfig(form)
@@ -206,20 +206,20 @@ const onResetValue = () => {
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      uploadFile(formData)
-        .then((res) => {
-          onSuccess(res)
-          form.SITE_FAVICON = res.data.url
-          Message.success('上传成功')
-        })
-        .catch((error) => {
-          onError(error)
-        })
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    uploadFile(formData)
+      .then((res) => {
+        onSuccess(res)
+        form.SITE_FAVICON = res.data.url
+        Message.success('上传成功')
+      })
+      .catch((error) => {
+        onError(error)
+      })
+  })()
   return {
     abort() {
       controller.abort()
@@ -236,20 +236,20 @@ const handleChangeFavicon = (_: any, currentFile: any) => {
 const handleUploadLogo = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      uploadFile(formData)
-        .then((res) => {
-          onSuccess(res)
-          form.SITE_LOGO = res.data.url
-          Message.success('上传成功')
-        })
-        .catch((error) => {
-          onError(error)
-        })
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    uploadFile(formData)
+      .then((res) => {
+        onSuccess(res)
+        form.SITE_LOGO = res.data.url
+        Message.success('上传成功')
+      })
+      .catch((error) => {
+        onError(error)
+      })
+  })()
   return {
     abort() {
       controller.abort()
