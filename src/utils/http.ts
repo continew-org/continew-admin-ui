@@ -183,6 +183,9 @@ const download = (url: string, params?: object, config?: AxiosRequestConfig): Pr
     url,
     responseType: 'blob',
     params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj)
+    },
     ...config
   })
 }
