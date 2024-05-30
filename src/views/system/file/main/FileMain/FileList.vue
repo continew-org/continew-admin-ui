@@ -8,6 +8,7 @@
       :pagination="false"
       :row-selection="isBatchMode ? rowSelection : undefined"
       :selected-keys="selectedFileIds"
+      column-resizable
       @select="select"
       @row-click="handleRowClick"
     >

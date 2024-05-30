@@ -6,6 +6,7 @@
     :esc-to-close="false"
     :modal-style="{ maxWidth: '520px' }"
     width="90%"
+    draggable
     @before-ok="save"
     @close="reset"
   >

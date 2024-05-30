@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" :width="width >= 600 ? '70%' : '100%'" :footer="false" @close="reset">
+  <a-modal v-model:visible="visible" :width="width >= 600 ? '70%' : '100%'" :footer="false" draggable @close="reset">
     <a-typography :style="{ marginTop: '-40px', textAlign: 'center' }">
       <a-typography-title>
         {{ dataDetail?.title }}

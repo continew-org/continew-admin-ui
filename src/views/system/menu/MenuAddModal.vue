@@ -7,6 +7,7 @@
     :modal-style="{ maxWidth: '625px' }"
     :body-style="{ maxHeight: '70vh' }"
     width="90%"
+    draggable
     @before-ok="save"
     @close="reset"
   >

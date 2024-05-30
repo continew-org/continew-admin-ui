@@ -56,7 +56,7 @@
     <div class="footer">注册于 {{ userInfo.registrationDate }}</div>
   </a-card>
 
-  <a-modal v-model:visible="visible" title="上传头像" :width="width >= 400 ? 400 : '100%'" :footer="false" @close="reset">
+  <a-modal v-model:visible="visible" title="上传头像" :width="width >= 400 ? 400 : '100%'" :footer="false" draggable @close="reset">
     <a-row>
       <a-col :span="14" style="width: 200px; height: 200px">
         <VueCropper

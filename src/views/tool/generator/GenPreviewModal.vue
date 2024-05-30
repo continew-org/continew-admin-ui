@@ -5,6 +5,7 @@
     :mask-closable="false"
     :esc-to-close="false"
     width="100%"
+    draggable
     :footer="false"
   >
     <div class="preview-content">

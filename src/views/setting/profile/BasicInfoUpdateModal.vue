@@ -5,6 +5,7 @@
     :mask-closable="false"
     :esc-to-close="false"
     :width="width >= 500 ? 500 : '100%'"
+    draggable
     @before-ok="save"
     @close="reset"
   >
