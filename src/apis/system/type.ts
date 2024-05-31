@@ -293,13 +293,13 @@ export interface SiteConfig {
 
 /** 邮箱配置类型 */
 export interface MailConfig {
-  MAIL_SMTP_HOST: OptionResp
-  MAIL_SMTP_PORT: OptionResp
-  MAIL_SMTP_USERNAME: OptionResp
-  MAIL_SMTP_PASSWORD: OptionResp
+  MAIL_PROTOCOL: OptionResp
+  MAIL_HOST: OptionResp
+  MAIL_PORT: OptionResp
+  MAIL_USERNAME: OptionResp
+  MAIL_PASSWORD: OptionResp
   MAIL_SSL_ENABLED: OptionResp
   MAIL_SSL_PORT: OptionResp
-  MAIL_FROM: OptionResp
 }
 
 /** 安全配置类型 */

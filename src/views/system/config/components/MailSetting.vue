@@ -11,17 +11,22 @@
       scroll-to-first-error
       class="form"
     >
-      <a-form-item field="MAIL_SMTP_HOST" :label="mailConfig.MAIL_SMTP_HOST.name" hide-asterisk>
-        <a-input v-model.trim="form.MAIL_SMTP_HOST" />
+      <a-form-item field="MAIL_PROTOCOL" :label="mailConfig.MAIL_PROTOCOL.name" hide-asterisk>
+        <a-select v-model.trim="form.MAIL_PROTOCOL">
+          <a-option label="SMTP" value="smtp" />
+        </a-select>
       </a-form-item>
-      <a-form-item field="MAIL_SMTP_PORT" :label="mailConfig.MAIL_SMTP_PORT.name" hide-asterisk>
-        <a-input-number v-model="form.MAIL_SMTP_PORT" :min="0" />
+      <a-form-item field="MAIL_HOST" :label="mailConfig.MAIL_HOST.name" hide-asterisk>
+        <a-input v-model.trim="form.MAIL_HOST" />
       </a-form-item>
-      <a-form-item field="MAIL_SMTP_USERNAME" :label="mailConfig.MAIL_SMTP_USERNAME.name" hide-asterisk>
-        <a-input v-model.trim="form.MAIL_SMTP_USERNAME" />
+      <a-form-item field="MAIL_PORT" :label="mailConfig.MAIL_PORT.name" hide-asterisk>
+        <a-input-number v-model="form.MAIL_PORT" :min="0" />
       </a-form-item>
-      <a-form-item field="MAIL_SMTP_PASSWORD" :label="mailConfig.MAIL_SMTP_PASSWORD?.name" hide-asterisk>
-        <a-input-password v-model.trim="form.MAIL_SMTP_PASSWORD" />
+      <a-form-item field="MAIL_USERNAME" :label="mailConfig.MAIL_USERNAME.name" hide-asterisk>
+        <a-input v-model.trim="form.MAIL_USERNAME" />
+      </a-form-item>
+      <a-form-item field="MAIL_PASSWORD" :label="mailConfig.MAIL_PASSWORD?.name" hide-asterisk>
+        <a-input-password v-model.trim="form.MAIL_PASSWORD" />
       </a-form-item>
       <a-form-item field="MAIL_SSL_ENABLED" :label="mailConfig.MAIL_SSL_ENABLED?.name" hide-asterisk>
         <a-radio-group v-model:model-value="form.MAIL_SSL_ENABLED">
@@ -31,9 +36,6 @@
       </a-form-item>
       <a-form-item v-if="form.MAIL_SSL_ENABLED === '1'" field="MAIL_SSL_PORT" :label="mailConfig.MAIL_SSL_PORT.name" hide-asterisk>
         <a-input-number v-model="form.MAIL_SSL_PORT" :min="0" />
-      </a-form-item>
-      <a-form-item field="MAIL_FROM" :label="mailConfig.MAIL_FROM.name" hide-asterisk>
-        <a-input v-model.trim="form.MAIL_FROM" />
       </a-form-item>
       <a-space>
         <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
@@ -73,43 +75,42 @@ const { width } = useWindowSize()
 
 const formRef = ref<FormInstance>()
 const { form } = useForm({
-  MAIL_SMTP_HOST: '',
-  MAIL_SMTP_PORT: 0,
-  MAIL_SMTP_USERNAME: '',
-  MAIL_SMTP_PASSWORD: '',
+  MAIL_PROTOCOL: '',
+  MAIL_HOST: '',
+  MAIL_PORT: 0,
+  MAIL_USERNAME: '',
+  MAIL_PASSWORD: '',
   MAIL_SSL_ENABLED: '',
-  MAIL_SSL_PORT: 0,
-  MAIL_FROM: ''
+  MAIL_SSL_PORT: 0
 })
 const rules: FormInstance['rules'] = {
-  MAIL_SMTP_HOST: [{ required: true, message: '请输入值' }],
-  MAIL_SMTP_PORT: [{ required: true, message: '请输入值' }],
-  MAIL_SMTP_USERNAME: [{ required: true, message: '请输入值' }],
-  MAIL_SMTP_PASSWORD: [{ required: true, message: '请输入值' }],
-  MAIL_SSL_PORT: [{ required: true, message: '请输入值' }],
-  MAIL_FROM: [{ required: true, message: '请输入值' }]
+  MAIL_HOST: [{ required: true, message: '请输入值' }],
+  MAIL_PORT: [{ required: true, message: '请输入值' }],
+  MAIL_USERNAME: [{ required: true, message: '请输入值' }],
+  MAIL_PASSWORD: [{ required: true, message: '请输入值' }],
+  MAIL_SSL_PORT: [{ required: true, message: '请输入值' }]
 }
 
 const mailConfig = ref<MailConfig>({
-  MAIL_SMTP_HOST: {},
-  MAIL_SMTP_PORT: {},
-  MAIL_SMTP_USERNAME: {},
-  MAIL_SMTP_PASSWORD: {},
+  MAIL_PROTOCOL: {},
+  MAIL_HOST: {},
+  MAIL_PORT: {},
+  MAIL_USERNAME: {},
+  MAIL_PASSWORD: {},
   MAIL_SSL_ENABLED: {},
-  MAIL_SSL_PORT: {},
-  MAIL_FROM: {}
+  MAIL_SSL_PORT: {}
 })
 
 // 重置
 const reset = () => {
   formRef.value?.resetFields()
-  form.MAIL_SMTP_HOST = mailConfig.value.MAIL_SMTP_HOST.value || ''
-  form.MAIL_SMTP_PORT = mailConfig.value.MAIL_SMTP_PORT.value || 0
-  form.MAIL_SMTP_USERNAME = mailConfig.value.MAIL_SMTP_USERNAME.value || ''
-  form.MAIL_SMTP_PASSWORD = mailConfig.value.MAIL_SMTP_PASSWORD?.value || ''
+  form.MAIL_PROTOCOL = mailConfig.value.MAIL_PROTOCOL.value || ''
+  form.MAIL_HOST = mailConfig.value.MAIL_HOST.value || ''
+  form.MAIL_PORT = mailConfig.value.MAIL_PORT.value || 0
+  form.MAIL_USERNAME = mailConfig.value.MAIL_USERNAME.value || ''
+  form.MAIL_PASSWORD = mailConfig.value.MAIL_PASSWORD?.value || ''
   form.MAIL_SSL_ENABLED = mailConfig.value.MAIL_SSL_ENABLED.value || ''
   form.MAIL_SSL_PORT = mailConfig.value.MAIL_SSL_PORT.value || 0
-  form.MAIL_FROM = mailConfig.value.MAIL_FROM.value || ''
 }
 
 const isUpdate = ref(false)
@@ -131,7 +132,7 @@ const queryForm = {
 const getDataList = async () => {
   const { data } = await listOption(queryForm)
   mailConfig.value = data.reduce((obj: MailConfig, option: OptionResp) => {
-    obj[option.code] = { ...option, value: ['MAIL_SMTP_PORT', 'MAIL_SSL_PORT'].includes(option.code) ? Number.parseInt(option.value) : option.value }
+    obj[option.code] = { ...option, value: ['MAIL_PORT', 'MAIL_SSL_PORT'].includes(option.code) ? Number.parseInt(option.value) : option.value }
     return obj
   }, {})
   handleCancel()
