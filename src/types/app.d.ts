@@ -9,6 +9,7 @@ declare namespace App {
     animateMode: AnimateType // 动画类名
     menuCollapse: boolean // 左侧菜单折叠状态
     menuAccordion: boolean // 左侧菜单手风琴效果
+    copyrightDisplay: boolean // 是否显示底部版权信息
     menuDark: boolean // 菜单深色模式
     layout: 'left' | 'mix'
   }

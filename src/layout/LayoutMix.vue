@@ -1,11 +1,7 @@
 <template>
   <div class="layout-mix">
-    <section
-      v-if="isDesktop"
-      class="layout-mix-left"
-      :class="{ 'app-menu-dark': appStore.menuDark }"
-      :style="appStore.menuDark ? appStore.themeCSSVar : undefined"
-    >
+    <section v-if="isDesktop" class="layout-mix-left" :class="{ 'app-menu-dark': appStore.menuDark }"
+      :style="appStore.menuDark ? appStore.themeCSSVar : undefined">
       <Logo :collapsed="appStore.menuCollapse"></Logo>
       <Menu :menus="leftMenus" :menu-style="{ width: '200px', flex: 1 }"></Menu>
     </section>
@@ -13,14 +9,8 @@
     <section class="layout-mix-right">
       <header class="header">
         <MenuFoldBtn></MenuFoldBtn>
-        <a-menu
-          v-if="isDesktop"
-          mode="horizontal"
-          :selected-keys="activeMenu"
-          :auto-open-selected="false"
-          :trigger-props="{ animationName: 'slide-dynamic-origin' }"
-          @menu-item-click="onMenuItemClick"
-        >
+        <a-menu v-if="isDesktop" mode="horizontal" :selected-keys="activeMenu" :auto-open-selected="false"
+          :trigger-props="{ animationName: 'slide-dynamic-origin' }" @menu-item-click="onMenuItemClick">
           <a-menu-item v-for="item in topMenus" :key="item.path">
             <template #icon>
               <GiSvgIcon :name="getMenuIcon(item)" :size="24" />
@@ -33,6 +23,7 @@
 
       <Tabs></Tabs>
       <Main></Main>
+      <GiFooter v-if="appStore.copyrightDisplay" />
     </section>
   </div>
 </template>
@@ -46,6 +37,7 @@ import Menu from './components/Menu/index.vue'
 import HeaderRightBar from './components/HeaderRightBar/index.vue'
 import Logo from './components/Logo.vue'
 import MenuFoldBtn from './components/MenuFoldBtn.vue'
+import GiFooter from '@/components/GiFooter/index.vue'
 import { useAppStore, useRouteStore } from '@/stores'
 import { isExternal } from '@/utils/validate'
 import { filterTree } from '@/utils'
@@ -111,15 +103,18 @@ watch(
 }
 
 :deep(.arco-menu.arco-menu-vertical.arco-menu-collapsed) {
+
   // Menu菜单组件修改
   .arco-menu-icon {
     margin-right: 0;
     padding: 10px 0;
   }
+
   .arco-menu-has-icon {
     padding: 0;
     justify-content: center;
   }
+
   .arco-menu-title {
     display: none;
   }
@@ -128,8 +123,10 @@ watch(
 :deep(.arco-menu-horizontal) {
   flex: 1;
   overflow: hidden;
+
   .arco-menu-inner {
     padding-left: 0;
+
     .arco-menu-overflow-wrap {
       white-space: nowrap;
     }
@@ -141,6 +138,7 @@ watch(
   display: flex;
   align-items: stretch;
   overflow: hidden;
+
   &-left {
     border-right: 1px solid var(--color-border);
     background-color: var(--color-bg-1);
@@ -148,6 +146,7 @@ watch(
     flex-direction: column;
     overflow: hidden;
   }
+
   &-right {
     flex: 1;
     display: flex;

@@ -12,10 +12,10 @@ const appStore = useAppStore()
 
 <style lang="scss" scoped>
 .gi-footer {
-  height: 50px;
-  font-size: 12px;
+  height: 40px;
+  font-size: 13px;
   color: var(--color-text-3);
-  margin-top: 12px;
+  background-color: var(--color-bg-1);
   border-top: 1px dashed var(--color-neutral-3);
   box-sizing: border-box;
   display: flex;
