@@ -12,29 +12,15 @@
         <DeptTree placeholder="请输入关键词" @node-click="handleSelectDept" />
       </a-col>
       <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
-        <GiTable
-          row-key="id"
-          :data="dataList"
-          :columns="columns"
-          :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
-          :pagination="pagination"
-          :disabled-tools="['size']"
-          :disabled-column-keys="['username']"
-          @refresh="search"
-        >
+        <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading"
+          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }" :pagination="pagination" :disabled-tools="['size']"
+          :disabled-column-keys="['username']" @refresh="search">
           <template #custom-left>
             <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
               <template #prefix><icon-search /></template>
             </a-input>
-            <a-select
-              v-model="queryForm.status"
-              :options="DisEnableStatusList"
-              placeholder="请选择状态"
-              allow-clear
-              style="width: 150px"
-              @change="search"
-            />
+            <a-select v-model="queryForm.status" :options="DisEnableStatusList" placeholder="请选择状态" allow-clear
+              style="width: 150px" @change="search" />
             <a-button @click="reset">重置</a-button>
           </template>
           <template #custom-right>
