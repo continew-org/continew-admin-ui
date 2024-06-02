@@ -10,8 +10,7 @@
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "lint:prettier": "prettier --write \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\""
+    "lint:fix": "eslint src --fix"
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
@@ -70,7 +69,6 @@
     "less-loader": "^11.0.0",
     "lint-staged": "^15.2.2",
     "picocolors": "^1.0.0",
-    "prettier": "3.3.0",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
     "simple-git-hooks": "^2.11.1",
@@ -87,9 +85,6 @@
     "pre-commit": "npm lint-staged"
   },
   "lint-staged": {
-    "*": [
-      "eslint --fix",
-      "prettier --write 'src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}'"
-    ]
+    "*": "eslint --fix"
   }
 }

@@ -25,15 +25,14 @@ const props = defineProps({
   }
 })
 
-const dictItem = computed((): LabelValueState => {
+const dictItem = computed(() => {
   try {
-    return props.dict.find(
-      (d) => d.value === String(props.value) || d.value === Number(props.value)
-    ) || { label: '', value: '' }
+    return props.dict.find((d) => d.value === String(props.value) || d.value === Number(props.value))
   } catch (error) {
-    return { label: '', value: '' }
+    return []
   }
-})
+}
+)
 </script>
 
 <style lang="scss" scoped></style>
