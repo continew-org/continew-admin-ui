@@ -20,7 +20,7 @@
 import HeaderRightBar from '../HeaderRightBar/index.vue'
 import MenuFoldBtn from '../MenuFoldBtn.vue'
 
-defineOptions({ name: 'Header' })
+defineOptions({ name: 'LayoutHeader' })
 </script>
 
 <style lang="scss" scoped>
@@ -31,6 +31,7 @@ defineOptions({ name: 'Header' })
 .header {
   display: flex;
   align-items: center;
+
   .header-right {
     flex: 1;
     overflow: hidden;
