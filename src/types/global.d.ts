@@ -11,7 +11,7 @@ interface Options {
 export interface LabelValueState {
   label: string
   value: any
-  color?: string
+  extend?: string
 }
 
 /** 字典类型 */
