@@ -202,7 +202,7 @@ defineExpose({ tableRef })
   height: 100%;
   background: var(--color-bg-1);
   position: relative;
-
+  box-sizing:border-box;
   &--fullscreen {
     padding: $padding;
     position: fixed;
