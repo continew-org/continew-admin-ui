@@ -58,7 +58,6 @@ const formatAsyncRoutes = (menus: RouteItem[]) => {
         title: item.title,
         hidden: item.isHidden,
         keepAlive: item.isCache,
-        alwaysShow: item.type === 1,
         icon: item.icon
       }
     }
