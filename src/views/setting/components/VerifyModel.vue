@@ -11,7 +11,7 @@
   >
     <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
       <template #captcha>
-        <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
+        <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="6" allow-clear style="flex: 1 1" />
         <a-button
           class="captcha-btn"
           :loading="captchaLoading"
@@ -36,8 +36,8 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
-// import { getSmsCaptcha, getEmailCaptcha, updateUserEmail, updateUserPhone } from '@/apis'
-import { updateUserPassword } from '@/apis'
+import { getEmailCaptcha, updateUserEmail, updateUserPassword } from '@/apis'
+
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm } from '@/components/GiForm'
@@ -199,9 +199,9 @@ const getCaptcha = async () => {
       //   phone: form.phone
       // })
     } else if (verifyType.value === 'email') {
-      // await getEmailCaptcha({
-      //   email: form.email
-      // })
+      await getEmailCaptcha({
+        email: form.email
+      })
     }
     captchaLoading.value = false
     captchaDisable.value = true
@@ -234,11 +234,11 @@ const save = async () => {
       //   oldPassword: encryptByRsa(form.oldPassword) as string
       // })
     } else if (verifyType.value === 'email') {
-      // await updateUserEmail({
-      //   email: form.email,
-      //   captcha: form.captcha,
-      //   oldPassword: encryptByRsa(form.oldPassword) as string
-      // })
+      await updateUserEmail({
+        email: form.email,
+        captcha: form.captcha,
+        oldPassword: encryptByRsa(form.oldPassword) as string
+      })
     } else if (verifyType.value === 'password') {
       if (form.newPassword !== form.rePassword) {
         Message.error('两次新密码不一致')
