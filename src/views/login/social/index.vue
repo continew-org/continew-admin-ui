@@ -1,5 +1,5 @@
 <template>
-  <a-spin :loading="loading" :tip="isLogin() ? '绑定中。。。' : '登录中。。。'">
+  <a-spin :loading="loading" :tip="isLogin() ? '绑定中...' : '登录中...'">
     <div></div>
   </a-spin>
 </template>
@@ -8,10 +8,12 @@
 import { Message } from '@arco-design/web-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { bindSocialAccount } from '@/apis'
+import { useUserStore } from '@/stores'
 import { isLogin } from '@/utils/auth'
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 const source = route.query.source as string
 const loading = ref(false)
 
@@ -50,14 +52,14 @@ const handleBindSocial = () => {
   loading.value = true
   const { ...othersQuery } = router.currentRoute.value.query
   bindSocialAccount(source, othersQuery)
-    .then((res) => {
+    .then(() => {
       router.push({
         path: '/setting/profile',
         query: {
           ...othersQuery
         }
       })
-      proxy.$message.success(res.msg)
+      Message.success('绑定成功')
     })
     .catch(() => {
       router.push({
@@ -80,6 +82,10 @@ if (isLogin()) {
 </script>
 
 <style scoped lang="less">
+:deep(.arco-spin-mask) {
+  background-color: transparent;
+}
+
 div {
   width: 150px;
   height: 150px;
