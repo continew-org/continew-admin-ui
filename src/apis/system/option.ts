@@ -10,7 +10,7 @@ export function listOption(query: System.OptionQuery) {
 
 /** @desc 修改参数 */
 export function updateOption(data: any) {
-  return http.patch(`${BASE_URL}`, data)
+  return http.put(`${BASE_URL}`, data)
 }
 
 /** @desc 重置参数 */

@@ -1,12 +1,12 @@
 <template>
   <span v-if="!dictItem"></span>
-  <span v-else-if="!dictItem.color">{{ dictItem.label }}</span>
-  <a-tag v-else-if="dictItem.color === 'primary'" color="arcoblue">{{ dictItem.label }}</a-tag>
-  <a-tag v-else-if="dictItem.color === 'success'" color="green">{{ dictItem.label }}</a-tag>
-  <a-tag v-else-if="dictItem.color === 'warning'" color="orangered">{{ dictItem.label }}</a-tag>
-  <a-tag v-else-if="dictItem.color === 'error'" color="red">{{ dictItem.label }}</a-tag>
-  <a-tag v-else-if="dictItem.color === 'default'" color="gray">{{ dictItem.label }}</a-tag>
-  <a-tag v-else :color="dictItem.color">{{ dictItem.label }}</a-tag>
+  <span v-else-if="!dictItem.extend">{{ dictItem.label }}</span>
+  <a-tag v-else-if="dictItem.extend === 'primary'" color="arcoblue">{{ dictItem.label }}</a-tag>
+  <a-tag v-else-if="dictItem.extend === 'success'" color="green">{{ dictItem.label }}</a-tag>
+  <a-tag v-else-if="dictItem.extend === 'warning'" color="orangered">{{ dictItem.label }}</a-tag>
+  <a-tag v-else-if="dictItem.extend === 'error'" color="red">{{ dictItem.label }}</a-tag>
+  <a-tag v-else-if="dictItem.extend === 'default'" color="gray">{{ dictItem.label }}</a-tag>
+  <a-tag v-else :color="dictItem.extend">{{ dictItem.label }}</a-tag>
 </template>
 
 <script lang="ts" setup>
