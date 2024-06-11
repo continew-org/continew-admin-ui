@@ -69,6 +69,7 @@ const storeSetup = () => {
       siteConfig.SITE_LOGO = resMap.get('SITE_LOGO')
       siteConfig.SITE_TITLE = resMap.get('SITE_TITLE')
       siteConfig.SITE_COPYRIGHT = resMap.get('SITE_COPYRIGHT')
+      siteConfig.SITE_BEIAN = resMap.get('SITE_BEIAN')
       document.title = resMap.get('SITE_TITLE')
       document
         .querySelector('link[rel="shortcut icon"]')
@@ -99,6 +100,9 @@ const storeSetup = () => {
     return siteConfig.SITE_COPYRIGHT
   }
 
+  const getForRecord = () => {
+    return siteConfig.SITE_BEIAN
+  }
   return {
     ...toRefs(settingConfig),
     ...toRefs(siteConfig),
@@ -113,7 +117,8 @@ const storeSetup = () => {
     getFavicon,
     getLogo,
     getTitle,
-    getCopyright
+    getCopyright,
+    getForRecord
   }
 }
 

@@ -43,7 +43,7 @@
 
     <div v-if="isDesktop" class="footer">
       <div class="beian">
-        <div class="below text" v-html="appStore.getCopyright()"></div>
+        <div class="below text">{{ appStore.getCopyright() }}{{ appStore.getForRecord() ? ` · ${appStore.getForRecord()}` : '' }}</div>
       </div>
     </div>
 
@@ -123,6 +123,7 @@ const onOauth = async (source: string) => {
     display: none !important;
     background-color: white !important;
   }
+
   .login {
     height: 100%;
     display: flex;
@@ -131,6 +132,7 @@ const onOauth = async (source: string) => {
     align-items: center;
     background-color: var(--color-bg-5);
     color: #121314;
+
     &-logo {
       width: 100%;
       height: 104px;
@@ -144,18 +146,21 @@ const onOauth = async (source: string) => {
       background-image: url('/src/assets/images/login_h5.jpg');
       background-size: 100% 100%;
       box-sizing: border-box;
+
       img {
         width: 34px;
         height: 34px;
         margin-right: 8px;
       }
     }
+
     &-box {
       width: 100%;
       display: flex;
       z-index: 999;
     }
   }
+
   .login-right {
     width: 100%;
     height: 100%;
@@ -163,6 +168,7 @@ const onOauth = async (source: string) => {
     flex-direction: column;
     padding: 30px 30px 0;
     box-sizing: border-box;
+
     &__title {
       color: var(--color-text-1);
       font-weight: 500;
@@ -170,41 +176,50 @@ const onOauth = async (source: string) => {
       line-height: 32px;
       margin-bottom: 20px;
     }
+
     &__form {
       :deep(.arco-tabs-nav-tab) {
         display: flex;
         justify-content: start;
         align-items: center;
       }
+
       :deep(.arco-tabs-tab) {
         color: var(--color-text-2);
         margin: 0 20px 0 0;
       }
+
       :deep(.arco-tabs-tab-title) {
         font-size: 16px;
         font-weight: 500;
         line-height: 22px;
       }
+
       :deep(.arco-tabs-content) {
         margin-top: 10px;
       }
+
       :deep(.arco-tabs-tab-active),
       :deep(.arco-tabs-tab-title:hover) {
         color: rgb(var(--arcoblue-6));
       }
+
       :deep(.arco-tabs-nav::before) {
         display: none;
       }
+
       :deep(.arco-tabs-tab-title:before) {
         display: none;
       }
     }
+
     &__oauth {
       width: 100%;
       position: fixed;
       bottom: 0;
       left: 0;
       padding-bottom: 20px;
+
       // margin-top: auto;
       // margin-bottom: 20px;
       :deep(.arco-divider-text) {
@@ -213,14 +228,17 @@ const onOauth = async (source: string) => {
         font-weight: 400;
         line-height: 20px;
       }
+
       .list {
         align-items: center;
         display: flex;
         justify-content: center;
         width: 100%;
+
         .item {
           margin-right: 15px;
         }
+
         .mode {
           color: var(--color-text-2);
           font-size: 12px;
@@ -235,15 +253,18 @@ const onOauth = async (source: string) => {
           height: 32px;
           justify-content: center;
           cursor: pointer;
+
           .icon {
             width: 21px;
             height: 20px;
           }
         }
+
         .mode svg {
           font-size: 16px;
           margin-right: 10px;
         }
+
         .mode:hover,
         .mode svg:hover {
           background: rgba(var(--primary-6), 0.05);
@@ -267,6 +288,7 @@ const onOauth = async (source: string) => {
     position: absolute;
     bottom: 10px;
     z-index: 999;
+
     .beian {
       .text {
         font-size: 12px;
@@ -275,6 +297,7 @@ const onOauth = async (source: string) => {
         line-height: 20px;
         text-align: center;
       }
+
       .below {
         align-items: center;
         display: flex;
@@ -282,10 +305,12 @@ const onOauth = async (source: string) => {
     }
   }
 }
+
 @media screen and (min-width: 571px) {
   .h5 {
     display: none !important;
   }
+
   .login {
     height: 100%;
     display: flex;
@@ -293,6 +318,7 @@ const onOauth = async (source: string) => {
     justify-content: center;
     align-items: center;
     background-color: var(--color-bg-5);
+
     &-logo {
       position: fixed;
       top: 20px;
@@ -306,12 +332,14 @@ const onOauth = async (source: string) => {
       display: flex;
       justify-content: center;
       align-items: center;
+
       img {
         width: 34px;
         height: 34px;
         margin-right: 8px;
       }
     }
+
     &-box {
       width: 86%;
       max-width: 850px;
@@ -331,6 +359,7 @@ const onOauth = async (source: string) => {
     position: relative;
     overflow: hidden;
     background: linear-gradient(60deg, rgb(var(--primary-6)), rgb(var(--primary-3)));
+
     &__img {
       width: 100%;
       position: absolute;
@@ -352,6 +381,7 @@ const onOauth = async (source: string) => {
     flex-direction: column;
     padding: 30px 30px 0;
     box-sizing: border-box;
+
     &__title {
       color: var(--color-text-1);
       font-weight: 500;
@@ -359,51 +389,63 @@ const onOauth = async (source: string) => {
       line-height: 32px;
       margin-bottom: 20px;
     }
+
     &__form {
       :deep(.arco-tabs-nav-tab) {
         display: flex;
         justify-content: center;
         align-items: center;
       }
+
       :deep(.arco-tabs-tab) {
         color: var(--color-text-2);
       }
+
       :deep(.arco-tabs-tab-title) {
         font-size: 16px;
         font-weight: 500;
         line-height: 22px;
       }
+
       :deep(.arco-tabs-content) {
         margin-top: 10px;
       }
+
       :deep(.arco-tabs-tab-active),
       :deep(.arco-tabs-tab-title:hover) {
         color: rgb(var(--arcoblue-6));
       }
+
       :deep(.arco-tabs-nav::before) {
         display: none;
       }
+
       :deep(.arco-tabs-tab-title:before) {
         display: none;
       }
     }
+
     &__oauth {
       margin-top: auto;
       margin-bottom: 20px;
+
       :deep(.arco-divider-text) {
         color: var(--color-text-4);
         font-size: 12px;
         font-weight: 400;
         line-height: 20px;
       }
+
       .list {
         align-items: center;
         display: flex;
         justify-content: center;
         width: 100%;
+
         .item {
           margin-right: 15px;
         }
+
         .mode {
           color: var(--color-text-2);
           font-size: 12px;
@@ -418,15 +460,18 @@ const onOauth = async (source: string) => {
           height: 32px;
           justify-content: center;
           cursor: pointer;
+
           .icon {
             width: 21px;
             height: 20px;
           }
         }
+
         .mode svg {
           font-size: 16px;
           margin-right: 10px;
         }
+
         .mode:hover,
         .mode svg:hover {
           background: rgba(var(--primary-6), 0.05);
@@ -450,6 +495,7 @@ const onOauth = async (source: string) => {
     position: absolute;
     bottom: 10px;
     z-index: 999;
+
     .beian {
       .text {
         font-size: 12px;
@@ -458,6 +504,7 @@ const onOauth = async (source: string) => {
         line-height: 20px;
         text-align: center;
       }
+
       .below {
         align-items: center;
         display: flex;

@@ -1,14 +1,20 @@
 <template>
   <div class="gi_page">
     <a-card class="general-card" title="系统配置">
-      <a-tabs v-model:active-key="activeKey" hide-content type="rounded" @change="change">
-        <a-tab-pane key="1" title="基础配置" />
-        <a-tab-pane key="2" title="邮件配置" />
-        <a-tab-pane key="3" title="安全配置" />
+      <a-tabs v-model:active-key="activeKey" position="right" @change="change">
+        <a-tab-pane key="1" title="基础配置">
+          <BasicSetting />
+        </a-tab-pane>
+        <a-tab-pane key="2" title="邮件配置">
+          <MailSetting />
+        </a-tab-pane>
+        <a-tab-pane key="3" title="安全配置">
+          <SecuritySetting />
+        </a-tab-pane>
       </a-tabs>
-      <keep-alive>
+      <!-- <keep-alive>
         <component :is="PanMap[activeKey]" />
-      </keep-alive>
+      </keep-alive> -->
     </a-card>
   </div>
 </template>
@@ -20,11 +26,11 @@ import MailSetting from './components/MailSetting.vue'
 import SecuritySetting from './components/SecuritySetting.vue'
 
 defineOptions({ name: 'SystemConfig' })
-const PanMap: Record<string, Component> = {
-  1: BasicSetting,
-  2: MailSetting,
-  3: SecuritySetting
-}
+// const PanMap: Record<string, Component> = {
+//   1: BasicSetting,
+//   2: MailSetting,
+//   3: SecuritySetting
+// }
 const route = useRoute()
 const router = useRouter()
 const activeKey = ref('1')

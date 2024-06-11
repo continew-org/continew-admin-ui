@@ -281,6 +281,7 @@ export interface BasicConfig {
   SITE_LOGO: string
   SITE_TITLE: string
   SITE_COPYRIGHT: string
+  SITE_BEIAN: string
 }
 
 /** 基础配置类型 */
@@ -288,7 +289,9 @@ export interface SiteConfig {
   SITE_FAVICON: OptionResp
   SITE_LOGO: OptionResp
   SITE_TITLE: OptionResp
+  SITE_DESCRIPTION: OptionResp
   SITE_COPYRIGHT: OptionResp
+  SITE_BEIAN: OptionResp
 }
 
 /** 邮箱配置类型 */

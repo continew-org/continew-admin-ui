@@ -57,8 +57,14 @@
       <a-form-item class="input-item" field="SITE_TITLE" :label="siteConfig.SITE_TITLE.name">
         <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入网站标题" :max-length="18" />
       </a-form-item>
+      <a-form-item class="input-item" field="SITE_DESCRIPTION" :label="siteConfig.SITE_DESCRIPTION.name">
+        <a-input v-model.trim="form.SITE_DESCRIPTION" placeholder="请输入网站描述" :max-length="18" />
+      </a-form-item>
       <a-form-item class="input-item" field="SITE_COPYRIGHT" :label="siteConfig.SITE_COPYRIGHT.name">
         <a-input v-model.trim="form.SITE_COPYRIGHT" placeholder="请输入版权信息" />
+      </a-form-item>
+      <a-form-item class="input-item" field="SITE_BEIAN" :label="siteConfig.SITE_BEIAN.name">
+        <a-input v-model.trim="form.SITE_BEIAN" placeholder="请输入备案信息" style="width: 100%;" />
       </a-form-item>
       <div style="margin-top: 20px">
         <a-space>
@@ -125,7 +131,9 @@ const siteConfig = ref<SiteConfig>({
   SITE_FAVICON: {},
   SITE_LOGO: {},
   SITE_TITLE: {},
-  SITE_COPYRIGHT: {}
+  SITE_DESCRIPTION: {},
+  SITE_COPYRIGHT: {},
+  SITE_BEIAN: {}
 })
 const faviconFile = ref<FileItem>({ uid: '-1' })
 const logoFile = ref<FileItem>({ uid: '-2' })
@@ -135,7 +143,9 @@ const reset = () => {
   form.SITE_FAVICON = siteConfig.value.SITE_FAVICON.value || ''
   form.SITE_LOGO = siteConfig.value.SITE_LOGO.value || ''
   form.SITE_TITLE = siteConfig.value.SITE_TITLE.value || ''
+  form.SITE_DESCRIPTION = siteConfig.value.SITE_DESCRIPTION.value || ''
   form.SITE_COPYRIGHT = siteConfig.value.SITE_COPYRIGHT.value || ''
+  form.SITE_BEIAN = siteConfig.value.SITE_BEIAN.value || ''
   faviconFile.value.url = siteConfig.value.SITE_FAVICON.value
   logoFile.value.url = siteConfig.value.SITE_LOGO.value
 }
@@ -203,20 +213,20 @@ const onResetValue = () => {
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      uploadFile(formData)
-        .then((res) => {
-          onSuccess(res)
-          form.SITE_FAVICON = res.data.url
-          Message.success('上传成功')
-        })
-        .catch((error) => {
-          onError(error)
-        })
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    uploadFile(formData)
+      .then((res) => {
+        onSuccess(res)
+        form.SITE_FAVICON = res.data.url
+        Message.success('上传成功')
+      })
+      .catch((error) => {
+        onError(error)
+      })
+  })()
   return {
     abort() {
       controller.abort()
@@ -233,20 +243,20 @@ const handleChangeFavicon = (_: any, currentFile: any) => {
 const handleUploadLogo = (options: RequestOption) => {
   const controller = new AbortController()
     ; (async function requestWrap() {
-      const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-      onProgress(20)
-      const formData = new FormData()
-      formData.append(name as string, fileItem.file as Blob)
-      uploadFile(formData)
-        .then((res) => {
-          onSuccess(res)
-          form.SITE_LOGO = res.data.url
-          Message.success('上传成功')
-        })
-        .catch((error) => {
-          onError(error)
-        })
-    })()
+    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+    onProgress(20)
+    const formData = new FormData()
+    formData.append(name as string, fileItem.file as Blob)
+    uploadFile(formData)
+      .then((res) => {
+        onSuccess(res)
+        form.SITE_LOGO = res.data.url
+        Message.success('上传成功')
+      })
+      .catch((error) => {
+        onError(error)
+      })
+  })()
   return {
     abort() {
       controller.abort()
@@ -266,21 +276,21 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .form {
-  margin: 20px 0 0 20px;
+  // margin: 20px 0 0 20px;
 }
 
 .logo {
-  width: 33px;
-  height: 33px;
-  min-width: 33px;
-  line-height: 33px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  line-height: 50px;
 }
 
 .favicon {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  line-height: 16px;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  line-height: 46px;
 }
 
 .arco-form .image-item,
@@ -294,6 +304,7 @@ onMounted(() => {
 }
 
 :deep(.arco-form-item-wrapper-col) {
-  width: 50%;
+  width: 100%;
+  max-width: 500px;
 }
 </style>

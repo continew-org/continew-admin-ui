@@ -1,7 +1,7 @@
 <template>
   <a-space wrap :size="30">
     <a-form ref="formRef" :model="form" :rules="rules" auto-label-width label-align="left"
-      :layout="width >= 500 ? 'horizontal' : 'vertical'" :disabled="!isUpdate" scroll-to-first-error class="form">
+      :layout="width >= 500 ? 'horizontal' : 'vertical'" :disabled="!isUpdate" scroll-to-first-error>
       <a-list :bordered="false" :loading="loading">
         <a-form-item field="PASSWORD_ERROR_LOCK_COUNT" :label="securityConfig.PASSWORD_ERROR_LOCK_COUNT.name"
           :help="securityConfig.PASSWORD_ERROR_LOCK_COUNT.description" hide-asterisk>
@@ -205,10 +205,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  margin: 20px 0 0 20px;
-}
-
 .input-width {
   width: 196px;
 }

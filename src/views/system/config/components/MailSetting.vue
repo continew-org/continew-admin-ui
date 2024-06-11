@@ -1,7 +1,7 @@
 <template>
   <a-space wrap :size="30">
     <a-form ref="formRef" :model="form" :rules="rules" auto-label-width label-align="left"
-      :layout="width >= 500 ? 'horizontal' : 'vertical'" :disabled="!isUpdate" scroll-to-first-error class="form">
+      :layout="width >= 500 ? 'horizontal' : 'vertical'" :disabled="!isUpdate" scroll-to-first-error>
       <a-list :bordered="false" :loading="loading">
         <a-form-item field="MAIL_PROTOCOL" :label="mailConfig.MAIL_PROTOCOL.name" hide-asterisk>
           <a-select v-model.trim="form.MAIL_PROTOCOL">
@@ -169,10 +169,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  margin: 20px 0 0 20px;
-}
-
 :deep(.arco-form-item.arco-form-item-has-help) {
   margin-bottom: 5px;
 }
