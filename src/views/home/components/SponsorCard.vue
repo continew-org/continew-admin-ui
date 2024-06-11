@@ -5,6 +5,7 @@
     </template>
     <a-row :gutter="8">
       <a-carousel
+        v-if="imageList.length"
         indicator-type="slider"
         show-arrow="always"
         auto-play
@@ -16,6 +17,7 @@
           </a>
         </a-carousel-item>
       </a-carousel>
+      <a-empty v-else />
     </a-row>
   </a-card>
 </template>
@@ -28,10 +30,5 @@ interface ImageType {
 }
 
 const imageList: ImageType[] = [
-  {
-    src: `https://continew.top/img/sponsor/ad/roovps.jpg?${new Date().getTime()}`,
-    title: 'ROOVPS',
-    link: 'https://roovps.com/cart'
-  }
 ]
 </script>

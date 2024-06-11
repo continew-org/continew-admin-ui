@@ -16,7 +16,7 @@ const appStore = useAppStore()
   font-size: 13px;
   color: var(--color-text-3);
   background-color: var(--color-bg-1);
-  border-top: 1px dashed var(--color-neutral-3);
+  border-top: 1px solid var(--color-neutral-3);
   box-sizing: border-box;
   display: flex;
   justify-content: center;

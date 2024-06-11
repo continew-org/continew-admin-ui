@@ -1,6 +1,32 @@
 <template>
   <a-form ref="formRef" :model="form" :rules="rules" size="large" layout="vertical" :disabled="!isUpdate" class="form">
     <a-list class="list-layout" :bordered="false" :loading="loading">
+      <a-form-item class="image-item" field="SITE_LOGO" hide-label>
+        {{ siteConfig.SITE_LOGO.name }}
+        <template #extra>
+          {{ siteConfig.SITE_LOGO.description }}
+          <br />
+          <a-upload :file-list="logoFile ? [logoFile] : []" accept="image/*" :show-file-list="false"
+                    :custom-request="handleUploadLogo" @change="handleChangeLogo">
+            <template #upload-button>
+              <div :class="`arco-upload-list-item${logoFile && logoFile.status === 'error' ? ' arco-upload-list-item-error' : ''
+                }`">
+                <div v-if="logoFile && logoFile.url" class="arco-upload-list-picture custom-upload-avatar logo">
+                  <img :src="logoFile.url" alt="Logo" />
+                  <div v-if="isUpdate" class="arco-upload-list-picture-mask logo">
+                    <IconEdit />
+                  </div>
+                </div>
+                <div v-else class="arco-upload-picture-card logo">
+                  <div class="arco-upload-picture-card-text">
+                    <icon-upload />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </a-upload>
+        </template>
+      </a-form-item>
       <a-form-item class="image-item" field="SITE_FAVICON" hide-label>
         {{ siteConfig.SITE_FAVICON.name }}
         <template #extra>
@@ -19,32 +45,6 @@
                   </div>
                 </div>
                 <div v-else class="arco-upload-picture-card favicon">
-                  <div class="arco-upload-picture-card-text">
-                    <icon-upload />
-                  </div>
-                </div>
-              </div>
-            </template>
-          </a-upload>
-        </template>
-      </a-form-item>
-      <a-form-item class="image-item" field="SITE_LOGO" hide-label>
-        {{ siteConfig.SITE_LOGO.name }}
-        <template #extra>
-          {{ siteConfig.SITE_LOGO.description }}
-          <br />
-          <a-upload :file-list="logoFile ? [logoFile] : []" accept="image/*" :show-file-list="false"
-            :custom-request="handleUploadLogo" @change="handleChangeLogo">
-            <template #upload-button>
-              <div :class="`arco-upload-list-item${logoFile && logoFile.status === 'error' ? ' arco-upload-list-item-error' : ''
-                }`">
-                <div v-if="logoFile && logoFile.url" class="arco-upload-list-picture custom-upload-avatar logo">
-                  <img :src="logoFile.url" alt="Logo" />
-                  <div v-if="isUpdate" class="arco-upload-list-picture-mask logo">
-                    <IconEdit />
-                  </div>
-                </div>
-                <div v-else class="arco-upload-picture-card logo">
                   <div class="arco-upload-picture-card-text">
                     <icon-upload />
                   </div>
@@ -275,10 +275,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  // margin: 20px 0 0 20px;
-}
-
 .logo {
   width: 50px;
   height: 50px;

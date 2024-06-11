@@ -99,8 +99,7 @@ const initWebSocket = (token: string) => {
   }
 
   socket.onmessage = (event) => {
-    const data = JSON.parse(event.data)
-    unreadMessageCount.value = Number.parseInt(data?.content)
+    unreadMessageCount.value = Number.parseInt(event.data)
   }
 
   socket.onerror = () => {

@@ -32,9 +32,9 @@
             <template #append>天</template>
           </a-input-number>
         </a-form-item>
-        <a-form-item field="PASSWORD_REUSE_POLICY" :label="securityConfig.PASSWORD_REUSE_POLICY.name"
-          :help="securityConfig.PASSWORD_REUSE_POLICY.description" hide-asterisk>
-          <a-input-number v-model="form.PASSWORD_REUSE_POLICY" class="input-width" :precision="0" :min="3" :max="32">
+        <a-form-item field="PASSWORD_REPETITION_TIMES" :label="securityConfig.PASSWORD_REPETITION_TIMES.name"
+          :help="securityConfig.PASSWORD_REPETITION_TIMES.description" hide-asterisk>
+          <a-input-number v-model="form.PASSWORD_REPETITION_TIMES" class="input-width" :precision="0" :min="3" :max="32">
             <template #append>次</template>
           </a-input-number>
         </a-form-item>
@@ -49,9 +49,9 @@
             <template #unchecked>否</template>
           </a-switch>
         </a-form-item>
-        <a-form-item field="PASSWORD_CONTAIN_SPECIAL_CHARACTERS"
-          :label="securityConfig.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name">
-          <a-switch v-model="form.PASSWORD_CONTAIN_SPECIAL_CHARACTERS" type="round" :checked-value="1"
+        <a-form-item field="PASSWORD_REQUIRE_SYMBOLS"
+          :label="securityConfig.PASSWORD_REQUIRE_SYMBOLS.name">
+          <a-switch v-model="form.PASSWORD_REQUIRE_SYMBOLS" type="round" :checked-value="1"
             :unchecked-value="0">
             <template #checked>是</template>
             <template #unchecked>否</template>
@@ -95,10 +95,10 @@ const { form } = useForm({
   PASSWORD_ERROR_LOCK_MINUTES: 0,
   PASSWORD_EXPIRATION_DAYS: 0,
   PASSWORD_EXPIRATION_WARNING_DAYS: 0,
-  PASSWORD_REUSE_POLICY: 0,
+  PASSWORD_REPETITION_TIMES: 0,
   PASSWORD_MIN_LENGTH: 0,
   PASSWORD_ALLOW_CONTAIN_USERNAME: 0,
-  PASSWORD_CONTAIN_SPECIAL_CHARACTERS: 0
+  PASSWORD_REQUIRE_SYMBOLS: 0
 })
 const rules: FormInstance['rules'] = {
   PASSWORD_ERROR_LOCK_COUNT: [{ required: true, message: '请输入值' }],
@@ -116,7 +116,7 @@ const rules: FormInstance['rules'] = {
       }
     }
   ],
-  PASSWORD_REUSE_POLICY: [{ required: true, message: '请输入值' }],
+  PASSWORD_REPETITION_TIMES: [{ required: true, message: '请输入值' }],
   PASSWORD_MIN_LENGTH: [{ required: true, message: '请输入值' }]
 }
 
@@ -125,10 +125,10 @@ const securityConfig = ref<SecurityConfig>({
   PASSWORD_ERROR_LOCK_MINUTES: {},
   PASSWORD_EXPIRATION_DAYS: {},
   PASSWORD_EXPIRATION_WARNING_DAYS: {},
-  PASSWORD_REUSE_POLICY: {},
+  PASSWORD_REPETITION_TIMES: {},
   PASSWORD_MIN_LENGTH: {},
   PASSWORD_ALLOW_CONTAIN_USERNAME: {},
-  PASSWORD_CONTAIN_SPECIAL_CHARACTERS: {}
+  PASSWORD_REQUIRE_SYMBOLS: {}
 })
 // 重置
 const reset = () => {
@@ -137,10 +137,10 @@ const reset = () => {
   form.PASSWORD_ERROR_LOCK_MINUTES = securityConfig.value.PASSWORD_ERROR_LOCK_MINUTES.value || 0
   form.PASSWORD_EXPIRATION_DAYS = securityConfig.value.PASSWORD_EXPIRATION_DAYS.value || 0
   form.PASSWORD_EXPIRATION_WARNING_DAYS = securityConfig.value.PASSWORD_EXPIRATION_WARNING_DAYS.value || 0
-  form.PASSWORD_REUSE_POLICY = securityConfig.value.PASSWORD_REUSE_POLICY.value || 0
+  form.PASSWORD_REPETITION_TIMES = securityConfig.value.PASSWORD_REPETITION_TIMES.value || 0
   form.PASSWORD_MIN_LENGTH = securityConfig.value.PASSWORD_MIN_LENGTH.value || 0
   form.PASSWORD_ALLOW_CONTAIN_USERNAME = securityConfig.value.PASSWORD_ALLOW_CONTAIN_USERNAME.value || 0
-  form.PASSWORD_CONTAIN_SPECIAL_CHARACTERS = securityConfig.value.PASSWORD_CONTAIN_SPECIAL_CHARACTERS.value || 0
+  form.PASSWORD_REQUIRE_SYMBOLS = securityConfig.value.PASSWORD_REQUIRE_SYMBOLS.value || 0
 }
 
 const isUpdate = ref(false)

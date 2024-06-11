@@ -8,6 +8,6 @@
   "menuCollapse": true,
   "menuAccordion": true,
   "menuDark": false,
-  "copyrightDisplay": false,
+  "copyrightDisplay": true,
   "layout": "left"
 }
