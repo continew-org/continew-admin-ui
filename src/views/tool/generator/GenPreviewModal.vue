@@ -4,19 +4,30 @@
       :title="`生成 ${previewTableName} 表预览`"
       :mask-closable="false"
       :esc-to-close="false"
-      width="100%"
+      width="90%"
       draggable
       :footer="false"
   >
     <div class="preview-content">
       <a-layout :has-sider="true">
-        <a-layout-sider theme="dark" style="max-width:600px;height: 700px" :resize-directions="['right']" :width="580">
-          <a-tree class="selectPreview" :data="treeData" :show-line="false" @select="onSelectPreview">
+        <a-layout-sider theme="dark" style="max-width:600px;height: 700px" :resize-directions="['right']" :width="500">
+          <a-tree ref="treeRef" class="selectPreview"
+                  :data="treeData"
+                  default-expand-all
+                  @select="onSelectPreview"
+          >
             <template #icon=" node ">
               <GiSvgIcon v-if="!node.isLeaf && !node.expanded" :size="16" name="directory-blue" />
               <GiSvgIcon v-if="!node.isLeaf && node.expanded" :size="16" name="directory-open-blue" />
-              <GiSvgIcon v-if="node.isLeaf" :size="16" name="drive-file" />
-            </template>
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.java')" :size="16" name="file-java" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.vue')" :size="16" name="file-vue" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.ts')" :size="16" name="file-typescript" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.js')" :size="16" name="file-javascript" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.json')" :size="16" name="file-json" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, 'pom.xml')" :size="16" name="file-maven" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.xml') && !checkFileType(node.node.title, 'pom.xml')" :size="16" name="file-xml" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.sql')" :size="16" name="file-sql" />
+</template>
           </a-tree>
         </a-layout-sider>
         <a-layout-content>
@@ -63,8 +74,8 @@ const genPreviewList = ref<GeneratePreviewResp[]>([])
 const visible = ref(false)
 const treeData = ref<TreeNodeData[]>([])
 const previewTableName = ref<string>('')
-
-const mergeDir = (parent: TreeNodeData) => {
+const treeRef = ref()
+const mergeDir = async (parent: TreeNodeData) => {
   // 合并目录
   if (parent.children?.length === 1 && typeof parent.children[0].key === 'number') {
     const mergeTitle = mergeDir(parent.children[0])
@@ -80,9 +91,13 @@ const mergeDir = (parent: TreeNodeData) => {
       mergeDir(child)
     }
   }
+
+  await nextTick(() => {
+    treeRef.value?.expandAll(true)
+  })
   return ''
 }
-
+const expandKeys = ref<any[]>([])
 const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) => {
   if (children) {
     for (const child of children) {
@@ -92,6 +107,7 @@ const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) =
     }
   }
   children?.push(treeNode)
+  expandKeys.value.push(treeNode.key)
   return treeNode.children
 }
 
@@ -143,9 +159,12 @@ watch(copied, () => {
     Message.success('复制成功')
   }
 })
-
 const gen = () => {
   emit('generate', [previewTableName.value])
+}
+// 校验文件类型
+const checkFileType = (title: string, type: string) => {
+  return title.endsWith(type)
 }
 
 defineExpose({ onPreview })
