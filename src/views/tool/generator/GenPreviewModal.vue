@@ -1,56 +1,59 @@
 <template>
   <a-modal
-      v-model:visible="visible"
-      :title="`生成 ${previewTableName} 表预览`"
-      :mask-closable="false"
-      :esc-to-close="false"
-      width="90%"
-      draggable
-      :footer="false"
+    v-model:visible="visible"
+    width="90%"
+    draggable
+    :footer="false"
   >
+    <template #title>
+      {{ `生成 ${previewTableName} 表预览` }}
+      <a-link style="margin-left: 10px" icon @click="gen">下载源码</a-link>
+    </template>
     <div class="preview-content">
       <a-layout :has-sider="true">
-        <a-layout-sider theme="dark" style="max-width:600px;height: 700px" :resize-directions="['right']" :width="500">
-          <a-tree ref="treeRef" class="selectPreview"
-                  :data="treeData"
-                  default-expand-all
-                  @select="onSelectPreview"
+        <a-layout-sider theme="dark" style="max-width:600px; height: 700px" :resize-directions="['right']" :width="370">
+          <a-tree
+            ref="treeRef" class="selectPreview"
+            :data="treeData"
+            :selectable="(node, info) => info.isLeaf"
+            default-expand-all
+            @select="onSelectPreview"
           >
             <template #icon=" node ">
               <GiSvgIcon v-if="!node.isLeaf && !node.expanded" :size="16" name="directory-blue" />
               <GiSvgIcon v-if="!node.isLeaf && node.expanded" :size="16" name="directory-open-blue" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.java')" :size="16" name="file-java" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.vue')" :size="16" name="file-vue" />
-              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.ts')" :size="16" name="file-typescript" />
-              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.js')" :size="16" name="file-javascript" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.ts')" :size="16"
+                         name="file-typescript" />
+              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.js')" :size="16"
+                         name="file-javascript" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.json')" :size="16" name="file-json" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, 'pom.xml')" :size="16" name="file-maven" />
-              <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.xml') && !checkFileType(node.node.title, 'pom.xml')" :size="16" name="file-xml" />
+              <GiSvgIcon
+                v-if="node.isLeaf && checkFileType(node.node.title, '.xml') && !checkFileType(node.node.title, 'pom.xml')"
+                :size="16" name="file-xml" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.sql')" :size="16" name="file-sql" />
-</template>
+            </template>
           </a-tree>
         </a-layout-sider>
         <a-layout-content>
-          <a-card :header-style="{ height: '50px' }">
-            <template #title> {{ currentPreview?.path }}\{{ currentPreview?.fileName }}</template>
-            <template #extra>
-              <a-button-group type="outline" size="small">
-                <a-button @click="onCopy">
-                  <template #icon>
-                    <icon-copy />
-                  </template>
-                </a-button>
-                <a-button @click="gen">
-                  <template #icon>
-                    <icon-download />
-                  </template>
-                </a-button>
-              </a-button-group>
+          <a-card>
+            <template #title>
+              <a-typography-title :heading="6" ellipsis>
+                {{ currentPreview?.path }}{{ currentPreview?.path.indexOf('/') !== -1 ? '/' : '\\' }}{{ currentPreview?.fileName }}
+              </a-typography-title>
             </template>
             <a-scrollbar style="height: 650px; overflow: auto">
+              <a-link style="position: absolute; right: 20px; z-index: 999" @click="onCopy">
+                <template #icon>
+                  <icon-copy size="large" />
+                </template>
+                复制
+              </a-link>
               <GiCodeView
-                  :type="'vue' === currentPreview?.fileName.split('.')[1] ? 'vue' : 'javascript'"
-                  :code-json="currentPreview?.content"
+                :type="'vue' === currentPreview?.fileName.split('.')[1] ? 'vue' : 'javascript'"
+                :code-json="currentPreview?.content"
               />
             </a-scrollbar>
           </a-card>
@@ -75,7 +78,7 @@ const visible = ref(false)
 const treeData = ref<TreeNodeData[]>([])
 const previewTableName = ref<string>('')
 const treeRef = ref()
-const mergeDir = async (parent: TreeNodeData) => {
+const mergeDir = (parent: TreeNodeData) => {
   // 合并目录
   if (parent.children?.length === 1 && typeof parent.children[0].key === 'number') {
     const mergeTitle = mergeDir(parent.children[0])
@@ -92,7 +95,7 @@ const mergeDir = async (parent: TreeNodeData) => {
     }
   }
 
-  await nextTick(() => {
+  nextTick(() => {
     treeRef.value?.expandAll(true)
   })
   return ''
