@@ -1,21 +1,27 @@
 <template>
   <a-modal
-    v-model:visible="visible"
-    :title="`生成 ${previewTableName} 表预览`"
-    :mask-closable="false"
-    :esc-to-close="false"
-    width="100%"
-    draggable
-    :footer="false"
+      v-model:visible="visible"
+      :title="`生成 ${previewTableName} 表预览`"
+      :mask-closable="false"
+      :esc-to-close="false"
+      width="100%"
+      draggable
+      :footer="false"
   >
     <div class="preview-content">
-      <a-layout>
-        <a-layout-sider theme="dark" :resize-directions="['right']" style="height: 700px">
-          <a-tree class="selectPreview" :data="treeData" :show-line="true" @select="onSelectPreview" />
+      <a-layout :has-sider="true">
+        <a-layout-sider theme="dark" style="max-width:600px;height: 700px" :resize-directions="['right']" :width="580">
+          <a-tree class="selectPreview" :data="treeData" :show-line="false" @select="onSelectPreview">
+            <template #icon=" node ">
+              <GiSvgIcon v-if="!node.isLeaf && !node.expanded" :size="16" name="directory-blue" />
+              <GiSvgIcon v-if="!node.isLeaf && node.expanded" :size="16" name="directory-open-blue" />
+              <GiSvgIcon v-if="node.isLeaf" :size="16" name="drive-file" />
+            </template>
+          </a-tree>
         </a-layout-sider>
         <a-layout-content>
           <a-card :header-style="{ height: '50px' }">
-            <template #title> {{ currentPreview?.path }}\{{ currentPreview?.fileName }} </template>
+            <template #title> {{ currentPreview?.path }}\{{ currentPreview?.fileName }}</template>
             <template #extra>
               <a-button-group type="outline" size="small">
                 <a-button @click="onCopy">
@@ -32,8 +38,8 @@
             </template>
             <a-scrollbar style="height: 650px; overflow: auto">
               <GiCodeView
-                :type="'vue' === currentPreview?.fileName.split('.')[1] ? 'vue' : 'javascript'"
-                :code-json="currentPreview?.content"
+                  :type="'vue' === currentPreview?.fileName.split('.')[1] ? 'vue' : 'javascript'"
+                  :code-json="currentPreview?.content"
               />
             </a-scrollbar>
           </a-card>
@@ -131,6 +137,7 @@ const onCopy = () => {
     copy(currentPreview.value?.content)
   }
 }
+
 watch(copied, () => {
   if (copied.value) {
     Message.success('复制成功')
@@ -140,6 +147,7 @@ watch(copied, () => {
 const gen = () => {
   emit('generate', [previewTableName.value])
 }
+
 defineExpose({ onPreview })
 </script>
 
