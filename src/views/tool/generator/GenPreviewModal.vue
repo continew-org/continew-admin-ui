@@ -1,25 +1,25 @@
 <template>
-  <a-modal
-    v-model:visible="visible"
-    width="90%"
-    draggable
-    :footer="false"
-  >
+  <a-modal v-model:visible="visible" width="90%" :footer="false">
     <template #title>
       {{ `生成 ${previewTableName} 表预览` }}
-      <a-link style="margin-left: 10px" icon @click="gen">下载源码</a-link>
+      <a-link style="margin-left: 10px" icon @click="onDownload">下载源码</a-link>
     </template>
     <div class="preview-content">
       <a-layout :has-sider="true">
         <a-layout-sider theme="dark" style="max-width:600px; height: 700px" :resize-directions="['right']" :width="370">
           <a-tree
-            ref="treeRef" class="selectPreview"
+            ref="treeRef"
             :data="treeData"
-            :selectable="(node, info) => info.isLeaf"
-            default-expand-all
+            show-line
+            block-node
+            :selected-keys="selectedKeys"
+            class="selectPreview"
             @select="onSelectPreview"
           >
-            <template #icon=" node ">
+            <template #switcher-icon="node, { isLeaf }">
+              <icon-caret-down v-if="!isLeaf" />
+            </template>
+            <template #icon="node">
               <GiSvgIcon v-if="!node.isLeaf && !node.expanded" :size="16" name="directory-blue" />
               <GiSvgIcon v-if="!node.isLeaf && node.expanded" :size="16" name="directory-open-blue" />
               <GiSvgIcon v-if="node.isLeaf && checkFileType(node.node.title, '.java')" :size="16" name="file-java" />
@@ -75,9 +75,10 @@ const currentPreview = ref<GeneratePreviewResp>()
 const genPreviewList = ref<GeneratePreviewResp[]>([])
 
 const visible = ref(false)
-const treeData = ref<TreeNodeData[]>([])
 const previewTableName = ref<string>('')
 const treeRef = ref()
+const treeData = ref<TreeNodeData[]>([])
+// 合并目录
 const mergeDir = (parent: TreeNodeData) => {
   // 合并目录
   if (parent.children?.length === 1 && typeof parent.children[0].key === 'number') {
@@ -94,13 +95,9 @@ const mergeDir = (parent: TreeNodeData) => {
       mergeDir(child)
     }
   }
-
-  nextTick(() => {
-    treeRef.value?.expandAll(true)
-  })
   return ''
 }
-const expandKeys = ref<any[]>([])
+
 const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) => {
   if (children) {
     for (const child of children) {
@@ -110,7 +107,6 @@ const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) =
     }
   }
   children?.push(treeNode)
-  expandKeys.value.push(treeNode.key)
   return treeNode.children
 }
 
@@ -118,7 +114,8 @@ const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) =
 let autoIncrementKey = 0
 // 将生成的目录组装成树结构
 const assembleTree = (genPreview: GeneratePreviewResp) => {
-  const paths: string[] = genPreview.path.split('\\')
+  const separator = genPreview.path.includes('/') ? '/' : '\\'
+  const paths: string[] = genPreview.path.split(separator)
   let tempChildren: TreeNodeData[] | undefined = treeData.value
   for (const path of paths) {
     // 向treeData中推送目录,如果该级目录有那么不推送进行下级的合并
@@ -127,6 +124,7 @@ const assembleTree = (genPreview: GeneratePreviewResp) => {
   tempChildren?.push({ title: genPreview.fileName, key: genPreview.fileName, children: new Array<TreeNodeData>() })
 }
 
+const selectedKeys = ref()
 // 打开
 const onPreview = async (tableName: string) => {
   treeData.value = []
@@ -139,14 +137,22 @@ const onPreview = async (tableName: string) => {
   for (const valueElement of treeData.value) {
     mergeDir(valueElement)
   }
+  selectedKeys.value = genPreviewList.value[0].fileName
   currentPreview.value = genPreviewList.value[0]
+  await nextTick(() => {
+    treeRef.value.expandAll(true)
+  })
   visible.value = true
 }
 
 // 选择文件预览
-const onSelectPreview = (selectedKeys) => {
-  if (typeof selectedKeys[0] === 'string') {
-    currentPreview.value = genPreviewList.value.filter((p) => p.fileName === selectedKeys[0])[0]
+const onSelectPreview = (keys: (string | number)[]) => {
+  if (typeof keys[0] === 'string') {
+    currentPreview.value = genPreviewList.value.filter((p) => p.fileName === keys[0])[0]
+    selectedKeys.value = keys[0]
+  } else {
+    const expandedKeys = treeRef.value.getExpandedNodes().map((node) => node.key)
+    treeRef.value.expandNode(keys[0], !expandedKeys.includes(keys[0]))
   }
 }
 
@@ -156,13 +162,14 @@ const onCopy = () => {
     copy(currentPreview.value?.content)
   }
 }
-
 watch(copied, () => {
   if (copied.value) {
     Message.success('复制成功')
   }
 })
-const gen = () => {
+
+// 下载
+const onDownload = () => {
   emit('generate', [previewTableName.value])
 }
 // 校验文件类型
@@ -174,6 +181,9 @@ defineExpose({ onPreview })
 </script>
 
 <style scoped>
+:deep(.arco-tree-show-line .arco-tree-node-is-leaf:not(.arco-tree-node-is-tail) .arco-tree-node-indent::after) {
+  content: none;
+}
 .preview-content :deep(.arco-layout-sider) {
   min-width: 200px;
   white-space: nowrap;

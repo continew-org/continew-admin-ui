@@ -91,11 +91,7 @@ const getTreeData = async (query: DeptQuery = { ...queryForm }) => {
       popupVisible: false,
       switcherIcon: (node: any) => {
         if (!node.isLeaf) {
-          if (node.expanded) {
-            return <icon-down />
-          } else {
-            return <icon-down />
-          }
+          return <icon-caret-down />
         }
         return <icon-idcard />
       }
