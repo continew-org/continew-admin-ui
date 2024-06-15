@@ -1,13 +1,6 @@
 <template>
-  <a-form
-    ref="formRef"
-    :model="form"
-    :rules="rules"
-    :label-col-style="{ display: 'none' }"
-    :wrapper-col-style="{ flex: 1 }"
-    size="large"
-    @submit="handleLogin"
-  >
+  <a-form ref="formRef" :model="form" :rules="rules" :label-col-style="{ display: 'none' }"
+    :wrapper-col-style="{ flex: 1 }" size="large" @submit="handleLogin">
     <a-form-item field="username" hide-label>
       <a-input v-model="form.username" placeholder="请输入用户名" allow-clear />
     </a-form-item>

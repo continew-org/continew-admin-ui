@@ -146,32 +146,7 @@ const logout = () => {
   })
 }
 
-const checkPasswordExpired = () => {
-  if (!userStore.pwdExpiredShow || !userStore.userInfo.pwdExpired) {
-    return
-  }
-  Modal.confirm({
-    title: '提示',
-    content: '密码已过期，需要跳转到修改密码页面？',
-    hideCancel: false,
-    closable: true,
-    onBeforeOk: async () => {
-      try {
-        await router.push({ path: '/setting/profile' })
-        return true
-      } catch (error) {
-        return false
-      }
-    },
-    onCancel: () => {
-      // 当前登录会话不再提示
-      userStore.pwdExpiredShow = false
-    }
-  })
-}
-
 onMounted(() => {
-  checkPasswordExpired()
   getMessageCount()
 })
 </script>

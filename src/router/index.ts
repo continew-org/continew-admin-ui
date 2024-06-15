@@ -54,6 +54,11 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: { hidden: true }
   },
   {
+    path: '/pwdExpired',
+    component: () => import('@/views/login/pwdExpired/index.vue'),
+    meta: { hidden: true }
+  },
+  {
     path: '/setting',
     name: 'Setting',
     component: Layout,

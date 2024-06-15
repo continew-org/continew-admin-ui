@@ -14,6 +14,7 @@ export type FormType =
   | 'slider'
   | 'cascader'
   | 'tree-select'
+  | 'input-password'
 
 export type ColumnsItemPropsKey =
   | keyof A.InputInstance['$props']

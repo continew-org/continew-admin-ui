@@ -1,35 +1,17 @@
 <template>
-  <a-modal
-    v-model:visible="visible"
-    :title="title"
-    :mask-closable="false"
-    :esc-to-close="false"
-    :width="width >= 500 ? 500 : '100%'"
-    draggable
-    @before-ok="save"
-    @close="reset"
-  >
+  <a-modal v-model:visible="visible" :title="title" :mask-closable="false" :esc-to-close="false"
+    :width="width >= 500 ? 500 : '100%'" draggable @before-ok="save" @close="reset">
     <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
       <template #captcha>
         <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="6" allow-clear style="flex: 1 1" />
-        <a-button
-          class="captcha-btn"
-          :loading="captchaLoading"
-          :disabled="captchaDisable"
-          size="large"
-          @click="onCaptcha"
-        >
+        <a-button class="captcha-btn" :loading="captchaLoading" :disabled="captchaDisable" size="large"
+          @click="onCaptcha">
           {{ captchaBtnName }}
         </a-button>
       </template>
     </GiForm>
-    <Verify
-      ref="VerifyRef"
-      :captcha-type="captchaType"
-      :mode="captchaMode"
-      :img-size="{ width: '330px', height: '155px' }"
-      @success="getCaptcha"
-    />
+    <Verify ref="VerifyRef" :captcha-type="captchaType" :mode="captchaMode"
+      :img-size="{ width: '330px', height: '155px' }" @success="getCaptcha" />
   </a-modal>
 </template>
 
@@ -40,7 +22,7 @@ import { getEmailCaptcha, updateUserEmail, updateUserPassword } from '@/apis'
 
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
-import { type Columns, GiForm } from '@/components/GiForm'
+import { type Columns, GiForm, type Options } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import * as Regexp from '@/utils/regexp'
 

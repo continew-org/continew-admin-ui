@@ -1,10 +1,11 @@
+import { Message } from '@arco-design/web-vue'
 import router from '@/router'
 import { useRouteStore, useUserStore } from '@/stores'
 import { getToken } from '@/utils/auth'
 import { isHttp } from '@/utils/validate'
 
 /** 免登录白名单 */
-const whiteList = ['/login', '/social/callback']
+const whiteList = ['/login', '/social/callback', '/pwdExpired']
 
 /** 是否已经生成过路由表 */
 let hasRouteFlag = false
@@ -25,6 +26,10 @@ router.beforeEach(async (to, from, next) => {
       if (!hasRouteFlag) {
         try {
           await userStore.getInfo()
+          if (userStore.userInfo.pwdExpired && to.path !== '/pwdExpired') {
+            Message.warning('密码已过期，请修改密码')
+            next('/pwdExpired')
+          }
           const accessRoutes = await routeStore.generateRoutes()
           accessRoutes.forEach((route) => {
             if (!isHttp(route.path)) {

@@ -34,7 +34,8 @@
         </a-form-item>
         <a-form-item field="PASSWORD_REPETITION_TIMES" :label="securityConfig.PASSWORD_REPETITION_TIMES.name"
           :help="securityConfig.PASSWORD_REPETITION_TIMES.description" hide-asterisk>
-          <a-input-number v-model="form.PASSWORD_REPETITION_TIMES" class="input-width" :precision="0" :min="3" :max="32">
+          <a-input-number v-model="form.PASSWORD_REPETITION_TIMES" class="input-width" :precision="0" :min="3"
+            :max="32">
             <template #append>次</template>
           </a-input-number>
         </a-form-item>
@@ -49,10 +50,8 @@
             <template #unchecked>否</template>
           </a-switch>
         </a-form-item>
-        <a-form-item field="PASSWORD_REQUIRE_SYMBOLS"
-          :label="securityConfig.PASSWORD_REQUIRE_SYMBOLS.name">
-          <a-switch v-model="form.PASSWORD_REQUIRE_SYMBOLS" type="round" :checked-value="1"
-            :unchecked-value="0">
+        <a-form-item field="PASSWORD_REQUIRE_SYMBOLS" :label="securityConfig.PASSWORD_REQUIRE_SYMBOLS.name">
+          <a-switch v-model="form.PASSWORD_REQUIRE_SYMBOLS" type="round" :checked-value="1" :unchecked-value="0">
             <template #checked>是</template>
             <template #unchecked>否</template>
           </a-switch>
