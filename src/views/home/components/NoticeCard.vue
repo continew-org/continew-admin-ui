@@ -1,7 +1,7 @@
 <template>
   <a-card title="公告" :bordered="false" class="gi_card_title">
     <template #extra>
-      <a-link href="/#/system/notice">更多</a-link>
+      <a-link href="/system/notice">更多</a-link>
     </template>
     <a-empty v-if="dataList.length === 0">暂无公告</a-empty>
     <a-comment

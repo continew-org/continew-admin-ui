@@ -120,8 +120,8 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0(vue@3.4.27(typescript@5.0.4))
       vue-router:
-        specifier: ^4.2.2
-        version: 4.3.2(vue@3.4.27(typescript@5.0.4))
+        specifier: ^4.3.3
+        version: 4.3.3(vue@3.4.27(typescript@5.0.4))
       xe-utils:
         specifier: ^3.5.7
         version: 3.5.26
@@ -4392,6 +4392,17 @@ packages:
       '@vue/composition-api':
         optional: true
 
+  vue-demi@0.14.8:
+    resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+
   vue-draggable-plus@0.3.5:
     resolution: {integrity: sha512-HqIxV4Wr4U5LRPLRi2oV+EJ4g6ibyRKhuaiH4ZQo+LxK4zrk2XcBk9UyXC88OXp4SAq0XYH4Wco/T3LX5kJ79A==}
     peerDependencies:
@@ -4426,8 +4437,8 @@ packages:
     peerDependencies:
       vue: '>=3.0.0'
 
-  vue-router@4.3.2:
-    resolution: {integrity: sha512-hKQJ1vDAZ5LVkKEnHhmm1f9pMiWIBNGF5AwU67PdH7TyXCj/a4hTccuUuYCAMgJK6rO/NVYtQIEN3yL8CECa7Q==}
+  vue-router@4.3.3:
+    resolution: {integrity: sha512-8Q+u+WP4N2SXY38FDcF2H1dUEbYVHVPtPCPZj/GTZx8RCbiB8AtJP9+YIxn4Vs0svMTNQcLIzka4GH7Utkx9xQ==}
     peerDependencies:
       vue: ^3.2.0
 
@@ -9279,7 +9290,7 @@ snapshots:
     dependencies:
       codemirror: 6.0.1(@lezer/common@1.2.1)
       vue: 3.4.27(typescript@5.0.4)
-      vue-demi: 0.14.7(vue@3.4.27(typescript@5.0.4))
+      vue-demi: 0.14.8(vue@3.4.27(typescript@5.0.4))
     transitivePeerDependencies:
       - '@lezer/common'
       - '@vue/composition-api'
@@ -9295,6 +9306,10 @@ snapshots:
       vue: 3.4.27(typescript@5.0.4)
 
   vue-demi@0.14.7(vue@3.4.27(typescript@5.0.4)):
+    dependencies:
+      vue: 3.4.27(typescript@5.0.4)
+
+  vue-demi@0.14.8(vue@3.4.27(typescript@5.0.4)):
     dependencies:
       vue: 3.4.27(typescript@5.0.4)
 
@@ -9328,7 +9343,7 @@ snapshots:
     dependencies:
       vue: 3.4.27(typescript@5.0.4)
 
-  vue-router@4.3.2(vue@3.4.27(typescript@5.0.4)):
+  vue-router@4.3.3(vue@3.4.27(typescript@5.0.4)):
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.4.27(typescript@5.0.4)
