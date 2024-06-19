@@ -30,10 +30,25 @@ export function deleteUser(ids: string | Array<string>) {
 
 /** @desc 导出用户 */
 export function exportUser(query: System.UserQuery) {
-  return http.download<any>(`${BASE_URL}/export`, query)
+  return http.download(`${BASE_URL}/export`, query)
 }
 
 /** @desc 重置密码 */
 export function resetUserPwd(data: any, id: string) {
   return http.patch(`${BASE_URL}/${id}/password`, data)
+}
+
+/** @desc 下载用户导入模板 */
+export function downloadImportUserTemplate() {
+  return http.download(`${BASE_URL}/downloadImportUserTemplate`)
+}
+
+/** @desc 解析用户导入数据 */
+export function parseImportUser(data: FormData) {
+  return http.post(`${BASE_URL}/parseImportUser`, data)
+}
+
+/** @desc 导入用户 */
+export function importUser(data: any) {
+  return http.post(`${BASE_URL}/import`, data)
 }

@@ -25,6 +25,15 @@ export type UserDetailResp = UserResp & {
   pwdResetTime?: string
 }
 
+export interface UserImportResp {
+  importKey: string
+  totalRows: number
+  validRows: number
+  duplicateUserRows: number
+  duplicateEmailRows: number
+  duplicatePhoneRows: number
+}
+
 export interface UserQuery {
   description?: string
   status?: number
