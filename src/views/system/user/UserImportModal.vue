@@ -5,6 +5,8 @@
       :mask-closable="false"
       :esc-to-close="false"
       :width="width >= 600 ? 600 : '100%'"
+      ok-text="确认导入"
+      cancel-text="取消导入"
       @before-ok="save"
       @close="reset"
   >
@@ -16,7 +18,7 @@
         </template>
       </a-alert>
       <fieldset>
-        <legend>导入文件</legend>
+        <legend>1.上传解析文件</legend>
         <div class="file-box">
           <a-upload draggable
                     :custom-request="handleUpload"
@@ -44,21 +46,21 @@
         </div>
       </fieldset>
       <fieldset>
-        <legend>导入策略</legend>
-        <a-form-item label="重复用户" field="duplicateUser">
+        <legend>2.导入策略</legend>
+        <a-form-item label="用户已存在" field="duplicateUser">
           <a-radio-group v-model="form.duplicateUser" type="button">
             <a-radio :value="1">跳过该行</a-radio>
             <a-radio :value="3">停止导入</a-radio>
             <a-radio :value="2">修改数据</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="重复邮箱" field="duplicateEmail">
+        <a-form-item label="邮箱已存在" field="duplicateEmail">
           <a-radio-group v-model="form.duplicateEmail" type="button">
             <a-radio :value="1">跳过该行</a-radio>
             <a-radio :value="3">停止导入</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="重复手机" field="duplicatePhone">
+        <a-form-item label="手机已存在" field="duplicatePhone">
           <a-radio-group v-model="form.duplicatePhone" type="button">
             <a-radio :value="1">跳过该行</a-radio>
             <a-radio :value="3">停止导入</a-radio>
@@ -140,7 +142,7 @@ const handleUpload = (options: RequestOption) => {
     try {
       const res = await parseImportUser(formData)
       dataResult.value = res.data
-      Message.success('上传成功')
+      Message.success('上传解析成功')
       onSuccess(res)
     } catch (error) {
       onError(error)
@@ -157,7 +159,7 @@ const handleUpload = (options: RequestOption) => {
 const save = async () => {
   try {
     if (!dataResult.value.importKey) {
-      return
+      return false
     }
     form.importKey = dataResult.value.importKey
     const res = await importUser(form)
