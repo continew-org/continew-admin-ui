@@ -13,20 +13,30 @@
       </a-col>
       <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
         <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 1500 }" :pagination="pagination" :disabled-tools="['size']"
-          :disabled-column-keys="['username']" @refresh="search">
+                 :scroll="{ x: '100%', y: '100%', minWidth: 1500 }" :pagination="pagination" :disabled-tools="['size']"
+                 :disabled-column-keys="['username']" @refresh="search">
           <template #custom-left>
             <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
-              <template #prefix><icon-search /></template>
+              <template #prefix>
+                <icon-search />
+              </template>
             </a-input>
             <a-select v-model="queryForm.status" :options="DisEnableStatusList" placeholder="请选择状态" allow-clear
-              style="width: 150px" @change="search" />
+                      style="width: 150px" @change="search" />
             <a-button @click="reset">重置</a-button>
           </template>
           <template #custom-right>
             <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
-              <template #icon><icon-plus /></template>
+              <template #icon>
+                <icon-plus />
+              </template>
               <span>新增</span>
+            </a-button>
+            <a-button v-permission="['system:user:import']" @click="onImport">
+              <template #icon>
+                <icon-upload />
+              </template>
+              <span>导入</span>
             </a-button>
             <a-tooltip content="导出">
               <a-button v-permission="['system:user:export']" class="gi_hover_btn-border" @click="onExport">
@@ -38,7 +48,7 @@
           </template>
           <template #username="{ record }">
             <GiCellAvatar :avatar="getAvatar(record.avatar, record.gender)" :name="record.username" is-link
-              @click="onDetail(record)" />
+                          @click="onDetail(record)" />
           </template>
           <template #gender="{ record }">
             <GiCellGender :gender="record.gender" />
@@ -57,7 +67,8 @@
             <a-space>
               <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
               <a-link v-permission="['system:user:delete']" status="danger"
-                :title="record.isSystem ? '系统内置数据不能删除' : '删除'" :disabled="record.disabled" @click="onDelete(record)">
+                      :title="record.isSystem ? '系统内置数据不能删除' : '删除'" :disabled="record.disabled"
+                      @click="onDelete(record)">
                 删除
               </a-link>
               <a-dropdown>
@@ -73,6 +84,7 @@
     </a-row>
 
     <UserAddModal ref="UserAddModalRef" @save-success="search" />
+    <UserImportModal ref="UserImportModalRef" @save-success="search" />
     <UserDetailDrawer ref="UserDetailDrawerRef" />
     <UserResetPwdModal ref="UserResetPwdModalRef" />
   </div>
@@ -81,6 +93,7 @@
 <script setup lang="ts">
 import DeptTree from './dept/index.vue'
 import UserAddModal from './UserAddModal.vue'
+import UserImportModal from './UserImportModal.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
 import { type UserQuery, type UserResp, deleteUser, exportUser, listUser } from '@/apis'
@@ -174,6 +187,12 @@ const UserAddModalRef = ref<InstanceType<typeof UserAddModal>>()
 // 新增
 const onAdd = () => {
   UserAddModalRef.value?.onAdd()
+}
+
+const UserImportModalRef = ref<InstanceType<typeof UserImportModal>>()
+// 导入
+const onImport = () => {
+  UserImportModalRef.value?.onImport()
 }
 
 // 修改
