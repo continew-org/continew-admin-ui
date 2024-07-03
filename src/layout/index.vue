@@ -65,13 +65,18 @@ const compareTag = async () => {
   }
 }
 
+const isProd = import.meta.env.PROD
 onMounted(() => {
-  // 每60秒检查一次是否有新的 ETag 或 Last-Modified 值
-  timer = setInterval(compareTag, 6000)
+  if (isProd) {
+    // 每60秒检查一次是否有新的 ETag 或 Last-Modified 值
+    timer = setInterval(compareTag, 6000)
+  }
 })
 onUnmounted(() => {
-  // 清除定时器
-  clearInterval(timer)
+  if (isProd) {
+    // 清除定时器
+    clearInterval(timer)
+  }
 })
 </script>
 
