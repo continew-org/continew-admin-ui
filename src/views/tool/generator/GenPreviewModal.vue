@@ -95,7 +95,7 @@ const mergeDir = (parent: TreeNodeData) => {
       mergeDir(child)
     }
   }
-  return ''
+  return parent.title
 }
 
 const pushDir = (children: TreeNodeData[] | undefined, treeNode: TreeNodeData) => {
