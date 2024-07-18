@@ -38,7 +38,7 @@ const options: Options = {
   btns: { hide: true }
 }
 
-const columns: Columns = [
+const columns: Columns = reactive([
   {
     label: '上级部门',
     field: 'parentId',
@@ -99,7 +99,7 @@ const columns: Columns = [
       uncheckedText: '禁用'
     }
   }
-]
+])
 
 const { form, resetForm } = useForm({
   sort: 999,

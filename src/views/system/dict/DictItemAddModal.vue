@@ -43,7 +43,7 @@ const options: Options = {
   btns: { hide: true }
 }
 
-const columns: Columns = [
+const columns: Columns = reactive([
   { label: '标签', field: 'label', type: 'input', rules: [{ required: true, message: '请输入标签' }] },
   { label: '值', field: 'value', type: 'input', rules: [{ required: true, message: '请输入值' }] },
   { label: '标签颜色', field: 'color', type: 'input' },
@@ -77,7 +77,7 @@ const columns: Columns = [
       uncheckedText: '禁用'
     }
   }
-]
+])
 
 const { form, resetForm } = useForm({
   color: 'blue',

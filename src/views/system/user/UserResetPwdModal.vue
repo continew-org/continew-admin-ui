@@ -33,9 +33,9 @@ const options: Options = {
   btns: { hide: true }
 }
 
-const columns: Columns = [
+const columns: Columns = reactive([
   { label: '密码', field: 'newPassword', type: 'input-password', rules: [{ required: true, message: '请输入密码' }] }
-]
+])
 
 const { form, resetForm } = useForm({})
 

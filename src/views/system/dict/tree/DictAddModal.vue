@@ -34,7 +34,7 @@ const options: Options = {
   btns: { hide: true }
 }
 
-const columns: Columns = [
+const columns: Columns = reactive([
   { label: '名称', field: 'name', type: 'input', rules: [{ required: true, message: '请输入名称' }] },
   { label: '编码', field: 'code', type: 'input', disabled: () => isUpdate.value, rules: [{ required: true, message: '请输入编码' }] },
   {
@@ -46,7 +46,7 @@ const columns: Columns = [
       autoSize: { minRows: 3, maxRows: 5 }
     }
   }
-]
+])
 
 const { form, resetForm } = useForm({})
 

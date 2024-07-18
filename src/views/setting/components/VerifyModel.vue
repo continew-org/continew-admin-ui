@@ -51,7 +51,7 @@ const { form, resetForm } = useForm({
   rePassword: ''
 })
 
-const columns: Columns = [
+const columns: Columns = reactive([
   {
     label: '手机号',
     field: 'phone',
@@ -137,7 +137,7 @@ const columns: Columns = [
       return verifyType.value !== 'password'
     }
   }
-]
+])
 
 const VerifyRef = ref<InstanceType<any>>()
 const captchaType = ref('blockPuzzle')
