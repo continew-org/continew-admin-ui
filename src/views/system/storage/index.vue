@@ -62,12 +62,12 @@
       </template>
     </GiTable>
 
-    <StorageAddModal ref="StorageAddModalRef" @save-success="search" />
+    <StorageAddDrawer ref="StorageAddDrawerRef" @save-success="search" />
   </div>
 </template>
 
 <script setup lang="ts">
-import StorageAddModal from './StorageAddModal.vue'
+import StorageAddDrawer from './StorageAddDrawer.vue'
 import { type StorageQuery, type StorageResp, deleteStorage, listStorage } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -130,19 +130,19 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: StorageResp) => {
-  return handleDelete(() => deleteStorage(item.id), { content: `是否确定删除存储 [${item.name}]？`, showModal: true })
+const onDelete = (record: StorageResp) => {
+  return handleDelete(() => deleteStorage(record.id), { content: `是否确定删除存储 [${record.name}]？`, showModal: true })
 }
 
-const StorageAddModalRef = ref<InstanceType<typeof StorageAddModal>>()
+const StorageAddDrawerRef = ref<InstanceType<typeof StorageAddDrawer>>()
 // 新增
 const onAdd = () => {
-  StorageAddModalRef.value?.onAdd()
+  StorageAddDrawerRef.value?.onAdd()
 }
 
 // 修改
-const onUpdate = (item: StorageResp) => {
-  StorageAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: StorageResp) => {
+  StorageAddDrawerRef.value?.onUpdate(record.id)
 }
 </script>
 

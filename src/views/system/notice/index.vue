@@ -111,9 +111,9 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: NoticeResp) => {
-  return handleDelete(() => deleteNotice(item.id), {
-    content: `是否确定删除公告 [${item.title}]？`,
+const onDelete = (record: NoticeResp) => {
+  return handleDelete(() => deleteNotice(record.id), {
+    content: `是否确定删除公告 [${record.title}]？`,
     showModal: true
   })
 }
@@ -125,14 +125,14 @@ const onAdd = () => {
 }
 
 // 修改
-const onUpdate = (item: NoticeResp) => {
-  NoticeAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: NoticeResp) => {
+  NoticeAddModalRef.value?.onUpdate(record.id)
 }
 
 const NoticeDetailModalRef = ref<InstanceType<typeof NoticeDetailModal>>()
 // 详情
-const onDetail = (item: NoticeResp) => {
-  NoticeDetailModalRef.value?.onDetail(item.id)
+const onDetail = (record: NoticeResp) => {
+  NoticeDetailModalRef.value?.onDetail(record.id)
 }
 </script>
 

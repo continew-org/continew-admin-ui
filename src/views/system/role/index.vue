@@ -50,13 +50,13 @@
       </template>
     </GiTable>
 
-    <RoleAddModal ref="RoleAddModalRef" @save-success="search" />
+    <RoleAddDrawer ref="RoleAddDrawerRef" @save-success="search" />
     <RoleDetailDrawer ref="RoleDetailDrawerRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import RoleAddModal from './RoleAddModal.vue'
+import RoleAddDrawer from './RoleAddDrawer.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
 import { type RoleQuery, type RoleResp, deleteRole, listRole } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
@@ -115,25 +115,25 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: RoleResp) => {
-  return handleDelete(() => deleteRole(item.id), { content: `是否确定删除 [${item.name}]？`, showModal: true })
+const onDelete = (record: RoleResp) => {
+  return handleDelete(() => deleteRole(record.id), { content: `是否确定删除 [${record.name}]？`, showModal: true })
 }
 
-const RoleAddModalRef = ref<InstanceType<typeof RoleAddModal>>()
+const RoleAddDrawerRef = ref<InstanceType<typeof RoleAddDrawer>>()
 // 新增
 const onAdd = () => {
-  RoleAddModalRef.value?.onAdd()
+  RoleAddDrawerRef.value?.onAdd()
 }
 
 // 修改
-const onUpdate = (item: RoleResp) => {
-  RoleAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: RoleResp) => {
+  RoleAddDrawerRef.value?.onUpdate(record.id)
 }
 
 const RoleDetailDrawerRef = ref<InstanceType<typeof RoleDetailDrawer>>()
 // 详情
-const onDetail = (item: RoleResp) => {
-  RoleDetailDrawerRef.value?.onDetail(item.id)
+const onDetail = (record: RoleResp) => {
+  RoleDetailDrawerRef.value?.onDetail(record.id)
 }
 </script>
 

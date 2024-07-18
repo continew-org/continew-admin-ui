@@ -127,8 +127,8 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: DictItemResp) => {
-  return handleDelete(() => deleteDictItem(item.id), { content: `是否确定删除 [${item.label}]？`, showModal: true })
+const onDelete = (record: DictItemResp) => {
+  return handleDelete(() => deleteDictItem(record.id), { content: `是否确定删除 [${record.label}]？`, showModal: true })
 }
 
 // 根据选中字典查询
@@ -144,8 +144,8 @@ const onAdd = () => {
 }
 
 // 修改
-const onUpdate = (item: DictItemResp) => {
-  DictItemAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: DictItemResp) => {
+  DictItemAddModalRef.value?.onUpdate(record.id)
 }
 </script>
 

@@ -131,9 +131,9 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: DeptResp) => {
-  return handleDelete(() => deleteDept(item.id), {
-    content: `是否确定删除 [${item.name}]？`,
+const onDelete = (record: DeptResp) => {
+  return handleDelete(() => deleteDept(record.id), {
+    content: `是否确定删除 [${record.name}]？`,
     showModal: true
   })
 }
@@ -150,8 +150,8 @@ const onAdd = (parentId?: string) => {
 }
 
 // 修改
-const onUpdate = (item: DeptResp) => {
-  DeptAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: DeptResp) => {
+  DeptAddModalRef.value?.onUpdate(record.id)
 }
 </script>
 

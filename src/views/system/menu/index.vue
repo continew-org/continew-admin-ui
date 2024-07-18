@@ -140,9 +140,9 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: MenuResp) => {
-  return handleDelete(() => deleteMenu(item.id), {
-    content: `是否确定删除 [${item.title}]？`,
+const onDelete = (record: MenuResp) => {
+  return handleDelete(() => deleteMenu(record.id), {
+    content: `是否确定删除 [${record.title}]？`,
     showModal: true
   })
 }
@@ -162,8 +162,8 @@ const onAdd = (parentId?: string) => {
 }
 
 // 修改
-const onUpdate = (item: MenuResp) => {
-  MenuAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: MenuResp) => {
+  MenuAddModalRef.value?.onUpdate(record.id)
 }
 </script>
 

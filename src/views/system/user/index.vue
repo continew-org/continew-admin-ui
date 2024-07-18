@@ -83,8 +83,8 @@
       </a-col>
     </a-row>
 
-    <UserAddModal ref="UserAddModalRef" @save-success="search" />
-    <UserImportModal ref="UserImportModalRef" @save-success="search" />
+    <UserAddDrawer ref="UserAddDrawerRef" @save-success="search" />
+    <UserImportDrawer ref="UserImportDrawerRef" @save-success="search" />
     <UserDetailDrawer ref="UserDetailDrawerRef" />
     <UserResetPwdModal ref="UserResetPwdModalRef" />
   </div>
@@ -92,8 +92,8 @@
 
 <script setup lang="ts">
 import DeptTree from './dept/index.vue'
-import UserAddModal from './UserAddModal.vue'
-import UserImportModal from './UserImportModal.vue'
+import UserAddDrawer from './UserAddDrawer.vue'
+import UserImportDrawer from './UserImportDrawer.vue'
 import UserDetailDrawer from './UserDetailDrawer.vue'
 import UserResetPwdModal from './UserResetPwdModal.vue'
 import { type UserQuery, type UserResp, deleteUser, exportUser, listUser } from '@/apis'
@@ -165,9 +165,9 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: UserResp) => {
-  return handleDelete(() => deleteUser(item.id), {
-    content: `是否确定删除 [${item.nickname}(${item.username})]？`,
+const onDelete = (record: UserResp) => {
+  return handleDelete(() => deleteUser(record.id), {
+    content: `是否确定删除 [${record.nickname}(${record.username})]？`,
     showModal: true
   })
 }
@@ -183,33 +183,33 @@ const handleSelectDept = (keys: Array<any>) => {
   search()
 }
 
-const UserAddModalRef = ref<InstanceType<typeof UserAddModal>>()
+const UserAddDrawerRef = ref<InstanceType<typeof UserAddDrawer>>()
 // 新增
 const onAdd = () => {
-  UserAddModalRef.value?.onAdd()
+  UserAddDrawerRef.value?.onAdd()
 }
 
-const UserImportModalRef = ref<InstanceType<typeof UserImportModal>>()
+const UserImportDrawerRef = ref<InstanceType<typeof UserImportDrawer>>()
 // 导入
 const onImport = () => {
-  UserImportModalRef.value?.onImport()
+  UserImportDrawerRef.value?.onImport()
 }
 
 // 修改
-const onUpdate = (item: UserResp) => {
-  UserAddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: UserResp) => {
+  UserAddDrawerRef.value?.onUpdate(record.id)
 }
 
 const UserDetailDrawerRef = ref<InstanceType<typeof UserDetailDrawer>>()
 // 详情
-const onDetail = (item: UserResp) => {
-  UserDetailDrawerRef.value?.onDetail(item.id)
+const onDetail = (record: UserResp) => {
+  UserDetailDrawerRef.value?.onDetail(record.id)
 }
 
 const UserResetPwdModalRef = ref<InstanceType<typeof UserResetPwdModal>>()
 // 重置密码
-const onResetPwd = (item: UserResp) => {
-  UserResetPwdModalRef.value?.onReset(item.id)
+const onResetPwd = (record: UserResp) => {
+  UserResetPwdModalRef.value?.onReset(record.id)
 }
 </script>
 
