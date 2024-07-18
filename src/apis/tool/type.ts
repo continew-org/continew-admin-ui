@@ -12,6 +12,7 @@ export interface TableQuery {
   tableName?: string
 }
 export interface TablePageQuery extends PageQuery, TableQuery {}
+
 export interface FieldConfigResp {
   tableName: string
   columnName: string

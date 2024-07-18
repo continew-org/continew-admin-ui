@@ -8,6 +8,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Breadcrumb: typeof import('./../components/Breadcrumb/index.vue')['default']
+    CrontabDay: typeof import('./../components/CornTab/CrontabDay.vue')['default']
+    CrontabField: typeof import('./../components/CornTab/CrontabField.vue')['default']
+    CrontabGenerator: typeof import('./../components/CornTab/CrontabGenerator.vue')['default']
+    CrontabModel: typeof import('./../components/CornTab/CrontabModel.vue')['default']
+    CrontabMonth: typeof import('./../components/CornTab/CrontabMonth.vue')['default']
+    CrontabWeek: typeof import('./../components/CornTab/CrontabWeek.vue')['default']
+    CrontabYear: typeof import('./../components/CornTab/CrontabYear.vue')['default']
     DateRangePicker: typeof import('./../components/DateRangePicker/index.vue')['default']
     GiCellAvatar: typeof import('./../components/GiCell/GiCellAvatar.vue')['default']
     GiCellGender: typeof import('./../components/GiCell/GiCellGender.vue')['default']
