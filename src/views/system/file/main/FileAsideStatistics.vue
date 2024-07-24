@@ -91,7 +91,7 @@ const getStatisticsData = async () => {
       unit: formatSize[1],
       data: []
     }
-    resData.data.forEach((fs: FileStatisticsResp) => {
+    resData.data?.forEach((fs: FileStatisticsResp) => {
       const matchedItem = FileTypeList.find((item) => item.value === fs.type)
       chartData.value.unshift({
         name: matchedItem ? matchedItem.name : '',
