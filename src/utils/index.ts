@@ -261,3 +261,21 @@ export const copyText = (text: any) => {
   document.body.removeChild(textarea)
   Message.success('复制成功')
 }
+
+/** @desc 文件的转换base64 */
+export const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (reader.result) {
+        resolve(reader.result.toString())
+      } else {
+        reject(new Error('文件转base64失败'))
+      }
+    }
+    reader.onerror = (error) => {
+      reject(error)
+    }
+    reader.readAsDataURL(file)
+  })
+}

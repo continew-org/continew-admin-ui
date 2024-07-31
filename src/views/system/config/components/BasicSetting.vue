@@ -106,11 +106,11 @@ import {
   type SiteConfig,
   listOption,
   resetOptionValue,
-  updateOption,
-  uploadFile
+  updateOption
 } from '@/apis'
 import { useAppStore } from '@/stores'
 import { useForm } from '@/hooks'
+import { fileToBase64 } from '@/utils'
 
 defineOptions({ name: 'BasicSetting' })
 
@@ -212,15 +212,16 @@ const onResetValue = () => {
 // 上传 favicon
 const handleUploadFavicon = (options: RequestOption) => {
   const controller = new AbortController()
-    ; (async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+  ;(async function requestWrap() {
+    const { onProgress, onError, onSuccess, fileItem } = options
     onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
+    if (!fileItem.file) {
+      return
+    }
+    fileToBase64(fileItem.file).then()
       .then((res) => {
-        onSuccess(res)
-        form.SITE_FAVICON = res.data.url
+        onSuccess()
+        form.SITE_FAVICON = res
         Message.success('上传成功')
       })
       .catch((error) => {
@@ -242,15 +243,16 @@ const handleChangeFavicon = (_: any, currentFile: any) => {
 // 上传 Logo
 const handleUploadLogo = (options: RequestOption) => {
   const controller = new AbortController()
-    ; (async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
+  ;(async function requestWrap() {
+    const { onProgress, onError, onSuccess, fileItem } = options
     onProgress(20)
-    const formData = new FormData()
-    formData.append(name as string, fileItem.file as Blob)
-    uploadFile(formData)
+    if (!fileItem.file) {
+      return
+    }
+    fileToBase64(fileItem.file).then()
       .then((res) => {
-        onSuccess(res)
-        form.SITE_LOGO = res.data.url
+        onSuccess()
+        form.SITE_LOGO = res
         Message.success('上传成功')
       })
       .catch((error) => {
