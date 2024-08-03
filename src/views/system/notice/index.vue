@@ -67,6 +67,7 @@ defineOptions({ name: 'SystemNotice' })
 
 const { notice_type, notice_status_enum } = useDict('notice_type', 'notice_status_enum')
 
+const router = useRouter()
 const queryForm = reactive<NoticeQuery>({
   sort: ['createTime,desc']
 })
@@ -121,18 +122,21 @@ const onDelete = (record: NoticeResp) => {
 const NoticeAddModalRef = ref<InstanceType<typeof NoticeAddModal>>()
 // 新增
 const onAdd = () => {
-  NoticeAddModalRef.value?.onAdd()
+  // NoticeAddModalRef.value?.onAdd()
+  router.push({ path: '/system/notice/add' })
 }
 
 // 修改
 const onUpdate = (record: NoticeResp) => {
-  NoticeAddModalRef.value?.onUpdate(record.id)
+  // NoticeAddModalRef.value?.onUpdate(record.id)
+  router.push({ path: '/system/notice/add', query: { id: record.id, type: 'edit' } })
 }
 
 const NoticeDetailModalRef = ref<InstanceType<typeof NoticeDetailModal>>()
 // 详情
 const onDetail = (record: NoticeResp) => {
-  NoticeDetailModalRef.value?.onDetail(record.id)
+  // NoticeDetailModalRef.value?.onDetail(record.id)
+  router.push({ path: '/system/notice/detail', query: { id: record.id } })
 }
 </script>
 
