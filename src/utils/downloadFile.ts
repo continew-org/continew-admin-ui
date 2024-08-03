@@ -22,7 +22,6 @@ export function downloadByUrl({
   url: string
   target?: '_self' | '_blank'
   fileName?: string
-  isSameHost: boolean
 }): Promise<boolean> {
   // 是否同源
   const isSameHost = new URL(url).host === location.host

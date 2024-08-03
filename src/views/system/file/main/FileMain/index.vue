@@ -17,7 +17,8 @@
         </a-dropdown>
 
         <a-input-group>
-          <a-input v-model="queryForm.name" placeholder="请输入文件名" allow-clear style="width: 200px" @change="search" />
+          <a-input v-model="queryForm.name" placeholder="请输入文件名" allow-clear style="width: 200px"
+                   @change="search" />
           <a-button type="primary" @click="search">
             <template #icon>
               <icon-search />
@@ -30,7 +31,7 @@
       <!-- 右侧区域 -->
       <a-space wrap>
         <a-button v-if="isBatchMode" :disabled="!selectedFileIds.length" type="primary" status="danger"
-          @click="handleMulDelete">
+                  @click="handleMulDelete">
           <template #icon>
             <icon-delete />
           </template>
@@ -57,16 +58,17 @@
     <!-- 文件列表-宫格模式 -->
     <a-spin id="fileMain" class="file-main__list" :loading="loading">
       <FileGrid v-show="fileList.length && mode === 'grid'" :data="fileList" :is-batch-mode="isBatchMode"
-        :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"></FileGrid>
+                :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
+                @right-menu-click="handleRightMenuClick"></FileGrid>
 
       <!-- 文件列表-列表模式 -->
       <FileList v-show="fileList.length && mode === 'list'" :data="fileList" :is-batch-mode="isBatchMode"
-        :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"></FileList>
+                :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
+                @right-menu-click="handleRightMenuClick"></FileList>
 
       <a-empty v-if="!fileList.length" />
     </a-spin>
+    <FilePreview ref="filePreviewRef" @download="args => onDownload(args)" />
     <div class="pagination">
       <a-pagination v-bind="pagination" />
     </div>
@@ -89,6 +91,7 @@ import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from 
 import { ImageTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
+import FilePreview from '@/views/system/file/main/FileMain/FilePreview.vue'
 
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 const route = useRoute()
@@ -110,29 +113,43 @@ const {
   pagination,
   search
 } = useTable((page) => listFile({ ...queryForm, ...page }), { immediate: false, paginationOption })
-
+const filePreviewRef = ref()
 // 点击文件
 const handleClickFile = (item: FileItem) => {
-  if (ImageTypes.includes(item.extension)) {
-    if (item.url) {
-      const imgList: string[] = fileList.value.filter((i) => ImageTypes.includes(i.extension)).map((a) => a.url || '')
-      const index = imgList.findIndex((i) => i === item.url)
-      if (imgList.length) {
-        viewerApi({
-          options: {
-            initialViewIndex: index
-          },
-          images: imgList
-        })
+  if (JSON.parse(import.meta.env.FILE_OPEN_PREVIEW)) {
+    filePreviewRef.value.show(item)
+  } else {
+    if (ImageTypes.includes(item.extension)) {
+      if (item.url) {
+        const imgList: string[] = fileList.value.filter((i) => ImageTypes.includes(i.extension)).map((a) => a.url || '')
+        const index = imgList.findIndex((i) => i === item.url)
+        if (imgList.length) {
+          viewerApi({
+            options: {
+              initialViewIndex: index
+            },
+            images: imgList
+          })
+        }
       }
     }
+    if (item.extension === 'mp4') {
+      previewFileVideoModal(item)
+    }
+    if (item.extension === 'mp3') {
+      previewFileAudioModal(item)
+    }
   }
-  if (item.extension === 'mp4') {
-    previewFileVideoModal(item)
-  }
-  if (item.extension === 'mp3') {
-    previewFileAudioModal(item)
-  }
+}
+// 下载文件
+const onDownload = async (fileInfo: FileItem) => {
+  const res = await downloadByUrl({
+    url: fileInfo.url,
+    target: '_self',
+    fileName: `${fileInfo.name}.${fileInfo.extension}`
+  })
+  res ? Message.success('下载成功') : Message.error('下载失败')
+  search()
 }
 
 // 右键菜单
@@ -154,13 +171,7 @@ const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
   } else if (mode === 'detail') {
     openFileDetailModal(fileInfo)
   } else if (mode === 'download') {
-    const res = await downloadByUrl({
-      url: fileInfo.url,
-      target: '_self',
-      fileName: `${fileInfo.name}.${fileInfo.extension}`
-    })
-    res ? Message.success('下载成功') : Message.error('下载失败')
-    search()
+    await onDownload(fileInfo)
   }
 }
 
@@ -186,7 +197,7 @@ const handleMulDelete = () => {
 // 上传
 const handleUpload = (options: RequestOption) => {
   const controller = new AbortController()
-    ; (async function requestWrap() {
+  ;(async function requestWrap() {
     const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
     onProgress(20)
     const formData = new FormData()
