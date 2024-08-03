@@ -1,7 +1,7 @@
 <template>
   <a-modal v-model:visible="visible" title="任务日志详情" :width="width >= 1500 ? 1500 : '100%'" :footer="false"
     @close="closed">
-    <div style="display: flex; min-height: 600px;">
+    <div style="display: flex; min-height: 600px;max-height: 800px;">
       <div style="padding: 10px 10px;">
         <div class="job_list">
           <div :class="`job_list_item ${item.id === activeId ? 'active' : ''}`" v-for="item in dataList" :key="item.id"
@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="code_view">
         <GiCodeView :code-json="content" />
       </div>
     </div>
@@ -37,27 +37,33 @@ const activeId = ref<string | number>('')
 const statusList = {
   '1': {
     title: '待处理',
-    color: 'gray'
+    color: 'gray',
+    isRun: false
   },
   '2': {
     title: '运行中',
-    color: 'cyan'
+    color: 'cyan',
+    isRun: true
   },
   '3': {
     title: '成功',
-    color: 'green'
+    color: 'green',
+    isRun: false
   },
   '4': {
     title: '已失败',
-    color: 'red'
+    color: 'red',
+    isRun: false
   },
   '5': {
     title: '已停止',
-    color: 'purple'
+    color: 'purple',
+    isRun: false
   },
   '6': {
     title: '已取消',
-    color: 'orange'
+    color: 'orange',
+    isRun: false
   }
 }
 
@@ -100,9 +106,16 @@ const onLogDetail = async (record: JobInstanceResp) => {
 const onStartInfo = (record: JobInstanceResp) => {
   content.value = ''
   clearInterval(setIntervalNode.value)
-  setIntervalNode.value = setInterval(() => {
+  let isRun = statusList[record.taskStatus].isRun
+  if (isRun) {
+    setIntervalNode.value = setInterval(() => {
+      onLogDetail(record)
+    }, 1000)
+  } else {
     onLogDetail(record)
-  }, 1000)
+  }
+
+
 }
 // 查询列表数据
 const getInstanceList = async (query: JobInstanceQuery = { ...queryForm }) => {
@@ -157,5 +170,10 @@ defineExpose({ onDetail })
     border-bottom: 2px solid $color-theme !important;
     background-color: var(--color-neutral-3) !important;
   }
+}
+
+.code_view {
+  position: relative;
+  overflow: auto;
 }
 </style>
