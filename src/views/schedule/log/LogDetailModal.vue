@@ -1,7 +1,7 @@
 <template>
-  <a-modal v-model:visible="visible" title="任务日志详情" :width="width >= 1500 ? 1500 : '100%'" :footer="false"
-    @close="closed">
-    <div style="display: flex; min-height: 600px;max-height: 800px;">
+  <a-modal v-model:visible="visible" title="任务日志详情" :bodyStyle="{ maxHeight: '80vh', overflow: 'auto' }"
+    :width="width >= 1500 ? 1500 : '100%'" :footer="false" @close="closed">
+    <div style="display: flex;">
       <div style="padding: 10px 10px;">
         <div class="job_list">
           <div :class="`job_list_item ${item.id === activeId ? 'active' : ''}`" v-for="item in dataList" :key="item.id"
@@ -92,16 +92,25 @@ const onDetail = (record: JobLogResp) => {
 // 日志输出
 const onLogDetail = async (record: JobInstanceResp) => {
   activeId.value = record?.id
-  // todo startId根据第一次查询 如果有返回!=0则需要在查一次
-  const res = await listJobInstanceLog({
-    taskBatchId: record.taskBatchId,
-    jobId: record.jobId,
-    taskId: record.id,
-    startId: 0,
-    fromIndex: 0,
-    size: 50
-  })
-  content.value = res.data.message.map(formatLog).join('\n')
+  try {
+    // todo startId根据第一次查询 如果有返回!=0则需要在查一次
+    const res = await listJobInstanceLog({
+      taskBatchId: record.taskBatchId,
+      jobId: record.jobId,
+      taskId: record.id,
+      startId: 0,
+      fromIndex: 0,
+      size: 50
+    })
+    if (res.data?.finished) {
+      clearInterval(setIntervalNode.value)
+    }
+    content.value = res.data.message.map(formatLog).join('\n')
+  } catch (error) {
+    content.value = ''
+  }
+
+
 }
 const onStartInfo = (record: JobInstanceResp) => {
   content.value = ''

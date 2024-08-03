@@ -1,22 +1,5 @@
 /* 全局样式 */
 @import './var.scss';
-// 全局滚动条
-::-webkit-scrollbar-thumb {
-  background-color: var(--color-bg-3);
-  border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-bg-3);
-  border-radius: 5px;
-}
-::-webkit-scrollbar {
-  width:8px;
-  height: 5px;
-}
-::-webkit-scrollbar-track-piece {
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 0;
-}
 // 通用外边距
 .gi_margin {
   margin: $margin;

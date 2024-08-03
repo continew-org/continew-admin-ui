@@ -71,7 +71,7 @@ export interface JobInstanceQuery {
 export interface JobInstanceLogResp {
   id: number
   message: any[]
-  isFinished: number
+  finished: number
   fromIndex: number
   nextStartId: number
 }
