@@ -28,7 +28,7 @@
           style="width: 150px"
           @change="search"
         />
-        <DateRangePicker v-model="queryForm.datetimeRange" @change="search" />
+        <DateRangePicker v-model="queryForm.datetimeRange" :allow-clear="false" @change="search" />
         <a-button @click="reset">重置</a-button>
       </template>
       <template #taskBatchStatus="{ record }">
@@ -125,7 +125,10 @@ const getGroupList = async () => {
 // 重置
 const reset = () => {
   queryForm.taskBatchStatus = undefined
-  queryForm.datetimeRange = undefined
+  queryForm.datetimeRange = [
+    dayjs().subtract(6, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  ]
   search()
 }
 

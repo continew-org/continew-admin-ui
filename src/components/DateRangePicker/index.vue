@@ -6,6 +6,7 @@
     :shortcuts="shortcuts"
     shortcuts-position="left"
     style="height: 32px"
+    :allow-clear="allowClear"
   />
 </template>
 
@@ -27,6 +28,10 @@ defineProps({
   placeholder: {
     type: Array as PropType<string[]>,
     default: (): string[] => ['开始时间', '结束时间']
+  },
+  allowClear: {
+    type: Boolean,
+    default: true
   }
 })
 
