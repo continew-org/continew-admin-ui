@@ -45,9 +45,15 @@ const transformComponentView = (component: string) => {
 const formatAsyncRoutes = (menus: RouteItem[]) => {
   if (!menus.length) return []
   menus.sort((a, b) => (a?.sort ?? 0) - (b?.sort ?? 0)) // 排序
+  const pathMap = new Map()
   const routes = mapTree(menus, (item) => {
+    pathMap.set(item.id, item.path)
     if (item.children && item.children.length) {
       item.children.sort((a, b) => (a?.sort ?? 0) - (b?.sort ?? 0)) // 排序
+    }
+    // 部分子菜单，例如：通知公告新增、查看详情，需要选中其父菜单
+    if (item.parentId && item.type === 2 && item.permission) {
+      item.activeMenu = pathMap.get(item.parentId)
     }
     return {
       path: item.path,
@@ -58,7 +64,9 @@ const formatAsyncRoutes = (menus: RouteItem[]) => {
         title: item.title,
         hidden: item.isHidden,
         keepAlive: item.isCache,
-        icon: item.icon
+        icon: item.icon,
+        showInTabs: item.showInTabs,
+        activeMenu: item.activeMenu
       }
     }
   })
