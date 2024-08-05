@@ -3,7 +3,7 @@
     <WorkCard />
 
     <a-alert>
-      全新版本 v3.0.0 已发布，采用全新前端模板，提供更可靠、更舒适的前端开发体验，点击查看
+      全新版本 v3.2.0 已发布，新增定时任务支持，重构公告新增，点击查看
       <span class="link" @click="open('https://continew.top/admin/other/changelog.html')">更新日志</span>。
     </a-alert>
 
