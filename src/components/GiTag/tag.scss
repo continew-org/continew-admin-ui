@@ -1,8 +1,17 @@
+$status: primary, success, warning, danger;
+
+$tag-size-mini-height: 20px;
+$tag-size-small-height: 22px;
+$tag-size-large-height: 24px;
+
+$tag-size-mini-padding: 0 6px;
+$tag-size-small-padding: 0 8px;
+$tag-size-large-padding: 0 10px;
+
 .gi-tag {
   display: inline-flex;
-  padding: 0 8px;
-  // padding-top: 1px;
-  height: 20px;
+  padding: $tag-size-small-padding;
+  height: $tag-size-small-height;
   font-size: 12px;
   line-height: 1;
   border-radius: 3px;
@@ -15,122 +24,28 @@
 
 .gi-tag-close-btn {
   position: relative;
-  display: inline-flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  background-color: transparent;
+  border-radius: var(--border-radius-circle);
+  transition: background-color 0.1s cubic-bezier(0, 0, 1, 1);
 
   .close-icon {
     width: 12px;
     height: 12px;
     z-index: 9;
   }
-
-  &::before {
-    width: 16px;
-    height: 16px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    content: '';
-    position: absolute;
-    display: block;
-    box-sizing: border-box;
-    background-color: transparent;
-    border-radius: var(--border-radius-circle);
-    transition: background-color 0.1s cubic-bezier(0, 0, 1, 1);
-  }
 }
 
-$status: primary, success, warning, danger, 'gray';
-
-.gi-tag-dark {
-  color: #fff;
-
-  @each $i in $status {
-    &.gi-tag-status-#{$i} {
-      border: 1px solid rgb(var(--#{$i}-6));
-      background-color: rgb(var(--#{$i}-6));
-
-      .gi-tag-close-btn {
-        &:hover {
-          color: rgb(var(--#{$i}-6));
-
-          &::before {
-            background-color: rgb(var(--#{$i}-2));
-          }
-        }
-      }
-    }
-  }
-}
-
-.gi-tag-light {
-  color: #fff;
-
-  @each $i in $status {
-    &.gi-tag-status-#{$i} {
-      color: rgb(var(--#{$i}-6));
-      background-color: rgb(var(--#{$i}-1));
-
-      .gi-tag-close-btn {
-        &:hover {
-          color: #fff;
-
-          &::before {
-            background-color: rgb(var(--#{$i}-6));
-          }
-        }
-      }
-    }
-  }
-}
-
-.gi-tag-outline {
-  background: transparent;
-
-  @each $i in $status {
-    &.gi-tag-status-#{$i} {
-      color: rgb(var(--#{$i}-6));
-      border: 1px solid rgb(var(--#{$i}-6));
-
-      .gi-tag-close-btn {
-        &:hover {
-          color: #fff;
-
-          &::before {
-            background-color: rgb(var(--#{$i}-6));
-          }
-        }
-      }
-    }
-  }
-}
-
-.gi-tag-light-outline {
-  @each $i in $status {
-    &.gi-tag-status-#{$i} {
-      color: rgb(var(--#{$i}-6));
-      border: 1px solid rgb(var(--#{$i}-2));
-      background-color: rgb(var(--#{$i}-1));
-
-      .gi-tag-close-btn {
-        &:hover {
-          color: #fff;
-
-          &::before {
-            background-color: rgb(var(--#{$i}-6));
-          }
-        }
-      }
-    }
-  }
-}
-
-.gi-tag-size-mini {
-  height: 22px;
-  padding: 0 4px;
+.gi-tag__size--mini {
+  height: $tag-size-mini-height;
+  padding: $tag-size-mini-padding;
 
   .gi-tag-close-btn {
     .close-icon {
@@ -145,12 +60,95 @@ $status: primary, success, warning, danger, 'gray';
   }
 }
 
-.gi-tag-size-small {
-  height: 24px;
+.gi-tag__size--small {
+  height: $tag-size-small-height;
+  padding: $tag-size-small-padding;
 }
 
-.gi-tag-size-large {
-  height: 28px;
-  padding: 0 10px;
-  font-size: 14px;
+.gi-tag__size--large {
+  height: $tag-size-large-height;
+  padding: $tag-size-small-padding;
+}
+
+.gi-tag__type--light {
+  color: #fff;
+
+  @each $i in $status {
+    &.gi-tag__status--#{$i} {
+      color: rgb(var(--#{$i}-6));
+      background-color: rgb(var(--#{$i}-1));
+      --tag-close-hover-color: #fff;
+      --tag-close-hover-bg-color: rgb(var(--#{$i}-6));
+
+      .gi-tag-close-btn {
+        &:hover {
+          color: var(--tag-close-hover-color);
+          background-color: var(--tag-close-hover-bg-color);
+        }
+      }
+    }
+  }
+}
+
+.gi-tag__type--dark {
+  color: #fff;
+
+  @each $i in $status {
+    &.gi-tag__status--#{$i} {
+      background-color: rgb(var(--#{$i}-6));
+      --tag-close-hover-color: rgb(var(--#{$i}-6));
+      --tag-close-hover-bg-color: rgba(255, 255, 255, 0.9);
+
+      .gi-tag-close-btn {
+        &:hover {
+          color: var(--tag-close-hover-color);
+          background-color: var(--tag-close-hover-bg-color);
+        }
+      }
+    }
+  }
+}
+
+.gi-tag__type--outline {
+  background: transparent;
+  border-width: 1px;
+  border-style: solid;
+
+  @each $i in $status {
+    &.gi-tag__status--#{$i} {
+      color: rgb(var(--#{$i}-6));
+      border-color: rgb(var(--#{$i}-6));
+      --tag-close-hover-color: #fff;
+      --tag-close-hover-bg-color: rgb(var(--#{$i}-6));
+
+      .gi-tag-close-btn {
+        &:hover {
+          color: var(--tag-close-hover-color);
+          background-color: var(--tag-close-hover-bg-color);
+        }
+      }
+    }
+  }
+}
+
+.gi-tag__type--light-outline {
+  border-width: 1px;
+  border-style: solid;
+
+  @each $i in $status {
+    &.gi-tag__status--#{$i} {
+      color: rgb(var(--#{$i}-6));
+      border-color: rgb(var(--#{$i}-2));
+      background-color: rgb(var(--#{$i}-1));
+      --tag-close-hover-color: #fff;
+      --tag-close-hover-bg-color: rgb(var(--#{$i}-6));
+
+      .gi-tag-close-btn {
+        &:hover {
+          color: var(--tag-close-hover-color);
+          background-color: var(--tag-close-hover-bg-color);
+        }
+      }
+    }
+  }
 }
