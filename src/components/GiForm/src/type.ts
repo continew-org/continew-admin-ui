@@ -8,6 +8,12 @@ export type FormType =
   | 'textarea'
   | 'date-picker'
   | 'time-picker'
+  | 'year-picker'
+  | 'quarter-picker'
+  | 'week-picker'
+  | 'range-picker'
+  | 'month-picker'
+  | 'color-picker'
   | 'input-number'
   | 'rate'
   | 'switch'
@@ -22,9 +28,15 @@ export type ColumnsItemPropsKey =
   | keyof A.TextareaInstance['$props']
   | keyof A.DatePickerInstance['$props']
   | keyof A.TimePickerInstance['$props']
+  | keyof A.YearPickerInstance['$props']
+  | keyof A.MonthPickerInstance['$props']
+  | keyof A.QuarterPickerInstance['$props']
+  | keyof A.WeekPickerInstance['$props']
+  | keyof A.RangePickerInstance['$props']
   | keyof A.RadioGroupInstance['$props']
   | keyof A.CheckboxGroupInstance['$props']
   | keyof A.InputNumberInstance['$props']
+  | keyof A.ColorPickerInstance['$props']
   | keyof A.RateInstance['$props']
   | keyof A.SwitchInstance['$props']
   | keyof A.SliderInstance['$props']
