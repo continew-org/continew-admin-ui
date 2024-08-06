@@ -50,7 +50,8 @@ const appStore = useAppStore()
 const routeStore = useRouteStore()
 const { isDesktop } = useDevice()
 // 过滤是菜单的路由
-const menuRoutes = filterTree(routeStore.routes, (i) => i.meta?.hidden === false)
+const cloneRoutes = JSON.parse(JSON.stringify(routeStore.routes)) as RouteRecordRaw[]
+const menuRoutes = filterTree(cloneRoutes, (i) => i.meta?.hidden === false)
 
 // 顶部一级菜单
 const topMenus = ref<RouteRecordRaw[]>([])

@@ -36,7 +36,7 @@ function getBreadcrumbList() {
   const cloneRoutes = JSON.parse(JSON.stringify(routes)) as RouteLocationMatched[]
   const obj = findTree(cloneRoutes, (i) => i.path === route.path)
   // 获取当前节点的所有上级节点集合，包含当前节点
-  const arr = obj.nodes.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+  const arr = obj ? obj.nodes.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false) : []
   if (home) {
     breadcrumbList.value = [home, ...arr]
   }
