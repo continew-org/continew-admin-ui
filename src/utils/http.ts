@@ -72,7 +72,7 @@ http.interceptors.response.use(
     }
 
     // Token 失效
-    if (code === 401 && response.config.url !== '/auth/user/info') {
+    if (code === '401' && response.config.url !== '/auth/user/info') {
       modalErrorWrapper({
         title: '提示',
         content: msg,
