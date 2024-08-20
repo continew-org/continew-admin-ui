@@ -42,8 +42,10 @@
           :loading="loading"
           :scroll="{ x: '100%', y: 800, minWidth: 900 }"
           :pagination="false"
+          :draggable="{ type: 'handle', width: 40 }"
           :disabled-tools="['setting', 'refresh']"
           :disabled-column-keys="['tableName']"
+          @change="handleChangeSort"
         >
           <template #custom-left>
             <a-popconfirm
@@ -187,6 +189,11 @@ const onConfig = async (tableName: string, comment: string) => {
 // 同步
 const handleRefresh = async (tableName: string) => {
   await getDataList(tableName, true)
+}
+
+// 拖拽排序
+const handleChangeSort = (newDataList: FieldConfigResp[]) => {
+  dataList.value = newDataList
 }
 
 const activeKey = ref('1')
