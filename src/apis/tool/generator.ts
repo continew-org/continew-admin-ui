@@ -1,4 +1,5 @@
 import type * as Tool from './type'
+import type { LabelValueState } from '@/types/global'
 import http from '@/utils/http'
 
 const BASE_URL = '/generator'
@@ -35,4 +36,9 @@ export function generate(tableNames: Array<string>) {
     method: 'post',
     responseType: 'blob'
   })
+}
+
+/** @desc 查询字典列表 */
+export function listFieldConfigDict() {
+  return http.get<LabelValueState[]>(`${BASE_URL}/dict`)
 }

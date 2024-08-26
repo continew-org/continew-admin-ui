@@ -4,7 +4,7 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    :width="width >= 1050 ? 1050 : '100%'"
+    :width="width >= 1350 ? 1350 : '100%'"
     @before-ok="save"
     @close="reset"
   >
@@ -106,6 +106,15 @@
             />
             <span v-else>无需设置</span>
           </template>
+          <template #dictCode="{ record }">
+            <a-select
+              v-model="record.dictCode"
+              :options="dictList"
+              placeholder="请选择字典类型"
+              allow-search
+              allow-clear
+            />
+          </template>
         </GiTable>
       </a-tab-pane>
     </a-tabs>
@@ -115,7 +124,8 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, saveGenConfig } from '@/apis'
+import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, listFieldConfigDict, saveGenConfig } from '@/apis'
+import type { LabelValueState } from '@/types/global'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -136,9 +146,11 @@ const columns: TableInstanceColumns[] = [
   { title: '必填', slotName: 'isRequired', width: 60, align: 'center' },
   { title: '查询', slotName: 'showInQuery', width: 60, align: 'center' },
   { title: '表单类型', slotName: 'formType', width: 150 },
-  { title: '查询方式', slotName: 'queryType' }
+  { title: '查询方式', slotName: 'queryType' },
+  { title: '关联字典', slotName: 'dictCode' }
 ]
 
+const dictList = ref<LabelValueState[]>([])
 const dataList = ref<FieldConfigResp[]>([])
 const loading = ref(false)
 // 查询列表数据
@@ -147,6 +159,8 @@ const getDataList = async (tableName: string, requireSync: boolean) => {
     loading.value = true
     const res = await listFieldConfig(tableName, requireSync)
     dataList.value = res.data
+    const { data } = await listFieldConfigDict()
+    dictList.value = data
   } finally {
     loading.value = false
   }

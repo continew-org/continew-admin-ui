@@ -27,6 +27,7 @@ export interface FieldConfigResp {
   showInQuery: boolean
   formType: string
   queryType: string
+  dictCode: string
   createTime?: string
 }
 export interface GenConfigResp {
