@@ -8,7 +8,7 @@
       @close="reset"
   >
     <a-steps :current="current" class="mb-15" @change="onChangeCurrent">
-      <a-step>创建角色</a-step>
+      <a-step>基础信息</a-step>
       <a-step>功能权限</a-step>
       <a-step>数据权限</a-step>
     </a-steps>

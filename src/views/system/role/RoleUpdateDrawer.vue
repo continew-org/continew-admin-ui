@@ -9,9 +9,6 @@
     @close="reset"
   >
     <a-form ref="formRef" :model="form" :rules="rules" size="large" auto-label-width>
-      <a-alert v-if="!form.disabled" type="warning" style="margin-bottom: 15px">
-        变更功能权限或数据权限后，关联在线用户会自动下线！
-      </a-alert>
       <fieldset>
         <legend>基础信息</legend>
         <a-form-item label="名称" field="name">
