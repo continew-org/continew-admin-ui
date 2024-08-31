@@ -137,7 +137,7 @@ const onPreview = async (tableName: string) => {
   for (const valueElement of treeData.value) {
     mergeDir(valueElement)
   }
-  selectedKeys.value = genPreviewList.value[0].fileName
+  selectedKeys.value = [genPreviewList.value[0].fileName]
   currentPreview.value = genPreviewList.value[0]
   await nextTick(() => {
     treeRef.value.expandAll(true)
@@ -149,7 +149,7 @@ const onPreview = async (tableName: string) => {
 const onSelectPreview = (keys: (string | number)[]) => {
   if (typeof keys[0] === 'string') {
     currentPreview.value = genPreviewList.value.filter((p) => p.fileName === keys[0])[0]
-    selectedKeys.value = keys[0]
+    selectedKeys.value = keys
   } else {
     const expandedKeys = treeRef.value.getExpandedNodes().map((node) => node.key)
     treeRef.value.expandNode(keys[0], !expandedKeys.includes(keys[0]))
