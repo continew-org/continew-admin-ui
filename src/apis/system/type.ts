@@ -70,6 +70,8 @@ export interface RoleDetailResp {
   dataScope: number
   deptIds: Array<number>
   isSystem: boolean
+  menuCheckStrictly: boolean
+  deptCheckStrictly: boolean
   createUserString: string
   createTime: string
   updateUserString: string

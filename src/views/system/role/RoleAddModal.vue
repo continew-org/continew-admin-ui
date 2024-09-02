@@ -39,7 +39,7 @@
           <a-space>
             <a-checkbox v-model="isMenuExpanded" @change="onExpanded('menu')">展开/折叠</a-checkbox>
             <a-checkbox v-model="isMenuCheckAll" @change="onCheckAll('menu')">全选/全不选</a-checkbox>
-            <a-checkbox v-model="isMenuCheckStrictly">父子联动</a-checkbox>
+            <a-checkbox v-model="form.menuCheckStrictly">父子联动</a-checkbox>
           </a-space>
           <template #extra>
             <a-tree
@@ -48,7 +48,7 @@
                 class="w-full"
                 :data="menuList"
                 :default-expand-all="isMenuExpanded"
-                :check-strictly="!isMenuCheckStrictly"
+                :check-strictly="!form.menuCheckStrictly"
                 :virtual-list-props="{ height: 400 }"
                 checkable
             />
@@ -68,7 +68,7 @@
           <a-space>
             <a-checkbox v-model="isDeptExpanded" @change="onExpanded('dept')">展开/折叠</a-checkbox>
             <a-checkbox v-model="isDeptCheckAll" @change="onCheckAll('dept')">全选/全不选</a-checkbox>
-            <a-checkbox v-model="isDeptCheckStrictly">父子联动</a-checkbox>
+            <a-checkbox v-model="form.deptCheckStrictly">父子联动</a-checkbox>
           </a-space>
           <template #extra>
             <a-tree
@@ -77,7 +77,7 @@
                 class="w-full"
                 :data="deptList"
                 :default-expand-all="isDeptExpanded"
-                :check-strictly="!isDeptCheckStrictly"
+                :check-strictly="!form.deptCheckStrictly"
                 :virtual-list-props="{ height: 350 }"
                 checkable
             />
@@ -128,6 +128,8 @@ const rules: FormInstance['rules'] = {
 }
 
 const { form, resetForm } = useForm({
+  menuCheckStrictly: true,
+  deptCheckStrictly: true,
   sort: 999,
   dataScope: 4
 })
@@ -138,8 +140,6 @@ const isMenuExpanded = ref(false)
 const isDeptExpanded = ref(true)
 const isMenuCheckAll = ref(false)
 const isDeptCheckAll = ref(false)
-const isMenuCheckStrictly = ref(true)
-const isDeptCheckStrictly = ref(true)
 // 重置
 const reset = () => {
   isMenuExpanded.value = false
@@ -160,8 +160,6 @@ const onAdd = () => {
     getMenuList()
   }
   reset()
-  isMenuCheckStrictly.value = true
-  isDeptCheckStrictly.value = true
   dataId.value = ''
   visible.value = true
   if (!deptList.value.length) {
@@ -197,8 +195,6 @@ const onUpdate = async (id: string) => {
     await getDeptList()
   }
   reset()
-  isMenuCheckStrictly.value = false
-  isDeptCheckStrictly.value = false
   dataId.value = id
   const res = await getRole(id)
   Object.assign(form, res.data)
@@ -274,8 +270,8 @@ const onCheckAll = (type) => handleTreeAction(type, 'check')
 // 确认时
 const onClickOk = () => {
   if (unref(current) === 3) {
-    const isSaved = save()
-    if (isSaved) visible.value = false
+    save()
+    visible.value = false
   }
 }
 defineExpose({ onAdd, onUpdate })
