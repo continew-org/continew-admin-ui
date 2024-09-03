@@ -1,27 +1,27 @@
 <template>
   <div class="table-page">
-    <a-row justify="space-between" align="center" class="header">
+    <a-row justify="space-between" align="center" class="header page_header">
       <a-space wrap>
         <slot name="custom-title">
           <div class="title">字典管理</div>
         </slot>
       </a-space>
     </a-row>
-    <a-row align="stretch" :gutter="14" class="h-full">
+    <a-row align="stretch" :gutter="14" class="h-full page_content">
       <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
         <DictTree placeholder="请输入关键词" @node-click="handleSelectDict" />
       </a-col>
       <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
-        <GiTable
-          row-key="id"
-          :data="dataList"
-          :columns="columns"
-          :loading="loading"
-          :scroll="{ x: '100%', y: '100%', minWidth: 600 }"
-          :pagination="pagination"
-          :disabled-tools="['size']"
-          :disabled-column-keys="['label']"
-          @refresh="search"
+        <GiTable 
+        row-key="id"
+        :data="dataList" 
+        :columns="columns" 
+        :loading="loading"
+        :scroll="{ x: '100%', y: '100%', minWidth: 600 }" 
+        :pagination="pagination" 
+        :disabled-tools="['size']"
+        :disabled-column-keys="['label']" 
+        @refresh="search"
         >
           <template #custom-left>
             <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
@@ -44,10 +44,10 @@
           <template #action="{ record }">
             <a-space>
               <a-link v-permission="['system:dict:item:update']" @click="onUpdate(record)">修改</a-link>
-              <a-link
-                v-permission="['system:dict:item:delete']"
-                status="danger"
-                @click="onDelete(record)"
+              <a-link 
+              v-permission="['system:dict:item:delete']" 
+              status="danger" 
+              @click="onDelete(record)"
               >
                 删除
               </a-link>
@@ -149,4 +149,13 @@ const onUpdate = (record: DictItemResp) => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.page_header {
+  flex: 0 0 auto;
+}
+
+.page_content {
+  flex: 1;
+  overflow: auto;
+}
+</style>
