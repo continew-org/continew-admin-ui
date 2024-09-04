@@ -33,9 +33,7 @@ const selectedKey = ref('0')
 watch(
   () => route.query,
   () => {
-    if (route.query.type) {
-      selectedKey.value = route.query.type as string
-    }
+    selectedKey.value = route.query.type as string || '0'
   },
   {
     immediate: true
@@ -44,7 +42,7 @@ watch(
 
 // 点击事件
 const onClickItem = (item: FileTypeListItem) => {
-  router.push({ name: 'SystemFile', query: { type: item.value } })
+  router.replace({ name: 'SystemFile', query: { type: item.value } })
 }
 </script>
 

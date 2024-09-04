@@ -8,12 +8,13 @@
 import { Message } from '@arco-design/web-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { bindSocialAccount } from '@/apis'
-import { useUserStore } from '@/stores'
+import { useTabsStore, useUserStore } from '@/stores'
 import { isLogin } from '@/utils/auth'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const tabsStore = useTabsStore()
 const source = route.query.source as string
 const loading = ref(false)
 
@@ -25,6 +26,7 @@ const handleSocialLogin = () => {
   userStore
     .socialLogin(source, othersQuery)
     .then(() => {
+      tabsStore.reset()
       router.push({
         path: (redirect as string) || '/',
         query: {

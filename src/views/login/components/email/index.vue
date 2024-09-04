@@ -35,7 +35,7 @@
 <script setup lang="ts">
 // import { getEmailCaptcha } from '@/apis'
 import { type FormInstance, Message } from '@arco-design/web-vue'
-import { useUserStore } from '@/stores'
+import { useTabsStore, useUserStore } from '@/stores'
 import * as Regexp from '@/utils/regexp'
 
 const formRef = ref<FormInstance>()
@@ -53,6 +53,7 @@ const rules: FormInstance['rules'] = {
 }
 
 const userStore = useUserStore()
+const tabsStore = useTabsStore()
 const router = useRouter()
 const loading = ref(false)
 // 登录
@@ -62,6 +63,7 @@ const handleLogin = async () => {
     if (isInvalid) return
     loading.value = true
     await userStore.emailLogin(form)
+    tabsStore.reset()
     const { redirect, ...othersQuery } = router.currentRoute.value.query
     router.push({
       path: (redirect as string) || '/',

@@ -6,11 +6,11 @@
       size="medium"
       :type="appStore.tabMode"
       :active-key="route.path"
-      @tab-click="(key) => handleTabClick(key as string)"
-      @delete="tabsStore.closeCurrent"
+      @tab-click="handleTabClick($event as string)"
+      @delete="tabsStore.closeCurrent($event as string)"
     >
       <a-tab-pane
-        v-for="item of tabsStore.tagList"
+        v-for="item of tabsStore.tabList"
         :key="item.path"
         :title="(item.meta?.title as string)"
         :closable="Boolean(!item.meta?.affix)"
@@ -23,6 +23,10 @@
             <a-doption @click="tabsStore.closeCurrent(route.path)">
               <template #icon><icon-close /></template>
               <template #default>关闭当前</template>
+            </a-doption>
+            <a-doption @click="tabsStore.closeRight(route.path)">
+              <template #icon><icon-close /></template>
+              <template #default>关闭右侧</template>
             </a-doption>
             <a-doption @click="tabsStore.closeOther(route.path)">
               <template #icon><icon-eraser /></template>
@@ -40,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteLocationNormalized } from 'vue-router'
 import MagicIcon from './MagicIcon.vue'
 import { useAppStore, useTabsStore } from '@/stores'
 
@@ -51,22 +55,22 @@ const appStore = useAppStore()
 const tabsStore = useTabsStore()
 
 // 重置, 同时把 affix: true 的路由筛选出来
-tabsStore.reset()
+tabsStore.init()
 
 // 路由发生改变触发
 const handleRouteChange = () => {
-  const item = { ...route } as unknown as RouteRecordRaw
-  tabsStore.addTagItem(toRaw(item))
+  const item = { ...route } as unknown as RouteLocationNormalized
+  tabsStore.addTabItem(toRaw(item))
   tabsStore.addCacheItem(toRaw(item))
   // console.log('路由对象', toRaw(item))
-  // console.log('tagList', toRaw(tabsStore.tagList))
+  // console.log('tagList', toRaw(tabsStore.tabList))
   // console.log('cacheList', toRaw(tabsStore.cacheList))
 }
 handleRouteChange()
 
 // 监听路由变化
 watch(
-  () => route.path,
+  () => route.fullPath,
   () => {
     handleRouteChange()
   }
@@ -74,7 +78,8 @@ watch(
 
 // 点击页签
 const handleTabClick = (key: string) => {
-  router.push({ path: key })
+  const obj = tabsStore.tabList.find((i) => i.path === key)
+  obj ? router.push(obj.fullPath) : router.push(key)
 }
 </script>
 

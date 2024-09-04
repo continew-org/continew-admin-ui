@@ -1,59 +1,61 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { RouteRecordName, RouteRecordRaw } from 'vue-router'
+import { type RouteLocationNormalized, type RouteRecordName, useRouter } from 'vue-router'
 import _XEUtils_ from 'xe-utils'
-import router from '@/router'
 import { useRouteStore } from '@/stores'
 
 const storeSetup = () => {
-  const tagList = ref<RouteRecordRaw[]>([]) // 保存页签tab的数组
-  const cacheList = ref<RouteRecordName[]>([]) // keep-alive缓存的数组, 元素是组件名
+  const router = useRouter()
+  const tabList = ref<RouteLocationNormalized[]>([]) // 保存页签tab的数组
+  const cacheList = ref<RouteRecordName[]>([]) // keep-alive缓存的数组，元素是组件名
 
   // 添加一个页签, 如果当前路由已经打开, 则不再重复添加
-  const addTagItem = (item: RouteRecordRaw) => {
-    if (tagList.value.some((i) => i.path === item.path)) return
-    if (item.meta?.showInTabs ?? true) {
-      tagList.value.push(item)
+  const addTabItem = (item: RouteLocationNormalized) => {
+    const index = tabList.value.findIndex((i) => i.path === item.path)
+    if (index >= 0) {
+      tabList.value[index].fullPath !== item.fullPath && (tabList.value[index] = item)
+    } else {
+      if (item.meta?.showInTabs ?? true) {
+        tabList.value.push(item)
+      }
     }
   }
 
   // 删除一个页签
-  const deleteTagItem = (path: string) => {
-    const index = tagList.value.findIndex((item) => item.path === path && !item.meta?.affix)
-    if (index >= 0) {
-      const isActive = router.currentRoute.value.path === tagList.value[index]['path']
-      tagList.value.splice(index, 1)
-      if (isActive) {
-        router.push({ path: tagList.value[tagList.value.length - 1]['path'] })
-      }
+  const deleteTabItem = (path: string) => {
+    const index = tabList.value.findIndex((item) => item.path === path && !item.meta?.affix)
+    if (index < 0) return
+    const isActive = router.currentRoute.value.path === tabList.value[index].path
+    tabList.value.splice(index, 1)
+    if (isActive) {
+      router.push(tabList.value[tabList.value.length - 1].fullPath)
     }
   }
 
   // 清空页签
-  const clearTagList = () => {
+  const clearTabList = () => {
     const routeStore = useRouteStore()
-    const arr: RouteRecordRaw[] = []
+    const arr: RouteLocationNormalized[] = []
     _XEUtils_.eachTree(routeStore.routes, (item) => {
       if (item.meta?.affix ?? false) {
-        arr.push(item)
+        arr.push(item as unknown as RouteLocationNormalized)
       }
     })
-    tagList.value = arr
+    tabList.value = arr
   }
 
   // 添加缓存页
-  const addCacheItem = (item: RouteRecordRaw) => {
-    if (item.name) {
-      if (cacheList.value.includes(item.name)) return
-      if (item.meta?.keepAlive) {
-        cacheList.value.push(item.name)
-      }
+  const addCacheItem = (item: RouteLocationNormalized) => {
+    if (!item.name) return
+    if (cacheList.value.includes(item.name)) return
+    if (item.meta?.keepAlive) {
+      cacheList.value.push(item.name)
     }
   }
 
   // 删除一个缓存页
   const deleteCacheItem = (name: RouteRecordName) => {
-    const index = cacheList.value.findIndex((item) => item === name)
+    const index = cacheList.value.findIndex((i) => i === name)
     if (index >= 0) {
       cacheList.value.splice(index, 1)
     }
@@ -66,50 +68,66 @@ const storeSetup = () => {
 
   // 关闭当前
   const closeCurrent = (path: string) => {
-    deleteTagItem(path)
-    const item = tagList.value.find((i) => i.path === path)
-    if (item?.name) {
-      deleteCacheItem(item.name)
-    }
+    const item = tabList.value.find((i) => i.path === path)
+    item?.name && deleteCacheItem(item.name)
+    deleteTabItem(path)
   }
 
   // 关闭其他
   const closeOther = (path: string) => {
-    const arr = tagList.value.filter((i) => i.path !== path)
+    const arr = tabList.value.filter((i) => i.path !== path)
     arr.forEach((item) => {
-      deleteTagItem(item.path)
-      if (item?.name) {
-        deleteCacheItem(item.name)
-      }
+      deleteTabItem(item.path)
+      item?.name && deleteCacheItem(item.name)
+    })
+  }
+
+  // 关闭右侧
+  const closeRight = (path: string) => {
+    const index = tabList.value.findIndex((i) => i.path === path)
+    if (index < 0) return
+    const arr = tabList.value.filter((i, n) => n > index)
+    arr.forEach((item) => {
+      deleteTabItem(item.path)
+      item?.name && deleteCacheItem(item.name)
     })
   }
 
   // 关闭全部
   const closeAll = () => {
-    clearTagList()
+    clearTabList()
+    clearCacheList()
     router.push({ path: '/' })
   }
 
   // 重置
   const reset = () => {
-    clearTagList()
+    clearTabList()
     clearCacheList()
   }
 
+  // 初始化
+  const init = () => {
+    if (tabList.value.some((i) => !i?.meta.affix)) return
+    reset()
+  }
+
   return {
-    tagList,
+    tabList,
     cacheList,
-    addTagItem,
-    deleteTagItem,
-    clearTagList,
+    addTabItem,
+    deleteTabItem,
+    clearTabList,
     addCacheItem,
     deleteCacheItem,
     clearCacheList,
     closeCurrent,
     closeOther,
+    closeRight,
     closeAll,
-    reset
+    reset,
+    init
   }
 }
 
-export const useTabsStore = defineStore('tabs', storeSetup, { persist: false })
+export const useTabsStore = defineStore('tabs', storeSetup, { persist: { storage: sessionStorage } })
