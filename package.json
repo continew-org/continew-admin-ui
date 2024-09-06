@@ -15,7 +15,7 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@arco-design/color": "^0.4.0",
-    "@arco-themes/vue-gi-demo": "^0.0.45",
+    "@arco-themes/vue-gi-demo": "^0.0.51",
     "@codemirror/lang-javascript": "^6.2.1",
     "@codemirror/lang-vue": "^0.1.2",
     "@codemirror/theme-one-dark": "^6.1.2",
@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.16.3",
-    "@arco-design/web-vue": "^2.55.3",
+    "@arco-design/web-vue": "^2.56.0",
     "@types/crypto-js": "^4.2.2",
     "@types/node": "^20.2.5",
     "@types/query-string": "^6.3.0",

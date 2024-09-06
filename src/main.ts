@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import ArcoVue, { Card, Modal } from '@arco-design/web-vue'
+import ArcoVue, { Card, Drawer, Modal } from '@arco-design/web-vue'
 import '@/styles/arco-ui/index.less'
 import 'md-editor-v3/lib/style.css'
 // import '@arco-themes/vue-gi-demo/index.less'
@@ -33,6 +33,7 @@ Card.props.bordered = false
 
 const app = createApp(App)
 Modal._context = app._context
+Drawer._context = app._context
 
 app.use(router)
 app.use(pinia)

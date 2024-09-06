@@ -15,8 +15,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@arco-themes/vue-gi-demo':
-        specifier: ^0.0.45
-        version: 0.0.45(@arco-design/web-vue@2.56.0(vue@3.4.27(typescript@5.0.4)))
+        specifier: ^0.0.51
+        version: 0.0.51(@arco-design/web-vue@2.56.0(vue@3.4.27(typescript@5.0.4)))
       '@codemirror/lang-javascript':
         specifier: ^6.2.1
         version: 6.2.2
@@ -136,7 +136,7 @@ importers:
         specifier: ^2.16.3
         version: 2.18.1(@vue/compiler-sfc@3.4.27)(eslint@9.3.0)(typescript@5.0.4)
       '@arco-design/web-vue':
-        specifier: ^2.55.3
+        specifier: ^2.56.0
         version: 2.56.0(vue@3.4.27(typescript@5.0.4))
       '@types/crypto-js':
         specifier: ^4.2.2
@@ -271,10 +271,10 @@ packages:
     peerDependencies:
       vue: ^3.1.0
 
-  '@arco-themes/vue-gi-demo@0.0.45':
-    resolution: {integrity: sha512-fG50CAZ3VisXNf5BWnfVl7sxBJWHkY8ZGJHzKSkoA2YY6cTSGmymQvKT7kPkFbTDQ/NBy4xH16lZirAHmcwZhQ==}
+  '@arco-themes/vue-gi-demo@0.0.51':
+    resolution: {integrity: sha512-8ud9gI2mRzcY/zvcYNJoPDZU2qI5DPRhfSQpd5sfOYsgl/YN0sDWEv5BpHJ5eQmprrBsZCfYo2NIq47qb0EtrA==}
     peerDependencies:
-      '@arco-design/web-vue': ^2.53.2
+      '@arco-design/web-vue': ^2.56.0
 
   '@babel/code-frame@7.24.2':
     resolution: {integrity: sha512-y5+tLQyV8pg3fsiln67BVLD1P13Eg4lh5RW9mF0zUuvLrv9uIQ4MCL+CRT+FTsBlBjcIan6PGsLcBN0m3ClUyQ==}
@@ -4929,7 +4929,7 @@ snapshots:
       scroll-into-view-if-needed: 2.2.31
       vue: 3.4.27(typescript@5.0.4)
 
-  '@arco-themes/vue-gi-demo@0.0.45(@arco-design/web-vue@2.56.0(vue@3.4.27(typescript@5.0.4)))':
+  '@arco-themes/vue-gi-demo@0.0.51(@arco-design/web-vue@2.56.0(vue@3.4.27(typescript@5.0.4)))':
     dependencies:
       '@arco-design/web-vue': 2.56.0(vue@3.4.27(typescript@5.0.4))
 

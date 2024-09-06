@@ -70,19 +70,19 @@ export interface ColumnsItem<F = any> {
   col?: A.ColProps // a-col的props, 响应式布局, 优先级大于span
   item?: Omit<A.FormItemInstance['$props'], 'label' | 'field'> // a-form-item的props
   props?:
-    | A.InputInstance['$props']
-    | A.SelectInstance['$props']
-    | A.TextareaInstance['$props']
-    | A.DatePickerInstance['$props']
-    | A.TimePickerInstance['$props']
-    | A.RadioGroupInstance['$props']
-    | A.CheckboxGroupInstance['$props']
-    | A.InputNumberInstance['$props']
-    | A.RateInstance['$props']
-    | A.SwitchInstance['$props']
-    | A.SliderInstance['$props']
-    | A.CascaderInstance['$props']
-    | A.TreeSelectInstance['$props']
+    & A.InputInstance['$props']
+    & A.SelectInstance['$props']
+    & A.TextareaInstance['$props']
+    & A.DatePickerInstance['$props']
+    & A.TimePickerInstance['$props']
+    & A.RadioGroupInstance['$props']
+    & A.CheckboxGroupInstance['$props']
+    & A.InputNumberInstance['$props']
+    & A.RateInstance['$props']
+    & A.SwitchInstance['$props']
+    & A.SliderInstance['$props']
+    & A.CascaderInstance['$props']
+    & A.TreeSelectInstance['$props']
   rules?: A.FormItemInstance['$props']['rules'] // 表单校验规则
   // 下拉列表|复选框组|单选框组|级联选择组件的options
   options?:
