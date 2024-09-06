@@ -47,6 +47,7 @@ export default antfu(
       'style/brace-style': [2, '1tbs', { allowSingleLine: true }], // 对块执行一致的大括号样式
       'style/comma-dangle': [2, 'never'], // 要求或不允许尾随逗号
       'ts/consistent-type-definitions': 0,
+      'ts/no-unused-expressions': 0,
       'node/prefer-global/process': 0,
       'antfu/top-level-function': 0,
       'antfu/if-newline': 0

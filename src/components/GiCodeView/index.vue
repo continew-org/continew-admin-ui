@@ -37,11 +37,6 @@ const defaultConfig = {
 const config = defaultConfig
 
 const codeValue = computed(() => props.codeJson)
-const visible = ref(false)
-// 打开
-const open = () => {
-  visible.value = true
-}
 
 const extensions = computed(() => {
   const arr = [isDark.value ? oneDark : githubLight]
@@ -53,8 +48,6 @@ const extensions = computed(() => {
   }
   return arr
 })
-
-defineExpose({ open })
 </script>
 
 <style lang="scss" scoped>

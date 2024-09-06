@@ -13,8 +13,8 @@ const storeSetup = () => {
   // 深色菜单主题色变量
   const themeCSSVar = computed<Record<string, string>>(() => {
     const obj: Record<string, string> = {}
-    const list = generate(settingConfig.themeColor, { list: true, dark: true })
-    list.forEach((color: string, index: number) => {
+    const list = generate(settingConfig.themeColor, { list: true, dark: true }) as string[]
+    list.forEach((color, index) => {
       obj[`--primary-${index + 1}`] = getRgbStr(color)
     })
     return obj
@@ -24,8 +24,8 @@ const storeSetup = () => {
   const setThemeColor = (color: string) => {
     if (!color) return
     settingConfig.themeColor = color
-    const list = generate(settingConfig.themeColor, { list: true, dark: settingConfig.theme === 'dark' })
-    list.forEach((color: string, index: number) => {
+    const list = generate(settingConfig.themeColor, { list: true, dark: settingConfig.theme === 'dark' }) as string[]
+    list.forEach((color, index) => {
       const rgbStr = getRgbStr(color)
       document.body.style.setProperty(`--primary-${index + 1}`, rgbStr)
     })
