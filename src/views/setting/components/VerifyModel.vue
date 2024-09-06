@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model:visible="visible" :title="title" :mask-closable="false" :esc-to-close="false"
-    :width="width >= 500 ? 500 : '100%'" draggable @before-ok="save" @close="reset">
+    :width="width >= 500 ? 500 : '100%'" draggable @before-ok="save" @ok="saveAfter" @close="reset">
     <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
       <template #captcha>
         <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="6" allow-clear style="flex: 1 1" />
@@ -18,13 +18,15 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
-import { getEmailCaptcha, updateUserEmail, updateUserPassword } from '@/apis'
-
+import NProgress from 'nprogress'
+import { getEmailCaptcha, updateUserEmail, updateUserPassword, updateUserPhone } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm, type Options } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import * as Regexp from '@/utils/regexp'
+import modalErrorWrapper from '@/utils/modal-error-wrapper'
+import router from '@/router'
 
 const { width } = useWindowSize()
 const userStore = useUserStore()
@@ -210,17 +212,19 @@ const save = async () => {
   if (isInvalid) return false
   try {
     if (verifyType.value === 'phone') {
-      // await updateUserPhone({
-      //   phone: form.phone,
-      //   captcha: form.captcha,
-      //   oldPassword: encryptByRsa(form.oldPassword) as string
-      // })
+      await updateUserPhone({
+        phone: form.phone,
+        captcha: form.captcha,
+        oldPassword: encryptByRsa(form.oldPassword) as string
+      })
+      Message.success('修改成功')
     } else if (verifyType.value === 'email') {
       await updateUserEmail({
         email: form.email,
         captcha: form.captcha,
         oldPassword: encryptByRsa(form.oldPassword) as string
       })
+      Message.success('修改成功')
     } else if (verifyType.value === 'password') {
       if (form.newPassword !== form.rePassword) {
         Message.error('两次新密码不一致')
@@ -235,12 +239,29 @@ const save = async () => {
         newPassword: encryptByRsa(form.newPassword) || ''
       })
     }
-    Message.success('修改成功')
-    // 修改成功后，重新获取用户信息
-    await userStore.getInfo()
     return true
   } catch (error) {
     return false
+  }
+}
+const saveAfter = async () => {
+  if (verifyType.value === 'password') {
+    modalErrorWrapper({
+      title: '提示',
+      content: '密码修改成功! 请保存好新密码，并使用新密码重新登录',
+      maskClosable: false,
+      escToClose: false,
+      okText: '重新登录',
+      async onOk() {
+        NProgress.done()
+        const userStore = useUserStore()
+        await userStore.logoutCallBack()
+        await router.replace('/login')
+      }
+    })
+  } else {
+    // 修改成功后，重新获取用户信息
+    await userStore.getInfo()
   }
 }
 
