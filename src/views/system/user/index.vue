@@ -128,6 +128,7 @@ const columns: TableInstanceColumns[] = [
   },
   {
     title: '用户名',
+    dataIndex: 'username',
     slotName: 'username',
     width: 140,
     ellipsis: true,
