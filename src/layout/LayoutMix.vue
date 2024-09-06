@@ -3,7 +3,7 @@
     <section v-if="isDesktop" class="layout-mix-left" :class="{ 'app-menu-dark': appStore.menuDark }"
       :style="appStore.menuDark ? appStore.themeCSSVar : undefined">
       <Logo :collapsed="appStore.menuCollapse"></Logo>
-      <Menu :menus="leftMenus" :menu-style="{ width: '200px', flex: 1 }"></Menu>
+      <Menu :menus="leftMenus" :menu-style="{ width: '220px', flex: 1 }"></Menu>
     </section>
 
     <section class="layout-mix-right">
