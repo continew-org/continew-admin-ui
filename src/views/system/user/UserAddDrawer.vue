@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { addUser, getUser, updateUser } from '@/apis'
+import { addUser, getUser, updateUser } from '@/apis/system'
 import type { Gender, Status } from '@/types/global'
 import { useForm } from '@/hooks'
 import { useDept, useRole } from '@/hooks/app'

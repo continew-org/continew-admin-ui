@@ -94,7 +94,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { addStorage, getStorage, updateStorage } from '@/apis'
+import { addStorage, getStorage, updateStorage } from '@/apis/system'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { encryptByRsa } from '@/utils/encrypt'

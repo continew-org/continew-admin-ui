@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import MenuAddModal from './MenuAddModal.vue'
-import { type MenuQuery, type MenuResp, deleteMenu, listMenu } from '@/apis'
+import { type MenuQuery, type MenuResp, deleteMenu, listMenu } from '@/apis/system'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { DisEnableStatusList } from '@/constant/common'

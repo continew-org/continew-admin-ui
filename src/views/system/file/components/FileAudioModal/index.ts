@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import ArcoVue from '@arco-design/web-vue'
 import ModalContent from './ModalContent.vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 
 function createModal<T extends { callback?: () => void }>(component: Component, options?: T) {
   // 创建一个挂载容器

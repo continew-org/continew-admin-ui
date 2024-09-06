@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 import { encodeByBase64 } from '@/utils/encrypt'
 
 const emit = defineEmits(['download'])

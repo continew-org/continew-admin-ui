@@ -42,7 +42,7 @@ import type { TreeNodeData } from '@arco-design/web-vue'
 import { mapTree } from 'xe-utils'
 import DictAddModal from './DictAddModal.vue'
 import RightMenu from './RightMenu.vue'
-import { type DictQuery, type DictResp, deleteDict, listDict } from '@/apis'
+import { type DictQuery, type DictResp, deleteDict, listDict } from '@/apis/system'
 import has from '@/utils/has'
 
 interface Props {

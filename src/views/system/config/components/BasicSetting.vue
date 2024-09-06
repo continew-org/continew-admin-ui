@@ -107,7 +107,7 @@ import {
   listOption,
   resetOptionValue,
   updateOption
-} from '@/apis'
+} from '@/apis/system'
 import { useAppStore } from '@/stores'
 import { useForm } from '@/hooks'
 import { fileToBase64 } from '@/utils'

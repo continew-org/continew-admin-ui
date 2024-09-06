@@ -104,7 +104,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { addRole, getRole, updateRole } from '@/apis'
+import { addRole, getRole, updateRole } from '@/apis/system'
 import { useForm } from '@/hooks'
 import { useDept, useDict, useMenu } from '@/hooks/app'
 

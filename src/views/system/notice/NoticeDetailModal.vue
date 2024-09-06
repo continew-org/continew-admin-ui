@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { MdPreview } from 'md-editor-v3'
 import { useWindowSize } from '@vueuse/core'
-import { type NoticeResp, getNotice } from '@/apis'
+import { type NoticeResp, getNotice } from '@/apis/system'
 
 const { width } = useWindowSize()
 const dataDetail = ref<NoticeResp>()

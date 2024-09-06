@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import DeptAddModal from './DeptAddModal.vue'
-import { type DeptQuery, type DeptResp, deleteDept, exportDept, listDept } from '@/apis'
+import { type DeptQuery, type DeptResp, deleteDept, exportDept, listDept } from '@/apis/system'
 import type GiTable from '@/components/GiTable/index.vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'

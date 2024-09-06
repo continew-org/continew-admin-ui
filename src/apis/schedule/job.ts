@@ -1,5 +1,7 @@
-import type * as Schedule from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/schedule/job'
 
@@ -9,8 +11,8 @@ export function listGroup() {
 }
 
 /** @desc 查询任务列表 */
-export function listJob(query: Schedule.JobPageQuery) {
-  return http.get<PageRes<Schedule.JobResp[]>>(`${BASE_URL}`, query)
+export function listJob(query: T.JobPageQuery) {
+  return http.get<PageRes<T.JobResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 新增任务 */

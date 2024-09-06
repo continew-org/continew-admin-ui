@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/menu'
 
 /** @desc 查询菜单列表 */
-export function listMenu(query: System.MenuQuery) {
-  return http.get<System.MenuResp[]>(`${BASE_URL}/tree`, query)
+export function listMenu(query: T.MenuQuery) {
+  return http.get<T.MenuResp[]>(`${BASE_URL}/tree`, query)
 }
 
 /** @desc 查询菜单详情 */
 export function getMenu(id: string) {
-  return http.get<System.MenuResp>(`${BASE_URL}/${id}`)
+  return http.get<T.MenuResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增菜单 */

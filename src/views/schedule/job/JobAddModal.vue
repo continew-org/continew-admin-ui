@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import { type ColProps, type FormInstance, Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { addJob, listGroup, updateJob } from '@/apis'
+import { addJob, listGroup, updateJob } from '@/apis/schedule'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 

@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/dept'
 
 /** @desc 查询部门列表 */
-export function listDept(query: System.DeptQuery) {
-  return http.get<System.DeptResp[]>(`${BASE_URL}/tree`, query)
+export function listDept(query: T.DeptQuery) {
+  return http.get<T.DeptResp[]>(`${BASE_URL}/tree`, query)
 }
 
 /** @desc 查询部门详情 */
 export function getDept(id: string) {
-  return http.get<System.DeptResp>(`${BASE_URL}/${id}`)
+  return http.get<T.DeptResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增部门 */
@@ -29,6 +31,6 @@ export function deleteDept(id: string) {
 }
 
 /** @desc 导出部门 */
-export function exportDept(query: System.DeptQuery) {
+export function exportDept(query: T.DeptQuery) {
   return http.download<any>(`${BASE_URL}/export`, query)
 }

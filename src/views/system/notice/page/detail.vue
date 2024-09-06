@@ -34,7 +34,7 @@
 <script setup lang="tsx">
 import AiEditor from '../components/detail/index.vue'
 import { useTabsStore } from '@/stores'
-import { getNotice } from '@/apis'
+import { getNotice } from '@/apis/system'
 import { useForm } from '@/hooks'
 
 const containerRef = ref<HTMLElement | null>()

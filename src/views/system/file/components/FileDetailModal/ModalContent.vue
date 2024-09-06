@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import FileImage from '../../main/FileMain/FileImage.vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 import { formatFileSize } from '@/utils'
 
 interface Props {

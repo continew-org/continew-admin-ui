@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import StorageAddDrawer from './StorageAddDrawer.vue'
-import { type StorageQuery, type StorageResp, deleteStorage, listStorage } from '@/apis'
+import { type StorageQuery, type StorageResp, deleteStorage, listStorage } from '@/apis/system'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'

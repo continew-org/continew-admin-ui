@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import NoticeAddModal from './NoticeAddModal.vue'
 import NoticeDetailModal from './NoticeDetailModal.vue'
-import { type NoticeQuery, type NoticeResp, deleteNotice, listNotice } from '@/apis'
+import { type NoticeQuery, type NoticeResp, deleteNotice, listNotice } from '@/apis/system'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'

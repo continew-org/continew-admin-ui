@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/user'
 
 /** @desc 查询用户列表 */
-export function listUser(query: System.UserPageQuery) {
-  return http.get<PageRes<System.UserResp[]>>(`${BASE_URL}`, query)
+export function listUser(query: T.UserPageQuery) {
+  return http.get<PageRes<T.UserResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 查询用户详情 */
 export function getUser(id: string) {
-  return http.get<System.UserDetailResp>(`${BASE_URL}/${id}`)
+  return http.get<T.UserDetailResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增用户 */
@@ -29,7 +31,7 @@ export function deleteUser(ids: string | Array<string>) {
 }
 
 /** @desc 导出用户 */
-export function exportUser(query: System.UserQuery) {
+export function exportUser(query: T.UserQuery) {
   return http.download(`${BASE_URL}/export`, query)
 }
 

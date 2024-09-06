@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
-import { addDept, getDept, updateDept } from '@/apis'
+import { addDept, getDept, updateDept } from '@/apis/system'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useDept } from '@/hooks/app'

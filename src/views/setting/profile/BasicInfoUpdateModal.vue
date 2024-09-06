@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
-import { updateUserBaseInfo } from '@/apis'
+import { updateUserBaseInfo } from '@/apis/system'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useUserStore } from '@/stores'

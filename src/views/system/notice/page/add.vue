@@ -23,7 +23,7 @@ import { Message } from '@arco-design/web-vue'
 import AiEditor from '../components/edit/index.vue'
 import { useTabsStore } from '@/stores'
 import { type Columns, GiForm, type Options } from '@/components/GiForm'
-import { addNotice, getNotice, updateNotice } from '@/apis'
+import { addNotice, getNotice, updateNotice } from '@/apis/system'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 

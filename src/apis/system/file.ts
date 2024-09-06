@@ -1,11 +1,13 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/file'
 
 /** @desc 查询文件列表 */
-export function listFile(query: System.FilePageQuery) {
-  return http.get<PageRes<System.FileItem[]>>(`${BASE_URL}`, query)
+export function listFile(query: T.FilePageQuery) {
+  return http.get<PageRes<T.FileItem[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 修改文件 */
@@ -20,5 +22,5 @@ export function deleteFile(ids: string | Array<string>) {
 
 /** @desc 查询文件资源统计统计 */
 export function getFileStatistics() {
-  return http.get<System.FileStatisticsResp>(`${BASE_URL}/statistics`)
+  return http.get<T.FileStatisticsResp>(`${BASE_URL}/statistics`)
 }

@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import { Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useClipboard } from '@vueuse/core'
-import { type GeneratePreviewResp, genPreview } from '@/apis'
+import { type GeneratePreviewResp, genPreview } from '@/apis/tool'
 
 // 生成
 const emit = defineEmits<{ (e: 'generate', tableNames: string[]): void }>()

@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
-import { type OptionResp, type SecurityConfig, listOption, resetOptionValue, updateOption } from '@/apis'
+import { type OptionResp, type SecurityConfig, listOption, resetOptionValue, updateOption } from '@/apis/system'
 import { useForm } from '@/hooks'
 
 defineOptions({ name: 'SecuritySetting' })

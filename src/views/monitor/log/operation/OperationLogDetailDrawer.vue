@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type LogDetailResp, getLog } from '@/apis'
+import { type LogDetailResp, getLog } from '@/apis/monitor'
 
 const dataId = ref('')
 const dataDetail = ref<LogDetailResp>()

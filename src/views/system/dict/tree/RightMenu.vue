@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { DictResp } from '@/apis'
+import type { DictResp } from '@/apis/system'
 
 interface Props {
   data: DictResp

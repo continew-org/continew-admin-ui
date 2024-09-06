@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/role'
 
 /** @desc 查询角色列表 */
-export function listRole(query: System.RolePageQuery) {
-  return http.get<PageRes<System.RoleResp[]>>(`${BASE_URL}`, query)
+export function listRole(query: T.RolePageQuery) {
+  return http.get<PageRes<T.RoleResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 查询角色详情 */
 export function getRole(id: string) {
-  return http.get<System.RoleDetailResp>(`${BASE_URL}/${id}`)
+  return http.get<T.RoleDetailResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增角色 */

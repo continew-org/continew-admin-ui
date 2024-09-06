@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
-import { resetUserPwd } from '@/apis'
+import { resetUserPwd } from '@/apis/system'
 import { type Columns, GiForm } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'

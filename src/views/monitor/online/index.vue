@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
-import { type OnlineUserQuery, kickout, listOnlineUser } from '@/apis'
+import { type OnlineUserQuery, kickout, listOnlineUser } from '@/apis/monitor'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useUserStore } from '@/stores'

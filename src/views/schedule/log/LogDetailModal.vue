@@ -1,10 +1,10 @@
 <template>
-  <a-modal v-model:visible="visible" title="任务日志详情" :bodyStyle="{ maxHeight: '80vh', overflow: 'auto' }"
+  <a-modal v-model:visible="visible" title="任务日志详情" :body-style="{ maxHeight: '80vh', overflow: 'auto' }"
     :width="width >= 1500 ? 1500 : '100%'" :footer="false" @close="closed">
     <div style="display: flex;">
       <div style="padding: 10px 10px;">
         <div class="job_list">
-          <div :class="`job_list_item ${item.id === activeId ? 'active' : ''}`" v-for="item in dataList" :key="item.id"
+          <div v-for="item in dataList" :key="item.id" :class="`job_list_item ${item.id === activeId ? 'active' : ''}`"
             @click="onStartInfo(item)">
             <div class="content">
               <span class="title">{{ item.clientInfo.split('@')[1] }}</span>
@@ -20,14 +20,13 @@
         <GiCodeView :code-json="content" />
       </div>
     </div>
-
-  </a-modal>
+</a-modal>
 </template>
 
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
-import { type JobInstanceQuery, type JobInstanceResp, type JobLogResp, listJobInstance, listJobInstanceLog } from '@/apis'
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
+import { type JobInstanceQuery, type JobInstanceResp, type JobLogResp, listJobInstance, listJobInstanceLog } from '@/apis/schedule'
 
 const { width } = useWindowSize()
 const queryForm = reactive<JobInstanceQuery>({})
@@ -35,38 +34,37 @@ const dataList = ref<JobInstanceResp[]>([])
 const loading = ref(false)
 const activeId = ref<string | number>('')
 const statusList = {
-  '1': {
+  1: {
     title: '待处理',
     color: 'gray',
     isRun: false
   },
-  '2': {
+  2: {
     title: '运行中',
     color: 'cyan',
     isRun: true
   },
-  '3': {
+  3: {
     title: '成功',
     color: 'green',
     isRun: false
   },
-  '4': {
+  4: {
     title: '已失败',
     color: 'red',
     isRun: false
   },
-  '5': {
+  5: {
     title: '已停止',
     color: 'purple',
     isRun: false
   },
-  '6': {
+  6: {
     title: '已取消',
     color: 'orange',
     isRun: false
   }
 }
-
 
 const visible = ref(false)
 
@@ -78,7 +76,6 @@ const formatLog = (log: any) => {
 
 const content = ref('')
 const setIntervalNode = ref<NodeJS.Timeout>()
-
 
 // 详情
 const onDetail = (record: JobLogResp) => {
@@ -109,13 +106,11 @@ const onLogDetail = async (record: JobInstanceResp) => {
   } catch (error) {
     content.value = ''
   }
-
-
 }
 const onStartInfo = (record: JobInstanceResp) => {
   content.value = ''
   clearInterval(setIntervalNode.value)
-  let isRun = statusList[record.taskStatus].isRun
+  const isRun = statusList[record.taskStatus].isRun
   if (isRun) {
     setIntervalNode.value = setInterval(() => {
       onLogDetail(record)
@@ -123,8 +118,6 @@ const onStartInfo = (record: JobInstanceResp) => {
   } else {
     onLogDetail(record)
   }
-
-
 }
 // 查询列表数据
 const getInstanceList = async (query: JobInstanceQuery = { ...queryForm }) => {

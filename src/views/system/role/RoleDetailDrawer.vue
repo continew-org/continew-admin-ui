@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { useWindowSize } from '@vueuse/core'
-import { type RoleDetailResp, getRole } from '@/apis'
+import { type RoleDetailResp, getRole } from '@/apis/system'
 import { useDept, useDict, useMenu } from '@/hooks/app'
 
 const { width } = useWindowSize()

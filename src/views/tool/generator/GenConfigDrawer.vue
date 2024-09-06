@@ -143,7 +143,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, listFieldConfigDict, saveGenConfig } from '@/apis'
+import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, listFieldConfigDict, saveGenConfig } from '@/apis/tool'
 import type { LabelValueState } from '@/types/global'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useForm } from '@/hooks'

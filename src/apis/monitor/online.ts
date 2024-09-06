@@ -1,11 +1,13 @@
-import type * as Monitor from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/monitor/online'
 
 /** @desc 查询在线用户列表 */
-export function listOnlineUser(query: Monitor.OnlineUserPageQuery) {
-  return http.get<PageRes<Monitor.OnlineUserResp[]>>(`${BASE_URL}`, query)
+export function listOnlineUser(query: T.OnlineUserPageQuery) {
+  return http.get<PageRes<T.OnlineUserResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 强退在线用户 */

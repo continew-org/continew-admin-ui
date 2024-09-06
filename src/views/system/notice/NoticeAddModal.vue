@@ -68,7 +68,7 @@
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { MdEditor } from 'md-editor-v3'
 import { useWindowSize } from '@vueuse/core'
-import { addNotice, getNotice, updateNotice } from '@/apis'
+import { addNotice, getNotice, updateNotice } from '@/apis/system'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
 

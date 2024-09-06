@@ -1,11 +1,13 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/message'
 
 /** @desc 查询消息列表 */
-export function listMessage(query: System.MessagePageQuery) {
-  return http.get<PageRes<System.MessageResp[]>>(`${BASE_URL}`, query)
+export function listMessage(query: T.MessagePageQuery) {
+  return http.get<PageRes<T.MessageResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 删除消息 */

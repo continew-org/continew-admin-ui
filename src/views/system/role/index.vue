@@ -60,7 +60,7 @@
 import RoleUpdateDrawer from './RoleUpdateDrawer.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
 import RoleAddModal from './RoleAddModal.vue'
-import { type RoleQuery, type RoleResp, deleteRole, listRole } from '@/apis'
+import { type RoleQuery, type RoleResp, deleteRole, listRole } from '@/apis/system'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'

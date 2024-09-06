@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import FileImage from './FileImage.vue'
 import FileRightMenu from './FileRightMenu.vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 
 interface Props {
   data?: FileItem[]

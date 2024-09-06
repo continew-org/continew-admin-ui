@@ -93,7 +93,7 @@ import Background from './components/background/index.vue'
 import AccountLogin from './components/account/index.vue'
 import PhoneLogin from './components/phone/index.vue'
 import EmailLogin from './components/email/index.vue'
-import { socialAuth } from '@/apis'
+import { socialAuth } from '@/apis/auth'
 import { useAppStore } from '@/stores'
 import { useDevice } from '@/hooks'
 

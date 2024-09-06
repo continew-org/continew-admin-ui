@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import GiOption from '@/components/GiOption/index.vue'
 import GiOptionItem from '@/components/GiOptionItem/index.vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 
 interface Props {
   data?: FileItem

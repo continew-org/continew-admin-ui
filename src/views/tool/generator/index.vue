@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import GenConfigDrawer from './GenConfigDrawer.vue'
 import GenPreviewModal from './GenPreviewModal.vue'
-import { generate, listGenerator } from '@/apis'
+import { generate, listGenerator } from '@/apis/tool'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'

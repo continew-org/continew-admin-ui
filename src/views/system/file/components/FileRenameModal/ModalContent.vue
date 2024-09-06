@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import type { FormInstance } from '@arco-design/web-vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 
 interface Props {
   data: FileItem

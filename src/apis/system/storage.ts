@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/storage'
 
 /** @desc 查询存储列表 */
-export function listStorage(query: System.StoragePageQuery) {
-  return http.get<PageRes<System.StorageResp[]>>(`${BASE_URL}`, query)
+export function listStorage(query: T.StoragePageQuery) {
+  return http.get<PageRes<T.StorageResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 查询存储详情 */
 export function getStorage(id: string) {
-  return http.get<System.StorageResp>(`${BASE_URL}/${id}`)
+  return http.get<T.StorageResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增存储 */

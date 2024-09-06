@@ -67,7 +67,7 @@
 import type { TableInstance, TableRowSelection } from '@arco-design/web-vue'
 import FileImage from './FileImage.vue'
 import FileRightMenu from './FileRightMenu.vue'
-import type { FileItem } from '@/apis'
+import type { FileItem } from '@/apis/system'
 import { formatFileSize } from '@/utils'
 
 interface Props {

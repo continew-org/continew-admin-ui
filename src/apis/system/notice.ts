@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/notice'
 
 /** @desc 查询公告列表 */
-export function listNotice(query: System.NoticePageQuery) {
-  return http.get<PageRes<System.NoticeResp[]>>(`${BASE_URL}`, query)
+export function listNotice(query: T.NoticePageQuery) {
+  return http.get<PageRes<T.NoticeResp[]>>(`${BASE_URL}`, query)
 }
 
 /** @desc 查询公告详情 */
 export function getNotice(id: string) {
-  return http.get<System.NoticeResp>(`${BASE_URL}/${id}`)
+  return http.get<T.NoticeResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增公告 */

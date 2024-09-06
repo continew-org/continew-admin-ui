@@ -24,7 +24,7 @@ import { LegendComponent, TitleComponent, TooltipComponent } from 'echarts/compo
 import { CanvasRenderer } from 'echarts/renderers'
 import { FileTypeList } from '@/constant/file'
 import { useChart } from '@/hooks'
-import { type FileStatisticsResp, getFileStatistics } from '@/apis'
+import { type FileStatisticsResp, getFileStatistics } from '@/apis/system'
 import { formatFileSize } from '@/utils'
 
 use([TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer])

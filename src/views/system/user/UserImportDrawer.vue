@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message, type RequestOption } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { type UserImportResp, downloadImportUserTemplate, importUser, parseImportUser } from '@/apis'
+import { type UserImportResp, downloadImportUserTemplate, importUser, parseImportUser } from '@/apis/system'
 import { useDownload, useForm } from '@/hooks'
 
 const emit = defineEmits<{

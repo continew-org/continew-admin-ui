@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { useWindowSize } from '@vueuse/core'
-import { type UserDetailResp, getUser } from '@/apis'
+import { type UserDetailResp, getUser } from '@/apis/system'
 
 const { width } = useWindowSize()
 

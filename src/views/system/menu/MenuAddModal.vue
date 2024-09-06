@@ -123,7 +123,7 @@
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { mapTree } from 'xe-utils'
-import { type MenuResp, addMenu, getMenu, updateMenu } from '@/apis'
+import { type MenuResp, addMenu, getMenu, updateMenu } from '@/apis/system'
 import { useForm } from '@/hooks'
 import { filterTree, transformPathToName } from '@/utils'
 

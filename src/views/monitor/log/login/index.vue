@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { type LogQuery, exportLoginLog, listLog } from '@/apis'
+import { type LogQuery, exportLoginLog, listLog } from '@/apis/monitor'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useDownload, useTable } from '@/hooks'

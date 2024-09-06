@@ -61,7 +61,7 @@ import {
   listOption,
   resetOptionValue,
   updateOption
-} from '@/apis'
+} from '@/apis/system'
 import { useForm } from '@/hooks'
 
 defineOptions({ name: 'MailSetting' })

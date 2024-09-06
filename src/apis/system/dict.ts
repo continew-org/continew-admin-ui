@@ -1,16 +1,18 @@
-import type * as System from './type'
+import type * as T from './type'
 import http from '@/utils/http'
+
+export type * from './type'
 
 const BASE_URL = '/system/dict'
 
 /** @desc 查询字典列表 */
-export function listDict(query: System.DictQuery) {
-  return http.get<System.DictResp[]>(`${BASE_URL}/list`, query)
+export function listDict(query: T.DictQuery) {
+  return http.get<T.DictResp[]>(`${BASE_URL}/list`, query)
 }
 
 /** @desc 查询字典详情 */
 export function getDict(id: string) {
-  return http.get<System.DictResp>(`${BASE_URL}/${id}`)
+  return http.get<T.DictResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增字典 */
@@ -29,13 +31,13 @@ export function deleteDict(id: string) {
 }
 
 /** @desc 查询字典项列表 */
-export function listDictItem(query: System.DictItemPageQuery) {
-  return http.get<PageRes<System.DictItemResp[]>>(`${BASE_URL}/item`, query)
+export function listDictItem(query: T.DictItemPageQuery) {
+  return http.get<PageRes<T.DictItemResp[]>>(`${BASE_URL}/item`, query)
 }
 
 /** @desc 查询字典项详情 */
 export function getDictItem(id: string) {
-  return http.get<System.DictItemResp>(`${BASE_URL}/item/${id}`)
+  return http.get<T.DictItemResp>(`${BASE_URL}/item/${id}`)
 }
 
 /** @desc 新增字典项 */
