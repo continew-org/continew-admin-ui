@@ -1,3 +1,32 @@
+## [v3.3.0](https://github.com/continew-org/continew-admin-ui/compare/v3.2.0...v3.3.0) (2024-09-09)
+
+### ✨ 新特性
+
+* GiForm 新增年\月\季度\周\范围、颜色选择器支持 ([ad53e1d](https://github.com/continew-org/continew-admin-ui/commit/ad53e1d419d8012fbeedc3f26943d3b36b133ee3))
+* GiTag 组件功能扩展，提供 color 属性，用于自定义颜色 ([050a171](https://github.com/continew-org/continew-admin-ui/commit/050a171e91ae8f62aeb17d108ccb4a3c7c49eb4b))
+* 代码生成字段配置列表支持拖拽排序 ([fcbc3eb](https://github.com/continew-org/continew-admin-ui/commit/fcbc3ebbff5cdbb555e594d73c94dce643c8e8ec))
+* 代码生成字段配置支持选择关联字典 ([6574181](https://github.com/continew-org/continew-admin-ui/commit/65741811103a848a38f0f637df02fb677b82f205))
+* 代码生成字段配置支持自定义名称、类型 ([b29960f](https://github.com/continew-org/continew-admin-ui/commit/b29960f3f534b3a83f62ec7c64f6302a1daf52bf))
+* 修改角色功能权限、数据权限支持衔接新增角色时的父子联动 ([5cfb0d7](https://github.com/continew-org/continew-admin-ui/commit/5cfb0d795a000393514109fdf057ce0c654dc0a9)) ([0f35d29](https://github.com/continew-org/continew-admin-ui/commit/0f35d292addd7498bcdeca432b3ae0591b613c30))
+
+### 💎 功能优化
+
+- 适配后端接口响应 code 数据类型变动 ([f321030](https://github.com/continew-org/continew-admin-ui/commit/f321030c4c8b4f4493388fc73152a56f31bb2a6d))
+- 使用分步表单重构新增角色交互 (Gitee#18) ([fe25e1c](https://github.com/continew-org/continew-admin-ui/commit/fe25e1c698078a7ba609b24c730d00029429014c)) ([80de5b0](https://github.com/continew-org/continew-admin-ui/commit/80de5b0e5e13a5ad1a1cf816bbbc223a9d392e74))
+- 优化 apis 导入，随着模块和接口的增加，方便维护 ([8a80db0](https://github.com/continew-org/continew-admin-ui/commit/8a80db0f92a2c271594c8027559591f40c27f39b))
+- 优化 GiForm 组件代码 ([948158f](https://github.com/continew-org/continew-admin-ui/commit/948158f1fa65fe92bc3040fb0b70550a6ecefa0f))
+- 优化部分代码 ([cb03111](https://github.com/continew-org/continew-admin-ui/commit/cb03111c22164365f2e5198d5162bff172492ffe))
+- 消除搜索框歧义，明确可输入项 ([ab7ef15](https://github.com/continew-org/continew-admin-ui/commit/ab7ef153abe510aa1d32b27de2d630426d369d94))
+
+### 🐛 问题修复
+
+- 修复 Mix 布局下面包屑显示不全的问题 ([917cd43](https://github.com/continew-org/continew-admin-ui/commit/917cd43a0866a90b81b5af0d11ecc1c457b01f6b))
+- 修复用户管理，字典管理上一下二布局影响table表格溢出不显示问题 ([23ca50c](https://github.com/continew-org/continew-admin-ui/commit/23ca50c99dad206a97058006b071d1e921fca225))
+- 修复切换 tab 页签后参数丢失的问题 ([13181bb](https://github.com/continew-org/continew-admin-ui/commit/13181bbb8980eab8c1acc2da01d6027818e05c82))
+- 修复侧边栏宽度塌陷错误 ([1b01ced](https://github.com/continew-org/continew-admin-ui/commit/1b01cedae9f30e69fa7393e89223d382ca01a306))
+- 修复修改密码后不弹出跳转提示的问题 ([3f41306](https://github.com/continew-org/continew-admin-ui/commit/3f4130615498b2aa863f75577597b9a6500a192b))
+- 修复用户管理列设置未能正确禁用列的问题 ([eec9610](https://github.com/continew-org/continew-admin-ui/commit/eec9610e7004bc18dbc96dcf401d8d47ef275ce5))
+
 ## [v3.2.0](https://github.com/continew-org/continew-admin-ui/compare/v3.1.0...v3.2.0) (2024-08-05)
 
 ### ✨ 新特性
