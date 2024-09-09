@@ -18,7 +18,7 @@
         <IconRight v-else />
       </template>
       <template #custom-left>
-        <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+        <a-input v-model="queryForm.description" placeholder="请输入名称/描述" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
         <a-select

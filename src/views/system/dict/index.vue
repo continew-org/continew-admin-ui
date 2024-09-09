@@ -9,7 +9,7 @@
     </a-row>
     <a-row align="stretch" :gutter="14" class="h-full page_content">
       <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
-        <DictTree placeholder="请输入关键词" @node-click="handleSelectDict" />
+        <DictTree placeholder="请输入名称/编码/描述" @node-click="handleSelectDict" />
       </a-col>
       <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
         <GiTable
@@ -24,7 +24,7 @@
         @refresh="search"
         >
           <template #custom-left>
-            <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+            <a-input v-model="queryForm.description" placeholder="请输入标签/描述" allow-clear @change="search">
               <template #prefix><icon-search /></template>
             </a-input>
             <a-button @click="reset">重置</a-button>

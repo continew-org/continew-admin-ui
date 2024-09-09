@@ -12,7 +12,7 @@
       @refresh="search"
     >
       <template #custom-left>
-        <a-input v-model="queryForm.nickname" placeholder="请输入用户名或昵称" allow-clear @change="search">
+        <a-input v-model="queryForm.nickname" placeholder="请输入用户名/昵称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
         <DateRangePicker v-model="queryForm.loginTime" @change="search" />

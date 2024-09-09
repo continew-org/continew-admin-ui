@@ -13,7 +13,7 @@
       @refresh="search"
     >
       <template #custom-left>
-        <a-input v-model="queryForm.description" placeholder="请输入关键词" allow-clear @change="search">
+        <a-input v-model="queryForm.description" placeholder="请输入名称/编码/描述" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
         <a-button @click="reset">重置</a-button>
