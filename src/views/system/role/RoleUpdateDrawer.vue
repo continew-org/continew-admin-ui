@@ -126,7 +126,9 @@ const reset = () => {
   isDeptExpanded.value = true
   isDeptCheckAll.value = false
   menuTreeRef.value?.expandAll(isMenuExpanded.value)
+  menuTreeRef.value?.checkAll(false)
   deptTreeRef.value?.expandAll(isDeptExpanded.value)
+  deptTreeRef.value?.checkAll(false)
   formRef.value?.resetFields()
   resetForm()
 }
