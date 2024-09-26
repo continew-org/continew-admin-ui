@@ -71,7 +71,12 @@ const visible = ref(false)
 // 格式化日志
 const formatLog = (log: any) => {
   const date = new Date(Number.parseInt(log.time_stamp))
-  return `${dayjs(date).format('YYYY-MM-DD HH:mm:ss')} ${log.level} [${log.thread}] ${log.location} - ${log.message}`
+  let formatLog = `${dayjs(date).format('YYYY-MM-DD HH:mm:ss')} ${log.level} [${log.thread}] ${log.location} - ${log.message}`
+  // 增加堆栈信息显示
+  if (log.throwable) {
+    formatLog += `\n ${log.throwable}`
+  }
+  return formatLog
 }
 
 const content = ref('')
