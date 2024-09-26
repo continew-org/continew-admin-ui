@@ -8,7 +8,7 @@ interface Options<T, U> {
   onSuccess?: () => void
   immediate?: boolean
   rowKey?: keyof T
-  paginationOption: paginationOptions
+  paginationOption?: paginationOptions
 }
 
 type PaginationParams = { page: number, size: number }
