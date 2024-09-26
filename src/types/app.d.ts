@@ -12,6 +12,8 @@ declare namespace App {
     copyrightDisplay: boolean // 是否显示底部版权信息
     menuDark: boolean // 菜单深色模式
     layout: 'left' | 'mix'
+    isOpenWatermark: boolean // 是否开启水印
+    watermark: string // 水印
   }
   /** 导航页签的样式类型 */
   type TabType = 'card' | 'card-gutter' | 'rounded'
