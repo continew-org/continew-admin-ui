@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           source: ./dist/*
-          target: /docker/continew-admin/tmp
+          target: /tmp/html
           strip_components: 1
       # 7、重启 Nginx
       - name: Restart
@@ -52,6 +52,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            rm -rf /docker/continew-admin/html/*
-            mv /docker/continew-admin/tmp/* /docker/continew-admin/html
-            docker restart nginx
+            rm -rf ${{ secrets.SERVER_PATH }}/*
+            mv /tmp/html/* ${{ secrets.SERVER_PATH }}
+            chmod -R 777 ${{ secrets.SERVER_PATH }}

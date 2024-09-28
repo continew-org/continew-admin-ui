@@ -108,6 +108,7 @@ http.interceptors.response.use(
       content: StatusCodeMessage[response.status] || '服务器暂时未响应，请刷新页面并重试。若无法解决，请联系管理员',
       duration: 5 * 1000
     })
+    console.log(response.status)
     return Promise.reject(error)
   }
 )
