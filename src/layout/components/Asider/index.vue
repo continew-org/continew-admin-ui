@@ -1,10 +1,10 @@
 <template>
   <div v-if="isDesktop" class="asider" :class="{ 'app-menu-dark': appStore.menuDark }"
     :style="appStore.menuDark ? appStore.themeCSSVar : undefined">
-    <Logo :collapsed="appStore.menuCollapse"></Logo>
-    <a-layout-sider class="menu" collapsible breakpoint="xl" hide-trigger :width="225"
+    <a-layout-sider class="menu" collapsible breakpoint="xl" hide-trigger :width="230"
       :collapsed="appStore.menuCollapse" @collapse="handleCollapse">
-      <a-scrollbar outer-class="h-full" style="height: 100%; overflow: auto">
+      <Logo :collapsed="appStore.menuCollapse"></Logo>
+      <a-scrollbar outer-class="menu-scroll-view" style="height: 100%; overflow: auto">
         <Menu></Menu>
       </a-scrollbar>
     </a-layout-sider>
@@ -47,6 +47,8 @@ const handleCollapse = (isCollapsed: boolean) => {
 
 :deep(.arco-layout-sider-children) {
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .asider {
@@ -57,6 +59,11 @@ const handleCollapse = (isCollapsed: boolean) => {
   box-sizing: border-box;
   color: var(--color-text-1);
   background-color: var(--color-bg-1);
+
+  .menu-scroll-view {
+    flex: 1;
+    overflow: hidden;
+  }
 
   .menu {
     flex: 1;

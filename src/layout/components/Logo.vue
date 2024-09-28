@@ -2,7 +2,7 @@
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="toHome">
     <img v-if="logo" class="logo" :src="logo" alt="logo" />
     <img v-else class="logo" src="/logo.svg" alt="logo" />
-    <span class="system-name">{{ title }}</span>
+    <span class="system-name gi_line_1">{{ title }}</span>
   </section>
 </template>
 
@@ -39,6 +39,7 @@ const toHome = () => {
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
+
   &.collapsed {
     padding: 0;
     display: flex;
@@ -48,6 +49,7 @@ const toHome = () => {
       display: none;
     }
   }
+
   .logo {
     width: 32px;
     height: 32px;
@@ -56,10 +58,12 @@ const toHome = () => {
     overflow: hidden;
     flex-shrink: 0;
   }
+
   .system-name {
     padding-left: 6px;
     white-space: nowrap;
     transition: color 0.3s;
+
     &:hover {
       color: $color-theme !important;
       cursor: pointer;
