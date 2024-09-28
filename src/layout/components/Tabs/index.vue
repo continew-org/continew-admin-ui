@@ -79,7 +79,7 @@ watch(
 // 点击页签
 const handleTabClick = (key: string) => {
   const obj = tabsStore.tabList.find((i) => i.path === key)
-  obj ? router.push(obj.fullPath) : router.push(key)
+  obj ? router.push(obj.fullPath || obj.path) : router.push(key)
 }
 </script>
 

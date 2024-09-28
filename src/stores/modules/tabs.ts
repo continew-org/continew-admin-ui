@@ -28,7 +28,8 @@ const storeSetup = () => {
     const isActive = router.currentRoute.value.path === tabList.value[index].path
     tabList.value.splice(index, 1)
     if (isActive) {
-      router.push(tabList.value[tabList.value.length - 1].fullPath)
+      const lastObj = tabList.value[tabList.value.length - 1]
+      router.push(lastObj.fullPath || lastObj.path)
     }
   }
 
