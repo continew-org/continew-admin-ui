@@ -78,6 +78,6 @@
     "vite-plugin-mock": "^2.9.8",
     "vite-plugin-style-import": "^2.0.0",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "2.0.19"
   }
 }
