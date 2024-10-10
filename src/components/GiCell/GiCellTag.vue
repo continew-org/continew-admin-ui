@@ -11,18 +11,15 @@
 
 <script lang="ts" setup>
 import type { LabelValueState } from '@/types/global'
+import type { GiCellTagType } from '@/components/GiCell/type'
 
 defineOptions({ name: 'GiCellTag' })
-
-const props = defineProps({
-  dict: {
-    type: Array<LabelValueState>,
-    required: true
-  },
-  value: {
-    type: [Number, String],
-    required: true
-  }
+const props = withDefaults(defineProps<Partial<GiCellTagType>>(), {
+  dict: [{
+    label: '',
+    value: ''
+  }],
+  value: ''
 })
 
 const dictItem = computed((): LabelValueState => {

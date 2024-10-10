@@ -1,6 +1,7 @@
 import { browse, mapTree } from 'xe-utils'
 import { camelCase, upperFirst } from 'lodash-es'
 import { Message } from '@arco-design/web-vue'
+import CronParser from 'cron-parser'
 import { isExternal } from '@/utils/validate'
 
 export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
@@ -278,4 +279,76 @@ export const fileToBase64 = (file: File): Promise<string> => {
     }
     reader.readAsDataURL(file)
   })
+}
+export const YMD_HMS = 'yyyy-MM-dd HH:mm:ss'
+
+/**
+ * 格式化时间
+ */
+export function dateFormat(date = new Date(), pattern = YMD_HMS) {
+  if (!date) {
+    return ''
+  }
+
+  const o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'H+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds(),
+    'q+': Math.floor((date.getMonth() + 3) / 3),
+    'S+': date.getMilliseconds()
+  }
+
+  let formattedDate = pattern // Start with the pattern
+
+  // Year Handling
+  const yearMatch = formattedDate.match(/(y+)/)
+  if (yearMatch) {
+    formattedDate = formattedDate.replace(yearMatch[0], (`${date.getFullYear()}`).substring(4 - yearMatch[0].length))
+  }
+
+  // Other Formatters
+  for (const k in o) {
+    const reg = new RegExp(`(${k})`)
+    const match = formattedDate.match(reg)
+    if (match) {
+      formattedDate = formattedDate.replace(match[0], (match[0].length === 1) ? o[k] : (`00${o[k]}`).substring((`${o[k]}`).length))
+    }
+  }
+
+  return formattedDate
+}
+
+/**
+ * 不含年的 cron 表达式
+ * @param cron
+ */
+const expressionNoYear = (cron: string) => {
+  const vs = cron.split(' ')
+  return vs.slice(0, vs.length - 1).join(' ')
+}
+
+/**
+ * 解析cron表达式预计未来运行时间
+ * @param cron cron表达式
+ */
+export function parseCron(cron: string) {
+  try {
+    const parse = expressionNoYear(cron)
+    const iter = CronParser.parseExpression(parse, {
+      currentDate: dateFormat(new Date())
+    })
+    const result: string[] = []
+    for (let i = 1; i <= 5; i++) {
+      const nextDate = iter.next()
+      if (nextDate) {
+        result.push(dateFormat(new Date(nextDate as any)))
+      }
+    }
+
+    return result.length > 0 ? result.join('\n') : '无执行时间'
+  } catch (e) {
+    return '表达式错误'
+  }
 }

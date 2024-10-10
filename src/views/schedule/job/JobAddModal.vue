@@ -58,11 +58,17 @@
               >
                 <template #suffix>秒</template>
               </a-input-number>
-              <a-input
-                v-else
-                v-model="form.triggerInterval"
-                placeholder="请输入CRON表达式"
-              />
+              <div v-else style="display: flex;">
+                <a-input
+                    v-model="form.triggerInterval"
+                    placeholder="请输入CRON表达式"
+                />
+                <a-button @click="openGeneratorCron(form.triggerInterval)">
+                  <template #icon>
+                    <icon-history />
+                  </template>
+                </a-button>
+              </div>
             </a-form-item>
           </a-col>
         </a-row>
@@ -150,6 +156,7 @@
         </a-row>
       </fieldset>
     </a-form>
+    <CronGeneratorModal ref="genModal" @ok="(e) => form.triggerInterval = e" />
   </a-modal>
 </template>
 
@@ -159,6 +166,7 @@ import { useWindowSize } from '@vueuse/core'
 import { addJob, listGroup, updateJob } from '@/apis/schedule'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
+import CronGeneratorModal from '@/components/GenCron/CronModel/index.vue'
 
 const emit = defineEmits<{
   (e: 'save-success'): void
@@ -176,7 +184,7 @@ const dataId = ref()
 const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改任务' : '新增任务'))
 const formRef = ref<FormInstance>()
-
+const genModal = ref()
 const rules: FormInstance['rules'] = {
   groupName: [{ required: true, message: '请选择任务组' }],
   jobName: [{ required: true, message: '请输入任务名称' }],
@@ -300,6 +308,11 @@ const onAddArgs = () => {
 // 删除切片参数
 const onDeleteArgs = (index) => {
   args.value.splice(index, 1)
+}
+
+// 打开生成表达式
+const openGeneratorCron = (cron: string) => {
+  genModal.value.open(cron)
 }
 
 defineExpose({ onAdd, onUpdate })

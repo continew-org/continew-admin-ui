@@ -36,7 +36,14 @@
       <template #triggerType="{ record }">
         <GiCellTag :value="record.triggerType" :dict="job_trigger_type_enum" />:&nbsp;
         <span v-if="record.triggerType === 2">{{ record.triggerInterval }} 秒</span>
-        <span v-else>{{ record.triggerInterval }}</span>
+        <span v-else>
+          <a-popover title="最近5次运行时间" position="bottom">
+            <template #content>
+              <a-textarea :model-value="parseCron(record.triggerInterval)" :auto-size="true" style="margin-top: 10px" />
+            </template>
+             <a-link>{{ record.triggerInterval }}</a-link>
+          </a-popover>
+         </span>
       </template>
       <template #taskType="{ record }">
         <GiCellTag :value="record.taskType" :dict="job_task_type_enum" />
@@ -77,7 +84,7 @@ import { type JobQuery, type JobResp, deleteJob, listGroup, listJob, triggerJob,
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
-import { isMobile } from '@/utils'
+import { isMobile, parseCron } from '@/utils'
 import has from '@/utils/has'
 
 defineOptions({ name: 'ScheduleJob' })
@@ -180,13 +187,11 @@ const JobDetailDrawerRef = ref<InstanceType<typeof JobDetailDrawer>>()
 const onDetail = (record: JobResp) => {
   JobDetailDrawerRef.value?.onDetail(record)
 }
-
 const router = useRouter()
 // 日志
 const onLog = (record: JobResp) => {
   router.push({ path: '/schedule/log', query: { jobId: record.id, jobName: record.jobName, groupName: record.groupName } })
 }
-
 onMounted(() => {
   getGroupList()
 })
