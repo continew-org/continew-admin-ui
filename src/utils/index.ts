@@ -326,7 +326,11 @@ export function dateFormat(date = new Date(), pattern = YMD_HMS) {
  */
 const expressionNoYear = (cron: string) => {
   const vs = cron.split(' ')
-  return vs.slice(0, vs.length - 1).join(' ')
+  // 长度=== 7 包含年表达式 不解析
+  if (vs.length === 7) {
+    return vs.slice(0, vs.length - 1).join(' ')
+  }
+  return cron
 }
 
 /**
