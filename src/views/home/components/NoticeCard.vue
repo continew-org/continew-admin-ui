@@ -12,12 +12,20 @@
       style="overflow: hidden"
     >
       <template #content>
-        <div class="content">
+        <a-space>
           <GiCellTag :value="item.type" :dict="notice_type" />
-          <p>
-            <a-link @click="onDetail(item.id)">{{ item.title }}</a-link>
-          </p>
-        </div>
+          <a-link @click="onDetail(item.id)">
+            <a-typography-paragraph
+              :ellipsis="{
+                rows: 1,
+                showTooltip: true,
+                css: true,
+              }"
+            >
+              {{ item.title }}
+            </a-typography-paragraph>
+          </a-link>
+        </a-space>
       </template>
     </a-comment>
   </a-card>
@@ -60,14 +68,6 @@ onMounted(() => {
 }
 :deep(.arco-comment-datetime) {
   color: var(--color-text-4);
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  > p {
-    margin-left: 6px;
-  }
 }
 
 .arco-link {

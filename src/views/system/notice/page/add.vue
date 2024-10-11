@@ -4,7 +4,15 @@
             <a-affix :target="(containerRef as HTMLElement)">
                 <a-page-header title="通知公告" :subtitle="type === 'edit' ? '修改' : '新增'" @back="onBack">
                     <template #extra>
-                        <a-button type="primary" @click="onReleased">{{ type === 'edit' ? '修改' : '发布' }}</a-button>
+                        <a-button type="primary" @click="onReleased">
+                          <template #icon>
+                            <icon-save v-if="type === 'edit'" />
+                            <icon-send v-else />
+                          </template>
+                          <template #default>
+                            {{ type === 'edit' ? '保存' : '发布' }}
+                          </template>
+                        </a-button>
                     </template>
                 </a-page-header>
             </a-affix>

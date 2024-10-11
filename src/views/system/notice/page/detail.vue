@@ -6,7 +6,7 @@
                 </a-page-header>
             </a-affix>
         </div>
-        <div class="detail_content" style="display: flex; flex-direction: column;">
+        <div class="detail_content">
             <h1 class="title">{{ form?.title }}</h1>
             <div class="info">
                 <a-space>
@@ -21,6 +21,12 @@
                         <span class="label">发布时间：</span>
                         <span>{{ form?.effectiveTime ? form?.effectiveTime : form?.createTime
                             }}</span>
+                    </span>
+                    <a-divider v-if="form?.updateTime" direction="vertical" />
+                    <span v-if="form?.updateTime">
+                      <icon-schedule class="icon" />
+                      <span>更新时间：</span>
+                      <span>{{ form?.updateTime }}</span>
                     </span>
                 </a-space>
             </div>
@@ -71,8 +77,11 @@ onMounted(() => {
     }
 
     .info {
-        text-align: right;
-        padding: 20px;
+        text-align: center;
+    }
+
+    .icon {
+      margin-right: 3px;
     }
 }
 </style>
