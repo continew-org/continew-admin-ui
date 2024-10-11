@@ -23,7 +23,7 @@
       </a-typography-paragraph>
     </a-typography>
     <a-divider />
-    <MdPreview :editor-id="dataDetail?.id" :model-value="dataDetail?.content" />
+    <AiEditor :model-value="dataDetail?.content" />
     <a-divider />
     <div v-if="dataDetail?.updateTime" class="update-time-row">
       <span>
@@ -36,8 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { MdPreview } from 'md-editor-v3'
 import { useWindowSize } from '@vueuse/core'
+import AiEditor from './components/detail/index.vue'
 import { type NoticeResp, getNotice } from '@/apis/system'
 
 const { width } = useWindowSize()
