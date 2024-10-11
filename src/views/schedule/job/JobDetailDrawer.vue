@@ -9,7 +9,7 @@
       <a-descriptions-item label="触发类型">
         <GiCellTag :value="dataDetail?.triggerType" :dict="job_trigger_type_enum" />
       </a-descriptions-item>
-      <a-descriptions-item v-if="dataDetail?.triggerType === 1" label="CRON">{{ dataDetail?.triggerInterval }}</a-descriptions-item>
+      <a-descriptions-item v-if="dataDetail?.triggerType === 1" label="Cron">{{ dataDetail?.triggerInterval }}</a-descriptions-item>
       <a-descriptions-item v-else-if="dataDetail?.triggerType === 2" label="间隔时长">{{ dataDetail?.triggerInterval }} 秒</a-descriptions-item>
       <a-descriptions-item label="任务类型">
         <GiCellTag :value="dataDetail?.taskType" :dict="job_task_type_enum" />

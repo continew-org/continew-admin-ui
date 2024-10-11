@@ -49,25 +49,41 @@
             </a-form-item>
           </a-col>
           <a-col v-bind="colProps">
-            <a-form-item :label="form.triggerType === 2 ? '间隔时长' : 'CRON表达式'" field="triggerInterval">
+            <a-form-item
+              v-if="form.triggerType === 2"
+              label="间隔时长"
+              field="triggerInterval"
+              :rules="[{ required: true, message: '请输入间隔时长' }]"
+            >
               <a-input-number
-                v-if="form.triggerType === 2"
-                v-model="triggerIntervalNumber"
+                v-model="form.triggerInterval"
                 placeholder="请输入间隔时长"
                 :min="1"
               >
                 <template #suffix>秒</template>
               </a-input-number>
-              <div v-else style="display: flex;">
+            </a-form-item>
+            <a-form-item
+              v-else
+              label="Cron表达式"
+              field="triggerInterval"
+              :rules="[{ required: true, message: '请输入Cron表达式' }]"
+            >
+              <div style="display: flex;">
                 <a-input
-                    v-model="form.triggerInterval"
-                    placeholder="请输入CRON表达式"
-                />
-                <a-button @click="openGeneratorCron(form.triggerInterval)">
-                  <template #icon>
-                    <icon-history />
+                  v-model="form.triggerInterval"
+                  placeholder="请输入Cron表达式"
+                >
+                  <template #append>
+                    <a-tooltip content="Cron表达式生成">
+                      <a-button class="gi_hover_btn-border" @click="openGeneratorCron(form.triggerInterval)">
+                        <template #icon>
+                          <icon-clock-circle />
+                        </template>
+                      </a-button>
+                    </a-tooltip>
                   </template>
-                </a-button>
+                </a-input>
               </div>
             </a-form-item>
           </a-col>
@@ -189,7 +205,6 @@ const rules: FormInstance['rules'] = {
   groupName: [{ required: true, message: '请选择任务组' }],
   jobName: [{ required: true, message: '请输入任务名称' }],
   triggerType: [{ required: true, message: '请选择触发类型' }],
-  triggerInterval: [{ required: true, message: '请输入间隔时长' }],
   taskType: [{ required: true, message: '请选择任务类型' }],
   executorInfo: [{ required: true, message: '请输入执行器名称' }],
   routeKey: [{ required: true, message: '请选择路由策略' }],
@@ -291,15 +306,6 @@ const triggerTypeChange = () => {
       break
   }
 }
-// 间隔时长
-const triggerIntervalNumber = computed({
-  get() {
-    return Number(form.triggerInterval)
-  },
-  set(newValue) {
-    form.triggerInterval = newValue.toString()
-  }
-})
 
 // 新增切片参数
 const onAddArgs = () => {
@@ -353,5 +359,14 @@ fieldset legend {
 .add-button {
   align-self: flex-start;
   width: 100px;
+}
+
+:deep(.arco-input-append) {
+  padding: 0;
+  .arco-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 1px solid transparent;
+  }
 }
 </style>

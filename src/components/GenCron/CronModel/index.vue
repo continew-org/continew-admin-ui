@@ -2,7 +2,7 @@
   <a-modal v-model:visible="visible"
            modal-class="modal-form-small"
            title-align="start"
-           title="CRON 生成器"
+           title="Cron表达式生成"
            :top="32"
            :width="780"
            :align-center="false"
