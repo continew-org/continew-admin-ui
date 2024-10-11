@@ -51,6 +51,10 @@ const columns: Columns = reactive([
     label: '标题',
     field: 'title',
     type: 'input',
+    props: {
+      maxLength: 150,
+      showWordLimit: true
+    },
     rules: [{ required: true, message: '请输入标题' }]
   },
   {

@@ -21,7 +21,7 @@
           </a-col>
           <a-col v-bind="colProps">
             <a-form-item label="任务名称" field="jobName">
-              <a-input v-model.trim="form.jobName" placeholder="请输入任务名称" :max-length="64" />
+              <a-input v-model.trim="form.jobName" placeholder="请输入任务名称" :max-length="64" show-word-limit />
             </a-form-item>
           </a-col>
         </a-row>

@@ -10,13 +10,13 @@
   >
     <a-form ref="formRef" :model="form" :rules="rules" size="large" auto-label-width>
       <a-form-item label="用户名" field="username">
-        <a-input v-model.trim="form.username" placeholder="请输入用户名" :max-length="64" />
+        <a-input v-model.trim="form.username" placeholder="请输入用户名" :max-length="64" show-word-limit />
       </a-form-item>
       <a-form-item label="昵称" field="nickname">
-        <a-input v-model.trim="form.nickname" placeholder="请输入昵称" :max-length="30" />
+        <a-input v-model.trim="form.nickname" placeholder="请输入昵称" :max-length="30" show-word-limit />
       </a-form-item>
       <a-form-item v-if="!isUpdate" label="密码" field="password">
-        <a-input-password v-model.trim="form.password" placeholder="请输入密码" :max-length="32" />
+        <a-input-password v-model.trim="form.password" placeholder="请输入密码" :max-length="32" show-word-limit />
       </a-form-item>
       <a-form-item label="手机号码" field="phone">
         <a-input v-model.trim="form.phone" placeholder="请输入手机号码" :max-length="11" />

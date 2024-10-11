@@ -20,7 +20,7 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="标题" field="title">
-            <a-input v-model="form.title" placeholder="请输入标题" allow-clear :max-length="150" style="width: 100%" />
+            <a-input v-model="form.title" placeholder="请输入标题" allow-clear :max-length="150" show-word-limit style="width: 100%" />
           </a-form-item>
         </a-col>
       </a-row>

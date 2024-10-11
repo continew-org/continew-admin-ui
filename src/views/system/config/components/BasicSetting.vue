@@ -55,16 +55,20 @@
         </template>
       </a-form-item>
       <a-form-item class="input-item" field="SITE_TITLE" :label="siteConfig.SITE_TITLE.name">
-        <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入网站标题" :max-length="18" />
+        <a-input v-model.trim="form.SITE_TITLE" placeholder="请输入系统标题" :max-length="18" show-word-limit />
       </a-form-item>
       <a-form-item class="input-item" field="SITE_DESCRIPTION" :label="siteConfig.SITE_DESCRIPTION.name">
-        <a-input v-model.trim="form.SITE_DESCRIPTION" placeholder="请输入网站描述" :max-length="18" />
+        <a-textarea
+          v-model.trim="form.SITE_DESCRIPTION"
+          placeholder="请输入系统描述"
+          :auto-size="{ minRows: 1, maxRows: 3 }"
+        />
       </a-form-item>
       <a-form-item class="input-item" field="SITE_COPYRIGHT" :label="siteConfig.SITE_COPYRIGHT.name">
         <a-input v-model.trim="form.SITE_COPYRIGHT" placeholder="请输入版权信息" />
       </a-form-item>
       <a-form-item class="input-item" field="SITE_BEIAN" :label="siteConfig.SITE_BEIAN.name">
-        <a-input v-model.trim="form.SITE_BEIAN" placeholder="请输入备案信息" style="width: 100%;" />
+        <a-input v-model.trim="form.SITE_BEIAN" placeholder="请输入备案号" :max-length="30" show-word-limit style="width: 100%;" />
       </a-form-item>
       <div style="margin-top: 20px">
         <a-space>
@@ -124,6 +128,7 @@ const { form } = useForm({
 })
 const rules: FormInstance['rules'] = {
   SITE_TITLE: [{ required: true, message: '请输入系统标题' }],
+  SITE_DESCRIPTION: [{ required: true, message: '请输入系统描述' }],
   SITE_COPYRIGHT: [{ required: true, message: '请输入版权信息' }]
 }
 
