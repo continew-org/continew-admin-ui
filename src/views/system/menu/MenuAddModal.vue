@@ -145,7 +145,7 @@ const menuSelectTree = computed(() => {
   }))
 })
 
-// 过滤菜单树
+// 过滤树
 const filterOptions = (searchKey: string, nodeData: TreeNodeData) => {
   if (nodeData.title) {
     return nodeData.title.toLowerCase().includes(searchKey.toLowerCase())

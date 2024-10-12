@@ -114,7 +114,6 @@ export interface MenuResp {
 export interface MenuQuery {
   title?: string
   status?: number
-  sort: Array<string>
 }
 
 /** 系统部门类型 */
@@ -136,7 +135,6 @@ export interface DeptResp {
 export interface DeptQuery {
   description?: string
   status?: number
-  sort: Array<string>
 }
 
 /** 系统字典类型 */

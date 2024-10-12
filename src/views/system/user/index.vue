@@ -9,7 +9,7 @@
     </a-row>
     <a-row align="stretch" :gutter="14" class="h-full page_content">
       <a-col :xs="0" :sm="8" :md="7" :lg="6" :xl="5" :xxl="4" flex="260px" class="h-full ov-hidden">
-        <DeptTree placeholder="请输入名称/描述" @node-click="handleSelectDept" />
+        <DeptTree placeholder="请输入名称" @node-click="handleSelectDept" />
       </a-col>
       <a-col :xs="24" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" class="h-full ov-hidden">
         <GiTable row-key="id" :data="dataList" :columns="columns" :loading="loading"

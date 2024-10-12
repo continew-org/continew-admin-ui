@@ -1,7 +1,7 @@
 <template>
   <div class="left-tree">
     <div class="left-tree__search">
-      <a-input v-model="inputValue" :placeholder="props.placeholder" allow-clear>
+      <a-input v-model="searchKey" :placeholder="props.placeholder" allow-clear>
         <template #prefix><icon-search /></template>
       </a-input>
     </div>
@@ -9,7 +9,7 @@
       <div class="left-tree__tree">
         <a-tree
           ref="treeRef"
-          :data="deptList"
+          :data="treeData"
           show-line
           block-node
           default-expand-all
@@ -20,6 +20,13 @@
             <IconCaretDown v-if="!isLeaf" />
             <IconIdcard v-else />
           </template>
+          <template #title="nodeData">
+            <template v-if="index = getMatchIndex(nodeData?.title), index < 0">{{ nodeData?.title }}</template>
+            <span v-else>{{ nodeData?.title?.substr(0, index) }}
+              <span style="color: rgb(var(--arcoblue-6));">{{ nodeData?.title?.substr(index, searchKey.length) }}</span>
+              {{ nodeData?.title?.substr(index + searchKey.length) }}
+            </span>
+          </template>
         </a-tree>
       </div>
     </div>
@@ -27,7 +34,7 @@
 </template>
 
 <script setup lang="tsx">
-import type { TreeInstance } from '@arco-design/web-vue'
+import type { TreeInstance, TreeNodeData } from '@arco-design/web-vue'
 import { ref } from 'vue'
 import { useDept } from '@/hooks/app'
 
@@ -58,11 +65,42 @@ const { deptList, getDeptList } = useDept({
   }
 })
 
-// 树查询
-const inputValue = ref('')
-watch(inputValue, (val) => {
-  getDeptList(val)
+// 过滤树
+const searchKey = ref('')
+const search = (keyword: string) => {
+  const loop = (data: TreeNodeData[]) => {
+    const result = [] as TreeNodeData[]
+    data.forEach((item: TreeNodeData) => {
+      if (item.title?.toLowerCase().includes(keyword.toLowerCase())) {
+        result.push({ ...item })
+      } else if (item.children) {
+        const filterData = loop(item.children)
+        if (filterData.length) {
+          result.push({
+            ...item,
+            children: filterData
+          })
+        }
+      }
+    })
+    return result
+  }
+  return loop(deptList.value)
+}
+
+const treeData = computed(() => {
+  if (!searchKey.value) return deptList.value
+  return search(searchKey.value)
 })
+
+/**
+ * 获取匹配索引
+ * @param name 名称
+ */
+const getMatchIndex = (name: string) => {
+  if (!searchKey.value) return -1
+  return name.toLowerCase().indexOf(searchKey.value.toLowerCase())
+}
 
 onMounted(() => {
   getDeptList()

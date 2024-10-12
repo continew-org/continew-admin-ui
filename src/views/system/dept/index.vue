@@ -18,17 +18,9 @@
         <IconRight v-else />
       </template>
       <template #custom-left>
-        <a-input v-model="queryForm.description" placeholder="请输入名称/描述" allow-clear @change="search">
+        <a-input v-model="name" placeholder="请输入名称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-select
-          v-model="queryForm.status"
-          :options="DisEnableStatusList"
-          placeholder="请选择状态"
-          allow-clear
-          style="width: 150px"
-          @change="search"
-        />
         <a-button @click="reset">重置</a-button>
       </template>
       <template #custom-right>
@@ -80,9 +72,52 @@ import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
-import { DisEnableStatusList } from '@/constant/common'
 
 defineOptions({ name: 'SystemDept' })
+
+const tableRef = ref<InstanceType<typeof GiTable>>()
+const queryForm = reactive<DeptQuery>({})
+const {
+  tableData,
+  loading,
+  search,
+  handleDelete
+} = useTable(() => listDept(queryForm), {
+  immediate: true,
+  onSuccess: () => {
+    nextTick(() => {
+      tableRef.value?.tableRef?.expandAll(true)
+    })
+  }
+})
+
+// 过滤树
+const name = ref('')
+const searchData = (name: string) => {
+  const loop = (data: DeptResp[]) => {
+    const result = [] as DeptResp[]
+    data.forEach((item: DeptResp) => {
+      if (item.name?.toLowerCase().includes(name.toLowerCase())) {
+        result.push({ ...item })
+      } else if (item.children) {
+        const filterData = loop(item.children)
+        if (filterData.length) {
+          result.push({
+            ...item,
+            children: filterData
+          })
+        }
+      }
+    })
+    return result
+  }
+  return loop(tableData.value)
+}
+
+const dataList = computed(() => {
+  if (!name.value) return tableData.value
+  return searchData(name.value)
+})
 
 const columns: TableInstanceColumns[] = [
   { title: '名称', dataIndex: 'name', width: 170, ellipsis: true, tooltip: true },
@@ -104,30 +139,9 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm = reactive<DeptQuery>({
-  sort: ['parentId,asc', 'sort,asc', 'createTime,desc']
-})
-
-const tableRef = ref<InstanceType<typeof GiTable>>()
-const {
-  tableData: dataList,
-  loading,
-  search,
-  handleDelete
-} = useTable(() => listDept(queryForm), {
-  immediate: true,
-  onSuccess: () => {
-    nextTick(() => {
-      tableRef.value?.tableRef?.expandAll(true)
-    })
-  }
-})
-
 // 重置
 const reset = () => {
-  queryForm.description = undefined
-  queryForm.status = undefined
-  search()
+  name.value = ''
 }
 
 // 删除
