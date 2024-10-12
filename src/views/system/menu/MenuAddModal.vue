@@ -27,11 +27,7 @@
           allow-search
           :data="(menuSelectTree as any)"
           :fallback-option="false"
-          :field-names="{
-            key: 'id',
-            title: 'title',
-            children: 'children',
-          }"
+          :filter-tree-node="filterOptions"
         />
       </a-form-item>
       <a-form-item v-if="[1, 2].includes(form.type)" label="菜单图标" field="icon">
@@ -121,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { type FormInstance, Message } from '@arco-design/web-vue'
+import { type FormInstance, Message, type TreeNodeData } from '@arco-design/web-vue'
 import { mapTree } from 'xe-utils'
 import { type MenuResp, addMenu, getMenu, updateMenu } from '@/apis/system'
 import { useForm } from '@/hooks'
@@ -143,11 +139,19 @@ const menuSelectTree = computed(() => {
   const menus = JSON.parse(JSON.stringify(props.menus)) as MenuResp[]
   const data = filterTree(menus, (i) => [1, 2].includes(i.type))
   return mapTree(data, (i) => ({
-    id: i.id,
+    key: i.id,
     title: i.title,
     children: i.children
   }))
 })
+
+// 过滤菜单树
+const filterOptions = (searchKey: string, nodeData: TreeNodeData) => {
+  if (nodeData.title) {
+    return nodeData.title.toLowerCase().includes(searchKey.toLowerCase())
+  }
+  return false
+}
 
 const dataId = ref('')
 const isUpdate = computed(() => !!dataId.value)
