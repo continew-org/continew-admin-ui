@@ -30,7 +30,10 @@
           <a-option :value="false">未读</a-option>
           <a-option :value="true">已读</a-option>
         </a-select>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #custom-right>
         <a-button type="primary" status="danger" :disabled="!selectedKeys.length" @click="onDelete">

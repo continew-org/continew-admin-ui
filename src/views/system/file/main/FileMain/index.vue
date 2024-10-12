@@ -44,7 +44,7 @@
         </a-button>
         <a-button-group>
           <a-tooltip content="视图">
-            <a-button class="gi_hover_btn-border" @click="toggleMode">
+            <a-button @click="toggleMode">
               <template #icon>
                 <icon-list v-if="mode === 'grid'" />
                 <icon-apps v-else />

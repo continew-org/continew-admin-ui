@@ -24,7 +24,10 @@
           style="width: 150px"
           @change="search"
         />
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #custom-right>
         <a-button v-permission="['system:storage:add']" type="primary" @click="onAdd">

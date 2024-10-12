@@ -20,7 +20,10 @@
         <a-input v-model="title" placeholder="请输入菜单标题" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #custom-right>
         <a-button v-permission="['system:menu:add']" type="primary" @click="onAdd()">
@@ -28,7 +31,7 @@
           <span>新增</span>
         </a-button>
         <a-tooltip content="展开/折叠">
-          <a-button class="gi_hover_btn-border" @click="onExpanded">
+          <a-button @click="onExpanded">
             <template #icon>
               <icon-list v-if="!isExpanded" />
               <icon-mind-mapping v-else />

@@ -16,7 +16,10 @@
         <a-input v-model="queryForm.description" placeholder="请输入名称/编码/描述" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #custom-right>
         <a-button v-permission="['system:role:add']" type="primary" @click="onAdd">

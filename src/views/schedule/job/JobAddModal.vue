@@ -76,7 +76,7 @@
                 >
                   <template #append>
                     <a-tooltip content="Cron表达式生成">
-                      <a-button class="gi_hover_btn-border" @click="openGeneratorCron(form.triggerInterval)">
+                      <a-button @click="openGeneratorCron(form.triggerInterval)">
                         <template #icon>
                           <icon-clock-circle />
                         </template>

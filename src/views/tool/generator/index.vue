@@ -16,7 +16,10 @@
         <a-input v-model="queryForm.tableName" placeholder="请输入表名称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #action="{ record }">
         <a-space>

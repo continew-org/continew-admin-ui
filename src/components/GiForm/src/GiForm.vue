@@ -197,7 +197,10 @@
               <template #icon><icon-search /></template>
               <template #default>{{ options.btns?.searchBtnText || '查询' }}</template>
             </a-button>
-            <a-button @click="emit('reset')">重置</a-button>
+            <a-button @click="emit('reset')">
+              <template #icon><icon-refresh /></template>
+              <template #default>重置</template>
+            </a-button>
             <a-button v-if="options.fold?.enable" type="text" size="mini" @click="collapsed = !collapsed">
               <template #icon>
                 <icon-up v-if="!collapsed" />

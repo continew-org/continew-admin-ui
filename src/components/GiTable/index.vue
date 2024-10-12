@@ -14,13 +14,13 @@
       <a-space wrap class="gi-table__toolbar-right" :size="[8, 8]">
         <slot name="custom-right"></slot>
         <a-tooltip content="刷新">
-          <a-button v-if="showRefreshBtn" class="gi_hover_btn-border" @click="refresh">
+          <a-button v-if="showRefreshBtn" @click="refresh">
             <template #icon><icon-refresh /></template>
           </a-button>
         </a-tooltip>
         <a-dropdown v-if="showSizeBtn" @select="handleSelect">
           <a-tooltip content="尺寸">
-            <a-button class="gi_hover_btn-border">
+            <a-button>
               <template #icon><icon-table-size style="width: 14px; height: 14px" /></template>
             </a-button>
           </a-tooltip>
@@ -34,7 +34,7 @@
         <a-popover v-if="showSettingColumnBtn" trigger="click" position="br"
           :content-style="{ minWidth: '120px', padding: '6px 8px 10px' }">
           <a-tooltip content="列设置">
-            <a-button class="gi_hover_btn-border">
+            <a-button>
               <template #icon>
                 <icon-settings />
               </template>
@@ -59,7 +59,7 @@
           </template>
         </a-popover>
         <a-tooltip content="全屏">
-          <a-button v-if="showFullscreenBtn" class="gi_hover_btn-border" @click="isFullscreen = !isFullscreen">
+          <a-button v-if="showFullscreenBtn" @click="isFullscreen = !isFullscreen">
             <template #icon>
               <icon-fullscreen v-if="!isFullscreen" />
               <icon-fullscreen-exit v-else />
@@ -71,7 +71,7 @@
     <div class="gi-table__body" :class="`gi-table__body-pagination-${attrs['page-position']}`">
       <div class="gi-table__container">
         <a-table ref="tableRef" :stripe="stripe" :size="size" column-resizable :bordered="{ cell: isBordered }"
-          v-bind="{ ...attrs, columns: _columns }" :scrollbar="true" >
+          v-bind="{ ...attrs, columns: _columns }" :scrollbar="true">
           <template v-for="key in Object.keys(slots)" :key="key" #[key]="scoped">
             <slot :key="key" :name="key" v-bind="scoped"></slot>
           </template>

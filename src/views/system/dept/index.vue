@@ -21,20 +21,22 @@
         <a-input v-model="name" placeholder="请输入名称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
       <template #custom-right>
         <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd()">
           <template #icon><icon-plus /></template>
           <span>新增</span>
         </a-button>
-        <a-tooltip content="导出">
-          <a-button v-permission="['system:dept:export']" class="gi_hover_btn-border" @click="onExport">
-            <template #icon>
-              <icon-download />
-            </template>
-          </a-button>
-        </a-tooltip>
+        <a-button v-permission="['system:dept:export']" @click="onExport">
+          <template #icon>
+            <icon-download />
+          </template>
+          <template #default>导出</template>
+        </a-button>
       </template>
       <template #status="{ record }">
         <GiCellStatus :status="record.status" />
