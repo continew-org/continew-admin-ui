@@ -12,7 +12,7 @@
       :disabled-column-keys="['name']"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-input v-model="queryForm.description" placeholder="请输入名称/编码/描述" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
@@ -29,7 +29,7 @@
           <template #default>重置</template>
         </a-button>
       </template>
-      <template #custom-right>
+      <template #toolbar-right>
         <a-button v-permission="['system:storage:add']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <span>新增</span>

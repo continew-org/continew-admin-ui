@@ -2,9 +2,7 @@
   <div class="table-page">
     <a-row justify="space-between" align="center" class="header">
       <a-space wrap>
-        <slot name="custom-title">
-          <div class="title">系统日志</div>
-        </slot>
+        <div class="title">系统日志</div>
       </a-space>
     </a-row>
     <a-tabs v-model:active-key="activeKey" type="card-gutter" size="large" @change="change">

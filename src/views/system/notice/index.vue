@@ -12,7 +12,7 @@
       :disabled-column-keys="['title']"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-input v-model="queryForm.title" placeholder="请输入标题" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
@@ -29,7 +29,7 @@
           <template #default>重置</template>
         </a-button>
       </template>
-      <template #custom-right>
+      <template #toolbar-right>
         <a-button v-permission="['system:notice:add']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <span>新增</span>

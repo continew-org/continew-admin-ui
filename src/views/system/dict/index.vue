@@ -2,9 +2,7 @@
   <div class="table-page">
     <a-row justify="space-between" align="center" class="header page_header">
       <a-space wrap>
-        <slot name="custom-title">
-          <div class="title">字典管理</div>
-        </slot>
+        <div class="title">字典管理</div>
       </a-space>
     </a-row>
     <a-row align="stretch" :gutter="14" class="h-full page_content">
@@ -23,7 +21,7 @@
         :disabled-column-keys="['label']"
         @refresh="search"
         >
-          <template #custom-left>
+          <template #toolbar-left>
             <a-input v-model="queryForm.description" placeholder="请输入标签/描述" allow-clear @change="search">
               <template #prefix><icon-search /></template>
             </a-input>
@@ -32,7 +30,7 @@
               <template #default>重置</template>
             </a-button>
           </template>
-          <template #custom-right>
+          <template #toolbar-right>
             <a-button v-permission="['system:dict:item:add']" type="primary" @click="onAdd">
               <template #icon><icon-plus /></template>
               <span>新增</span>

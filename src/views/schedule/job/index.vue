@@ -12,7 +12,7 @@
       :disabled-column-keys="['name']"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-select
           v-model="queryForm.groupName"
           placeholder="请选择任务组"
@@ -27,7 +27,7 @@
           <template #default>重置</template>
         </a-button>
       </template>
-      <template #custom-right>
+      <template #toolbar-right>
         <a-button v-permission="['schedule:job:add']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <span>新增</span>

@@ -7,12 +7,15 @@
         </slot>
       </a-space>
     </a-row>
+    <a-row>
+      <slot name="top"></slot>
+    </a-row>
     <a-row justify="space-between" align="center" class="gi-table__toolbar">
       <a-space wrap class="gi-table__toolbar-left" :size="[8, 8]">
-        <slot name="custom-left"></slot>
+        <slot name="toolbar-left"></slot>
       </a-space>
       <a-space wrap class="gi-table__toolbar-right" :size="[8, 8]">
-        <slot name="custom-right"></slot>
+        <slot name="toolbar-right"></slot>
         <a-tooltip content="刷新">
           <a-button v-if="showRefreshBtn" @click="refresh">
             <template #icon><icon-refresh /></template>

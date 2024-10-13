@@ -11,7 +11,7 @@
       :disabled-tools="['size']"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-input v-model="queryForm.nickname" placeholder="请输入用户名/昵称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>

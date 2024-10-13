@@ -10,7 +10,7 @@
     @filter-change="filterChange"
     @refresh="search"
   >
-    <template #custom-left>
+    <template #toolbar-left>
       <a-input v-model="queryForm.createUserString" placeholder="请输入登录用户" allow-clear @change="search">
         <template #prefix><icon-search /></template>
       </a-input>
@@ -23,7 +23,7 @@
         <template #default>重置</template>
       </a-button>
     </template>
-    <template #custom-right>
+    <template #toolbar-right>
       <a-button v-permission="['monitor:log:export']" @click="onExport">
         <template #icon>
           <icon-download />

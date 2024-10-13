@@ -47,7 +47,7 @@
           :disabled-column-keys="['tableName']"
           @change="handleChangeSort"
         >
-          <template #custom-left>
+          <template #toolbar-left>
             <a-popconfirm
               content="是否确定同步最新数据表结构？同步后只要不点击确定保存，则不影响原有配置数据。"
               type="warning"

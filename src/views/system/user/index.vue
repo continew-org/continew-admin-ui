@@ -2,9 +2,7 @@
   <div class="table-page">
     <a-row justify="space-between" align="center" class="header page_header">
       <a-space wrap>
-        <slot name="custom-title">
-          <div class="title">用户管理</div>
-        </slot>
+        <div class="title">用户管理</div>
       </a-space>
     </a-row>
     <a-row align="stretch" :gutter="14" class="h-full page_content">
@@ -12,7 +10,6 @@
         <DeptTree placeholder="请输入名称" @node-click="handleSelectDept" />
       </a-col>
       <a-col :xs="24" :sm="24" :md="18" :lg="19" :xl="19" :xxl="20" class="h-full ov-hidden">
-        <GiForm v-model="queryForm" :options="options" :columns="queryFormColumns" @search="search" @reset="reset"></GiForm>
         <GiTable
           row-key="id"
           :data="dataList"
@@ -24,7 +21,10 @@
           :disabled-column-keys="['username']"
           @refresh="search"
         >
-          <template #custom-left>
+          <template #top>
+            <GiForm v-model="queryForm" :options="options" :columns="queryFormColumns" @search="search" @reset="reset"></GiForm>
+          </template>
+          <template #toolbar-left>
             <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
               <template #icon>
                 <icon-plus />
@@ -38,7 +38,7 @@
               <span>导入</span>
             </a-button>
           </template>
-          <template #custom-right>
+          <template #toolbar-right>
             <a-button v-permission="['system:user:export']" @click="onExport">
               <template #icon>
                 <icon-download />
@@ -76,7 +76,11 @@
                 删除
               </a-link>
               <a-dropdown>
-                <a-link v-if="has.hasPermOr(['system:user:resetPwd'])" type="text">更多</a-link>
+                <a-button v-if="has.hasPermOr(['system:user:resetPwd'])" type="text" size="mini">
+                  <template #icon>
+                    <icon-more :size="16" />
+                  </template>
+                </a-button>
                 <template #content>
                   <a-doption v-permission="['system:user:resetPwd']" @click="onResetPwd(record)">重置密码</a-doption>
                 </template>
@@ -201,7 +205,7 @@ const columns: TableInstanceColumns[] = [
   {
     title: '操作',
     slotName: 'action',
-    width: 200,
+    width: 150,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
     show: has.hasPermOr(['system:user:update', 'system:user:delete', 'system:user:resetPwd'])

@@ -12,7 +12,7 @@
       :disabled-column-keys="['tableName']"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-input v-model="queryForm.tableName" placeholder="请输入表名称" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>

@@ -16,7 +16,7 @@
       @select="select"
       @refresh="search"
     >
-      <template #custom-left>
+      <template #toolbar-left>
         <a-input v-model="queryForm.title" placeholder="请输入标题" allow-clear @change="search">
           <template #prefix><icon-search /></template>
         </a-input>
@@ -35,7 +35,7 @@
           <template #default>重置</template>
         </a-button>
       </template>
-      <template #custom-right>
+      <template #toolbar-right>
         <a-button type="primary" status="danger" :disabled="!selectedKeys.length" @click="onDelete">
           <template #icon><icon-delete /></template>
           <span>删除</span>
