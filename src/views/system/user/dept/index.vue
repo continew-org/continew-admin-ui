@@ -145,7 +145,7 @@ onMounted(() => {
   height: 100%;
 
   &__search {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
   }
 
   &__container {

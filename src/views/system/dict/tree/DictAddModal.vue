@@ -29,7 +29,7 @@ const title = computed(() => (isUpdate.value ? '修改字典' : '新增字典'))
 const formRef = ref<InstanceType<typeof GiForm>>()
 
 const options: Options = {
-  form: {},
+  form: { size: 'large' },
   col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 },
   btns: { hide: true }
 }

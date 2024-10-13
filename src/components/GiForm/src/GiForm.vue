@@ -1,5 +1,5 @@
 <template>
-  <a-form ref="formRef" v-bind="options.form" :model="modelValue" size="large" :auto-label-width="true">
+  <a-form ref="formRef" v-bind="options.form" :model="modelValue" :auto-label-width="true">
     <a-row :gutter="14" v-bind="options.row" class="w-full">
       <template v-for="(item, index) in columns" :key="item.field">
         <a-col
@@ -150,10 +150,9 @@
               </template>
 
               <template v-if="item.type === 'range-picker'">
-                <a-range-picker
-                  v-bind="(item.props as A.RangePickerInstance['$props'])"
-                  :model-value="modelValue[item.field as keyof typeof modelValue]"
-                  @update:model-value="valueChange($event, item.field)"></a-range-picker>
+                <DateRangePicker v-bind="(item.props as A.RangePickerInstance['$props'])"
+                                 :model-value="modelValue[item.field as keyof typeof modelValue]"
+                                 @update:model-value="valueChange($event, item.field)" />
               </template>
 
               <template v-if="item.type === 'color-picker'">
@@ -191,7 +190,7 @@
         </a-col>
       </template>
       <a-col v-if="!options.btns?.hide" :span="options.btns?.span || 12" v-bind="options.btns?.col">
-        <a-space wrap>
+        <a-space wrap :size="[8, 16]">
           <slot name="suffix">
             <a-button type="primary" @click="emit('search')">
               <template #icon><icon-search /></template>
@@ -219,6 +218,7 @@
 import type * as A from '@arco-design/web-vue'
 import { cloneDeep } from 'lodash-es'
 import type { Columns, ColumnsItem, ColumnsItemDisabled, ColumnsItemHide, Options } from './type'
+import DateRangePicker from '@/components/DateRangePicker/index.vue'
 
 interface Props {
   modelValue: any
@@ -304,4 +304,8 @@ watch(cloneForm as any, (newVal, oldVal) => {
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  :deep(.arco-form-item-layout-inline) {
+    margin-right: 0;
+  }
+</style>

@@ -37,6 +37,7 @@ export interface UserImportResp {
 export interface UserQuery {
   description?: string
   status?: number
+  createTime?: Array<string>
   deptId?: string
   sort: Array<string>
 }
