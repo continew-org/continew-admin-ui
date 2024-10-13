@@ -190,7 +190,7 @@
         </a-col>
       </template>
       <a-col v-if="!options.btns?.hide" :span="options.btns?.span || 12" v-bind="options.btns?.col">
-        <a-space wrap :size="[8, 16]">
+        <a-space wrap :size="[8, 16]" style="flex-wrap: nowrap">
           <slot name="suffix">
             <a-button type="primary" @click="emit('search')">
               <template #icon><icon-search /></template>

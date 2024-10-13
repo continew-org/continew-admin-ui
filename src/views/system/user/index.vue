@@ -101,7 +101,7 @@ import UserResetPwdModal from './UserResetPwdModal.vue'
 import { type UserQuery, type UserResp, deleteUser, exportUser, listUser } from '@/apis/system'
 import type { Columns, Options } from '@/components/GiForm'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { useBreakpointIndex, useDownload, useTable } from '@/hooks'
+import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import getAvatar from '@/utils/avatar'
 import has from '@/utils/has'
@@ -122,14 +122,9 @@ const {
 
 const options: Options = reactive({
   form: { layout: 'inline' },
-  col: { xs: 24, sm: 24, md: 5, lg: 5, xl: 5, xxl: 5 },
-  btns: { col: { xs: 24, sm: 24, md: 7, lg: 7, xl: 7, xxl: 7 } },
-  fold: { enable: true, index: 2, defaultCollapsed: true }
-})
-
-useBreakpointIndex((index) => {
-  // 自适应折叠，让折叠后始终一行显示
-  options.fold && (options.fold.index = index)
+  col: { xs: 24, sm: 24, md: 5, lg: 4, xl: 4, xxl: 4 },
+  btns: { col: { xs: 24, sm: 24, md: 7, lg: 8, xl: 6, xxl: 6 } },
+  fold: { enable: true, index: 1, defaultCollapsed: true }
 })
 
 const queryFormColumns: Columns = reactive([
@@ -140,7 +135,7 @@ const queryFormColumns: Columns = reactive([
       hideLabel: true
     },
     props: {
-      placeholder: '请输入用户名/昵称/描述',
+      placeholder: '用户名/昵称/描述',
       allowClear: true
     }
   },
@@ -162,7 +157,7 @@ const queryFormColumns: Columns = reactive([
     item: {
       hideLabel: true
     },
-    col: { xs: 24, sm: 24, md: 10, lg: 10, xl: 10, xxl: 10 }
+    col: { xs: 24, sm: 24, md: 10, lg: 9.5, xl: 9, xxl: 8 }
   }
 ])
 
