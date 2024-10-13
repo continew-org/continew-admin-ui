@@ -33,7 +33,7 @@
           <template #toolbar-right>
             <a-button v-permission="['system:dict:item:add']" type="primary" @click="onAdd">
               <template #icon><icon-plus /></template>
-              <span>新增</span>
+              <template #default>新增</template>
             </a-button>
           </template>
           <template #label="{ record }">

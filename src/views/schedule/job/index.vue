@@ -30,7 +30,7 @@
       <template #toolbar-right>
         <a-button v-permission="['schedule:job:add']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
-          <span>新增</span>
+          <template #default>新增</template>
         </a-button>
       </template>
       <template #jobName="{ record }">

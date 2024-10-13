@@ -26,23 +26,17 @@
           </template>
           <template #toolbar-left>
             <a-button v-permission="['system:user:add']" type="primary" @click="onAdd">
-              <template #icon>
-                <icon-plus />
-              </template>
-              <span>新增</span>
+              <template #icon><icon-plus /></template>
+              <template #default>新增</template>
             </a-button>
             <a-button v-permission="['system:user:import']" @click="onImport">
-              <template #icon>
-                <icon-upload />
-              </template>
-              <span>导入</span>
+              <template #icon><icon-upload /></template>
+              <template #default>导入</template>
             </a-button>
           </template>
           <template #toolbar-right>
             <a-button v-permission="['system:user:export']" @click="onExport">
-              <template #icon>
-                <icon-download />
-              </template>
+              <template #icon><icon-download /></template>
               <template #default>导出</template>
             </a-button>
           </template>

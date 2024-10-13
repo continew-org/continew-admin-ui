@@ -29,12 +29,10 @@
       <template #toolbar-right>
         <a-button v-permission="['system:dept:add']" type="primary" @click="onAdd()">
           <template #icon><icon-plus /></template>
-          <span>新增</span>
+          <template #default>新增</template>
         </a-button>
         <a-button v-permission="['system:dept:export']" @click="onExport">
-          <template #icon>
-            <icon-download />
-          </template>
+          <template #icon><icon-download /></template>
           <template #default>导出</template>
         </a-button>
       </template>

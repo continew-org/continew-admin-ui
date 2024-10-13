@@ -28,7 +28,7 @@
       <template #toolbar-right>
         <a-button v-permission="['system:menu:add']" type="primary" @click="onAdd()">
           <template #icon><icon-plus /></template>
-          <span>新增</span>
+          <template #default>新增</template>
         </a-button>
         <a-tooltip content="展开/折叠">
           <a-button @click="onExpanded">

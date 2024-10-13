@@ -26,9 +26,7 @@
     </template>
     <template #toolbar-right>
       <a-button v-permission="['monitor:log:export']" @click="onExport">
-        <template #icon>
-          <icon-download />
-        </template>
+        <template #icon><icon-download /></template>
         <template #default>导出</template>
       </a-button>
     </template>

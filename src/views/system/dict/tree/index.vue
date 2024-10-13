@@ -28,7 +28,7 @@
     <div>
       <a-button v-permission="['system:dict:add']" type="primary" style="width: 100%" @click="onAdd">
         <template #icon><icon-plus /></template>
-        <span>新增</span>
+        <template #default>新增</template>
       </a-button>
     </div>
   </div>
