@@ -25,7 +25,7 @@ let home: RouteLocationMatched | null = null
 const getHome = () => {
   if (!home) {
     const cloneRoutes = JSON.parse(JSON.stringify(routes)) as RouteLocationMatched[]
-    const obj = findTree(cloneRoutes, (i) => i.path === '/home')
+    const obj = findTree(cloneRoutes, (i) => i.path === '/dashboard/workplace')
     home = obj.item
   }
 }

@@ -31,7 +31,7 @@ import FastCard from './components/FastCard.vue'
 import NoticeCard from './components/NoticeCard.vue'
 import SponsorCard from './components/SponsorCard.vue'
 
-defineOptions({ name: 'Home' })
+defineOptions({ name: 'Workplace' })
 
 const open = (url: string) => {
   window.open(url, '_blank')
