@@ -68,7 +68,7 @@
 
       <a-empty v-if="!fileList.length" />
     </a-spin>
-    <FilePreview ref="filePreviewRef" @download="args => onDownload(args)" />
+    <FilePreview ref="filePreviewRef" />
     <div class="pagination">
       <a-pagination v-bind="pagination" />
     </div>
@@ -88,10 +88,11 @@ import FileGrid from './FileGrid.vue'
 import useFileManage from './useFileManage'
 import { useTable } from '@/hooks'
 import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
-import { ImageTypes } from '@/constant/file'
+import { ImageTypes, OfficeTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
-import FilePreview from '@/views/system/file/main/FileMain/FilePreview.vue'
+import FilePreview from '@/components/FilePreview/index.vue'
+import type { ExcelConfig } from '@/components/FilePreview/type'
 
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 const route = useRoute()
@@ -116,29 +117,44 @@ const {
 const filePreviewRef = ref()
 // 点击文件
 const handleClickFile = (item: FileItem) => {
-  if (JSON.parse(import.meta.env.FILE_OPEN_PREVIEW)) {
-    filePreviewRef.value.show(item)
-  } else {
-    if (ImageTypes.includes(item.extension)) {
-      if (item.url) {
-        const imgList: string[] = fileList.value.filter((i) => ImageTypes.includes(i.extension)).map((a) => a.url || '')
-        const index = imgList.findIndex((i) => i === item.url)
-        if (imgList.length) {
-          viewerApi({
-            options: {
-              initialViewIndex: index
-            },
-            images: imgList
-          })
-        }
+  if (ImageTypes.includes(item.extension)) {
+    if (item.url) {
+      const imgList: string[] = fileList.value.filter((i) => ImageTypes.includes(i.extension)).map((a) => a.url || '')
+      const index = imgList.findIndex((i) => i === item.url)
+      if (imgList.length) {
+        viewerApi({
+          options: {
+            initialViewIndex: index
+          },
+          images: imgList
+        })
       }
     }
-    if (item.extension === 'mp4') {
-      previewFileVideoModal(item)
+  }
+  if (OfficeTypes.includes(item.extension)) {
+    const excelConfig: ExcelConfig = {
+      xls: item.extension === 'xls',
+      minColLength: 0,
+      minRowLength: 0,
+      widthOffset: 10,
+      heightOffset: 10,
+      beforeTransformData: (workbookData) => {
+        return workbookData
+      },
+      transformData: (workbookData) => {
+        return workbookData
+      }
     }
-    if (item.extension === 'mp3') {
-      previewFileAudioModal(item)
-    }
+    filePreviewRef.value.onPreview({
+      fileInfo: { data: item.url, fileName: item.name, fileType: item.extension },
+      excelConfig
+    })
+  }
+  if (item.extension === 'mp4') {
+    previewFileVideoModal(item)
+  }
+  if (item.extension === 'mp3') {
+    previewFileAudioModal(item)
   }
 }
 // 下载文件

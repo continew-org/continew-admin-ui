@@ -41,4 +41,8 @@ export const FileIcon: FileExtendNameIconMap = {
 export const ImageTypes = ['jpg', 'png', 'gif', 'jpeg']
 
 /** WPS、Office文件类型 */
-export const OfficeTypes = ['ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx']
+export const OfficeTypes = ['ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx', 'pdf']
+
+export const WordTypes = ['doc', 'docx']
+
+export const ExcelTypes = ['xls', 'xlsx']
