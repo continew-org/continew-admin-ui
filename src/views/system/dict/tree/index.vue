@@ -8,26 +8,36 @@
         <template #icon><icon-plus /></template>
       </a-button>
     </div>
-    <div class="dict-tree__container">
-      <div class="dict-tree__tree">
+    <a class="dict-tree__container">
+      <a class="dict-tree__tree">
         <a-tree :data="(treeData as unknown as TreeNodeData[])" :field-names="{ key: 'id' }" block-node
           @select="select">
           <template #title="node">
-            <a-trigger v-model:popup-visible="node.popupVisible" trigger="contextMenu" align-point
-              animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
-              <a-tooltip v-if="node.description" :content="node.description" background-color="rgb(var(--primary-6))" position="right">
-                <div @contextmenu="onContextmenu(node)">{{ node.name }} ({{ node.code }})</div>
-              </a-tooltip>
-              <div v-else @contextmenu="onContextmenu(node)">{{ node.name }} ({{ node.code }})</div>
+            <a-typography-paragraph
+              :ellipsis="{
+                rows: 1,
+                showTooltip: true,
+                css: true,
+              }"
+            >
+              {{ node.name }} ({{ node.code }})
+            </a-typography-paragraph>
+          </template>
+          <template #extra="node">
+            <a-trigger trigger="click" align-point animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
+              <icon-more-vertical class="action" />
               <template #content>
-                <RightMenu v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" :data="node"
-                  @on-menu-item-click="onMenuItemClick" />
+                <RightMenu
+                  v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])"
+                  :data="node"
+                  @on-menu-item-click="onMenuItemClick"
+                />
               </template>
             </a-trigger>
           </template>
         </a-tree>
-      </div>
-    </div>
+      </a>
+    </a>
   </div>
 
   <DictAddModal ref="DictAddModalRef" @save-success="getTreeData" />
@@ -51,8 +61,14 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'node-click', keys: Array<any>): void
 }>()
+
+const selectKey = ref()
 // 选中节点
 const select = (keys: Array<any>) => {
+  if (selectKey.value === keys[0]) {
+    return
+  }
+  selectKey.value = keys[0]
   emit('node-click', keys)
 }
 
@@ -89,28 +105,14 @@ watch(inputValue, (val) => {
   getTreeData()
 })
 
-// 保存当前右键的节点
-const contextmenuNode = ref<TreeItem | null>(null)
-const onContextmenu = (node: TreeItem) => {
-  contextmenuNode.value = node
-}
-
-// 关闭右键菜单弹框
-const closeRightMenuPopup = () => {
-  if (contextmenuNode.value?.popupVisible) {
-    contextmenuNode.value.popupVisible = false
-  }
-}
-
 const DictAddModalRef = ref<InstanceType<typeof DictAddModal>>()
 // 新增
 const onAdd = () => {
   DictAddModalRef.value?.onAdd()
 }
 
-// 右键菜单项点击
+// 点击菜单项
 const onMenuItemClick = (mode: string, node: DictResp) => {
-  closeRightMenuPopup()
   if (mode === 'update') {
     DictAddModalRef.value?.onUpdate(node.id)
   } else if (mode === 'delete') {
@@ -141,16 +143,18 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.arco-tree-node-title-text) {
-  width: 100%;
-  white-space: nowrap;
-}
-
 :deep(.arco-tree-node) {
   line-height: normal;
   border-radius: var(--border-radius-medium);
+  margin: 5px 0;
+  .action {
+    opacity: 0;
+  }
   &:hover {
     background-color: var(--color-secondary-hover);
+    .action {
+      opacity: 1;
+    }
   }
 
   .arco-tree-node-switcher {
@@ -163,13 +167,19 @@ onMounted(() => {
       background-color: transparent;
     }
   }
+
+  .arco-tree-node-title-text {
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 :deep(.arco-tree-node-selected) {
   font-weight: bold;
   background-color: rgba(var(--primary-6), 0.1);
-  &:hover {
-    background-color: rgba(var(--primary-6), 0.1);
+  .arco-typography {
+    color: rgb(var(--primary-6));
   }
 }
 

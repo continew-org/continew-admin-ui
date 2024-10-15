@@ -1,12 +1,9 @@
 <template>
   <a-menu class="right-menu">
     <a-menu-item v-permission="['system:dict:update']" @click="onClick('update')">
-      <template #icon><icon-edit :size="16" :stroke-width="3" /></template>
       <span>修改</span>
     </a-menu-item>
-
-    <a-menu-item v-permission="['system:dict:delete']" :title="data.isSystem ? '系统内置数据不能删除' : undefined" :disabled="data.isSystem" @click="onClick('delete')">
-      <template #icon><icon-delete :size="16" :stroke-width="3" /></template>
+    <a-menu-item v-permission="['system:dict:delete']" class="danger" :title="data.isSystem ? '系统内置数据不能删除' : undefined" :disabled="data.isSystem" @click="onClick('delete')">
       <span>删除</span>
     </a-menu-item>
   </a-menu>
@@ -38,13 +35,17 @@ const onClick = (mode: string) => {
   .arco-menu-item {
     height: 34px;
 
-    &:not(.arco-menu-selected) {
-      color: $color-text-1;
-    }
-
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  .danger {
+    color: rgb(var(--danger-6));
+  }
+
+  .danger.arco-menu-disabled {
+    color: var(--color-danger-light-3);
   }
 }
 
