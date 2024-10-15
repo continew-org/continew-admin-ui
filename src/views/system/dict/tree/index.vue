@@ -4,6 +4,9 @@
       <a-input v-model="inputValue" :placeholder="props.placeholder" allow-clear>
         <template #prefix><icon-search /></template>
       </a-input>
+      <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
+        <template #icon><icon-plus /></template>
+      </a-button>
     </div>
     <div class="dict-tree__container">
       <div class="dict-tree__tree">
@@ -24,12 +27,6 @@
           </template>
         </a-tree>
       </div>
-    </div>
-    <div>
-      <a-button v-permission="['system:dict:add']" type="primary" style="width: 100%" @click="onAdd">
-        <template #icon><icon-plus /></template>
-        <template #default>新增</template>
-      </a-button>
     </div>
   </div>
 
@@ -186,7 +183,13 @@ onMounted(() => {
   height: 100%;
 
   &__search {
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: start;
+    margin-bottom: 8px;
+    .arco-btn {
+      margin-left: 8px;
+      padding: 0 15px;
+    }
   }
 
   &__container {
