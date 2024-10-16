@@ -24,6 +24,10 @@ export default defineConfig(({ command, mode }) => {
         }
       }
     },
+    // 添加需要vite优化的依赖
+    optimizeDeps: {
+      include: ['vue-draggable-plus']
+    },
     server: {
       // 服务启动时是否自动打开浏览器
       open: true,
