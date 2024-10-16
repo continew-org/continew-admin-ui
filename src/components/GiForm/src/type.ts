@@ -2,28 +2,32 @@ import type * as A from '@arco-design/web-vue'
 
 export type FormType =
   | 'input'
+  | 'input-password'
+  | 'input-number'
   | 'select'
   | 'radio-group'
   | 'checkbox-group'
   | 'textarea'
   | 'date-picker'
-  | 'time-picker'
   | 'year-picker'
   | 'quarter-picker'
   | 'week-picker'
   | 'range-picker'
   | 'month-picker'
+  | 'time-picker'
   | 'color-picker'
-  | 'input-number'
   | 'rate'
   | 'switch'
   | 'slider'
   | 'cascader'
   | 'tree-select'
-  | 'input-password'
+  | 'upload'
+  | 'group-title'
 
 export type ColumnsItemPropsKey =
   | keyof A.InputInstance['$props']
+  | keyof A.InputPasswordInstance['$props']
+  | keyof A.InputNumberInstance['$props']
   | keyof A.SelectInstance['$props']
   | keyof A.TextareaInstance['$props']
   | keyof A.DatePickerInstance['$props']
@@ -35,13 +39,14 @@ export type ColumnsItemPropsKey =
   | keyof A.RangePickerInstance['$props']
   | keyof A.RadioGroupInstance['$props']
   | keyof A.CheckboxGroupInstance['$props']
-  | keyof A.InputNumberInstance['$props']
   | keyof A.ColorPickerInstance['$props']
   | keyof A.RateInstance['$props']
   | keyof A.SwitchInstance['$props']
   | keyof A.SliderInstance['$props']
   | keyof A.CascaderInstance['$props']
   | keyof A.TreeSelectInstance['$props']
+  | keyof A.UploadInstance['$props']
+  | keyof A.AlertInstance['$props']
 
 export type ColumnsItemHide<F> = boolean | ((form: F) => boolean)
 export type ColumnsItemDisabled<F> = boolean | ((form: F) => boolean)
@@ -71,18 +76,21 @@ export interface ColumnsItem<F = any> {
   item?: Omit<A.FormItemInstance['$props'], 'label' | 'field'> // a-form-item的props
   props?:
     & A.InputInstance['$props']
+    & A.InputPasswordInstance['$props']
+    & A.InputNumberInstance['$props']
     & A.SelectInstance['$props']
     & A.TextareaInstance['$props']
     & A.DatePickerInstance['$props']
     & A.TimePickerInstance['$props']
     & A.RadioGroupInstance['$props']
     & A.CheckboxGroupInstance['$props']
-    & A.InputNumberInstance['$props']
     & A.RateInstance['$props']
     & A.SwitchInstance['$props']
     & A.SliderInstance['$props']
     & A.CascaderInstance['$props']
     & A.TreeSelectInstance['$props']
+    & A.UploadInstance['$props']
+    & A.AlertInstance['$props']
   rules?: A.FormItemInstance['$props']['rules'] // 表单校验规则
   // 下拉列表|复选框组|单选框组|级联选择组件的options
   options?:
