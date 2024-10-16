@@ -188,6 +188,7 @@
   padding: $margin;
   box-sizing: border-box;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 // 表格页面
@@ -311,18 +312,11 @@
 
 // 通用卡片
 .general-card {
-  height: 100%;
-  overflow-y: auto;
+  border: none;
   & > .arco-card-header {
     height: auto;
     padding: $padding;
     border: none;
-    .arco-card-header-title {
-      color: var(--color-text-1);
-      font-size: 18px;
-      font-weight: 500;
-      line-height: 1.5;
-    }
   }
   & > .arco-card-body {
     padding: 0 $padding $padding $padding;

@@ -12,6 +12,13 @@ export interface DashboardAccessTrendResp {
   ipCount: number
 }
 
+/** 热门模块类型 */
+export interface DashboardPopularModuleResp {
+  module: string
+  pvCount: number
+  newPvFromYesterday: number
+}
+
 /** 仪表盘公告类型 */
 export interface DashboardNoticeResp {
   id: number

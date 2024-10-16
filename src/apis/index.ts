@@ -1,4 +1,5 @@
 export * from './area'
+export * from './demo'
 export * from './auth'
 export * from './common'
 export * from './monitor'

@@ -14,3 +14,8 @@ export function listDashboardAccessTrend(days: number) {
 export function listDashboardNotice() {
   return http.get<T.DashboardNoticeResp[]>(`${BASE_URL}/notice`)
 }
+
+/** @desc 查询热门模块 */
+export function listPopularModule() {
+  return http.get<T.DashboardPopularModuleResp[]>(`${BASE_URL}/popular/module`)
+}
