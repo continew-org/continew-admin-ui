@@ -8,8 +8,8 @@
         <template #icon><icon-plus /></template>
       </a-button>
     </div>
-    <a class="dict-tree__container">
-      <a class="dict-tree__tree">
+    <div class="dict-tree__container">
+      <div class="dict-tree__tree">
         <a-tree :data="(treeData as unknown as TreeNodeData[])" :field-names="{ key: 'id' }" block-node
           @select="select">
           <template #title="node">
@@ -25,22 +25,18 @@
           </template>
           <template #extra="node">
             <a-trigger trigger="click" align-point animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
-              <icon-more-vertical class="action" />
+              <icon-more-vertical v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" class="action" />
               <template #content>
-                <RightMenu
-                  v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])"
-                  :data="node"
-                  @on-menu-item-click="onMenuItemClick"
-                />
+                <RightMenu :data="node" @on-menu-item-click="onMenuItemClick" />
               </template>
             </a-trigger>
           </template>
         </a-tree>
-      </a>
-    </a>
-  </div>
+      </div>
+</div>
 
   <DictAddModal ref="DictAddModalRef" @save-success="getTreeData" />
+</div>
 </template>
 
 <script setup lang="tsx">
