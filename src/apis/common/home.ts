@@ -14,3 +14,23 @@ export function listDashboardAccessTrend(days: number) {
 export function listDashboardNotice() {
   return http.get<T.DashboardNoticeResp[]>(`${BASE_URL}/notice`)
 }
+
+/** @desc 查询访问时段分析 */
+export function getAnalysisTimeslot() {
+  return http.get<T.DashboardChartCommonResp[]>(`${BASE_URL}/analysis/timeslot`)
+}
+
+/** @desc 查询模块分析 */
+export function getAnalysisModule() {
+  return http.get<T.DashboardChartCommonResp[]>(`${BASE_URL}/analysis/module`)
+}
+
+/** @desc 查询终端分析 */
+export function getAnalysisOs() {
+  return http.get<T.DashboardChartCommonResp[]>(`${BASE_URL}/analysis/os`)
+}
+
+/** @desc 查询浏览器分析 */
+export function getAnalysisBrowser() {
+  return http.get<T.DashboardChartCommonResp[]>(`${BASE_URL}/analysis/browser`)
+}

@@ -12,6 +12,12 @@ export interface DashboardAccessTrendResp {
   ipCount: number
 }
 
+/** 仪表盘图表类型 */
+export interface DashboardChartCommonResp {
+  name: string
+  value: number
+}
+
 /** 仪表盘公告类型 */
 export interface DashboardNoticeResp {
   id: number

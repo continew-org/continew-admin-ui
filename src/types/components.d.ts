@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Breadcrumb: typeof import('./../components/Breadcrumb/index.vue')['default']
+    Chart: typeof import('./../components/Chart/index.vue')['default']
     CronForm: typeof import('./../components/GenCron/CronForm/index.vue')['default']
     CronModel: typeof import('./../components/GenCron/CronModel/index.vue')['default']
     DateRangePicker: typeof import('./../components/DateRangePicker/index.vue')['default']
