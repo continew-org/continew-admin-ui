@@ -38,6 +38,12 @@ export interface BehaviorCaptchaResp {
   wordList: string[]
 }
 
+export interface BehaviorCaptchaReq {
+  captchaType?: string
+  captchaVerification?: string
+  clientUid?: string
+}
+
 export interface CheckBehaviorCaptchaResp {
   repCode: string
   repMsg: string

@@ -11,13 +11,13 @@ export function getImageCaptcha() {
 }
 
 /** @desc 获取短信验证码 */
-export function getSmsCaptcha(query: { phone: string }) {
-  return http.get<boolean>(`${BASE_URL}/sms`, query)
+export function getSmsCaptcha(phone: string, captchaReq: T.BehaviorCaptchaReq) {
+  return http.get<boolean>(`${BASE_URL}/sms?phone=${phone}&captchaVerification=${encodeURIComponent(captchaReq.captchaVerification || '')}`)
 }
 
 /** @desc 获取邮箱验证码 */
-export function getEmailCaptcha(query: { email: string }) {
-  return http.get<boolean>(`${BASE_URL}/mail`, query)
+export function getEmailCaptcha(email: string, captchaReq: T.BehaviorCaptchaReq) {
+  return http.get<boolean>(`${BASE_URL}/mail?email=${email}&captchaVerification=${encodeURIComponent(captchaReq.captchaVerification || '')}`)
 }
 
 /** @desc 获取行为验证码 */

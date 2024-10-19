@@ -19,7 +19,7 @@
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
 import NProgress from 'nprogress'
-import { getEmailCaptcha, updateUserEmail, updateUserPassword, updateUserPhone } from '@/apis'
+import { type BehaviorCaptchaReq, getEmailCaptcha, updateUserEmail, updateUserPassword, updateUserPhone } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type Columns, GiForm, type Options } from '@/components/GiForm'
@@ -173,19 +173,15 @@ const reset = () => {
 }
 
 // 获取验证码
-const getCaptcha = async () => {
+const getCaptcha = async (captchaReq: BehaviorCaptchaReq) => {
   // 发送验证码
   try {
     captchaLoading.value = true
     captchaBtnName.value = '发送中...'
     if (verifyType.value === 'phone') {
-      // await getSmsCaptcha({
-      //   phone: form.phone
-      // })
+      // await getSmsCaptcha(form.phone, captchaReq)
     } else if (verifyType.value === 'email') {
-      await getEmailCaptcha({
-        email: form.email
-      })
+      await getEmailCaptcha(form.email, captchaReq)
     }
     captchaLoading.value = false
     captchaDisable.value = true
