@@ -75,6 +75,7 @@ const { chartOption } = useChart((isDark: EChartsOption) => {
         data: chartData.value,
         type: 'line',
         showSymbol: false,
+        smooth: true,
         lineStyle: {
           color: '#246EFF',
           width: 2,
@@ -93,7 +94,7 @@ const getChartData = async () => {
     xAxis.value = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
     count.value = 88888
     growth.value = 88.8
-    chartData.value = [10, 2, 4, 30, 21, 6, 7, 8, 1, 2, 3, 10]
+    chartData.value = [4, 5, 6, 2, 3, 4, 25, 21, 6, 7, 8, 1]
   } finally {
     loading.value = false
   }

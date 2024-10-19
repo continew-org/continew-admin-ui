@@ -21,10 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-import Pv from './flow/Pv.vue'
-import Ip from './flow/Ip.vue'
-import Demo1 from './flow/Demo1.vue'
-import Demo2 from './flow/Demo2.vue'
+import Pv from './Pv.vue'
+import Ip from './Ip.vue'
+import Demo1 from './Demo1.vue'
+import Demo2 from './Demo2.vue'
 </script>
 
 <style scoped lang="less"></style>

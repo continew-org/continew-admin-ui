@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import DataOverview from './components/DataOverview.vue'
+import DataOverview from './components/DataOverview/index.vue'
 import AccessTrend from './components/AccessTrend.vue'
 import Os from './components/Os.vue'
 import Browser from './components/Browser.vue'
