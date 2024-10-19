@@ -5,6 +5,13 @@ export interface ImageCaptchaResp {
   expireTime: number
 }
 
+/** 仪表盘公告类型 */
+export interface DashboardNoticeResp {
+  id: number
+  title: string
+  type: number
+}
+
 /** 仪表盘访问趋势类型 */
 export interface DashboardAccessTrendResp {
   date: string
@@ -12,17 +19,18 @@ export interface DashboardAccessTrendResp {
   ipCount: number
 }
 
-/** 仪表盘图表类型 */
+/** 仪表盘通用总览类型 */
+export interface DashboardOverviewCommonResp {
+  total: number
+  today: number
+  growth: number
+  dataList: DashboardChartCommonResp[]
+}
+
+/** 仪表盘通用图表类型 */
 export interface DashboardChartCommonResp {
   name: string
   value: number
-}
-
-/** 仪表盘公告类型 */
-export interface DashboardNoticeResp {
-  id: number
-  title: string
-  type: number
 }
 
 /* 行为验证码类型 */

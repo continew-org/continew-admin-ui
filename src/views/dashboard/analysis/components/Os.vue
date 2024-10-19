@@ -1,23 +1,23 @@
 <template>
   <a-spin :loading="loading" style="width: 100%">
-    <a-card class="general-card" title="模块分析" :header-style="{ paddingBottom: '12px' }">
+    <a-card class="general-card" title="终端">
       <div class="chart">
-        <Chart v-if="!loading" style="height: 210px" :option="option" />
+        <Chart v-if="!loading" :option="chartOption" style="height: 190px" />
       </div>
     </a-card>
   </a-spin>
 </template>
 
 <script lang="ts" setup>
+import type { EChartsOption } from 'echarts'
 import { useChart } from '@/hooks'
-import { type DashboardChartCommonResp, getAnalysisModule as getData } from '@/apis/common'
+import { type DashboardChartCommonResp, getAnalysisOs as getData } from '@/apis/common'
 
 const xAxis = ref<string[]>([])
-const dataList = ref([])
-const { option } = useChart((isDark) => {
+const chartData = ref([])
+const { chartOption } = useChart((isDark: EChartsOption) => {
   return {
     legend: {
-      bottom: 'center',
       data: xAxis.value,
       bottom: 0,
       icon: 'circle',
@@ -36,8 +36,8 @@ const { option } = useChart((isDark) => {
     series: [
       {
         type: 'pie',
-        radius: ['50%', '70%'],
-        center: ['50%', '45%'],
+        radius: ['35%', '60%'],
+        center: ['50%', '42%'],
         label: {
           formatter: '{d}% ',
           color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#4E5969'
@@ -46,22 +46,22 @@ const { option } = useChart((isDark) => {
           borderColor: isDark ? '#000' : '#fff',
           borderWidth: 1
         },
-        data: dataList.value
+        data: chartData.value
       }
     ]
   }
 })
 
 const loading = ref(false)
-const colors = ['#249EFF', '#846BCE', '#21CCFF', '#0E42D2', '#86DF6C']
+const colors = ['#246EFF', '#00B2FF', '#81E2FF', '#846BCE', '#86DF6C']
 // 查询图表数据
 const getChartData = async () => {
   try {
     loading.value = true
     const { data } = await getData()
-    data.forEach((item: DashboardChartCommonResp, index) => {
+    data.forEach((item: DashboardChartCommonResp, index: number) => {
       xAxis.value.push(item.name)
-      dataList.value.push({
+      chartData.value.push({
         ...item,
         itemStyle: {
           color: data.length > 1 && index === data.length - 1 ? colors[colors.length - 1] : colors[index]

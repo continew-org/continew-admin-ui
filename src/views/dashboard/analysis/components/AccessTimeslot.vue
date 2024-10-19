@@ -1,13 +1,13 @@
 <template>
   <a-spin :loading="loading" style="width: 100%">
-    <a-card title="访问时段分析" class="general-card" :header-style="{ paddingBottom: '16px' }">
-      <Chart style="width: 100%; height: 370px" :option="option" />
+    <a-card class="general-card" title="访问时段分析">
+      <Chart :option="chartOption" style="width: 100%; height: 370px" />
     </a-card>
   </a-spin>
 </template>
 
 <script lang="ts" setup>
-import { graphic } from 'echarts'
+import { type EChartsOption, graphic } from 'echarts'
 import { useChart } from '@/hooks'
 import { type DashboardChartCommonResp, getAnalysisTimeslot as getData } from '@/apis/common'
 
@@ -29,8 +29,8 @@ const tooltipItemsHtmlString = (items) => {
 }
 
 const xAxis = ref<string[]>([])
-const dataList = ref<number[]>([])
-const { option } = useChart((isDark) => {
+const chartData = ref<number[]>([])
+const { chartOption } = useChart((isDark: EChartsOption) => {
   return {
     grid: {
       left: '40',
@@ -121,12 +121,14 @@ const { option } = useChart((isDark) => {
     },
     series: [
       {
-        name: '浏览量(PV)',
-        data: dataList.value,
+        name: '访问次数',
+        data: chartData.value,
         type: 'line',
         smooth: true,
         showSymbol: false,
-        color: '#246EFF',
+        color: isDark ? '#3D72F6' : '#246EFF',
+        symbol: 'circle',
+        symbolSize: 10,
         emphasis: {
           focus: 'series',
           itemStyle: {
@@ -185,7 +187,7 @@ const getChartData = async () => {
     const { data } = await getData()
     data.forEach((item: DashboardChartCommonResp) => {
       xAxis.value.push(item.name)
-      dataList.value.push(item.value)
+      chartData.value.push(item.value)
     })
   } finally {
     loading.value = false

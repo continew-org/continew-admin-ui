@@ -18,9 +18,9 @@ export function useChart(sourceOption: optionsFn) {
   // echarts support https://echarts.apache.org/zh/theme-builder.html
   // 这里不使用
   // TODO 图表主题
-  const option = computed<EChartsOption>(() => {
+  const chartOption = computed<EChartsOption>(() => {
     return sourceOption(isDark.value)
   })
 
-  return { option }
+  return { chartOption }
 }

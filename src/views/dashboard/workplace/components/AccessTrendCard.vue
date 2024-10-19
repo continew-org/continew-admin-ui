@@ -7,7 +7,7 @@
           <a-radio :value="30">近30天</a-radio>
         </a-radio-group>
       </template>
-      <VCharts :option="option" autoresize :style="{ height: '326px' }"></VCharts>
+      <VCharts :option="chartOption" autoresize :style="{ height: '326px' }"></VCharts>
     </a-card>
   </a-spin>
 </template>
@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import VCharts from 'vue-echarts'
 import { graphic } from 'echarts'
-import { type DashboardAccessTrendResp, listDashboardAccessTrend } from '@/apis'
+import { type DashboardAccessTrendResp, getDashboardAccessTrend as getData } from '@/apis'
 import { useChart } from '@/hooks'
 
 // 提示框
@@ -38,7 +38,7 @@ const tooltipItemsHtmlString = (items) => {
 const xData = ref<string[]>([])
 const pvStatisticsData = ref<number[]>([])
 const ipStatisticsData = ref<number[]>([])
-const { option } = useChart((isDark) => {
+const { chartOption } = useChart((isDark) => {
   return {
     grid: {
       left: '38',
@@ -197,11 +197,11 @@ const getChartData = async (days: number) => {
     xData.value = []
     pvStatisticsData.value = []
     ipStatisticsData.value = []
-    const { data: chartData } = await listDashboardAccessTrend(days)
-    chartData.forEach((el: DashboardAccessTrendResp) => {
-      xData.value.unshift(el.date)
-      pvStatisticsData.value.unshift(el.pvCount)
-      ipStatisticsData.value.unshift(el.ipCount)
+    const { data } = await getData(days)
+    data.forEach((el: DashboardAccessTrendResp) => {
+      xData.value.push(el.date)
+      pvStatisticsData.value.push(el.pvCount)
+      ipStatisticsData.value.push(el.ipCount)
     })
   } finally {
     loading.value = false

@@ -1,20 +1,20 @@
 <template>
   <a-spin :loading="loading" style="width: 100%">
-    <a-card title="访问趋势" class="general-card">
+    <a-card class="general-card" title="访问趋势">
       <template #extra>
         <a-radio-group v-model:model-value="dateRange" type="button" size="small" @change="onChange as any">
           <a-radio :value="7">近7天</a-radio>
           <a-radio :value="30">近30天</a-radio>
         </a-radio-group>
       </template>
-      <Chart :option="option" :style="{ height: '326px' }" />
+      <Chart :option="chartOption" style="height: 460px" />
     </a-card>
   </a-spin>
 </template>
 
 <script lang="ts" setup>
-import { graphic } from 'echarts'
-import { type DashboardAccessTrendResp, listDashboardAccessTrend } from '@/apis'
+import { type EChartsOption, graphic } from 'echarts'
+import { type DashboardAccessTrendResp, getDashboardAccessTrend as getData } from '@/apis'
 import { useChart } from '@/hooks'
 
 // 提示框
@@ -34,14 +34,14 @@ const tooltipItemsHtmlString = (items) => {
     .join('')
 }
 
-const xData = ref<string[]>([])
-const pvStatisticsData = ref<number[]>([])
-const ipStatisticsData = ref<number[]>([])
-const { option } = useChart((isDark) => {
+const xAxis = ref<string[]>([])
+const pvChartData = ref<number[]>([])
+const ipChartData = ref<number[]>([])
+const { chartOption } = useChart((isDark: EChartsOption) => {
   return {
     grid: {
       left: '38',
-      right: '0',
+      right: '5',
       top: '10',
       bottom: '50'
     },
@@ -55,13 +55,13 @@ const { option } = useChart((isDark) => {
     xAxis: {
       type: 'category',
       offset: 2,
-      data: xData.value,
+      data: xAxis.value,
       boundaryGap: false,
       axisLabel: {
         color: '#4E5969',
         formatter(value: number, idx: number) {
           if (idx === 0) return ''
-          if (idx === xData.value.length - 1) return ''
+          if (idx === xAxis.value.length - 1) return ''
           return `${value}`
         }
       },
@@ -75,7 +75,7 @@ const { option } = useChart((isDark) => {
         show: true,
         interval: (idx: number) => {
           if (idx === 0) return false
-          return idx !== xData.value.length - 1
+          return idx !== xAxis.value.length - 1
         },
         lineStyle: {
           color: isDark ? '#3F3F3F' : '#E5E8EF'
@@ -124,8 +124,8 @@ const { option } = useChart((isDark) => {
     },
     series: [
       {
-        name: '浏览量(PV)',
-        data: pvStatisticsData.value,
+        name: '访问次数',
+        data: pvChartData.value,
         type: 'line',
         smooth: true,
         showSymbol: false,
@@ -154,8 +154,8 @@ const { option } = useChart((isDark) => {
         }
       },
       {
-        name: 'IP数',
-        data: ipStatisticsData.value,
+        name: '独立IP',
+        data: ipChartData.value,
         type: 'line',
         smooth: true,
         showSymbol: false,
@@ -193,14 +193,14 @@ const dateRange = ref(30)
 const getChartData = async (days: number) => {
   try {
     loading.value = true
-    xData.value = []
-    pvStatisticsData.value = []
-    ipStatisticsData.value = []
-    const { data: chartData } = await listDashboardAccessTrend(days)
-    chartData.forEach((el: DashboardAccessTrendResp) => {
-      xData.value.unshift(el.date)
-      pvStatisticsData.value.unshift(el.pvCount)
-      ipStatisticsData.value.unshift(el.ipCount)
+    xAxis.value = []
+    pvChartData.value = []
+    ipChartData.value = []
+    const { data: chartData } = await getData(days)
+    chartData.forEach((item: DashboardAccessTrendResp) => {
+      xAxis.value.push(item.date)
+      pvChartData.value.push(item.pvCount)
+      ipChartData.value.push(item.ipCount)
     })
   } finally {
     loading.value = false
