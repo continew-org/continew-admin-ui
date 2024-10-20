@@ -1,63 +1,128 @@
 <template>
-  <div id="home" class="gi_page home">
-    <WorkCard />
-
-    <a-alert>
-      全新版本 v3.3.0 已发布，重构全局响应处理，点击查看
-      <span class="link" @click="open('https://continew.top/admin/other/changelog.html')">更新日志</span>。
-    </a-alert>
-
-    <a-row class="home__content">
-      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="18" :xxl="18">
-        <div class="home__item"><ProjectCard /></div>
-        <div class="home__item"><AccessTrendCard /></div>
-      </a-col>
-      <a-col :xs="24" :sm="24" :md="24" :lg="12" :xl="6" :xxl="6">
-        <div class="home__item"><FastCard /></div>
-        <div class="home__item"><SponsorCard /></div>
-        <div class="home__item"><NoticeCard /></div>
-      </a-col>
-    </a-row>
-
-    <a-back-top :visible-height="100" target-container="#home" />
+  <div class="gi_page container">
+    <div class="left-side">
+      <div class="panel">
+        <Welcome />
+      </div>
+      <div style="margin-top: 14px">
+        <a-grid :cols="24" :col-gap="14" :row-gap="14">
+          <a-grid-item :span="24">
+            <Project />
+          </a-grid-item>
+        </a-grid>
+      </div>
+    </div>
+    <div class="right-side">
+      <a-grid :cols="24" :row-gap="14">
+        <a-grid-item :span="24">
+          <div class="panel moduler-wrap">
+            <QuickOperation />
+          </div>
+        </a-grid-item>
+        <a-grid-item class="panel" :span="24">
+          <Carousel />
+        </a-grid-item>
+        <a-grid-item class="panel" :span="24">
+          <Notice />
+        </a-grid-item>
+        <a-grid-item class="panel" :span="24">
+          <Docs />
+        </a-grid-item>
+      </a-grid>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import WorkCard from './components/WorkCard.vue'
-import ProjectCard from './components/ProjectCard.vue'
-import AccessTrendCard from './components/AccessTrendCard.vue'
-import FastCard from './components/FastCard.vue'
-import NoticeCard from './components/NoticeCard.vue'
-import SponsorCard from './components/SponsorCard.vue'
+import Welcome from './components/Welcome.vue'
+import Project from './components/Project.vue'
+import QuickOperation from './components/QuickOperation.vue'
+import Carousel from './components/Carousel.vue'
+import Notice from './components/Notice.vue'
+import Docs from './components/Docs.vue'
 
 defineOptions({ name: 'Workplace' })
-
-const open = (url: string) => {
-  window.open(url, '_blank')
-}
 </script>
 
 <style lang="scss" scoped>
-.home {
-  padding: 0;
-  span.link {
+.container {
+  display: flex;
+}
+
+.left-side {
+  flex: 1;
+}
+
+.right-side {
+  width: 280px;
+  margin-left: 14px;
+}
+
+.panel {
+  background-color: var(--color-bg-2);
+  border-radius: 4px;
+  overflow: auto;
+}
+:deep(.panel-border) {
+  margin-bottom: 0;
+  border-bottom: 1px solid rgb(var(--gray-2));
+}
+.moduler-wrap {
+  border-radius: 4px;
+  background-color: var(--color-bg-2);
+  :deep(.text) {
+    font-size: 12px;
+    text-align: center;
+    color: rgb(var(--gray-8));
+  }
+
+  :deep(.wrapper) {
+    margin-bottom: 8px;
+    text-align: center;
     cursor: pointer;
-    color: rgb(var(--arcoblue-6));
-    font-weight: bold;
+
+    &:last-child {
+      .text {
+        margin-bottom: 0;
+      }
+    }
     &:hover {
-      opacity: 0.7;
+      .icon {
+        color: rgb(var(--arcoblue-6));
+        background-color: #e8f3ff;
+      }
+      .text {
+        color: rgb(var(--arcoblue-6));
+      }
     }
   }
-  &__content {
-    padding: 6px;
+
+  :deep(.icon) {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
+    color: rgb(var(--dark-gray-1));
+    line-height: 32px;
+    font-size: 16px;
+    text-align: center;
+    background-color: rgb(var(--gray-1));
+    border-radius: 4px;
   }
-  &__item {
-    padding: 6px;
-    box-sizing: border-box;
+}
+</style>
+
+<style lang="less" scoped>
+// responsive
+.mobile {
+  .container {
+    display: block;
   }
-  .backtop-icon {
-    cursor: pointer;
+  .right-side {
+    // display: none;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 16px;
   }
 }
 </style>

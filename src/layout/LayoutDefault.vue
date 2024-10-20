@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="layout layout-default">
+  <a-layout class="layout layout-default" :class="{ mobile: isMobile }">
     <Asider></Asider>
     <a-layout class="layout-default-right">
       <Header></Header>
@@ -17,9 +17,11 @@ import Main from './components/Main.vue'
 import Tabs from './components/Tabs/index.vue'
 import GiFooter from '@/components/GiFooter/index.vue'
 import { useAppStore } from '@/stores'
+import { useDevice } from '@/hooks'
 
 defineOptions({ name: 'LayoutDefault' })
 const appStore = useAppStore()
+const { isMobile } = useDevice()
 </script>
 
 <style lang="scss" scoped>
