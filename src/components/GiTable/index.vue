@@ -302,6 +302,10 @@ defineExpose({ tableRef })
         }
       }
     }
+
+    :deep(.link-text.arco-typography) {
+      color: rgb(var(--link-6));
+    }
   }
 
   &__header {

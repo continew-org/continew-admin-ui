@@ -3,7 +3,18 @@
     <a-avatar :size="24" shape="circle">
       <img :src="props.avatar" alt="avatar" />
     </a-avatar>
-    <a-link v-if="props.isLink" @click="emit('click')">{{ props.name }}</a-link>
+    <a-link v-if="props.isLink" @click="emit('click')">
+      <a-typography-paragraph
+        class="link-text"
+        :ellipsis="{
+          rows: 1,
+          showTooltip: true,
+          css: true,
+        }"
+      >
+        {{ props.name }}
+      </a-typography-paragraph>
+    </a-link>
     <span v-else>{{ props.name }}</span>
   </a-space>
 </template>

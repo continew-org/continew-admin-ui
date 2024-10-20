@@ -15,12 +15,12 @@
         :xxl="8"
         class="my-project-item"
       >
-        <a-card style="min-height: 204px" :bordered="true" hoverable>
+        <a-card style="min-height: 204px; max-height: 204px" :bordered="true" hoverable>
           <div class="badge badge-right" :style="`background-color: ${item.statusColor}`">{{ item.status }}</div>
           <a :href="item.url" target="_blank">
             <a-space direction="vertical">
               <a-space>
-                <img :src="item.logo" width="30px" alt="logo" />
+                <a-image :src="item.logo" width="30px" alt="logo" />
                 <a-typography-text bold>{{ item.name }}</a-typography-text>
               </a-space>
               <a-typography-paragraph

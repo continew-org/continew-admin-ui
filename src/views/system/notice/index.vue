@@ -36,7 +36,18 @@
         </a-button>
       </template>
       <template #title="{ record }">
-        <a-link @click="onDetail(record)">{{ record.title }}</a-link>
+        <a-link @click="onDetail(record)">
+          <a-typography-paragraph
+            class="link-text"
+            :ellipsis="{
+              rows: 1,
+              showTooltip: true,
+              css: true,
+            }"
+          >
+          {{ record.title }}
+          </a-typography-paragraph>
+        </a-link>
       </template>
       <template #type="{ record }">
         <GiCellTag :value="record.type" :dict="notice_type" />
