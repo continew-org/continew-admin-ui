@@ -9,6 +9,9 @@
           <a-grid-item :span="24">
             <Project />
           </a-grid-item>
+          <a-grid-item :span="24">
+            <LatestActivity />
+          </a-grid-item>
         </a-grid>
       </div>
     </div>
@@ -36,6 +39,7 @@
 <script setup lang="ts">
 import Welcome from './components/Welcome.vue'
 import Project from './components/Project.vue'
+import LatestActivity from './components/LatestActivity.vue'
 import QuickOperation from './components/QuickOperation.vue'
 import Carousel from './components/Carousel.vue'
 import Notice from './components/Notice.vue'
