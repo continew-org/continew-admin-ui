@@ -68,6 +68,10 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
+:deep(.arco-typography) {
+  color: var(--color-text-2);
+}
+
 .item {
   display: flex;
   align-items: center;
