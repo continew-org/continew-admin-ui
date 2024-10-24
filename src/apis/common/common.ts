@@ -9,7 +9,10 @@ const BASE_URL = '/common'
 export function listDeptTree(query: { description: string }) {
   return http.get<TreeNodeData[]>(`${BASE_URL}/tree/dept`, query)
 }
-
+/** @desc 查询部门用户树 */
+export function listDeptWithUsersTree(query: { description?: string, status: number }) {
+  return http.get<TreeNodeData[]>(`${BASE_URL}/tree/deptWithUsers`, query)
+}
 /** @desc 查询菜单树 */
 export function listMenuTree(query: { description: string }) {
   return http.get<TreeNodeData[]>(`${BASE_URL}/tree/menu`, query)
