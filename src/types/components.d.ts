@@ -48,6 +48,8 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SecondForm: typeof import('./../components/GenCron/CronForm/component/second-form.vue')['default']
     TextCopy: typeof import('./../components/TextCopy/index.vue')['default']
+    UserSelect: typeof import('./../components/UserSelect/index.vue')['default']
+    UserSelectContent: typeof import('./../components/UserSelect/component/UserSelectContent.vue')['default']
     Verify: typeof import('./../components/Verify/index.vue')['default']
     VerifyPoints: typeof import('./../components/Verify/Verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./../components/Verify/Verify/VerifySlide.vue')['default']

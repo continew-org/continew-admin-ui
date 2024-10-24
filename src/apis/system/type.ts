@@ -40,6 +40,7 @@ export interface UserQuery {
   createTime?: Array<string>
   deptId?: string
   sort: Array<string>
+  userIds?: Array<string>
 }
 
 export interface UserPageQuery extends UserQuery, PageQuery {
@@ -190,6 +191,8 @@ export interface NoticeResp {
   type: string
   effectiveTime: string
   terminateTime: string
+  noticeScope: number
+  noticeUsers: Array<string>
   createUserString: string
   createTime: string
   updateUserString: string

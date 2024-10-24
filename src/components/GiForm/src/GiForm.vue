@@ -13,7 +13,7 @@
                                  :model-value="modelValue[item.field as keyof typeof modelValue]"
                                  @update:model-value="valueChange($event, item.field)" />
               </template>
-              <component v-else :is="`a-${item.type}`" v-bind="getComponentBindProps(item)"
+              <component :is="`a-${item.type}`" v-else v-bind="getComponentBindProps(item)"
                          :model-value="modelValue[item.field as keyof typeof modelValue]"
                          @update:model-value="valueChange($event, item.field)"></component>
             </slot>
@@ -24,7 +24,7 @@
         </a-col>
       </template>
       <a-col v-if="!options.btns?.hide" :span="options.btns?.span || 12" v-bind="options.btns?.col">
-        <a-space wrap>
+        <a-space wrap :size="[8, 16]" style="flex-wrap: nowrap">
           <slot name="suffix">
             <a-button type="primary" @click="emit('search')">
               <template #icon><icon-search /></template>

@@ -28,7 +28,18 @@
         </a-button>
       </template>
       <template #name="{ record }">
-        <a-link @click="onDetail(record)">{{ record.name }}</a-link>
+        <a-link @click="onDetail(record)">
+          <a-typography-paragraph
+            class="link-text"
+            :ellipsis="{
+              rows: 1,
+              showTooltip: true,
+              css: true,
+            }"
+          >
+            {{ record.name }}
+          </a-typography-paragraph>
+        </a-link>
       </template>
       <template #dataScope="{ record }">
         <GiCellTag :value="record.dataScope" :dict="data_scope_enum" />
