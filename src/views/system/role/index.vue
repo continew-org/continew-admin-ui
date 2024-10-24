@@ -40,6 +40,7 @@
       <template #action="{ record }">
         <a-space>
           <a-link v-permission="['system:role:update']" @click="onUpdate(record)">修改</a-link>
+          <a-link v-permission="['system:role:bindUsers']" @click="onAssociation(record)">关联用户</a-link>
           <a-link
             v-permission="['system:role:delete']"
             status="danger"
@@ -56,6 +57,7 @@
     <RoleAddModal ref="RoleAddModalRef" @save-success="search" />
     <RoleUpdateDrawer ref="RoleUpdateDrawerRef" @save-success="search" />
     <RoleDetailDrawer ref="RoleDetailDrawerRef" />
+    <RoleUserAssociation ref="RoleUserAssociationRef" />
   </div>
 </template>
 
@@ -63,6 +65,7 @@
 import RoleUpdateDrawer from './RoleUpdateDrawer.vue'
 import RoleDetailDrawer from './RoleDetailDrawer.vue'
 import RoleAddModal from './RoleAddModal.vue'
+import RoleUserAssociation from './RoleUserAssociation.vue'
 import { type RoleQuery, type RoleResp, deleteRole, listRole } from '@/apis/system'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
@@ -140,6 +143,12 @@ const RoleDetailDrawerRef = ref<InstanceType<typeof RoleDetailDrawer>>()
 // 详情
 const onDetail = (record: RoleResp) => {
   RoleDetailDrawerRef.value?.onDetail(record.id)
+}
+
+const RoleUserAssociationRef = ref<InstanceType<typeof RoleUserAssociation>>()
+// 关联用户
+const onAssociation = (record: RoleResp) => {
+  RoleUserAssociationRef.value?.onAssociation(record.id)
 }
 </script>
 
