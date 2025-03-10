@@ -65,7 +65,24 @@ http.interceptors.response.use(
     const { data } = response
     const { success, code, msg } = data
 
-    if (response.request.responseType === 'blob' || success) {
+    if (response.request.responseType === 'blob') {
+      const contentType = data.type
+      if (contentType.startsWith('application/json')) {
+        const reader = new FileReader()
+        reader.readAsText(data)
+        reader.onload = () => {
+          const { success, msg } = JSON.parse(reader.result as string)
+          if (!success) {
+            handleError(msg)
+          }
+        }
+        return Promise.reject(msg)
+      } else {
+        return response
+      }
+    }
+
+    if (success) {
       return response
     }
 
