@@ -6,16 +6,19 @@
       </div>
     </a-col>
     <div v-if="slots.left" class="gi-page-layout__divider" :class="{ none: isCollapsed || !isDesktop }">
-      <div v-if="defaultCollapsed" class="gi-split-button" :class="{ none: isCollapsed || !isDesktop }" @click="toggleCollapsed">
+      <div v-if="defaultCollapsed" class="gi-split-button" :class="{ none: isCollapsed || !isDesktop }" :style="isCollapsed ? 'left:0px' : 'left:-12px'" @click="toggleCollapsed">
         <icon-right v-if="isCollapsed" />
         <icon-left v-else />
       </div>
     </div>
-    <a-col v-show="isDesktop || (!isDesktop && isCollapsed)" :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" v-bind="props.rightColProps">
+
+    <a-col :sm="16" :md="17" :lg="18" :xl="19" :xxl="20" flex="1" v-bind="props.rightColProps">
       <div v-if="slots.header" class="gi-page-layout__header" :style="props.headerStyle">
         <slot name="header"></slot>
       </div>
+
       <div class="gi-page-layout__body" :style="props.bodyStyle">
+        <div v-if="!isDesktop && !isCollapsed" class="gi-page-layout__mask"></div>
         <slot></slot>
       </div>
     </a-col>
@@ -144,6 +147,7 @@ watch(() => breakpoint.value, (val) => {
 }
 
 .gi-page-layout__body {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -173,7 +177,6 @@ watch(() => breakpoint.value, (val) => {
   box-sizing: border-box;
   background-color: var(--color-bg-1);
   cursor: pointer;
-  transition: all .3s cubic-bezier(.4,0,.2,1);
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -182,7 +185,18 @@ watch(() => breakpoint.value, (val) => {
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
-.gi-split-button.none {
+.gi-page-layout__mask{
+  content: "";
+  position: absolute;
+  top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(20px);
+  z-index: 20;
+}
+
+.gi-split-button.none {
+  left: -12px;
 }
 </style>
