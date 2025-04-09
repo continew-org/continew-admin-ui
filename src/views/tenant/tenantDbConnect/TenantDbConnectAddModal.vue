@@ -46,44 +46,51 @@ const columns: Columns = reactive([
     label: '连接名称',
     field: 'connectName',
     type: 'input',
+    span: 24,
     rules: [{ required: true, message: '请输入连接名称' }],
   },
   {
     label: '连接类型',
     field: 'type',
     type: 'radio-group',
+    span: 24,
     rules: [{ required: true, message: '请选择连接类型' }],
     props: {
       type: 'button',
       size: 'small',
+      options: [
+        { label: 'mysql', value: 0 },
+        { label: 'postgresql(暂未支持)', disabled: true },
+      ],
     },
-    options: [
-      { label: 'mysql', value: 0 },
-      { label: 'postgresql(暂未支持)', disabled: true },
-    ],
+
   },
   {
     label: '主机连接地址',
     field: 'host',
     type: 'input',
+    span: 24,
     rules: [{ required: true, message: '请输入主机连接地址' }],
   },
   {
     label: '连接端口',
     field: 'port',
     type: 'input-number',
+    span: 24,
     rules: [{ required: true, message: '请输入连接端口' }],
   },
   {
     label: '连接用户名',
     field: 'username',
     type: 'input',
+    span: 24,
     rules: [{ required: true, message: '请输入连接用户名' }],
   },
   {
     label: '连接密码',
     field: 'password',
     type: 'input-password',
+    span: 24,
     rules: [{ required: true, message: '请输入连接密码' }],
   },
 ])

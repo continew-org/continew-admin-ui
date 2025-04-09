@@ -7,6 +7,7 @@ import modalErrorWrapper from '@/utils/modal-error-wrapper'
 import messageErrorWrapper from '@/utils/message-error-wrapper'
 import notificationErrorWrapper from '@/utils/notification-error-wrapper'
 import router from '@/router'
+import { getTenantId } from '@/utils/tenant'
 
 interface ICodeMessage {
   [propName: number]: string
@@ -56,6 +57,13 @@ http.interceptors.request.use(
         config.headers = {}
       }
       config.headers.Authorization = `Bearer ${token}`
+    }
+    const tenantId = getTenantId()
+    if (tenantId) {
+      if (!config.headers) {
+        config.headers = {}
+      }
+      config.headers['X-Tenant-Id'] = tenantId
     }
     return config
   },
