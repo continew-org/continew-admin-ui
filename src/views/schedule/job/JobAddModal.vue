@@ -69,9 +69,11 @@
               :rules="[{ required: true, message: '请输入Cron表达式' }]"
             >
               <div style="display: flex;">
-                <a-input
+                <a-auto-complete
                   v-model="form.triggerInterval"
+                  :data="cron_list"
                   placeholder="请输入Cron表达式"
+                  allow-clear
                 >
                   <template #append>
                     <a-tooltip content="Cron表达式生成">
@@ -82,7 +84,7 @@
                       </a-button>
                     </a-tooltip>
                   </template>
-                </a-input>
+                </a-auto-complete>
               </div>
             </a-form-item>
           </a-col>
@@ -191,6 +193,42 @@ const emit = defineEmits<{
 const { width } = useWindowSize()
 
 const colProps: ColProps = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }
+
+// 内置 Cron 表达式
+const cron_list = [
+  {
+    label: '每分钟',
+    value: '0 * * * * ?',
+  },
+  {
+    label: '每30分钟',
+    value: '0 0/30 * * * ?',
+  },
+  {
+    label: '每小时',
+    value: '0 0 * * * ?',
+  },
+  {
+    label: '每天零点',
+    value: '0 0 0 * * ?',
+  },
+  {
+    label: '每月1日零点',
+    value: '0 0 0 1 * ?',
+  },
+  {
+    label: '每月最后一天零点',
+    value: '0 0 0 L * ?',
+  },
+  {
+    label: '每月最后一个工作日零点',
+    value: '0 0 0 LW * ?',
+  },
+  {
+    label: '每周日零点',
+    value: '0 0 0 ? * 1',
+  },
+]
 
 const dataId = ref()
 const visible = ref(false)

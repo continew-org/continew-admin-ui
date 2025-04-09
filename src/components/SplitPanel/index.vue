@@ -167,7 +167,9 @@ onUnmounted(() => {
 .clead_padding {
   padding: 0 !important;
 }
-
+.ca-split-panel:has(.gi-table--fullscreen) .container{
+  display: none;
+}
 .ca-split-panel {
   overflow: hidden;
   display: flex;
@@ -175,10 +177,12 @@ onUnmounted(() => {
   height: 100%;
   position: relative;
   background: var(--color-bg-2);
+  z-index: 1000;
 
   .container {
     display: flex;
     height: 100%;
+    z-index: 1;
   }
 
   .divider-container {
@@ -219,7 +223,7 @@ onUnmounted(() => {
     overflow: hidden;
 
     :deep(.arco-table-border .arco-table-container) {
-      border: none;
+      // do nothing
     }
   }
 
@@ -310,6 +314,7 @@ onUnmounted(() => {
   }
 
   &.is-mobile {
+
     :deep(.arco-table-col-fixed-left),
     :deep(.arco-table-col-fixed-right) {
       position: static;

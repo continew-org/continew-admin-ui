@@ -1,8 +1,7 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
       v-model:selectedKeys="selectedKeys"
-      title=""
       row-key="tableName"
       :data="dataList"
       :columns="columns"
@@ -57,14 +56,14 @@
 
     <GenConfigDrawer ref="GenConfigDrawerRef" @save-success="search" />
     <GenPreviewModal ref="GenPreviewModalRef" @generate="onGenerate" @download="onDownload" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message } from '@arco-design/web-vue'
 import GenConfigDrawer from './GenConfigDrawer.vue'
 import { downloadCode, generateCode, listGenConfig } from '@/apis/code/generator'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 
@@ -84,7 +83,7 @@ const {
   selectAll,
   search,
 } = useTable((page) => listGenConfig({ ...queryForm, ...page }), { immediate: true, formatResult: (data) => data.map((i) => ({ ...i, disabled: !i.createTime })) })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,

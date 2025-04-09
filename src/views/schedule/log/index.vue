@@ -1,7 +1,6 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -42,7 +41,7 @@
       </template>
       <template #action="{ record }">
         <a-space>
-          <a-link v-permission="['schedule:log:detail']" title="详情" @click="onDetail(record)">详情</a-link>
+          <a-link v-permission="['schedule:log:get']" title="详情" @click="onDetail(record)">详情</a-link>
           <a-popconfirm content="是否确定停止本次执行?" type="warning" @ok="onStop(record)">
             <a-link v-if="record.taskBatchStatus === 2" v-permission="['schedule:log:stop']" status="danger" title="停止">停止</a-link>
           </a-popconfirm>
@@ -61,16 +60,16 @@
     </GiTable>
 
     <LogDetailDrawer ref="LogDetailDrawerRef" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message } from '@arco-design/web-vue'
 import { useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import LogDetailDrawer from './LogDetailDrawer.vue'
 import { type JobLogQuery, type JobLogResp, listGroup, listJobLog, retryJob, stopJob } from '@/apis/schedule'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -93,7 +92,7 @@ const {
   loading,
   search,
 } = useTable((page) => listJobLog({ ...queryForm, ...page }), { immediate: false })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,
@@ -112,7 +111,7 @@ const columns: TableInstanceColumns[] = [
     width: 130,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['schedule:log:detail', 'schedule:log:stop', 'schedule:log:retry']),
+    show: has.hasPermOr(['schedule:log:get', 'schedule:log:stop', 'schedule:log:retry']),
   },
 ]
 

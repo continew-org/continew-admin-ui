@@ -1,13 +1,13 @@
 # ContiNew Admin UI
 
 <a href="https://github.com/continew-org/continew-admin-ui" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v3.4.1-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v3.6.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://vuejs.org/" title="Vue" target="_blank">
 <img src="https://img.shields.io/badge/Vue-3.5.4-%236CB52D.svg?logo=Vue.js" alt="Vue" />
 </a>
 <a href="https://arco.design/vue/docs/start" title="Arco Design Vue" target="_blank">
-<img src="https://img.shields.io/badge/Arco Design Vue-2.56.0-%236CB52D.svg" alt="Arco Design Vue" />
+<img src="https://img.shields.io/badge/Arco Design Vue-2.57.0-%236CB52D.svg" alt="Arco Design Vue" />
 </a>
 <a href="https://ts.nodejs.cn/" title="TypeScript" target="_blank">
 <img src="https://img.shields.io/badge/TypeScript-5.0.4-%236CB52D.svg?logo=TypeScript&logoColor=FFF" alt="TypeScript" />
@@ -131,7 +131,9 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 - 文件管理：管理系统文件，支持上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
 
-- 存储管理：管理文件存储配置，支持本地存储、兼容 S3 协议存储
+- 存储管理：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
+
+- 终端管理：多端认证管理，可设置不同的 token 有效期
 
 - 系统配置：
   - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致

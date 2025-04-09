@@ -40,7 +40,7 @@
             <GiIconSelector v-model="form.icon" />
           </a-form-item>
           <a-form-item v-else label="权限标识" field="permission">
-            <a-input v-model.trim="form.permission" placeholder="system:user:add" allow-clear />
+            <a-input v-model.trim="form.permission" placeholder="system:user:add" :max-length="100" show-word-limit allow-clear />
           </a-form-item>
         </a-col>
       </a-row>
@@ -76,6 +76,11 @@
                 <a-tag checkable @check="inputComponentName">{{ componentName }}</a-tag>
               </div>
             </template>
+          </a-form-item>
+        </a-col>
+        <a-col v-bind="colProps">
+          <a-form-item v-if="form.type === 2" label="权限标识" field="permission">
+            <a-input v-model.trim="form.permission" placeholder="system:user:add" :max-length="100" show-word-limit allow-clear />
           </a-form-item>
         </a-col>
       </a-row>

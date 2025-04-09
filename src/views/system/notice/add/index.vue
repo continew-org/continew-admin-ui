@@ -18,7 +18,7 @@
       </a-affix>
     </div>
     <div class="detail_content" style="display: flex; flex-direction: column;">
-      <GiForm ref="formRef" v-model="form" :options="options" :columns="columns">
+      <GiForm ref="formRef" v-model="form" :columns="columns">
         <template #noticeUsers>
           <a-select
             v-model="form.noticeUsers"
@@ -61,7 +61,7 @@ import { useWindowSize } from '@vueuse/core'
 import AiEditor from './components/index.vue'
 import { addNotice, getNotice, updateNotice } from '@/apis/system/notice'
 import { listUserDict } from '@/apis'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import type { LabelValueState } from '@/types/global'
 import { useTabsStore } from '@/stores'
 import { useResetReactive } from '@/hooks'
@@ -79,12 +79,6 @@ const containerRef = ref<HTMLElement | null>()
 const formRef = ref<InstanceType<typeof GiForm>>()
 const { notice_type } = useDict('notice_type')
 
-const options: Options = {
-  form: { size: 'large' },
-  grid: { cols: 2 },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({
   title: '',
   type: '',
@@ -94,7 +88,7 @@ const [form, resetForm] = useResetReactive({
   noticeScope: 1,
 })
 
-const columns: Columns = reactive([
+const columns: ColumnItem[] = reactive([
   {
     label: '标题',
     field: 'title',
@@ -109,7 +103,9 @@ const columns: Columns = reactive([
     label: '类型',
     field: 'type',
     type: 'select',
-    options: notice_type,
+    props: {
+      options: notice_type,
+    },
     rules: [{ required: true, message: '请输入类型' }],
   },
   {
@@ -132,7 +128,9 @@ const columns: Columns = reactive([
     label: '通知范围',
     field: 'noticeScope',
     type: 'radio-group',
-    options: [{ label: '所有人', value: 1 }, { label: '指定用户', value: 2 }],
+    props: {
+      options: [{ label: '所有人', value: 1 }, { label: '指定用户', value: 2 }],
+    },
     rules: [{ required: true, message: '请选择通知范围' }],
   },
   {

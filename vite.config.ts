@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "@/styles/var.scss";`,
+          additionalData: `@use "@/styles/var.scss" as *;`,
           api: 'modern-compiler',
         },
       },
@@ -33,11 +33,11 @@ export default defineConfig(({ command, mode }) => {
       open: true,
       // 本地跨域代理 -> 代理到服务器的接口地址
       proxy: {
-        '/api': {
+        [env.VITE_API_PREFIX]: {
           target: env.VITE_API_BASE_URL, // 后台服务器地址
           changeOrigin: true, // 是否允许不同源
           secure: false, // 支持https
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(new RegExp(`^${env.VITE_API_PREFIX}`), ''),
         },
       },
     },

@@ -1,7 +1,6 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -13,12 +12,12 @@
       @refresh="search"
     >
       <template #toolbar-left>
-        <a-input-search v-model="queryForm.clientKey" placeholder="搜索客户端Key" allow-clear @search="search" />
-        <a-input-search v-model="queryForm.clientSecret" placeholder="搜索客户端秘钥" allow-clear @search="search" />
+        <a-input-search v-model="queryForm.clientKey" placeholder="搜索终端Key" allow-clear @search="search" />
+        <a-input-search v-model="queryForm.clientSecret" placeholder="搜索终端秘钥" allow-clear @search="search" />
         <a-select
           v-model="queryForm.clientType"
           :options="client_type"
-          placeholder="请选择客户端类型"
+          placeholder="请选择终端类型"
           allow-clear
           style="width: 160px"
           @change="search"
@@ -34,14 +33,14 @@
         </a-button>
       </template>
       <template #toolbar-right>
-        <a-button v-permission="['system:client:add']" type="primary" @click="onAdd">
+        <a-button v-permission="['system:client:create']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <template #default>新增</template>
         </a-button>
       </template>
       <template #action="{ record }">
         <a-space>
-          <a-link v-permission="['system:client:detail']" title="详情" @click="onDetail(record)">详情</a-link>
+          <a-link v-permission="['system:client:get']" title="详情" @click="onDetail(record)">详情</a-link>
           <a-link v-permission="['system:client:update']" title="修改" @click="onUpdate(record)">修改</a-link>
           <a-link
             v-permission="['system:client:delete']"
@@ -58,15 +57,15 @@
 
     <ClientAddModal ref="ClientAddModalRef" @save-success="search" />
     <ClientDetailDrawer ref="ClientDetailDrawerRef" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="tsx">
 import type { LabelValue } from '@arco-design/web-vue/es/tree-select/interface'
+import type { TableInstance } from '@arco-design/web-vue'
 import ClientAddModal from './ClientAddModal.vue'
 import ClientDetailDrawer from './ClientDetailDrawer.vue'
 import { type ClientQuery, type ClientResp, deleteClient, listClient } from '@/apis/system/client'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { DisEnableStatusList } from '@/constant/common'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -105,7 +104,7 @@ const {
   search,
   handleDelete,
 } = useTable((page) => listClient({ ...queryForm, ...page }), { immediate: true })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,
@@ -114,7 +113,7 @@ const columns: TableInstanceColumns[] = [
     fixed: !isMobile() ? 'left' : undefined,
   },
   {
-    title: '客户端 ID',
+    title: '终端 ID',
     dataIndex: 'clientId',
     slotName: 'clientId',
     ellipsis: true,
@@ -125,8 +124,8 @@ const columns: TableInstanceColumns[] = [
       )
     },
   },
-  { title: '客户端 Key', dataIndex: 'clientKey', slotName: 'clientKey', ellipsis: true, tooltip: true, align: 'center' },
-  { title: '客户端秘钥', dataIndex: 'clientSecret', slotName: 'clientSecret', ellipsis: true, tooltip: true, align: 'center' },
+  { title: '终端 Key', dataIndex: 'clientKey', slotName: 'clientKey', ellipsis: true, tooltip: true, align: 'center' },
+  { title: '终端秘钥', dataIndex: 'clientSecret', slotName: 'clientSecret', ellipsis: true, tooltip: true, align: 'center' },
   {
     title: '认证类型',
     dataIndex: 'authType',
@@ -141,7 +140,7 @@ const columns: TableInstanceColumns[] = [
     },
   },
   {
-    title: '客户端类型',
+    title: '终端类型',
     dataIndex: 'clientType',
     slotName: 'clientType',
     ellipsis: true,
@@ -151,8 +150,8 @@ const columns: TableInstanceColumns[] = [
       return <GiCellTag value={record.clientType} dict={client_type.value} />
     },
   },
-  { title: 'Token 最低活跃频率', dataIndex: 'activeTimeout', slotName: 'activeTimeout', width: 180, align: 'center', render: ({ record }) => `${record.activeTimeout} s` },
-  { title: 'Token 有效期', dataIndex: 'timeout', slotName: 'timeout', align: 'center', render: ({ record }) => `${record.timeout} s` },
+  { title: 'Token 最低活跃频率', dataIndex: 'activeTimeout', slotName: 'activeTimeout', width: 180, align: 'center', render: ({ record }) => `${record.activeTimeout} 秒` },
+  { title: 'Token 有效期', dataIndex: 'timeout', slotName: 'timeout', align: 'center', render: ({ record }) => `${record.timeout} 秒` },
   {
     title: '状态',
     dataIndex: 'status',
@@ -173,7 +172,7 @@ const columns: TableInstanceColumns[] = [
     width: 160,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['system:client:detail', 'system:client:update', 'system:client:delete']),
+    show: has.hasPermOr(['system:client:get', 'system:client:update', 'system:client:delete']),
   },
 ]
 
@@ -190,7 +189,7 @@ const reset = () => {
 // 删除
 const onDelete = (record: ClientResp) => {
   return handleDelete(() => deleteClient(record.id), {
-    content: `是否确定删除客户端「${record.clientKey}(${record.clientId})」？`,
+    content: `是否确定删除终端「${record.clientKey}(${record.clientId})」？`,
     showModal: true,
   })
 }

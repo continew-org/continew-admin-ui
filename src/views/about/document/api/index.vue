@@ -1,9 +1,11 @@
 <template>
-  <GiIframe src="https://api.continew.top/doc.html"></GiIframe>
+  <GiIframe :src="`${apiBaseUrl}/doc.html`"></GiIframe>
 </template>
 
 <script lang='ts' setup>
 defineOptions({ name: 'AboutDocumentApi' })
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 </script>
 
 <style scoped lang="scss"></style>

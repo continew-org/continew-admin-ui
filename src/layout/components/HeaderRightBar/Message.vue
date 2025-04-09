@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { type MessageResp, listMessage, readMessage } from '@/apis'
+import router from '@/router'
 
 const emit = defineEmits<{
   (e: 'readall-success'): void
@@ -48,7 +49,7 @@ const getMessageData = async () => {
 
 // 打开消息中心
 const open = () => {
-  window.open('/setting/message')
+  router.push({ path: '/user/message', query: { tab: 'msg' } })
 }
 
 // 全部已读

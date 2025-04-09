@@ -6,8 +6,8 @@ export type * from './type'
 const BASE_URL = '/system/role'
 
 /** @desc 查询角色列表 */
-export function listRole(query: T.RolePageQuery) {
-  return http.get<PageRes<T.RoleResp[]>>(`${BASE_URL}`, query)
+export function listRole(query: T.RoleQuery) {
+  return http.get<T.RoleResp[]>(`${BASE_URL}/list`, query)
 }
 
 /** @desc 查询角色详情 */
@@ -30,12 +30,27 @@ export function deleteRole(ids: string | Array<string>) {
   return http.del(`${BASE_URL}/${ids}`)
 }
 
+/** @desc 修改角色权限 */
+export function updateRolePermission(id: string, data: any) {
+  return http.put(`${BASE_URL}/${id}/permission`, data)
+}
+
 /** @desc 查询角色关联用户 */
-export function listRoleUsers(id: string) {
-  return http.get(`${BASE_URL}/${id}/user`)
+export function listRoleUser(id: string, query: T.RoleUserPageQuery) {
+  return http.get<PageRes<T.RoleUserResp[]>>(`${BASE_URL}/${id}/user`, query)
 }
 
 /** @desc 分配角色给用户 */
 export function assignToUsers(id: string, userIds: Array<string>) {
   return http.post(`${BASE_URL}/${id}/user`, userIds)
+}
+
+/** @desc 取消分配角色给用户 */
+export function unassignFromUsers(userRoleIds: Array<string | number>) {
+  return http.del(`${BASE_URL}/user`, userRoleIds)
+}
+
+/** @desc 查询角色关联用户 ID */
+export function listRoleUserId(id: string) {
+  return http.get(`${BASE_URL}/${id}/user/id`)
 }

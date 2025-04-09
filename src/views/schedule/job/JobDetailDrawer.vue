@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-model:visible="visible" title="任务详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
+  <a-drawer v-model:visible="visible" title="任务详情" :width="width >= 500 ? 500 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID" :span="2">
         <a-typography-paragraph copyable>{{ dataDetail?.id }}</a-typography-paragraph>

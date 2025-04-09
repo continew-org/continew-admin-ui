@@ -9,7 +9,7 @@
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-modal>
 </template>
 
@@ -17,7 +17,7 @@
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { addApp, getApp, updateApp } from '@/apis/open/app'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 
 const emit = defineEmits<{
@@ -32,26 +32,26 @@ const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改应用' : '新增应用'))
 const formRef = ref<InstanceType<typeof GiForm>>()
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({
   status: 1,
 })
 
-const columns: Columns = reactive([
+const columns: ColumnItem[] = reactive([
   {
     label: '名称',
     field: 'name',
     type: 'input',
-    rules: [{ required: true, message: '请输入名称' }],
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 100,
+    },
   },
   {
     label: '失效时间',
     field: 'expireTime',
     type: 'date-picker',
+    span: 24,
     props: {
       placeholder: '请选择失效时间',
       showTime: true,
@@ -61,15 +61,13 @@ const columns: Columns = reactive([
     label: '描述',
     field: 'description',
     type: 'textarea',
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
+    span: 24,
   },
   {
     label: '状态',
     field: 'status',
     type: 'switch',
+    span: 24,
     props: {
       type: 'round',
       checkedValue: 1,

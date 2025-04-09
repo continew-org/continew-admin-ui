@@ -43,22 +43,28 @@ export const systemRoutes: RouteRecordRaw[] = [
     meta: { hidden: true },
   },
   {
-    path: '/setting',
-    name: 'Setting',
+    path: '/user',
+    name: 'User',
     component: Layout,
     meta: { hidden: true },
     children: [
       {
-        path: '/setting/profile',
-        name: 'SettingProfile',
-        component: () => import('@/views/setting/profile/index.vue'),
+        path: '/user/profile',
+        name: 'UserProfile',
+        component: () => import('@/views/user/profile/index.vue'),
         meta: { title: '个人中心', showInTabs: false },
       },
       {
-        path: '/setting/message',
-        name: 'SettingMessage',
-        component: () => import('@/views/setting/message/index.vue'),
+        path: '/user/message',
+        name: 'UserMessage',
+        component: () => import('@/views/user/message/index.vue'),
         meta: { title: '消息中心', showInTabs: false },
+      },
+      {
+        path: '/user/notice',
+        name: 'UserNotice',
+        component: () => import('@/views/user/message/components/detail/index.vue'),
+        meta: { title: '公告详情' },
       },
     ],
   },
@@ -69,19 +75,17 @@ export const systemRoutes: RouteRecordRaw[] = [
     meta: { title: '关于项目', icon: 'apps', hidden: false, sort: 999 },
     children: [
       {
-        path: '/about/document/continew',
-        component: () => import('@/views/about/document/continew/index.vue'),
-        meta: { title: '在线文档', icon: 'continew', hidden: false, keepAlive: true },
-      },
-      {
         path: '/about/document/api',
         component: () => import('@/views/about/document/api/index.vue'),
         meta: { title: '接口文档', icon: 'continew', hidden: false, keepAlive: true },
       },
       {
-        path: '/about/document/arco-design-vue',
-        component: () => import('@/views/about/document/arco-design-vue/index.vue'),
-        meta: { title: 'Arco Design文档', icon: 'arco', hidden: false, keepAlive: true },
+        path: 'https://continew.top',
+        meta: { title: '在线文档', icon: 'continew', hidden: false },
+      },
+      {
+        path: 'https://arco.design/vue/component/button',
+        meta: { title: 'Arco Design文档', icon: 'arco', hidden: false },
       },
       {
         path: '/about/source',

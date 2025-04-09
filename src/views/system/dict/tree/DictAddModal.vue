@@ -9,7 +9,7 @@
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-modal>
 </template>
 
@@ -17,7 +17,7 @@
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { addDict, getDict, updateDict } from '@/apis/system/dict'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 
 const emit = defineEmits<{
@@ -32,24 +32,35 @@ const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改字典' : '新增字典'))
 const formRef = ref<InstanceType<typeof GiForm>>()
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({})
 
-const columns: Columns = reactive([
-  { label: '名称', field: 'name', type: 'input', rules: [{ required: true, message: '请输入名称' }] },
-  { label: '编码', field: 'code', type: 'input', disabled: () => isUpdate.value, rules: [{ required: true, message: '请输入编码' }] },
+const columns: ColumnItem[] = reactive([
+  {
+    label: '名称',
+    field: 'name',
+    type: 'input',
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 30,
+    },
+  },
+  {
+    label: '编码',
+    field: 'code',
+    type: 'input',
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 30,
+    },
+    disabled: () => isUpdate.value,
+  },
   {
     label: '描述',
     field: 'description',
     type: 'textarea',
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
+    span: 24,
   },
 ])
 

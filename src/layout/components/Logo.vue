@@ -63,6 +63,9 @@ const toHome = () => {
     padding-left: 6px;
     white-space: nowrap;
     transition: color 0.3s;
+    line-height: 1.5;
+    display: inline-flex;
+    align-items: center;
 
     &:hover {
       color: $color-theme !important;

@@ -17,8 +17,7 @@ jobs:
       # 2、安装 PNPM
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
-        with:
-          version: latest
+        with: { version: 9 }
       # 3、安装 Node 环境
       - name: Setup Node
         uses: actions/setup-node@v3

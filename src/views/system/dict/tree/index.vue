@@ -4,7 +4,7 @@
       <a-input v-model="searchKey" placeholder="搜索名称/编码" allow-clear>
         <template #prefix><icon-search /></template>
       </a-input>
-      <a-button v-permission="['system:dict:add']" type="primary" @click="onAdd">
+      <a-button v-permission="['system:dict:create']" type="primary" @click="onAdd">
         <template #icon><icon-plus /></template>
       </a-button>
     </div>
@@ -30,7 +30,7 @@
           </template>
           <template #extra="node">
             <a-trigger trigger="click" align-point animation-name="slide-dynamic-origin" auto-fit-transform-origin position="bl" scroll-to-close>
-              <icon-more-vertical v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" class="action" />
+              <icon-more v-if="has.hasPermOr(['system:dict:update', 'system:dict:delete'])" class="action" />
               <template #content>
                 <RightMenu :data="node" @on-menu-item-click="onMenuItemClick" />
               </template>
@@ -54,8 +54,13 @@ import { type DictResp, deleteDict, listDict } from '@/apis/system/dict'
 import has from '@/utils/has'
 
 const emit = defineEmits<{
-  (e: 'node-click', keys: Array<any>): void
+  (e: 'node-click', dict: { dictId: string, dictName?: string, dictCode?: string }): void
 }>()
+
+interface TreeItem extends DictResp {
+  popupVisible: boolean
+}
+const dataList = ref<TreeItem[]>([])
 
 const selectedKeys = ref()
 // 选中节点
@@ -64,13 +69,14 @@ const select = (keys: Array<any>) => {
     return
   }
   selectedKeys.value = keys
-  emit('node-click', keys)
+  const selectedDict = dataList.value.find((item) => item.id === keys[0])
+  emit('node-click', {
+    dictId: keys[0],
+    dictName: selectedDict?.name,
+    dictCode: selectedDict?.code,
+  })
 }
 
-interface TreeItem extends DictResp {
-  popupVisible: boolean
-}
-const dataList = ref<TreeItem[]>([])
 const loading = ref(false)
 // 查询树列表
 const getTreeData = async () => {
@@ -125,7 +131,7 @@ const onMenuItemClick = (mode: string, node: DictResp) => {
   } else if (mode === 'delete') {
     Modal.warning({
       title: '提示',
-      content: `是否确定删除 [${node.name}]？`,
+      content: `是否确定删除字典「${node.name}」？`,
       hideCancel: false,
       okButtonProps: { status: 'danger' },
       onBeforeOk: async () => {
@@ -156,6 +162,14 @@ onMounted(() => {
   margin: 5px 0;
   .action {
     opacity: 0;
+    margin-right: 8px;
+    padding: 4px;
+    transition: all 0.25s;
+    border-radius: 8px;
+
+    &:hover{
+      background-color: var(--color-bg-1);
+    }
   }
   &:hover {
     background-color: var(--color-secondary-hover);

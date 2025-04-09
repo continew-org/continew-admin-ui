@@ -6,8 +6,8 @@ export type * from './type'
 const BASE_URL = '/system/storage'
 
 /** @desc 查询存储列表 */
-export function listStorage(query: T.StoragePageQuery) {
-  return http.get<PageRes<T.StorageResp[]>>(`${BASE_URL}`, query)
+export function listStorage(query: T.StorageQuery) {
+  return http.get<T.StorageResp[]>(`${BASE_URL}/list`, query)
 }
 
 /** @desc 查询存储详情 */
@@ -28,4 +28,14 @@ export function updateStorage(data: any, id: string) {
 /** @desc 删除存储 */
 export function deleteStorage(id: string) {
   return http.del(`${BASE_URL}/${id}`)
+}
+
+/** @desc 修改存储状态 */
+export function updateStorageStatus(data: any, id: string) {
+  return http.put(`${BASE_URL}/${id}/status`, data)
+}
+
+/** @desc 设置默认存储 */
+export function setDefaultStorage(id: string) {
+  return http.put(`${BASE_URL}/${id}/default`)
 }

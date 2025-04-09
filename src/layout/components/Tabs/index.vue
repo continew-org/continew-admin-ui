@@ -51,17 +51,12 @@
                 </template>
                 <template #default>关闭其他</template>
               </a-doption>
-              <a-doption @click="tabsStore.closeAll">
-                <template #icon>
-                  <icon-minus />
-                </template>
-                <template #default>关闭全部</template>
-              </a-doption>
             </template>
           </a-dropdown>
         </template>
       </a-tab-pane>
       <template #extra>
+        <ReloadIcon></ReloadIcon>
         <a-dropdown trigger="hover">
           <a-button type="text">
             <template #icon>
@@ -69,12 +64,6 @@
             </template>
           </a-button>
           <template #content>
-            <a-doption @click="reload">
-              <template #icon>
-                <icon-refresh class="reload-icon" :class="{ 'reload-icon--spin': loading }" />
-              </template>
-              <template #default>重新加载</template>
-            </a-doption>
             <a-doption @click="tabsStore.closeCurrent(route.path)">
               <template #icon>
                 <icon-close />
@@ -114,6 +103,7 @@
 
 <script setup lang="ts">
 import type { RouteLocationNormalized } from 'vue-router'
+import ReloadIcon from './ReloadIcon.vue'
 import { useAppStore, useTabsStore } from '@/stores'
 
 defineOptions({ name: 'Tabs' })

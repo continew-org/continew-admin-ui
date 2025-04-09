@@ -1,7 +1,6 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -20,7 +19,7 @@
         </a-button>
       </template>
       <template #toolbar-right>
-        <a-button v-permission="['open:app:add']" type="primary" @click="onAdd">
+        <a-button v-permission="['open:app:create']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <template #default>新增</template>
         </a-button>
@@ -55,7 +54,7 @@
       </template>
       <template #action="{ record }">
         <a-space>
-          <a-link v-permission="['open:app:detail']" title="详情" @click="onDetail(record)">详情</a-link>
+          <a-link v-permission="['open:app:get']" title="详情" @click="onDetail(record)">详情</a-link>
           <a-link v-permission="['open:app:update']" title="修改" @click="onUpdate(record)">修改</a-link>
           <a-link
             v-permission="['open:app:delete']"
@@ -82,10 +81,11 @@
 
     <AppAddModal ref="AppAddModalRef" @save-success="search" />
     <AppDetailDrawer ref="AppDetailDrawerRef" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message, Modal } from '@arco-design/web-vue'
 import AppAddModal from './AppAddModal.vue'
 import AppDetailDrawer from './AppDetailDrawer.vue'
@@ -98,7 +98,6 @@ import {
   listApp,
   resetAppSecret,
 } from '@/apis/open/app'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
@@ -116,7 +115,7 @@ const {
   search,
   handleDelete,
 } = useTable((page) => listApp({ ...queryForm, ...page }), { immediate: true })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,
@@ -142,7 +141,7 @@ const columns: TableInstanceColumns[] = [
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
     show: has.hasPermOr([
-      'open:app:detail',
+      'open:app:get',
       'open:app:update',
       'open:app:delete',
       'open:app:resetSecret',

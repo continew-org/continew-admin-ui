@@ -30,6 +30,11 @@ export function deleteDict(id: string) {
   return http.del(`${BASE_URL}/${id}`)
 }
 
+/** @desc 清除字典缓存 */
+export function clearDictCache(code: string) {
+  return http.del(`${BASE_URL}/cache/${code}`)
+}
+
 /** @desc 查询字典项列表 */
 export function listDictItem(query: T.DictItemPageQuery) {
   return http.get<PageRes<T.DictItemResp[]>>(`${BASE_URL}/item`, query)

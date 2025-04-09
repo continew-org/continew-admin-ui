@@ -75,9 +75,9 @@
 </template>
 
 <script setup lang="ts">
-import type { TreeNodeData } from '@arco-design/web-vue'
+import type { TableInstance, TreeNodeData } from '@arco-design/web-vue'
+
 import { type UserQuery, type UserResp, listAllUser, listUser } from '@/apis'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { type Options, useTable } from '@/hooks'
 import { useDept } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -94,11 +94,13 @@ const emit = defineEmits<{
 interface Props {
   multiple?: boolean
   value: string | string[]
+  roleId?: string
 }
 
 // 查询表单
 const queryForm = reactive<UserQuery>({
   sort: ['t1.createTime,desc', 't1.id,desc'],
+  roleId: props.roleId,
 })
 
 // 用户列表
@@ -108,7 +110,7 @@ const { tableData: dataList, loading, pagination, search } = useTable(
 )
 
 // 表格列定义
-const listColumns: TableInstanceColumns[] = [
+const listColumns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,

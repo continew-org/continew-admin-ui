@@ -1,8 +1,7 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
       ref="tableRef"
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -26,18 +25,24 @@
         </a-button>
       </template>
       <template #toolbar-right>
-        <a-button v-permission="['system:menu:add']" type="primary" @click="onAdd()">
+        <a-button v-permission="['system:menu:create']" type="primary" @click="onAdd()">
           <template #icon><icon-plus /></template>
           <template #default>新增</template>
         </a-button>
-        <a-tooltip content="展开/折叠">
-          <a-button @click="onExpanded">
-            <template #icon>
-              <icon-list v-if="!isExpanded" />
-              <icon-mind-mapping v-else />
-            </template>
-          </a-button>
-        </a-tooltip>
+        <a-button v-permission="['system:menu:clearCache']" type="outline" status="warning" @click="onClearCache">
+          <template #icon><icon-delete /></template>
+          <template #default>清除缓存</template>
+        </a-button>
+        <a-button @click="onExpanded">
+          <template #icon>
+            <icon-list v-if="isExpanded" />
+            <icon-mind-mapping v-else />
+          </template>
+          <template #default>
+            <span v-if="!isExpanded">展开</span>
+            <span v-else>折叠</span>
+          </template>
+        </a-button>
       </template>
       <template #title="{ record }">
         <GiSvgIcon :name="record.icon" :size="15" />
@@ -68,7 +73,7 @@
           <a-link v-permission="['system:menu:update']" title="修改" @click="onUpdate(record)">修改</a-link>
           <a-link v-permission="['system:menu:delete']" status="danger" title="删除" @click="onDelete(record)">删除</a-link>
           <a-link
-            v-permission="['system:menu:add']"
+            v-permission="['system:menu:create']"
             :disabled="![1, 2].includes(record.type)"
             :title="![1, 2].includes(record.type) ? '不可添加下级菜单' : '新增'"
             @click="onAdd(record.id)"
@@ -80,13 +85,14 @@
     </GiTable>
 
     <MenuAddModal ref="MenuAddModalRef" :menus="dataList" @save-success="search" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
+import { Message, Modal } from '@arco-design/web-vue'
 import MenuAddModal from './MenuAddModal.vue'
-import { type MenuQuery, type MenuResp, deleteMenu, listMenu } from '@/apis/system/menu'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
+import { type MenuQuery, type MenuResp, clearMenuCache, deleteMenu, listMenu } from '@/apis/system/menu'
 import type GiTable from '@/components/GiTable/index.vue'
 import { useTable } from '@/hooks'
 import { isMobile } from '@/utils'
@@ -131,7 +137,7 @@ const dataList = computed(() => {
   return searchData(title.value)
 })
 
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   { title: '菜单标题', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },
   { title: '类型', dataIndex: 'type', slotName: 'type', align: 'center' },
   { title: '状态', dataIndex: 'status', slotName: 'status', align: 'center' },
@@ -154,7 +160,7 @@ const columns: TableInstanceColumns[] = [
     width: 160,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['system:menu:update', 'system:menu:delete', 'system:menu:add']),
+    show: has.hasPermOr(['system:menu:update', 'system:menu:delete', 'system:menu:create']),
   },
 ]
 
@@ -168,6 +174,20 @@ const onDelete = (record: MenuResp) => {
   return handleDelete(() => deleteMenu(record.id), {
     content: `是否确定菜单「${record.title}」？`,
     showModal: true,
+  })
+}
+
+// 清除缓存
+const onClearCache = () => {
+  Modal.warning({
+    title: '提示',
+    content: `是否确定清除全部菜单缓存？`,
+    hideCancel: false,
+    maskClosable: false,
+    onOk: async () => {
+      await clearMenuCache()
+      Message.success('清除成功')
+    },
   })
 }
 

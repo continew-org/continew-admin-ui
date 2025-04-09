@@ -10,7 +10,7 @@ import { useWindowSize } from '@vueuse/core'
  */
 export function useDevice() {
   const { width } = useWindowSize()
-  const isDesktop = computed(() => width.value > 768)
+  const isDesktop = computed(() => width.value > 571)
   const isMobile = computed(() => !isDesktop.value)
 
   return { isMobile, isDesktop }

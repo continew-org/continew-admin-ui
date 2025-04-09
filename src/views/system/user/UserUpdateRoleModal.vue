@@ -4,12 +4,12 @@
     title="分配角色"
     :mask-closable="false"
     :esc-to-close="false"
-    :width="width >= 600 ? 600 : '100%'"
+    :width="width >= 500 ? 500 : '100%'"
     draggable
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-modal>
 </template>
 
@@ -17,7 +17,7 @@
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { getUser, updateUserRole } from '@/apis/system'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 import { useRole } from '@/hooks/app'
 
@@ -31,25 +31,21 @@ const visible = ref(false)
 const formRef = ref<InstanceType<typeof GiForm>>()
 const { roleList, getRoleList } = useRole()
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({})
 
-const columns: Columns = reactive([
+const columns: ColumnItem[] = reactive([
   {
     label: '角色',
     field: 'roleIds',
     type: 'select',
-    options: roleList,
+    span: 24,
+    required: true,
     props: {
+      options: roleList,
       multiple: true,
       allowClear: true,
       allowSearch: { retainInputValue: true },
     },
-    rules: [{ required: true, message: '请选择角色' }],
   },
 ])
 

@@ -10,7 +10,7 @@
   >
     <a-tabs v-model:active-key="activeKey">
       <a-tab-pane key="1" title="生成配置">
-        <GiForm ref="formRef" v-model="form" :options="options" :columns="formColumns" />
+        <GiForm ref="formRef" v-model="form" :columns="formColumns" />
       </a-tab-pane>
       <a-tab-pane key="2" title="字段配置">
         <GiTable
@@ -119,12 +119,12 @@
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { type FieldConfigResp, type GeneratorConfigResp, getGenConfig, listFieldConfig, listFieldConfigDict, saveGenConfig } from '@/apis/code/generator'
 import type { LabelValueState } from '@/types/global'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 import { useDict } from '@/hooks/app'
 
@@ -141,20 +141,18 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 const { form_type_enum, query_type_enum } = useDict('form_type_enum', 'query_type_enum')
 const dictList = ref<LabelValueState[]>([])
 
-const options: Options = {
-  form: { size: 'large' },
-  grid: { cols: 2 },
-  btns: { hide: true },
-}
 const [form, resetForm] = useResetReactive({
   isOverride: false,
 })
-const formColumns: Columns = reactive([
+const formColumns: ColumnItem[] = reactive([
   {
     label: '作者名称',
     field: 'author',
     type: 'input',
-    rules: [{ required: true, message: '请输入作者名称' }],
+    required: true,
+    props: {
+      maxLength: 100,
+    },
   },
   {
     label: '业务名称',
@@ -162,6 +160,7 @@ const formColumns: Columns = reactive([
     type: 'input',
     props: {
       placeholder: '自定义业务名称，例如：用户',
+      maxLength: 50,
     },
     rules: [{ required: true, message: '请输入业务名称' }],
   },
@@ -171,6 +170,8 @@ const formColumns: Columns = reactive([
     type: 'input',
     props: {
       placeholder: '项目模块名称，例如：continew-system',
+      maxLength: 60,
+      showWordLimit: true,
     },
     rules: [{ required: true, message: '请输入所属模块' }],
   },
@@ -180,6 +181,7 @@ const formColumns: Columns = reactive([
     type: 'input',
     props: {
       placeholder: '项目模块包名，例如：top.continew.admin.system',
+      maxLength: 60,
     },
     rules: [{ required: true, message: '请输入模块包名' }],
   },
@@ -189,7 +191,7 @@ const formColumns: Columns = reactive([
     type: 'input',
     props: {
       placeholder: '数据库表前缀，例如：sys_',
-      width: '200',
+      maxLength: 20,
     },
   },
   {
@@ -220,7 +222,7 @@ const getDataList = async (tableName: string, requireSync: boolean) => {
 }
 
 // Table 字段配置
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   { title: '名称', slotName: 'fieldName' },
   { title: '类型', slotName: 'fieldType' },
   { title: '描述', slotName: 'comment', width: 170 },

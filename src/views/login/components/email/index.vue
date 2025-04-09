@@ -12,7 +12,7 @@
       <a-input v-model="form.email" placeholder="请输入邮箱" allow-clear />
     </a-form-item>
     <a-form-item field="captcha" hide-label>
-      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
+      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="6" allow-clear style="flex: 1 1" />
       <a-button
         class="captcha-btn"
         :loading="captchaLoading"

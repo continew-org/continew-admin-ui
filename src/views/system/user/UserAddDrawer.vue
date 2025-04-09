@@ -4,11 +4,11 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    :width="width >= 600 ? 600 : '100%'"
+    :width="width >= 500 ? 500 : '100%'"
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-drawer>
 </template>
 
@@ -16,7 +16,7 @@
 import { Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { addUser, getUser, updateUser } from '@/apis/system/user'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import type { Gender, Status } from '@/types/global'
 import { GenderList } from '@/constant/common'
 import { useResetReactive } from '@/hooks'
@@ -37,54 +37,49 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 const { roleList, getRoleList } = useRole()
 const { deptList, getDeptList } = useDept()
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({
   gender: 1 as Gender,
   status: 1 as Status,
 })
 
-const columns: Columns = reactive([
+const columns: ColumnItem[] = reactive([
   {
     label: '用户名',
     field: 'username',
     type: 'input',
+    span: 24,
+    required: true,
     props: {
       maxLength: 64,
-      showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入用户名' }],
   },
   {
     label: '昵称',
     field: 'nickname',
     type: 'input',
+    span: 24,
+    required: true,
     props: {
       maxLength: 30,
-      showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入昵称' }],
   },
   {
     label: '密码',
     field: 'password',
     type: 'input-password',
+    span: 24,
+    required: true,
     props: {
       maxLength: 32,
       showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入密码' }],
-    hide: () => {
-      return isUpdate.value
-    },
+    hide: () => isUpdate.value,
   },
   {
     label: '手机号码',
     field: 'phone',
     type: 'input',
+    span: 24,
     props: {
       maxLength: 11,
     },
@@ -93,6 +88,7 @@ const columns: Columns = reactive([
     label: '邮箱',
     field: 'email',
     type: 'input',
+    span: 24,
     props: {
       maxLength: 255,
     },
@@ -101,14 +97,19 @@ const columns: Columns = reactive([
     label: '性别',
     field: 'gender',
     type: 'radio-group',
-    options: GenderList,
+    span: 24,
+    props: {
+      options: GenderList,
+    },
   },
   {
     label: '所属部门',
     field: 'deptId',
     type: 'tree-select',
-    data: deptList,
+    span: 24,
+    required: true,
     props: {
+      data: deptList,
       allowClear: true,
       allowSearch: true,
       fallbackOption: false,
@@ -119,34 +120,31 @@ const columns: Columns = reactive([
         return false
       },
     },
-    rules: [{ required: true, message: '请选择所属部门' }],
   },
   {
     label: '角色',
     field: 'roleIds',
     type: 'select',
-    options: roleList,
+    span: 24,
+    required: true,
     props: {
+      options: roleList,
       multiple: true,
       allowClear: true,
       allowSearch: true,
     },
-    rules: [{ required: true, message: '请选择角色' }],
   },
   {
     label: '描述',
     field: 'description',
     type: 'textarea',
-    props: {
-      maxLength: 200,
-      showWordLimit: true,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
+    span: 24,
   },
   {
     label: '状态',
     field: 'status',
     type: 'switch',
+    span: 24,
     props: {
       type: 'round',
       checkedValue: 1,

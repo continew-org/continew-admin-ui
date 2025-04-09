@@ -9,35 +9,49 @@
       :layout="width >= 500 ? 'horizontal' : 'vertical'"
       :disabled="!isUpdate"
       scroll-to-first-error
+      class="form"
     >
       <a-form-item
-        field="PASSWORD_ERROR_LOCK_COUNT" :label="securityConfig.PASSWORD_ERROR_LOCK_COUNT.name"
-        :help="securityConfig.PASSWORD_ERROR_LOCK_COUNT.description" hide-asterisk
+        field="PASSWORD_ERROR_LOCK_COUNT"
+        :label="securityConfig.PASSWORD_ERROR_LOCK_COUNT.name"
+        :help="securityConfig.PASSWORD_ERROR_LOCK_COUNT.description"
+        hide-asterisk
       >
         <a-input-number
-          v-model="form.PASSWORD_ERROR_LOCK_COUNT" class="input-width" :default-value="0" :precision="0"
-          :min="0" :max="10"
+          v-model="form.PASSWORD_ERROR_LOCK_COUNT"
+          :default-value="0"
+          :precision="0"
+          :min="0"
+          :max="10"
         >
           <template #append>次</template>
         </a-input-number>
       </a-form-item>
       <a-form-item
-        field="PASSWORD_ERROR_LOCK_MINUTES" :label="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.name"
-        :help="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.description" hide-asterisk
+        field="PASSWORD_ERROR_LOCK_MINUTES"
+        :label="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.name"
+        :help="securityConfig.PASSWORD_ERROR_LOCK_MINUTES.description"
+        hide-asterisk
       >
         <a-input-number
-          v-model="form.PASSWORD_ERROR_LOCK_MINUTES" class="input-width" :precision="0" :min="1"
+          v-model="form.PASSWORD_ERROR_LOCK_MINUTES"
+          :precision="0"
+          :min="1"
           :max="1440"
         >
           <template #append>分钟</template>
         </a-input-number>
       </a-form-item>
       <a-form-item
-        field="PASSWORD_EXPIRATION_DAYS" :label="securityConfig.PASSWORD_EXPIRATION_DAYS.name"
-        :help="securityConfig.PASSWORD_EXPIRATION_DAYS.description" hide-asterisk
+        field="PASSWORD_EXPIRATION_DAYS"
+        :label="securityConfig.PASSWORD_EXPIRATION_DAYS.name"
+        :help="securityConfig.PASSWORD_EXPIRATION_DAYS.description"
+        hide-asterisk
       >
         <a-input-number
-          v-model="form.PASSWORD_EXPIRATION_DAYS" class="input-width" :precision="0" :min="0"
+          v-model="form.PASSWORD_EXPIRATION_DAYS"
+          :precision="0"
+          :min="0"
           :max="999"
         >
           <template #append>天</template>
@@ -45,43 +59,62 @@
       </a-form-item>
       <a-form-item
         :label="securityConfig.PASSWORD_EXPIRATION_WARNING_DAYS.name"
-        field="PASSWORD_EXPIRATION_WARNING_DAYS" :help="securityConfig.PASSWORD_EXPIRATION_WARNING_DAYS.description"
+        field="PASSWORD_EXPIRATION_WARNING_DAYS"
+        :help="securityConfig.PASSWORD_EXPIRATION_WARNING_DAYS.description"
         hide-asterisk
       >
         <a-input-number
-          v-model="form.PASSWORD_EXPIRATION_WARNING_DAYS" class="input-width" :precision="0" :min="0"
+          v-model="form.PASSWORD_EXPIRATION_WARNING_DAYS"
+          :precision="0"
+          :min="0"
           :max="998"
         >
           <template #append>天</template>
         </a-input-number>
       </a-form-item>
       <a-form-item
-        field="PASSWORD_REPETITION_TIMES" :label="securityConfig.PASSWORD_REPETITION_TIMES.name"
-        :help="securityConfig.PASSWORD_REPETITION_TIMES.description" hide-asterisk
+        field="PASSWORD_REPETITION_TIMES"
+        :label="securityConfig.PASSWORD_REPETITION_TIMES.name"
+        :help="securityConfig.PASSWORD_REPETITION_TIMES.description"
+        hide-asterisk
       >
         <a-input-number
-          v-model="form.PASSWORD_REPETITION_TIMES" class="input-width" :precision="0" :min="3"
+          v-model="form.PASSWORD_REPETITION_TIMES"
+          :precision="0"
+          :min="3"
           :max="32"
         >
           <template #append>次</template>
         </a-input-number>
       </a-form-item>
       <a-form-item
-        field="PASSWORD_MIN_LENGTH" :label="securityConfig.PASSWORD_MIN_LENGTH.name"
-        :help="securityConfig.PASSWORD_MIN_LENGTH.description" hide-asterisk
+        field="PASSWORD_MIN_LENGTH"
+        :label="securityConfig.PASSWORD_MIN_LENGTH.name"
+        :help="securityConfig.PASSWORD_MIN_LENGTH.description"
+        hide-asterisk
       >
-        <a-input-number v-model="form.PASSWORD_MIN_LENGTH" class="input-width" :precision="0" :min="8" :max="32" />
+        <a-input-number
+          v-model="form.PASSWORD_MIN_LENGTH"
+          :precision="0"
+          :min="8"
+          :max="32"
+        />
       </a-form-item>
       <a-form-item
         field="PASSWORD_ALLOW_CONTAIN_USERNAME"
         :label="securityConfig.PASSWORD_ALLOW_CONTAIN_USERNAME.name"
+        :help="securityConfig.PASSWORD_ALLOW_CONTAIN_USERNAME.description"
       >
         <a-switch v-model="form.PASSWORD_ALLOW_CONTAIN_USERNAME" type="round" :checked-value="1" :unchecked-value="0">
           <template #checked>是</template>
           <template #unchecked>否</template>
         </a-switch>
       </a-form-item>
-      <a-form-item field="PASSWORD_REQUIRE_SYMBOLS" :label="securityConfig.PASSWORD_REQUIRE_SYMBOLS.name">
+      <a-form-item
+        field="PASSWORD_REQUIRE_SYMBOLS"
+        :label="securityConfig.PASSWORD_REQUIRE_SYMBOLS.name"
+        :help="securityConfig.PASSWORD_REQUIRE_SYMBOLS.description"
+      >
         <a-switch v-model="form.PASSWORD_REQUIRE_SYMBOLS" type="round" :checked-value="1" :unchecked-value="0">
           <template #checked>是</template>
           <template #unchecked>否</template>
@@ -138,7 +171,7 @@ const rules: FormInstance['rules'] = {
     {
       validator: (value, callback) => {
         if (form.PASSWORD_EXPIRATION_DAYS > 0 && value >= form.PASSWORD_EXPIRATION_DAYS) {
-          callback('密码到期前的提示时间应小于密码有效期')
+          callback('密码到期提醒时间应小于密码有效期')
         } else {
           callback()
         }
@@ -238,7 +271,7 @@ onMounted(() => {
   margin-bottom: 5px;
 }
 
-.input-width {
+:deep(.form .arco-input-wrapper) {
   width: 200px;
 }
 </style>

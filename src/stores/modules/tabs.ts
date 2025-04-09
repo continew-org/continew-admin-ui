@@ -9,7 +9,7 @@ const storeSetup = () => {
   const tabList = ref<RouteLocationNormalized[]>([]) // 保存页签tab的数组
   const cacheList = ref<RouteRecordName[]>([]) // keep-alive缓存的数组，元素是组件名
 
-  // 添加一个页签, 如果当前路由已经打开, 则不再重复添加
+  // 添加一个页签，如果当前路由已经打开，则不再重复添加
   const addTabItem = (item: RouteLocationNormalized) => {
     const index = tabList.value.findIndex((i) => i.path === item.path)
     if (index >= 0) {
@@ -43,6 +43,17 @@ const storeSetup = () => {
       }
     })
     tabList.value = arr
+  }
+
+  // 设置当前tab页签名称
+  const setTabTitle = (title: string) => {
+    if (!title) return false
+    const route = router.currentRoute.value
+    const path = route?.fullPath || route.path
+    const index = tabList.value.findIndex((i) => i.fullPath === path)
+    if (index >= 0) {
+      tabList.value[index].meta.title = title
+    }
   }
 
   // 添加缓存页
@@ -142,6 +153,7 @@ const storeSetup = () => {
     addTabItem,
     deleteTabItem,
     clearTabList,
+    setTabTitle,
     addCacheItem,
     deleteCacheItem,
     clearCacheList,

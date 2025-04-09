@@ -72,7 +72,7 @@ import { Message, type TreeNodeData } from '@arco-design/web-vue'
 import { useClipboard } from '@vueuse/core'
 import { type GeneratePreviewResp, genPreview } from '@/apis/code/generator'
 
-const emit = defineEmits([ 'download','generate'])
+const emit = defineEmits(['download', 'generate'])
 const { copy, copied } = useClipboard()
 
 const genPreviewList = ref<GeneratePreviewResp[]>([])

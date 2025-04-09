@@ -1,10 +1,5 @@
 <template>
-  <div class="gi_table_page">
-    <!-- <a-row justify="space-between" align="center" class="header">
-      <a-space wrap>
-        <div class="title">系统日志</div>
-      </a-space>
-    </a-row> -->
+  <GiPageLayout>
     <a-tabs v-model:active-key="activeKey" type="card-gutter" size="large" @change="change">
       <a-tab-pane key="1">
         <template #title><icon-lock /> 登录日志</template>
@@ -16,7 +11,7 @@
     <keep-alive>
       <component :is="PaneMap[activeKey]" />
     </keep-alive>
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">

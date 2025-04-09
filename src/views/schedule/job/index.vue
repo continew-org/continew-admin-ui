@@ -1,7 +1,6 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -28,12 +27,12 @@
         </a-button>
       </template>
       <template #toolbar-right>
-        <a-button v-permission="['schedule:job:add']" type="primary" @click="onAdd">
+        <a-button v-permission="['schedule:job:create']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <template #default>新增</template>
         </a-button>
       </template>
-      <template v-if="has.hasPermOr(['schedule:job:detail'])" #jobName="{ record }">
+      <template v-if="has.hasPermOr(['schedule:job:get'])" #jobName="{ record }">
         <a-link @click="onDetail(record)">{{ record.jobName }}</a-link>
       </template>
       <template #triggerType="{ record }">
@@ -75,16 +74,16 @@
 
     <JobAddModal ref="JobAddModalRef" @save-success="reset" />
     <JobDetailDrawer ref="JobDetailDrawerRef" />
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message } from '@arco-design/web-vue'
 import { useRouter } from 'vue-router'
 import JobAddModal from './JobAddModal.vue'
 import JobDetailDrawer from './JobDetailDrawer.vue'
 import { type JobQuery, type JobResp, deleteJob, listGroup, listJob, triggerJob, updateJobStatus } from '@/apis/schedule'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile, parseCron } from '@/utils'
@@ -105,7 +104,7 @@ const {
   search,
   handleDelete,
 } = useTable((page) => listJob({ ...queryForm, ...page }), { immediate: false })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,

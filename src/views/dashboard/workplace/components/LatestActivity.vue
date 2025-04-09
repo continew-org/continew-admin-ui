@@ -105,6 +105,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import qs from 'query-string'

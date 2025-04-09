@@ -9,7 +9,7 @@
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-modal>
 </template>
 
@@ -18,7 +18,7 @@ import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { mapTree } from 'xe-utils'
 import { type DeptResp, addDept, getDept, updateDept } from '@/apis/system/dept'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 
 interface Props {
@@ -50,26 +50,19 @@ const deptSelectTree = computed(() => {
   }))
 })
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({
   sort: 999,
   status: 1,
 })
 
-const columns: Columns = reactive([
+const columns: ColumnItem[] = reactive([
   {
     label: '上级部门',
     field: 'parentId',
     type: 'tree-select',
-    data: deptSelectTree,
-    hide: (form) => {
-      return form.parentId === 0
-    },
+    span: 24,
     props: {
+      data: deptSelectTree,
       allowClear: true,
       allowSearch: true,
       fallbackOption: false,
@@ -81,20 +74,25 @@ const columns: Columns = reactive([
       },
     },
     rules: [{ required: true, message: '请选择上级部门' }],
+    hide: (form) => {
+      return form.parentId === 0
+    },
   },
   {
     label: '名称',
     field: 'name',
     type: 'input',
-    rules: [{ required: true, message: '请输入名称' }],
+    span: 24,
     props: {
       maxLength: 30,
     },
+    rules: [{ required: true, message: '请输入名称' }],
   },
   {
     label: '排序',
     field: 'sort',
     type: 'input-number',
+    span: 24,
     props: {
       min: 1,
       mode: 'button',
@@ -104,15 +102,13 @@ const columns: Columns = reactive([
     label: '描述',
     field: 'description',
     type: 'textarea',
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
+    span: 24,
   },
   {
     label: '状态',
     field: 'status',
     type: 'switch',
+    span: 24,
     props: {
       type: 'round',
       checkedValue: 1,

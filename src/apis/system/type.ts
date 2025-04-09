@@ -38,6 +38,7 @@ export interface UserQuery {
   deptId?: string
   sort: Array<string>
   userIds?: Array<string>
+  roleId?: string
 }
 export interface UserPageQuery extends UserQuery, PageQuery {}
 
@@ -62,11 +63,29 @@ export type RoleDetailResp = RoleResp & {
   menuCheckStrictly: boolean
   deptCheckStrictly: boolean
 }
+export interface RoleUserResp {
+  id: string
+  username: string
+  nickname: string
+  gender: number
+  description: string
+  status: 1 | 2
+  isSystem?: boolean
+  deptId: string
+  deptName: string
+  roleIds: Array<number>
+  roleNames: Array<string>
+  disabled: boolean
+}
 export interface RoleQuery {
   description?: string
   sort: Array<string>
 }
-export interface RolePageQuery extends RoleQuery, PageQuery {}
+export interface RoleUserQuery {
+  description?: string
+  sort: Array<string>
+}
+export interface RoleUserPageQuery extends RoleUserQuery, PageQuery {}
 
 /** 菜单类型 */
 export interface MenuResp {
@@ -185,8 +204,14 @@ export interface FileItem {
   name: string
   size: number
   url: string
+  parentPath: string
+  absPath: string
+  metadata: string
+  md5: string
+  contentType: string
   thumbnailSize: number
   thumbnailUrl: string
+  thumbnailMetadata: string
   extension: string
   type: number
   storageId: string
@@ -207,6 +232,7 @@ export interface FileStatisticsResp {
 export interface FileQuery {
   name?: string
   type?: string
+  absPath?: string
   sort: Array<string>
 }
 export interface FilePageQuery extends FileQuery, PageQuery {
@@ -234,13 +260,11 @@ export interface StorageResp {
 }
 export interface StorageQuery {
   description?: string
-  status?: number
+  type?: number
   sort: Array<string>
 }
-export interface StoragePageQuery extends StorageQuery, PageQuery {
-}
 
-/** 客户端类型 */
+/** 终端类型 */
 export interface ClientResp {
   id: string
   clientId: string
@@ -345,6 +369,60 @@ export interface MailConfig {
 export interface LoginConfig {
   LOGIN_CAPTCHA_ENABLED: OptionResp
 }
+
+/** 短信配置类型 */
+export interface SmsConfigResp {
+  id: string
+  name: string
+  supplier: string
+  accessKey: string
+  secretKey: string
+  signature: string
+  templateId: string
+  weight: string
+  retryInterval: string
+  maxRetries: string
+  maximum: string
+  supplierConfig: string
+  status: number
+  createUser: string
+  createTime: string
+  updateUser: string
+  updateTime: string
+  createUserString: string
+  updateUserString: string
+  disabled: boolean
+}
+export interface SmsConfigQuery {
+  name: string | undefined
+  supplier: string | undefined
+  accessKey: string | undefined
+  sort: Array<string>
+}
+export interface SmsConfigPageQuery extends SmsConfigQuery, PageQuery {}
+
+/** 短信日志类型 */
+export interface SmsLogResp {
+  id: string
+  configId: string
+  phone: string
+  params: string
+  status: number
+  resMsg: string
+  createUser: string
+  createTime: string
+  updateUser: string
+  updateTime: string
+  createUserString: string
+  updateUserString: string
+}
+export interface SmsLogQuery {
+  configId: string | undefined
+  phone: string | undefined
+  status: number | undefined
+  sort: Array<string>
+}
+export interface SmsLogPageQuery extends SmsLogQuery, PageQuery {}
 
 /** 绑定三方账号信息 */
 export interface BindSocialAccountRes {

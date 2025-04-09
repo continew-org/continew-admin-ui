@@ -46,8 +46,8 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import type { TableInstance } from '@arco-design/web-vue'
 import { type LogQuery, exportLoginLog, listLog } from '@/apis/monitor'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useDownload, useTable } from '@/hooks'
 
@@ -69,10 +69,10 @@ const {
   search,
 } = useTable((page) => listLog({ ...queryForm, ...page }), { immediate: true })
 
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
-    width: 66,
+    minWidth: 66,
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
   },

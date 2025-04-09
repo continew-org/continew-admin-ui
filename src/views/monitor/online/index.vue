@@ -1,7 +1,6 @@
 <template>
-  <div class="gi_table_page">
+  <GiPageLayout>
     <GiTable
-      title=""
       row-key="id"
       :data="dataList"
       :columns="columns"
@@ -40,13 +39,13 @@
         </a-space>
       </template>
     </GiTable>
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import { Message } from '@arco-design/web-vue'
 import { type OnlineUserQuery, kickout, listOnlineUser } from '@/apis/monitor'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import { useUserStore } from '@/stores'
 import { useTable } from '@/hooks'
@@ -68,7 +67,7 @@ const {
   pagination,
   search,
 } = useTable((page) => listOnlineUser({ ...queryForm, ...page }), { immediate: true })
-const columns: TableInstanceColumns[] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,

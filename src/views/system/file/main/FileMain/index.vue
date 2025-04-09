@@ -18,6 +18,10 @@
 
         <a-input-group>
           <a-input
+            v-model="queryForm.absPath" placeholder="路径" allow-clear style="width: 300px"
+            @change="search"
+          />
+          <a-input
             v-model="queryForm.name" placeholder="搜索文件名" allow-clear style="width: 200px"
             @change="search"
           />
@@ -99,7 +103,7 @@ import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from 
 import { ImageTypes, OfficeTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
-
+import mittBus from '@/utils/mitt'
 import type { ExcelConfig } from '@/components/FilePreview/type'
 
 const FilePreview = defineAsyncComponent(() => import('@/components/FilePreview/index.vue'))
@@ -110,6 +114,7 @@ const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage
 
 const queryForm = reactive<FileQuery>({
   name: undefined,
+  absPath: undefined,
   type: route.query.type?.toString() !== '0' ? route.query.type?.toString() : undefined,
   sort: ['updateTime,desc'],
 })
@@ -183,13 +188,14 @@ const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
   if (mode === 'delete') {
     Modal.warning({
       title: '提示',
-      content: `是否确定删除文件 [${fileInfo.name}]？`,
+      content: `是否确定删除文件「${fileInfo.name}」？`,
       hideCancel: false,
       okButtonProps: { status: 'danger' },
       onOk: async () => {
         await deleteFile(fileInfo.id)
         Message.success('删除成功')
         search()
+        mittBus.emit('file-total-refresh')
       },
     })
   } else if (mode === 'rename') {
@@ -216,6 +222,7 @@ const handleMulDelete = () => {
       await deleteFile(selectedFileIds.value)
       Message.success('删除成功')
       search()
+      mittBus.emit('file-total-refresh')
     },
   })
 }
@@ -235,6 +242,8 @@ const handleUpload = (options: RequestOption) => {
       search()
     } catch (error) {
       onError(error)
+    } finally {
+      mittBus.emit('file-total-refresh')
     }
   })()
   return {
