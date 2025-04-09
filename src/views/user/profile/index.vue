@@ -1,6 +1,6 @@
 <template>
   <div class="gi_page">
-    <a-row wrap :gutter="16" align="stretch">
+    <a-row wrap :gutter="[16, 16]" align="stretch">
       <a-col :xs="24" :sm="24" :md="10" :lg="10" :xl="7" :xxl="7">
         <LeftBox />
       </a-col>
