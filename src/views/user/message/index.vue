@@ -1,28 +1,90 @@
 <template>
-  <GiPageLayout :margin="true" :default-collapsed="false">
+  <GiPageLayout :margin="true" :default-collapsed="false" :header-style="isDesktop ? { borderBottomWidth: 0 } : { borderBottomWidth: '1px' } ">
     <template v-if="isDesktop" #left>
-      <a-tabs v-model:active-key="activeKey" position="left" hide-content size="large" @change="change">
-        <a-tab-pane v-for="(item) in menuList" :key="item.key" :title="item.name"></a-tab-pane>
+      <a-tabs v-model:active-key="activeKey" type="rounded" position="left" hide-content size="large" @change="change">
+        <a-tab-pane v-for="item in tabItems" :key="item.key">
+          <template #title>
+            <TabPaneTitle :title="item.title" :count="item.count" />
+          </template>
+        </a-tab-pane>
       </a-tabs>
     </template>
-    <a-tabs v-if="!isDesktop" v-model:active-key="activeKey" type="card-gutter" position="top" size="large" @change="change">
-      <a-tab-pane v-for="(item) in menuList" :key="item.key" :title="item.name"></a-tab-pane>
-    </a-tabs>
+    <template #header>
+      <a-tabs v-if="!isDesktop" v-model:active-key="activeKey" type="rounded" position="top" size="large" @change="change">
+        <a-tab-pane v-for="item in tabItems" :key="item.key">
+          <template #title>
+            <TabPaneTitle :title="item.title" :count="item.count" />
+          </template>
+        </a-tab-pane>
+      </a-tabs>
+    </template>
     <transition name="fade-slide" mode="out-in" appear>
       <component :is="menuList.find((item) => item.key === activeKey)?.value"></component>
     </transition>
   </GiPageLayout>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { useRoute, useRouter } from 'vue-router'
 import MyMessage from './components/MyMessage.vue'
 import MyNotice from './components/MyNotice.vue'
 import { useDevice } from '@/hooks'
+import { type MessageResp, type NoticeResp, listMessage, listNotice } from '@/apis'
 
 defineOptions({ name: 'UserMessage' })
 
+const TabPaneTitle = defineComponent({
+  props: {
+    title: { type: String, required: true },
+    count: { type: Number, default: 0 },
+  },
+  setup(props) {
+    return () => (
+      <div class="tab-pane-item">
+        <div>{props.title}</div>
+        <a-badge count={props.count} max-count={99} />
+      </div>
+    )
+  },
+})
+
 const { isDesktop } = useDevice()
+
+const messageList = ref<MessageResp[]>()
+const noticeList = ref<NoticeResp[]>()
+
+const tabItems = computed(() => [
+  { key: 'msg', title: '我的消息', count: messageList.value?.length ?? 0 },
+  { key: 'notice', title: '我的公告' },
+])
+
+const messageQueryParam = reactive({
+  isRead: false,
+  sort: ['createTime,desc'],
+  page: 1,
+  size: 5,
+})
+
+const noticeQueryParam = reactive({
+  sort: ['createTime,desc'],
+  page: 1,
+  size: 5,
+})
+
+const getMessageData = async () => {
+  const { data } = await listMessage(messageQueryParam)
+  messageList.value = data.list.filter((item) => !item.isRead)
+}
+
+const getNoticeData = async () => {
+  const { data } = await listNotice(noticeQueryParam)
+  noticeList.value = data.list
+}
+
+onMounted(() => {
+  getMessageData()
+  getNoticeData()
+})
 
 const menuList = [
   { name: '我的消息', key: 'msg', value: MyMessage },
@@ -48,6 +110,13 @@ const change = (key: string | number) => {
 </script>
 
 <style scoped lang="scss">
+.tab-pane-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
 :deep(.arco-tabs-nav-vertical.arco-tabs-nav-type-line .arco-tabs-tab) {
   margin: 0;
   padding: 8px 16px;
@@ -106,5 +175,13 @@ const change = (key: string | number) => {
 
 :deep(.arco-tabs-nav) {
   overflow: visible;
+}
+
+:deep(.arco-tabs-nav-type-rounded .arco-tabs-tab){
+  border-radius: 8px;
+}
+
+:deep(.arco-tabs-tab-title){
+  width: 100%;
 }
 </style>
