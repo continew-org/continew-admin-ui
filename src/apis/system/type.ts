@@ -207,7 +207,7 @@ export interface FileItem {
   parentPath: string
   absPath: string
   metadata: string
-  md5: string
+  sha256: string
   contentType: string
   thumbnailSize: number
   thumbnailUrl: string

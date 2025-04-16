@@ -201,7 +201,11 @@ const handleClickFile = (item: FileItem) => {
 // 双击文件
 const handleDblclickFile = (item: FileItem) => {
   if (DirTypes.includes(item.extension)) {
-    queryForm.absPath = item.absPath + item.name
+    if (item.absPath.endsWith('/')) {
+      queryForm.absPath = item.absPath + item.name
+    } else {
+      queryForm.absPath = `${item.absPath}/${item.name}`
+    }
     search()
   }
 }
