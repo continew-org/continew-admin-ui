@@ -24,3 +24,13 @@ export function deleteFile(id: string) {
 export function getFileStatistics() {
   return http.get<T.FileStatisticsResp>(`${BASE_URL}/statistics`)
 }
+
+/** @desc 根据sha256检测文件是否已经在服务器存在 */
+export function checkFile(sha256: string) {
+  return http.get<T.FileItem>(`${BASE_URL}/check`, { fileHash: sha256 })
+}
+
+/** @desc 创建文件夹 */
+export function createDir(path: string, name: string) {
+  return http.post<T.FileItem>(`${BASE_URL}/createDir`, { parentPath: path, name })
+}

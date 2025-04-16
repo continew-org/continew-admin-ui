@@ -44,6 +44,12 @@
             <icon-delete />
           </template>
         </a-button>
+        <a-button type="primary" :disabled="!queryForm.absPath" @click="createDirModalVisible = !createDirModalVisible">
+          <template #icon>
+            <icon-folder />
+          </template>
+          <template #default>新建文件夹</template>
+        </a-button>
         <a-button type="primary" @click="isBatchMode = !isBatchMode">
           <template #icon>
             <icon-select-all />
@@ -68,14 +74,14 @@
       <FileGrid
         v-show="fileList.length && mode === 'grid'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"
+        @right-menu-click="handleRightMenuClick" @dblclick="handleDblclickFile"
       ></FileGrid>
 
       <!-- 文件列表-列表模式 -->
       <FileList
         v-show="fileList.length && mode === 'list'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
-        @right-menu-click="handleRightMenuClick"
+        @right-menu-click="handleRightMenuClick" @dblclick="handleDblclickFile"
       ></FileList>
 
       <a-empty v-if="!fileList.length" />
@@ -84,6 +90,11 @@
     <div class="pagination">
       <a-pagination v-bind="pagination" />
     </div>
+
+    <!-- 弹出新建窗口 -->
+    <a-modal v-model:visible="createDirModalVisible" title="新建文件夹" @ok="handleCreateDir" @cancel="handleCancel">
+      <a-input v-model="newDirName" placeholder="请输入文件夹名称" size="large" allow-clear />
+    </a-modal>
   </div>
 </template>
 
@@ -99,8 +110,8 @@ import {
 import FileGrid from './FileGrid.vue'
 import useFileManage from './useFileManage'
 import { useTable } from '@/hooks'
-import { type FileItem, type FileQuery, deleteFile, listFile, uploadFile } from '@/apis'
-import { ImageTypes, OfficeTypes } from '@/constant/file'
+import { type FileItem, type FileQuery, checkFile, createDir, deleteFile, listFile, uploadFile } from '@/apis'
+import { DirTypes, ImageTypes, OfficeTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
 import mittBus from '@/utils/mitt'
@@ -112,9 +123,14 @@ const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 const route = useRoute()
 const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 
+// 新建文件夹弹窗显示
+const createDirModalVisible = ref<boolean>(false)
+// 新文件名称
+const newDirName = ref()
+
 const queryForm = reactive<FileQuery>({
   name: undefined,
-  absPath: undefined,
+  absPath: '/',
   type: route.query.type?.toString() !== '0' ? route.query.type?.toString() : undefined,
   sort: ['updateTime,desc'],
 })
@@ -172,6 +188,15 @@ const handleClickFile = (item: FileItem) => {
     previewFileAudioModal(item)
   }
 }
+
+// 双击文件
+const handleDblclickFile = (item: FileItem) => {
+  if (DirTypes.includes(item.extension)) {
+    queryForm.absPath = item.absPath + item.name
+    search()
+  }
+}
+
 // 下载文件
 const onDownload = async (fileInfo: FileItem) => {
   const res = await downloadByUrl({
@@ -234,6 +259,7 @@ const handleUpload = (options: RequestOption) => {
     const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
     onProgress(20)
     const formData = new FormData()
+    formData.append('path', queryForm.absPath ?? '/')
     formData.append(name as string, fileItem.file as Blob)
     try {
       const res = await uploadFile(formData)
@@ -263,6 +289,20 @@ onBeforeRouteUpdate((to) => {
 
   search()
 })
+
+// 新建文件夹弹窗窗口取消事件
+const handleCancel = () => {
+  newDirName.value = undefined
+  createDirModalVisible.value = false
+}
+
+// 新建文件夹弹窗窗口确认事件
+const handleCreateDir = async () => {
+  const res = await createDir(queryForm.absPath ?? '/', newDirName.value)
+  newDirName.value = undefined
+  createDirModalVisible.value = false
+  search()
+}
 
 onMounted(() => {
   search()

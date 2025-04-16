@@ -34,7 +34,7 @@
                 </a-typography-paragraph>
               </section>
               <template #content>
-                <FileRightMenu :data="record" @click="handleRightMenuClick($event, record)"></FileRightMenu>
+                <FileRightMenu :data="record" @click="handleRightMenuClick($event, record)" @dblclick="handleDblclickFile(record)"></FileRightMenu>
               </template>
             </a-trigger>
           </template>
@@ -77,6 +77,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'click', record: FileItem): void
+  (e: 'dblclick', record: FileItem): void
   (e: 'select', record: FileItem): void
   (e: 'right-menu-click', mode: string, item: FileItem): void
 }>()
@@ -107,6 +108,11 @@ const select: TableInstance['onSelect'] = (rowKeys, rowKey, record) => {
 // 行点击事件
 const handleRowClick: TableInstance['onRowClick'] = (record) => {
   emit('click', record as unknown as FileItem)
+}
+
+// 双击事件
+const handleDblclickFile = (item: FileItem) => {
+  emit('dblclick', item)
 }
 
 // 右键菜单点击事件
