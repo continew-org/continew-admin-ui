@@ -16,7 +16,7 @@ export function deleteMessage(ids: Array<string>) {
 }
 
 /** @desc 标记已读 */
-export function readMessage(ids?: Array<string>) {
+export function readMessage(ids: Array<string>) {
   return http.patch(`${BASE_URL}/read`, { ids })
 }
 

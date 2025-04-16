@@ -1,9 +1,9 @@
 <template>
-  <a-drawer v-model:visible="visible" title="终端详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
+  <a-drawer v-model:visible="visible" title="客户端详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID">{{ dataDetail?.id }}</a-descriptions-item>
-      <a-descriptions-item label="终端ID" :span="2"><a-typography-paragraph :copyable="!!dataDetail?.clientId">{{ dataDetail?.clientId }}</a-typography-paragraph></a-descriptions-item>
-      <a-descriptions-item label="终端类型" :span="2">
+      <a-descriptions-item label="客户端ID" :span="2"><a-typography-paragraph :copyable="!!dataDetail?.clientId">{{ dataDetail?.clientId }}</a-typography-paragraph></a-descriptions-item>
+      <a-descriptions-item label="客户端类型" :span="2">
         <GiCellTag :value="dataDetail?.clientType" :dict="client_type" />
       </a-descriptions-item>
       <a-descriptions-item label="认证类型" :span="2">

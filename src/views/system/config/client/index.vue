@@ -15,7 +15,7 @@
         <a-select
           v-model="queryForm.clientType"
           :options="client_type"
-          placeholder="请选择终端类型"
+          placeholder="请选择客户端类型"
           allow-clear
           style="width: 160px"
           @change="search"
@@ -109,7 +109,7 @@ const columns: TableInstance['columns'] = [
     fixed: !isMobile() ? 'left' : undefined,
   },
   {
-    title: '终端 ID',
+    title: '客户端 ID',
     dataIndex: 'clientId',
     slotName: 'clientId',
     ellipsis: true,
@@ -121,7 +121,7 @@ const columns: TableInstance['columns'] = [
     },
   },
   {
-    title: '终端类型',
+    title: '客户端类型',
     dataIndex: 'clientType',
     slotName: 'clientType',
     ellipsis: true,
@@ -181,7 +181,7 @@ const reset = () => {
 // 删除
 const onDelete = (record: ClientResp) => {
   return handleDelete(() => deleteClient(record.id), {
-    content: `是否确定删除终端「${record.clientKey}(${record.clientId})」？`,
+    content: `是否确定删除客户端「${record.clientId}」？`,
     showModal: true,
   })
 }

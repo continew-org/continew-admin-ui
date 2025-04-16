@@ -17,7 +17,7 @@
       <a-input-search v-model="queryForm.title" placeholder="搜索标题" allow-clear @search="search" />
       <a-select
         v-model="queryForm.isRead"
-        placeholder="全部状态"
+        placeholder="请选择状态"
         allow-clear
         style="width: 150px"
         @change="search"

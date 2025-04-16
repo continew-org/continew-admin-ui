@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { type MessageResp, listMessage, readMessage } from '@/apis'
+import { type MessageResp, listMessage, readAllMessage } from '@/apis'
 import router from '@/router'
 
 const emit = defineEmits<{
@@ -54,7 +54,7 @@ const open = () => {
 
 // 全部已读
 const readAll = async () => {
-  await readMessage()
+  await readAllMessage()
   await getMessageData()
   emit('readall-success')
 }

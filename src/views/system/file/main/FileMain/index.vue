@@ -17,14 +17,8 @@
         </a-dropdown>
 
         <a-input-group>
-          <a-input
-            v-model="queryForm.absPath" placeholder="路径" allow-clear style="width: 300px"
-            @change="search"
-          />
-          <a-input
-            v-model="queryForm.name" placeholder="搜索文件名" allow-clear style="width: 200px"
-            @change="search"
-          />
+          <a-select v-model="queryType" placeholder="请选择" :options="queryTypeOption" :style="{ width: '100px' }" @change="reset" />
+          <a-input v-model="queryForm[queryType]" placeholder="请输入" allow-clear style="width: 200px" />
           <a-button type="primary" @click="search">
             <template #icon>
               <icon-search />
@@ -123,6 +117,15 @@ const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 const route = useRoute()
 const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 
+const queryTypeOption = [{
+  label: '文件名',
+  value: 'name',
+}, {
+  label: '路径',
+  value: 'absPath',
+}]
+const queryType = ref<string>('name')
+
 // 新建文件夹弹窗显示
 const createDirModalVisible = ref<boolean>(false)
 // 新文件名称
@@ -134,6 +137,12 @@ const queryForm = reactive<FileQuery>({
   type: route.query.type?.toString() !== '0' ? route.query.type?.toString() : undefined,
   sort: ['updateTime,desc'],
 })
+
+const reset = () => {
+  queryForm.name = undefined
+  queryForm.absPath = undefined
+}
+
 const paginationOption = reactive({
   defaultPageSize: 30,
   defaultSizeOptions: [30, 40, 50, 100, 120],

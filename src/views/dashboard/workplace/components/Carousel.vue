@@ -48,10 +48,10 @@ const getDataList = async () => {
   try {
     loading.value = true
     const base = `https://continew.top`
-    const data = await (await fetch(`${base}/sponsor.json`)).json()
+    const data = await (await fetch(`${base}/sponsor.json?${new Date().getTime()}`)).json()
     if (data) {
       // 只获取 special 和 platinum 赞助者
-      const sponsors = [...data.special, data.platinum]
+      const sponsors = [...data.special, ...data.platinum]
       sponsors.forEach((item) => {
         if (!item.name) {
           return

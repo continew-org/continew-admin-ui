@@ -57,7 +57,7 @@ const data = [
   { name: '邮件配置', key: 'mail', icon: 'email', permissions: ['system:mailConfig:get'], value: MailConfig },
   { name: '短信配置', key: 'sms', icon: 'message', permissions: ['system:smsConfig:list'], value: SmsConfig },
   { name: '存储配置', key: 'storage', icon: 'storage', permissions: ['system:storage:list'], value: StorageConfig },
-  { name: '终端配置', key: 'client', icon: 'mobile', permissions: ['system:client:list'], value: ClientConfig },
+  { name: '客户端配置', key: 'client', icon: 'mobile', permissions: ['system:client:list'], value: ClientConfig },
 ]
 
 const menuList = computed(() => {

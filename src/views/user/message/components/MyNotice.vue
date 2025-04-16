@@ -14,7 +14,7 @@
       <a-select
         v-model="queryForm.type"
         :options="notice_type"
-        placeholder="全部类型"
+        placeholder="请选择类型"
         allow-clear
         style="width: 150px"
         @change="search"

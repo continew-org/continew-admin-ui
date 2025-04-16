@@ -31,7 +31,7 @@ const { width } = useWindowSize()
 const dataId = ref('')
 const visible = ref(false)
 const isUpdate = computed(() => !!dataId.value)
-const title = computed(() => (isUpdate.value ? '修改终端' : '新增终端'))
+const title = computed(() => (isUpdate.value ? '修改客户端' : '新增客户端'))
 const formRef = ref<InstanceType<typeof GiForm>>()
 const { client_type, auth_type_enum } = useDict('auth_type_enum', 'client_type')
 
@@ -45,7 +45,7 @@ const [form, resetForm] = useResetReactive({
 
 const columns: ColumnItem[] = reactive([
   {
-    label: '终端类型',
+    label: '客户端类型',
     field: 'clientType',
     type: 'select',
     span: 12,
