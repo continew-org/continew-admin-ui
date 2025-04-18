@@ -33,6 +33,7 @@
     "cron-parser": "^4.9.0",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.4",
+    "default-passive-events": "^2.0.0",
     "echarts": "^5.4.2",
     "jsencrypt": "^3.3.2",
     "lint-staged": "^15.2.10",
