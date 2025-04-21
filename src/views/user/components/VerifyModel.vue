@@ -25,7 +25,7 @@
 import { useWindowSize } from '@vueuse/core'
 import { Message } from '@arco-design/web-vue'
 import NProgress from 'nprogress'
-import { type BehaviorCaptchaReq, getEmailCaptcha, updateUserEmail, updateUserPassword, updateUserPhone } from '@/apis'
+import { type BehaviorCaptchaReq, getEmailCaptcha, getSmsCaptcha, updateUserEmail, updateUserPassword, updateUserPhone } from '@/apis'
 import { encryptByRsa } from '@/utils/encrypt'
 import { useUserStore } from '@/stores'
 import { type ColumnItem, GiForm } from '@/components/GiForm'
@@ -188,15 +188,15 @@ const getCaptcha = async (captchaReq: BehaviorCaptchaReq) => {
     captchaLoading.value = true
     captchaBtnName.value = '发送中...'
     if (verifyType.value === 'phone') {
-      // await getSmsCaptcha(form.phone, captchaReq)
+      await getSmsCaptcha(form.phone, captchaReq)
     } else if (verifyType.value === 'email') {
       await getEmailCaptcha(form.email, captchaReq)
     }
     captchaLoading.value = false
     captchaDisable.value = true
     captchaBtnName.value = `获取验证码(${(captchaTime.value -= 1)}s)`
-    // Message.success('发送成功')
-    Message.success('仅提供效果演示，实际使用请查看代码取消相关注释')
+    Message.success('发送成功')
+    // Message.success('仅提供效果演示，实际使用请查看代码取消相关注释')
     captchaTimer.value = window.setInterval(() => {
       captchaTime.value -= 1
       captchaBtnName.value = `获取验证码(${captchaTime.value}s)`

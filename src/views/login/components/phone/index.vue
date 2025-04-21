@@ -12,7 +12,7 @@
       <a-input v-model="form.phone" placeholder="请输入手机号" :max-length="11" allow-clear />
     </a-form-item>
     <a-form-item field="captcha" hide-label>
-      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="4" allow-clear style="flex: 1 1" />
+      <a-input v-model="form.captcha" placeholder="请输入验证码" :max-length="6" allow-clear style="flex: 1 1" />
       <a-button
         class="captcha-btn"
         :loading="captchaLoading"
@@ -25,7 +25,7 @@
     </a-form-item>
     <a-form-item>
       <a-space direction="vertical" fill class="w-full">
-        <a-button disabled class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button>
+        <a-button class="btn" type="primary" :loading="loading" html-type="submit" size="large" long>立即登录</a-button>
       </a-space>
     </a-form-item>
     <Verify
@@ -40,8 +40,8 @@
 
 <script setup lang="ts">
 import { type FormInstance, Message } from '@arco-design/web-vue'
-import type { BehaviorCaptchaReq } from '@/apis'
-// import { type BehaviorCaptchaReq, getSmsCaptcha } from '@/apis'
+// import type { BehaviorCaptchaReq } from '@/apis'
+import { type BehaviorCaptchaReq, getSmsCaptcha } from '@/apis'
 import { useTabsStore, useUserStore } from '@/stores'
 import * as Regexp from '@/utils/regexp'
 
@@ -113,12 +113,12 @@ const resetCaptcha = () => {
 }
 
 // 获取验证码
-// eslint-disable-next-line unused-imports/no-unused-vars
+
 const getCaptcha = async (captchaReq: BehaviorCaptchaReq) => {
   try {
     captchaLoading.value = true
     captchaBtnName.value = '发送中...'
-    // await getSmsCaptcha(form.phone, captchaReq)
+    await getSmsCaptcha(form.phone, captchaReq)
     captchaLoading.value = false
     captchaDisable.value = true
     captchaBtnName.value = `获取验证码(${(captchaTime.value -= 1)}s)`

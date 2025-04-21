@@ -16,7 +16,7 @@
         <a-input-search v-model="queryForm.accessKey" placeholder="搜索 Access Key" allow-clear @search="search" />
         <a-select
           v-model="queryForm.supplier"
-          :options="sms_supplier_enum"
+          :options="sms_supplier_type"
           placeholder="请选择厂商"
           allow-clear
           style="width: 150px"
@@ -34,7 +34,7 @@
         </a-button>
       </template>
       <template #supplier="{ record }">
-        <GiCellTag :value="record.supplier" :dict="sms_supplier_enum" />
+        <GiCellTag :value="record.supplier" :dict="sms_supplier_type" />
       </template>
       <template #accessKey="{ record }">
         <CellCopy :content="record.accessKey" />
@@ -72,7 +72,7 @@ import GiCellStatus from '@/components/GiCell/GiCellStatus.vue'
 
 defineOptions({ name: 'SystemSmsConfig' })
 
-const { sms_supplier_enum } = useDict('sms_supplier_enum')
+const { sms_supplier_type } = useDict('sms_supplier_type')
 
 const queryForm = reactive<SmsConfigQuery>({
   name: undefined,
@@ -97,7 +97,16 @@ const columns: TableInstance['columns'] = [
     fixed: !isMobile() ? 'left' : undefined,
   },
   { title: '名称', dataIndex: 'name', slotName: 'name', width: 120, fixed: !isMobile() ? 'left' : undefined },
-  { title: '厂商', dataIndex: 'supplier', slotName: 'supplier', width: 100 },
+  {
+    title: '厂商',
+    dataIndex: 'supplier',
+    slotName: 'supplier',
+    width: 100,
+    props: {
+      options: sms_supplier_type,
+      placeholder: '请选择厂商',
+    },
+  },
   { title: 'Access Key', dataIndex: 'accessKey', slotName: 'accessKey', width: 200, ellipsis: true, tooltip: true },
   { title: 'Secret Key', dataIndex: 'secretKey', slotName: 'secretKey', width: 200, ellipsis: true, tooltip: true },
   { title: '短信签名', dataIndex: 'signature', slotName: 'signature', width: 200, ellipsis: true, tooltip: true },
