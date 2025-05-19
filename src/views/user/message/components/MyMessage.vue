@@ -1,23 +1,23 @@
 <template>
   <GiTable
+    v-model:selected-keys="selectedKeys"
     row-key="id"
     :data="dataList"
     :columns="columns"
     :loading="loading"
-    :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+    :scroll="{ x: '100%', y: '100%', minWidth: 800 }"
     :pagination="pagination"
     :disabled-tools="['size', 'setting']"
     :row-selection="{ type: 'checkbox', showCheckedAll: true }"
-    :selected-keys="selectedKeys"
-    @select-all="selectAll"
     @select="select"
+    @select-all="selectAll"
     @refresh="search"
   >
     <template #toolbar-left>
       <a-input-search v-model="queryForm.title" placeholder="搜索标题" allow-clear @search="search" />
       <a-select
         v-model="queryForm.isRead"
-        placeholder="全部状态"
+        placeholder="请选择状态"
         allow-clear
         style="width: 150px"
         @change="search"
@@ -33,13 +33,13 @@
     <template #toolbar-right>
       <a-button type="primary" status="danger" :disabled="!selectedKeys.length" :title="!selectedKeys.length ? '请选择' : ''" @click="onDelete">
         <template #icon><icon-delete /></template>
-        <template #default>删除</template>
+        删除
       </a-button>
       <a-button type="primary" :disabled="!selectedKeys.length" :title="!selectedKeys.length ? '请选择' : ''" @click="onRead">
-        <template #default>标记为已读</template>
+        标记为已读
       </a-button>
-      <a-button type="primary" :disabled="selectedKeys.length" :title="!selectedKeys.length ? '请选择' : ''" @click="onReadAll">
-        <template #default>全部已读</template>
+      <a-button type="primary" :disabled="selectedKeys.length > 0" :title="!selectedKeys.length ? '请选择' : ''" @click="onReadAll">
+        全部已读
       </a-button>
     </template>
     <template #title="{ record }">
@@ -59,9 +59,10 @@
 <script setup lang="ts">
 import type { TableInstance } from '@arco-design/web-vue'
 import { Message, Modal } from '@arco-design/web-vue'
-import { type MessageQuery, deleteMessage, listMessage, readMessage } from '@/apis'
+import { type MessageQuery, deleteMessage, listMessage, readAllMessage, readMessage } from '@/apis'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
+import mittBus from '@/utils/mitt'
 
 defineOptions({ name: 'SystemMessage' })
 
@@ -70,7 +71,10 @@ const { message_type } = useDict('message_type')
 const queryForm = reactive<MessageQuery>({
   sort: ['createTime,desc'],
 })
-
+// 表格更新回调
+const onSuccess = () => {
+  mittBus.emit('count-refresh')
+}
 const {
   tableData: dataList,
   loading,
@@ -80,9 +84,9 @@ const {
   selectAll,
   search,
   handleDelete,
-} = useTable((page) => listMessage({ ...queryForm, ...page }), { immediate: true })
+} = useTable((page) => listMessage({ ...queryForm, ...page }), { immediate: true, onSuccess })
 
-const columns: TableInstance['collumns'] = [
+const columns: TableInstance['columns'] = [
   {
     title: '序号',
     width: 66,
@@ -90,7 +94,7 @@ const columns: TableInstance['collumns'] = [
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
   },
   { title: '标题', dataIndex: 'title', slotName: 'title', minWidth: 100, ellipsis: true, tooltip: true },
-  { title: '状态', dataIndex: 'isRead', slotName: 'isRead', align: 'center' },
+  { title: '状态', dataIndex: 'isRead', slotName: 'isRead', minWidth: 100, align: 'center' },
   { title: '时间', dataIndex: 'createTime', width: 180 },
   { title: '类型', dataIndex: 'type', slotName: 'type', width: 180, ellipsis: true, tooltip: true },
 ]
@@ -108,7 +112,7 @@ const onDelete = () => {
   if (!selectedKeys.value.length) {
     return Message.warning('请选择数据')
   }
-  return handleDelete(() => deleteMessage(selectedKeys.value), { showModal: false, multiple: true })
+  return handleDelete(() => deleteMessage(selectedKeys.value), { showModal: true, content: `是否确定删除所选的${selectedKeys.value.length}条消息？`, multiple: true })
 }
 
 // 标记为已读
@@ -129,7 +133,7 @@ const onReadAll = async () => {
     hideCancel: false,
     maskClosable: false,
     onOk: async () => {
-      await readMessage([])
+      await readAllMessage()
       Message.success('操作成功')
       search()
     },

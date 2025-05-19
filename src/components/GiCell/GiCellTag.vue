@@ -6,7 +6,6 @@
   <a-tag v-else-if="dictItem.extra === 'warning'" color="orangered">{{ dictItem.label }}</a-tag>
   <a-tag v-else-if="dictItem.extra === 'error'" color="red">{{ dictItem.label }}</a-tag>
   <a-tag v-else-if="dictItem.extra === 'default'" color="gray">{{ dictItem.label }}</a-tag>
-  <a-tag v-else :color="dictItem.extra">{{ dictItem.label }}</a-tag>
 </template>
 
 <script setup lang="ts">

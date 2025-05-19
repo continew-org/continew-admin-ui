@@ -30,6 +30,4 @@ const handleSelectRole = (keys: Array<any>) => {
 }
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

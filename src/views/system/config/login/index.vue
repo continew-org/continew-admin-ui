@@ -1,48 +1,50 @@
 <template>
-  <a-spin :loading="loading">
-    <a-form
-      ref="formRef"
-      :model="form"
-      :rules="rules"
-      auto-label-width
-      label-align="left"
-      :layout="width >= 500 ? 'horizontal' : 'vertical'"
-      :disabled="!isUpdate"
-      scroll-to-first-error
-    >
-      <a-form-item
-        field="LOGIN_CAPTCHA_ENABLED"
-        :label="loginConfig.LOGIN_CAPTCHA_ENABLED.name"
+  <div class="gi_page">
+    <a-spin :loading="loading">
+      <a-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        auto-label-width
+        label-align="left"
+        :layout="width >= 500 ? 'horizontal' : 'vertical'"
+        :disabled="!isUpdate"
+        scroll-to-first-error
       >
-        <a-switch
-          v-model="form.LOGIN_CAPTCHA_ENABLED"
-          type="round"
-          :checked-value="1"
-          :unchecked-value="0"
+        <a-form-item
+          field="LOGIN_CAPTCHA_ENABLED"
+          :label="loginConfig.LOGIN_CAPTCHA_ENABLED.name"
         >
-          <template #checked>是</template>
-          <template #unchecked>否</template>
-        </a-switch>
-      </a-form-item>
-      <a-space style="margin-bottom: 16px">
-        <a-button v-if="!isUpdate" v-permission="['system:config:update']" type="primary" @click="onUpdate">
-          <template #icon><icon-edit /></template>修改
-        </a-button>
-        <a-button v-if="!isUpdate" v-permission="['system:config:reset']" @click="onResetValue">
-          <template #icon><icon-undo /></template>恢复默认
-        </a-button>
-        <a-button v-if="isUpdate" type="primary" @click="handleSave">
-          <template #icon><icon-save /></template>保存
-        </a-button>
-        <a-button v-if="isUpdate" @click="reset">
-          <template #icon><icon-refresh /></template>重置
-        </a-button>
-        <a-button v-if="isUpdate" @click="handleCancel">
-          <template #icon><icon-undo /></template>取消
-        </a-button>
-      </a-space>
-    </a-form>
-  </a-spin>
+          <a-switch
+            v-model="form.LOGIN_CAPTCHA_ENABLED"
+            type="round"
+            :checked-value="1"
+            :unchecked-value="0"
+          >
+            <template #checked>是</template>
+            <template #unchecked>否</template>
+          </a-switch>
+        </a-form-item>
+        <a-space style="margin-bottom: 16px">
+          <a-button v-if="!isUpdate" v-permission="['system:loginConfig:update']" type="primary" @click="onUpdate">
+            <template #icon><icon-edit /></template>修改
+          </a-button>
+          <a-button v-if="!isUpdate" v-permission="['system:loginConfig:update']" @click="onResetValue">
+            <template #icon><icon-undo /></template>恢复默认
+          </a-button>
+          <a-button v-if="isUpdate" type="primary" @click="handleSave">
+            <template #icon><icon-save /></template>保存
+          </a-button>
+          <a-button v-if="isUpdate" @click="reset">
+            <template #icon><icon-refresh /></template>重置
+          </a-button>
+          <a-button v-if="isUpdate" @click="handleCancel">
+            <template #icon><icon-undo /></template>取消
+          </a-button>
+        </a-space>
+      </a-form>
+    </a-spin>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -51,7 +53,7 @@ import { type FormInstance, Message, Modal } from '@arco-design/web-vue'
 import { type LoginConfig, type OptionResp, listOption, resetOptionValue, updateOption } from '@/apis/system'
 import { useResetReactive } from '@/hooks'
 
-defineOptions({ name: 'LoginSetting' })
+defineOptions({ name: 'SystemLoginConfig' })
 const { width } = useWindowSize()
 
 const loading = ref<boolean>(false)

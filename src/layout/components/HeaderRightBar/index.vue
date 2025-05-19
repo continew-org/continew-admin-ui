@@ -58,6 +58,9 @@
           <a-doption @click="router.push('/user/profile')">
             <span>个人中心</span>
           </a-doption>
+          <a-doption @click="router.push('/user/message')">
+            <span>消息中心</span>
+          </a-doption>
           <a-divider :margin="0" />
           <a-doption @click="logout">
             <span>退出登录</span>

@@ -23,7 +23,7 @@
                 <DateRangePicker
                   v-bind="(item.props as A.RangePickerInstance['$props'])"
                   :model-value="modelValue[item.field as keyof typeof modelValue]"
-                  @update:model-value="valueChange($event, item.field)"
+                  @update:model-value="updateValue($event, item.field)"
                 />
               </template>
               <component

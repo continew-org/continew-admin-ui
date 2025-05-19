@@ -11,6 +11,7 @@
       <a-scrollbar outer-class="menu-scroll-view" style="height: 100%; overflow: auto">
         <Menu></Menu>
       </a-scrollbar>
+      <WwAds class="ads" />
     </a-layout-sider>
   </div>
 </template>
@@ -18,6 +19,7 @@
 <script setup lang="ts">
 import Menu from '../Menu/index.vue'
 import Logo from '../Logo.vue'
+import WwAds from '../WwAds.vue'
 import { useAppStore } from '@/stores'
 import { useDevice } from '@/hooks'
 

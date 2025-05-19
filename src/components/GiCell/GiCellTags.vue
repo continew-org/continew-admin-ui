@@ -30,4 +30,8 @@ interface Props {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.arco-overflow-list-overflow) {
+  display: flex;
+}
+</style>

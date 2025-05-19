@@ -73,6 +73,7 @@ export const systemRoutes: RouteRecordRaw[] = [
     name: 'About',
     component: Layout,
     meta: { title: '关于项目', icon: 'apps', hidden: false, sort: 999 },
+    redirect: '/about/document/api',
     children: [
       {
         path: '/about/document/api',

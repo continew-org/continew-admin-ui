@@ -39,6 +39,7 @@
             <a-tag v-else-if="record.color === 'warning'" color="orangered">{{ record.label }}</a-tag>
             <a-tag v-else-if="record.color === 'error'" color="red">{{ record.label }}</a-tag>
             <a-tag v-else-if="record.color === 'default'" color="gray">{{ record.label }}</a-tag>
+            <span v-else>{{ record.label }}</span>
           </template>
           <template #status="{ record }">
             <GiCellStatus :status="record.status" />

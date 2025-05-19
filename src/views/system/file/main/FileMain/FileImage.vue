@@ -15,13 +15,17 @@ const props = withDefaults(defineProps<Props>(), {})
 
 // 是否是图片类型文件
 const isImage = computed(() => {
-  const extension = props.data.extension.toLowerCase()
+  const extension = props.data.extension?.toLowerCase()
   return ImageTypes.includes(extension)
 })
 
 // 获取文件图标，如果是图片就显示图片
 const getFileImg = computed<string>(() => {
-  const extension = props.data.extension.toLowerCase()
+  // 文件夹
+  if (props.data.type === 0) {
+    return FileIcon.dir
+  }
+  const extension = props.data.extension?.toLowerCase()
   if (ImageTypes.includes(extension)) {
     return props.data.url || ''
   }

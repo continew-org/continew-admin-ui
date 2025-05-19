@@ -10,7 +10,6 @@
       :selected-keys="selectedFileIds"
       column-resizable
       @select="select"
-      @row-click="handleRowClick"
     >
       <template #columns>
         <a-table-column title="名称">
@@ -24,32 +23,41 @@
               update-at-scroll
               scroll-to-close
             >
-              <section class="file-name">
+              <section class="file-name" @click="handleClick(record)" @dblclick="handleDblclickFile(record)">
                 <div class="file-image">
                   <FileImage :data="record"></FileImage>
                 </div>
-                <a-typography-paragraph copyable :copy-text="record.url">
+                <a-typography-paragraph :copyable="record.type !== 0" :copy-text="record.url">
                   <template #copy-tooltip>复制链接</template>
-                  {{ getFileName(record) }}
+                  {{ record.originalName }}
                 </a-typography-paragraph>
               </section>
-              <template #content>
+              <template v-if="has.hasPermOr(['system:file:update', 'system:file:get', 'system:file:download', 'system:file:delete'])" #content>
                 <FileRightMenu :data="record" @click="handleRightMenuClick($event, record)"></FileRightMenu>
               </template>
             </a-trigger>
           </template>
         </a-table-column>
-        <a-table-column title="大小" data-index="size" :width="150">
-          <template #cell="{ record }">{{ formatFileSize(record.size) }}</template>
+        <a-table-column title="大小" data-index="size" :width="160">
+          <template #cell="{ record }">
+            <span v-if="record.type === 0" v-permission="['system:file:calcDirSize']">
+              <a-link v-if="record.size === null" @click="calculateDirSize(record)">计算</a-link>
+              <span v-else>
+                {{ formatFileSize(record.size) }}
+              </span>
+            </span>
+            <span v-else>{{ formatFileSize(record.size) }}</span>
+          </template>
         </a-table-column>
         <a-table-column title="存储名称" data-index="storageName" :width="200" />
         <a-table-column title="修改时间" data-index="updateTime" :width="200" />
-        <a-table-column title="操作" :width="120" align="center">
+        <a-table-column v-if="has.hasPermOr(['system:file:update', 'system:file:get', 'system:file:download', 'system:file:delete'])" title="操作" :width="120" align="center">
           <template #cell="{ record }">
             <a-popover trigger="click" position="bottom" :content-style="{ 'padding': 0, 'margin-top': 0 }">
               <a-button type="text" @click.stop><icon-more :size="16" /></a-button>
               <template #content>
                 <FileRightMenu
+                  :data="record"
                   :file-info="record"
                   :shadow="false"
                   @click="handleRightMenuClick($event, record)"
@@ -64,10 +72,11 @@
 </template>
 
 <script setup lang="ts">
-import type { TableInstance, TableRowSelection } from '@arco-design/web-vue'
+import { Message, type TableInstance, type TableRowSelection } from '@arco-design/web-vue'
 import FileRightMenu from './FileRightMenu.vue'
-import type { FileItem } from '@/apis/system'
+import { type FileItem, calcDirSize } from '@/apis/system'
 import { formatFileSize } from '@/utils'
+import has from '@/utils/has'
 
 const props = withDefaults(defineProps<Props>(), {
   data: () => [], // 文件数据
@@ -77,6 +86,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'click', record: FileItem): void
+  (e: 'dblclick', record: FileItem): void
   (e: 'select', record: FileItem): void
   (e: 'right-menu-click', mode: string, item: FileItem): void
 }>()
@@ -89,24 +99,35 @@ interface Props {
   isBatchMode?: boolean
 }
 
-// 文件名称带后缀
-const getFileName = (item: FileItem) => {
-  return `${item.name}${item.extension ? `.${item.extension}` : ''}`
-}
-
 const rowSelection: TableRowSelection = reactive({
   type: 'checkbox',
   showCheckedAll: true,
 })
+
+// 计算文件夹大小
+const calculateDirSize = async (record: FileItem) => {
+  if (record.type !== 0) return
+  try {
+    const { data } = await calcDirSize(record.id)
+    record.size = data.size
+  } catch (err) {
+    Message.error('计算失败，请重试')
+  }
+}
 
 // 多选
 const select: TableInstance['onSelect'] = (rowKeys, rowKey, record) => {
   emit('select', record as unknown as FileItem)
 }
 
-// 行点击事件
-const handleRowClick: TableInstance['onRowClick'] = (record) => {
+// 单击事件
+const handleClick = (record) => {
   emit('click', record as unknown as FileItem)
+}
+
+// 双击事件
+const handleDblclickFile = (item: FileItem) => {
+  emit('dblclick', item)
 }
 
 // 右键菜单点击事件

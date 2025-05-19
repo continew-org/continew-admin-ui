@@ -21,7 +21,7 @@ export function openFileRenameModal(data: FileItem, callback?: () => void) {
       const isInvalid = await ModalContentRef.value?.formRef?.validate()
       const modelParams = ModalContentRef.value?.formRef?.model
       if (isInvalid) return false
-      await updateFile({ name: modelParams?.name }, data.id)
+      await updateFile({ originalName: modelParams?.originalName }, data.id)
       Message.success('重命名成功')
       if (callback) {
         callback()

@@ -11,12 +11,8 @@
     @refresh="search"
   >
     <template #toolbar-left>
-      <a-input v-model="queryForm.createUserString" placeholder="搜索登录用户" allow-clear @change="search">
-        <template #prefix><icon-search /></template>
-      </a-input>
-      <a-input v-model="queryForm.ip" placeholder="搜索登录 IP 或地点" allow-clear @change="search">
-        <template #prefix><icon-search /></template>
-      </a-input>
+      <a-input-search v-model="queryForm.createUserString" placeholder="搜索登录用户" allow-clear @search="search" />
+      <a-input-search v-model="queryForm.ip" placeholder="搜索登录 IP 或地点" allow-clear @search="search" />
       <DateRangePicker v-model="queryForm.createTime" @change="search" />
       <a-button @click="reset">
         <template #icon><icon-refresh /></template>

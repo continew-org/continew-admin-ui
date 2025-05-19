@@ -101,7 +101,7 @@ const columns: ColumnItem[] = reactive([
     field: 'domain',
     type: 'input',
     span: 24,
-    required: true,
+    required: false,
     show: () => form.type === 2,
   },
   {

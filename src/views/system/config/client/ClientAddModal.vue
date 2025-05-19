@@ -1,21 +1,22 @@
 <template>
-  <a-drawer
+  <a-modal
     v-model:visible="visible"
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
     :width="width >= 600 ? 600 : '100%'"
+    draggable
     @before-ok="save"
     @close="reset"
   >
     <GiForm ref="formRef" v-model="form" :columns="columns" layout="vertical" />
-  </a-drawer>
+  </a-modal>
 </template>
 
 <script setup lang="tsx">
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
-import { addSmsConfig, getSmsConfig, updateSmsConfig } from '@/apis/system/smsConfig'
+import { addClient, getClient, updateClient } from '@/apis/system/client'
 import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -29,81 +30,48 @@ const { width } = useWindowSize()
 const dataId = ref('')
 const visible = ref(false)
 const isUpdate = computed(() => !!dataId.value)
-const title = computed(() => (isUpdate.value ? '修改短信配置' : '新增短信配置'))
+const title = computed(() => (isUpdate.value ? '修改客户端' : '新增客户端'))
 const formRef = ref<InstanceType<typeof GiForm>>()
-const { dis_enable_status_enum, sms_supplier_enum } = useDict('dis_enable_status_enum', 'sms_supplier_enum')
+const { client_type, auth_type_enum } = useDict('auth_type_enum', 'client_type')
 
 const [form, resetForm] = useResetReactive({
+  activeTimeout: 1800,
+  timeout: 86400,
+  isConcurrent: 1,
+  isShare: 1,
   status: 1,
 })
 
 const columns: ColumnItem[] = reactive([
   {
-    label: '名称',
-    field: 'name',
-    type: 'input',
-    span: 12,
-    required: true,
-    props: {
-      maxLength: 100,
-    },
-  },
-  {
-    label: '厂商',
-    field: 'supplier',
+    label: '客户端类型',
+    field: 'clientType',
     type: 'select',
     span: 12,
-    required: true,
     props: {
-      options: sms_supplier_enum,
+      options: client_type,
     },
   },
   {
-    label: 'Access Key',
-    field: 'accessKey',
-    type: 'input',
-    span: 24,
+    label: '认证类型',
+    field: 'authType',
+    type: 'select',
     required: true,
-  },
-  {
-    label: 'Secret Key',
-    field: 'secretKey',
-    type: 'input',
-    span: 24,
-    required: true,
-  },
-  {
-    label: '短信签名',
-    field: 'signature',
-    type: 'input',
     span: 12,
     props: {
-      maxLength: 100,
+      options: auth_type_enum,
+      multiple: true,
+      maxTagCount: 2,
     },
   },
   {
-    label: '模板 ID',
-    field: 'templateId',
-    type: 'input',
-    span: 12,
-    required: true,
-    props: {
-      maxLength: 50,
-    },
-  },
-  {
-    label: '负载均衡权重',
-    field: 'weight',
-    type: 'input-number',
-    span: 12,
-    props: {
-      min: 1,
-      max: 100,
-    },
-  },
-  {
-    label: '重试间隔',
-    field: 'retryInterval',
+    label: () => (
+      <a-tooltip content="-1 代表不限制，永不冻结">
+        Token 最低活跃频率
+        <icon-info-circle-fill />
+      </a-tooltip>
+    ),
+    field: 'activeTimeout',
     type: 'input-number',
     span: 12,
     slots: {
@@ -112,42 +80,41 @@ const columns: ColumnItem[] = reactive([
       ),
     },
     props: {
-      min: 1,
+      placeholder: '请输入 Token 最低活跃频率',
     },
+    rules: [{ required: true, message: '请输入 Token 最低活跃频率' }],
   },
   {
-    label: '重试次数',
-    field: 'maxRetries',
+    label: () => (
+      <a-tooltip content="-1 代表永不过期">
+        Token 有效期
+        <icon-info-circle-fill />
+      </a-tooltip>
+    ),
+    field: 'timeout',
     type: 'input-number',
     span: 12,
-    props: {
-      min: 0,
+    slots: {
+      append: () => (
+        <span style={{ width: '30px', textAlign: 'center' }}>秒</span>
+      ),
     },
-  },
-  {
-    label: '发送上限',
-    field: 'maximum',
-    type: 'input-number',
-    span: 12,
     props: {
-      min: 1,
+      placeholder: '请输入 Token 有效期',
     },
-  },
-  {
-    label: '厂商配置',
-    field: 'supplierConfig',
-    type: 'input',
-    span: 24,
+    rules: [{ required: true, message: '请输入 Token 有效期' }],
   },
   {
     label: '状态',
     field: 'status',
-    type: 'radio-group',
-    required: true,
+    type: 'switch',
     span: 24,
     props: {
-      type: 'button',
-      options: dis_enable_status_enum,
+      type: 'round',
+      checkedValue: 1,
+      uncheckedValue: 2,
+      checkedText: '启用',
+      uncheckedText: '禁用',
     },
   },
 ])
@@ -164,10 +131,10 @@ const save = async () => {
     const isInvalid = await formRef.value?.formRef?.validate()
     if (isInvalid) return false
     if (isUpdate.value) {
-      await updateSmsConfig(form, dataId.value)
+      await updateClient(form, dataId.value)
       Message.success('修改成功')
     } else {
-      await addSmsConfig(form)
+      await addClient(form)
       Message.success('新增成功')
     }
     emit('save-success')
@@ -188,7 +155,7 @@ const onAdd = async () => {
 const onUpdate = async (id: string) => {
   reset()
   dataId.value = id
-  const { data } = await getSmsConfig(id)
+  const { data } = await getClient(id)
   Object.assign(form, data)
   visible.value = true
 }
@@ -196,4 +163,13 @@ const onUpdate = async (id: string) => {
 defineExpose({ onAdd, onUpdate })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.arco-input-append) {
+  padding: 0;
+  .arco-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 1px solid transparent;
+  }
+}
+</style>

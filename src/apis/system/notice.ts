@@ -26,6 +26,6 @@ export function updateNotice(data: any, id: string) {
 }
 
 /** @desc 删除公告 */
-export function deleteNotice(ids: string | Array<number>) {
-  return http.del(`${BASE_URL}/${ids}`)
+export function deleteNotice(id: string) {
+  return http.del(`${BASE_URL}`, { ids: [id] })
 }

@@ -1,7 +1,7 @@
 # ContiNew Admin UI
 
 <a href="https://github.com/continew-org/continew-admin-ui" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v3.6.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v3.7.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://vuejs.org/" title="Vue" target="_blank">
 <img src="https://img.shields.io/badge/Vue-3.5.4-%236CB52D.svg?logo=Vue.js" alt="Vue" />
@@ -35,7 +35,7 @@
 <img src="https://gitcode.com/continew/continew-admin/star/badge.svg" alt="GitCode Stars" />
 </a>
 
-📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://admin.continew.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/admin/guide/demo.html)
 
 ## 简介
 
@@ -73,7 +73,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ## 为什么选我们？
 
 > [!TIP]
-> 更为完整的图文描述请查阅[《在线文档》](https://continew.top/admin/intro/why.html)。
+> 更为完整的图文描述请查阅[《在线文档》](https://continew.top/admin/guide/why-choose-us.html)。
 
 1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。
 
@@ -83,7 +83,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ```java
 @Tag(name = "部门管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
@@ -112,44 +112,32 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ##  系统功能
 
 > [!TIP]
-> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [需求墙](https://continew.top/require.html) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
+> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [需求墙](https://continew.top/admin/other/feature.html) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
 
 - 仪表盘：提供工作台、分析页，工作台提供功能快捷导航入口、最新公告、动态；分析页提供全面数据可视化能力
 - 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑、头像裁剪上传
-- 消息中心：提供站内信消息统一查看、标记已读、全部已读、删除等功能（目前仅支持系统通知消息）
+- 消息中心：提供站内信消息统一查看、标记已读、全部已读、删除等功能（目前仅支持系统通知消息）、提供个人公告查看
 - 用户管理：管理系统用户，包含新增、修改、删除、导入、导出、重置密码、分配角色等功能
-
 - 角色管理：管理系统用户的功能权限及数据权限，包含新增、修改、删除、分配角色等功能
-
 - 菜单管理：管理系统菜单及按钮权限，支持多级菜单，动态路由，包含新增、修改、删除等功能
-
 - 部门管理：管理系统组织架构，包含新增、修改、删除、导出等功能，以树形列表进行展示
-
-- 字典管理：管理系统公用数据字典，例如：消息类型。支持字典标签背景色和排序等配置
-
 - 通知公告：管理系统公告，支持设置公告的生效时间、终止时间、通知范围（所有人、指定用户）
-
 - 文件管理：管理系统文件，支持上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
-
-- 存储管理：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
-
-- 终端管理：多端认证管理，可设置不同的 token 有效期
-
+- 字典管理：管理系统公用数据字典，例如：消息类型。支持字典标签背景色和排序等配置
 - 系统配置：
-  - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
-  - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
+  - 网站配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
   - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`密码重复次数`、`密码错误锁定账号次数、时间` 等
-
+  - 登录配置：提供验证码开关等登录相关配置
+  - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
+  - 短信配置：提供系统短信服务配置，也支持通过配置文件指定
+  - 存储配置：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
+  - 客户端配置：多客户端（PC端、小程序端等）认证管理，可设置不同的 token 有效期
 - 在线用户：管理当前登录用户，可一键踢除下线
-
 - 日志管理：管理系统登录日志、操作日志，支持查看日志详情，包含请求头、响应头等报文信息
-
+- 短信日志：管理系统短信发送日志，支持删除、导出
 - 任务管理：管理系统定时任务，包含新增、修改、删除、执行功能，支持 Cron（可配置式生成 Cron 表达式） 和固定频率
-
 - 任务日志：管理定时任务执行日志，包含停止、重试指定批次，查询集群各节点的详细输出日志等功能
-
 - 应用管理：管理第三方系统应用 AK、SK，包含新增、修改、删除、查看密钥、重置密钥等功能，支持设置密钥有效期
-
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
 
 ## 系统截图
@@ -221,7 +209,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ## 快速开始
 
 > **Note**
-> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/admin/intro/quick-start.html#%E5%89%8D%E7%AB%AF)。
+> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/admin/guide/quick-start.html)。
 
 ```
 # 1.克隆本项目
@@ -326,7 +314,7 @@ continew-admin-ui
 
 ContiNew Admin 致力于提供开箱即用，持续舒适的开发体验。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/support.html) 讨论或认领任务。
+我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/discussion.html) 讨论或认领任务。
 
 ### 分支说明
 

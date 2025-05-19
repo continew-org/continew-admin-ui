@@ -17,7 +17,7 @@ export function getSmsLog(id: string) {
 
 /** @desc 删除短信日志 */
 export function deleteSmsLog(id: string) {
-  return http.del(`${BASE_URL}/${id}`)
+  return http.del(`${BASE_URL}`, { ids: [id] })
 }
 
 /** @desc 导出短信日志 */

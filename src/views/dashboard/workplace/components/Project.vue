@@ -32,7 +32,7 @@
           <a-card-meta>
             <template #title>
               <a-space>
-                <img :src="item.logo" width="35px" height="25px" alt="logo" />
+                <img :src="item.logo" width="25px" height="25px" alt="logo" />
                 <a-typography-paragraph
                   :ellipsis="{
                     rows: 1,
@@ -128,7 +128,7 @@ const list = [
     name: 'charles7c.github.io',
     owner: 'charles7c',
     desc: '基于 VitePress 构建的个人知识库/博客。扩展 VitePress 默认主题：增加ICP备案号、公安备案号显示，增加文章元数据信息（原创标识、作者、发布时间、分类、标签）显示，增加文末版权声明，增加 Gitalk 评论功能，主页美化、自动生成侧边栏、文章内支持 Mermaid 流程图、MD公式、MD脚注、增加我的标签、我的归档等独立页面，以及浏览器滚条等细节优化。',
-    logo: 'https://blog.charles7c.top/logo.png',
+    logo: 'https://charles7c.top/logo.png',
     url: 'https://github.com/Charles7c/charles7c.github.io/stargazers',
     status: '归档',
     statusColor: 'rgb(var(--warning-6))',

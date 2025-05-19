@@ -54,13 +54,12 @@
               field="triggerInterval"
               :rules="[{ required: true, message: '请输入间隔时长' }]"
             >
-              <a-input-number
+              <a-input
                 v-model="form.triggerInterval"
                 placeholder="请输入间隔时长"
-                :min="1"
               >
                 <template #suffix>秒</template>
-              </a-input-number>
+              </a-input>
             </a-form-item>
             <a-form-item
               v-else
@@ -259,7 +258,7 @@ const rules: FormInstance['rules'] = {
 
 const [form, resetForm] = useResetReactive({
   triggerType: 2,
-  triggerInterval: 60,
+  triggerInterval: '60',
   taskType: 1,
   routeKey: 4,
   blockStrategy: 1,
@@ -281,10 +280,10 @@ const reset = () => {
 const triggerTypeChange = () => {
   switch (form.triggerType) {
     case 2:
-      form.triggerInterval = 60
+      form.triggerInterval = '60'
       break
     case 3:
-      form.triggerInterval = ''
+      form.triggerInterval = '0 * * * * ?'
       break
   }
 }

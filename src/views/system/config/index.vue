@@ -1,44 +1,74 @@
 <template>
-  <div class="gi_table_page">
-    <a-tabs v-model:active-key="activeKey" type="card-gutter" size="large" @change="change">
-      <a-tab-pane key="site">
-        <template #title><icon-apps /> 网站配置</template>
-      </a-tab-pane>
-      <a-tab-pane key="security">
-        <template #title><icon-safe /> 安全配置</template>
-      </a-tab-pane>
-      <a-tab-pane key="mail">
-        <template #title><icon-email /> 邮件配置</template>
-      </a-tab-pane>
-      <a-tab-pane key="login">
-        <template #title><icon-lock /> 登录配置</template>
-      </a-tab-pane>
-    </a-tabs>
-    <keep-alive>
-      <component :is="PanMap[activeKey]" />
-    </keep-alive>
-  </div>
+  <GiPageLayout
+    :margin="true"
+    :default-collapsed="false"
+    :header-style="isDesktop ? { padding: 0, borderBottomWidth: 0 } : { borderBottomWidth: '1px' } "
+  >
+    <template v-if="isDesktop" #left>
+      <a-tabs v-model:active-key="activeKey" type="rounded" position="left" hide-content size="large" @change="change">
+        <a-tab-pane v-for="(item) in menuList" :key="item.key">
+          <template #title>
+            <div style="display: flex; align-items: center">
+              <GiSvgIcon :name="item.icon" :size="18" style="margin-right: 4px" />
+              {{ item.name }}
+            </div>
+          </template>
+        </a-tab-pane>
+      </a-tabs>
+    </template>
+    <template #header>
+      <a-tabs v-if="!isDesktop" v-model:active-key="activeKey" type="rounded" position="top" size="large" @change="change">
+        <a-tab-pane v-for="(item) in menuList" :key="item.key" :title="item.name">
+          <template #title>
+            <div style="display: flex; align-items: center">
+              <GiSvgIcon :name="item.icon" :size="18" style="margin-right: 4px" />
+              {{ item.name }}
+            </div>
+          </template>
+        </a-tab-pane>
+      </a-tabs>
+    </template>
+    <transition name="fade-slide" mode="out-in" appear>
+      <component :is="menuList.find((item) => item.key === activeKey)?.value"></component>
+    </transition>
+  </GiPageLayout>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { useRoute, useRouter } from 'vue-router'
-import SiteSetting from './components/SiteSetting.vue'
-import SecuritySetting from './components/SecuritySetting.vue'
-import MailSetting from './components/MailSetting.vue'
-import LoginSetting from './components/LoginSetting.vue'
+import SiteConfig from './site/index.vue'
+import SecurityConfig from './security/index.vue'
+import LoginConfig from './login/index.vue'
+import MailConfig from './mail/index.vue'
+import SmsConfig from './sms/index.vue'
+import StorageConfig from './storage/index.vue'
+import ClientConfig from './client/index.vue'
+import { useDevice } from '@/hooks'
+import has from '@/utils/has'
 
 defineOptions({ name: 'SystemConfig' })
 
-const PanMap: Record<string, Component> = {
-  site: SiteSetting,
-  security: SecuritySetting,
-  mail: MailSetting,
-  login: LoginSetting,
-}
+const { isDesktop } = useDevice()
+
+const data = [
+  { name: '网站配置', key: 'site', icon: 'apps', permissions: ['system:siteConfig:get'], value: SiteConfig },
+  { name: '安全配置', key: 'security', icon: 'safe', permissions: ['system:securityConfig:get'], value: SecurityConfig },
+  { name: '登录配置', key: 'login', icon: 'lock', permissions: ['system:loginConfig:get'], value: LoginConfig },
+  { name: '邮件配置', key: 'mail', icon: 'email', permissions: ['system:mailConfig:get'], value: MailConfig },
+  { name: '短信配置', key: 'sms', icon: 'message', permissions: ['system:smsConfig:list'], value: SmsConfig },
+  { name: '存储配置', key: 'storage', icon: 'storage', permissions: ['system:storage:list'], value: StorageConfig },
+  { name: '客户端配置', key: 'client', icon: 'mobile', permissions: ['system:client:list'], value: ClientConfig },
+]
+
+const menuList = computed(() => {
+  return data.filter((item) => {
+    return has.hasPermOr(item.permissions)
+  })
+})
 
 const route = useRoute()
 const router = useRouter()
-const activeKey = ref('site')
+const activeKey = ref(menuList.value[0].key)
 watch(
   () => route.query,
   () => {
@@ -55,12 +85,48 @@ const change = (key: string | number) => {
 </script>
 
 <style scoped lang="scss">
-.gi_table_page {
-  overflow-y: auto;
+.gi_page {
+  padding-top: 0;
+}
 
-  :deep(.arco-tabs) {
-    overflow: visible;
+.tab-pane-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+:deep(.arco-tabs-nav-vertical.arco-tabs-nav-type-line .arco-tabs-tab) {
+  margin: 0;
+  padding: 8px 16px;
+
+  &:hover {
+    background: var(--color-fill-1);
+
+    .arco-tabs-tab-title {
+      &::before {
+        display: none !important;
+      }
+    }
   }
+
+  &.arco-tabs-tab-active {
+    background: rgba(var(--primary-6), 0.08);
+  }
+}
+
+:deep(.arco-tabs-nav-vertical::before) {
+  left: 0;
+  display: none;
+}
+
+:deep(.arco-tabs-nav-vertical .arco-tabs-nav-ink) {
+  left: 0;
+}
+
+:deep(.arco-tabs-nav-vertical) {
+  float: none;
+  flex-direction: row;
 }
 
 :deep(.arco-tabs .arco-tabs-nav-type-card-gutter .arco-tabs-tab-active) {
@@ -83,10 +149,18 @@ const change = (key: string | number) => {
 }
 
 :deep(.arco-tabs) {
-  overflow: visible;
+  overflow: hidden;
 }
 
 :deep(.arco-tabs-nav) {
   overflow: visible;
+}
+
+:deep(.arco-tabs-nav-type-rounded .arco-tabs-tab){
+  border-radius: 8px;
+}
+
+:deep(.arco-tabs-tab-title){
+  width: 100%;
 }
 </style>

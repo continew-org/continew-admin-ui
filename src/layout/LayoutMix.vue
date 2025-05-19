@@ -6,6 +6,7 @@
     >
       <Logo :collapsed="appStore.menuCollapse"></Logo>
       <Menu :menus="leftMenus" :menu-style="{ width: '220px', flex: 1 }"></Menu>
+      <WwAds class="ads" />
     </section>
 
     <section class="layout-mix-right">
@@ -41,6 +42,7 @@ import Menu from './components/Menu/index.vue'
 import HeaderRightBar from './components/HeaderRightBar/index.vue'
 import Logo from './components/Logo.vue'
 import MenuFoldBtn from './components/MenuFoldBtn.vue'
+import WwAds from './components/WwAds.vue'
 import GiFooter from '@/components/GiFooter/index.vue'
 import { useAppStore, useRouteStore } from '@/stores'
 import { isExternal } from '@/utils/validate'

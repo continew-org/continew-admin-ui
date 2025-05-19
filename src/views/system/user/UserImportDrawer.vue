@@ -27,7 +27,7 @@
             draggable
             :custom-request="handleUpload"
             :limit="1"
-            :show-retry-butto="false"
+            :show-retry-button="false"
             :show-cancel-button="false" tip="仅支持xls、xlsx格式"
             :file-list="uploadFile"
             accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

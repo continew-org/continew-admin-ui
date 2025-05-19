@@ -1,22 +1,21 @@
 <template>
-  <a-drawer v-model:visible="visible" title="终端详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
+  <a-drawer v-model:visible="visible" title="客户端详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
       <a-descriptions-item label="ID">{{ dataDetail?.id }}</a-descriptions-item>
-      <a-descriptions-item label="终端ID" :span="2"><a-typography-paragraph :copyable="!!dataDetail?.clientId">{{ dataDetail?.clientId }}</a-typography-paragraph></a-descriptions-item>
-      <a-descriptions-item label="终端Key" :span="2">{{ dataDetail?.clientKey }}</a-descriptions-item>
-      <a-descriptions-item label="终端秘钥" :span="2">{{ dataDetail?.clientSecret }}</a-descriptions-item>
+      <a-descriptions-item label="客户端ID" :span="2"><a-typography-paragraph :copyable="!!dataDetail?.clientId">{{ dataDetail?.clientId }}</a-typography-paragraph></a-descriptions-item>
+      <a-descriptions-item label="客户端类型" :span="2">
+        <GiCellTag :value="dataDetail?.clientType" :dict="client_type" />
+      </a-descriptions-item>
       <a-descriptions-item label="认证类型" :span="2">
         <a-space>
           <GiCellTag v-for="(item, index) in dataDetail?.authType" :key="index" :value="item" :dict="auth_type_enum" />
         </a-space>
       </a-descriptions-item>
-      <a-descriptions-item label="终端类型" :span="2">
-        <GiCellTag :value="dataDetail?.clientType" :dict="client_type" />
-      </a-descriptions-item>
       <a-descriptions-item label="Token最低活跃频率">{{ dataDetail?.activeTimeout }}</a-descriptions-item>
       <a-descriptions-item label="Token有效期">{{ dataDetail?.timeout }}</a-descriptions-item>
       <a-descriptions-item label="状态" :span="2">
-        <GiCellStatus :status="dataDetail?.status" />
+        <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
+        <a-tag v-else color="red">禁用</a-tag>
       </a-descriptions-item>
       <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
       <a-descriptions-item label="创建时间">{{ dataDetail?.createTime }}</a-descriptions-item>

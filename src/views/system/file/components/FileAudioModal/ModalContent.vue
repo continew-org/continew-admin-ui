@@ -5,7 +5,7 @@
         <div ref="audioHeadRef" class="audio-box__header">
           <div class="audio-name">
             <icon-music :size="16" spin />
-            <span>{{ props.data?.name }}.{{ props.data?.extension }}</span>
+            <span>{{ props.data?.originalName }}</span>
           </div>
           <div class="close-icon" @click="close">
             <icon-close :size="12" />

@@ -202,24 +202,26 @@ export interface NoticePageQuery extends NoticeQuery, PageQuery {
 export interface FileItem {
   id: string
   name: string
+  originalName: string
   size: number
   url: string
   parentPath: string
-  absPath: string
-  metadata: string
-  md5: string
+  path: string
+  sha256: string
   contentType: string
+  metadata: string
   thumbnailSize: number
-  thumbnailUrl: string
+  thumbnailName: string
   thumbnailMetadata: string
+  thumbnailUrl: string
   extension: string
   type: number
   storageId: string
   storageName: string
   createUserString: string
   createTime: string
-  updateUserString: string
-  updateTime: string
+  updateUserString?: string
+  updateTime?: string
 }
 /** 文件资源统计信息 */
 export interface FileStatisticsResp {
@@ -229,10 +231,14 @@ export interface FileStatisticsResp {
   unit: string
   data: Array<FileStatisticsResp>
 }
+/** 文件夹计算大小信息 */
+export interface FileDirCalcSizeResp {
+  size: number
+}
 export interface FileQuery {
-  name?: string
+  originalName?: string
   type?: string
-  absPath?: string
+  parentPath?: string
   sort: Array<string>
 }
 export interface FilePageQuery extends FileQuery, PageQuery {
@@ -264,14 +270,12 @@ export interface StorageQuery {
   sort: Array<string>
 }
 
-/** 终端类型 */
+/** 客户端类型 */
 export interface ClientResp {
   id: string
   clientId: string
-  clientKey: string
-  clientSecret: string
-  authType: string
   clientType: string
+  authType: string
   activeTimeout: string
   timeout: string
   status: string
@@ -285,10 +289,8 @@ export interface ClientResp {
 export interface ClientDetailResp {
   id: string
   clientId: string
-  clientKey: string
-  clientSecret: string
-  authType: string
   clientType: string
+  authType: string
   activeTimeout: string
   timeout: string
   status: string
@@ -300,10 +302,8 @@ export interface ClientDetailResp {
   updateUserString: string
 }
 export interface ClientQuery {
-  clientKey: string
-  clientSecret: string
-  authType: string[]
   clientType: string
+  authType: string[]
   status: string
   sort: Array<string>
 }
@@ -385,6 +385,7 @@ export interface SmsConfigResp {
   maximum: string
   supplierConfig: string
   status: number
+  isDefault: boolean
   createUser: string
   createTime: string
   updateUser: string

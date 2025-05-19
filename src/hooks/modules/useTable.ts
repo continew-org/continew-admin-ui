@@ -41,7 +41,9 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
   // 多选
   const selectedKeys = ref<(string | number)[]>([])
   const select: TableInstance['onSelect'] = (rowKeys) => {
-    selectedKeys.value = rowKeys
+    if (Array.isArray(rowKey)) {
+      selectedKeys.value = rowKeys
+    }
   }
 
   // 全选

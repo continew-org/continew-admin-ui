@@ -5,7 +5,7 @@ export interface JobResp {
   jobName: string
   description?: string
   triggerType: number
-  triggerInterval: string | number
+  triggerInterval: string
   executorType: number
   taskType: number
   executorInfo: string

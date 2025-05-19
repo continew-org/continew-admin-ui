@@ -26,8 +26,8 @@ export function updateRole(data: any, id: string) {
 }
 
 /** @desc 删除角色 */
-export function deleteRole(ids: string | Array<string>) {
-  return http.del(`${BASE_URL}/${ids}`)
+export function deleteRole(id: string) {
+  return http.del(`${BASE_URL}`, { ids: [id] })
 }
 
 /** @desc 修改角色权限 */

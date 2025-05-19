@@ -27,7 +27,7 @@ export function updateApp(data: any, id: string) {
 
 /** @desc 删除应用 */
 export function deleteApp(id: string) {
-  return http.del(`${BASE_URL}/${id}`)
+  return http.del(`${BASE_URL}`, { ids: [id] })
 }
 
 /** @desc 导出应用 */

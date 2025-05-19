@@ -1,5 +1,5 @@
 <template>
-  <GiPageLayout>
+  <GiPageLayout :margin="false" :body-style="{ padding: 0 }">
     <GiTable
       row-key="id"
       :data="dataList"
@@ -16,7 +16,7 @@
         <a-input-search v-model="queryForm.accessKey" placeholder="搜索 Access Key" allow-clear @search="search" />
         <a-select
           v-model="queryForm.supplier"
-          :options="sms_supplier_enum"
+          :options="sms_supplier"
           placeholder="请选择厂商"
           allow-clear
           style="width: 150px"
@@ -33,8 +33,12 @@
           <template #default>新增</template>
         </a-button>
       </template>
+      <template #isDefault="{ record }">
+        <a-tag v-if="record.isDefault" color="arcoblue">是</a-tag>
+        <a-tag v-else color="red">否</a-tag>
+      </template>
       <template #supplier="{ record }">
-        <GiCellTag :value="record.supplier" :dict="sms_supplier_enum" />
+        <GiCellTag :value="record.supplier" :dict="sms_supplier" />
       </template>
       <template #accessKey="{ record }">
         <CellCopy :content="record.accessKey" />
@@ -43,15 +47,26 @@
         <a-space>
           <a-link v-permission="['system:smsLog:list']" title="发送记录" @click="onLog(record)">发送记录</a-link>
           <a-link v-permission="['system:smsConfig:update']" title="修改" @click="onUpdate(record)">修改</a-link>
-          <a-link
-            v-permission="['system:smsConfig:delete']"
-            status="danger"
-            :disabled="record.disabled"
-            :title="record.disabled ? '不可删除' : '删除'"
-            @click="onDelete(record)"
-          >
-            删除
-          </a-link>
+          <a-dropdown>
+            <a-button v-if="has.hasPermOr(['system:smsConfig:setDefault', 'system:smsConfig:delete'])" type="text" size="mini" title="更多">
+              <template #icon>
+                <icon-more :size="16" />
+              </template>
+            </a-button>
+            <template #content>
+              <a-doption
+                v-permission="['system:smsConfig:setDefault']"
+                :title="record.isDefault ? '该配置已设为默认配置' : record.status === 2 ? '请先启用配置' : ''"
+                :disabled="record.isDefault || record.status === 2"
+                @click="onSetDefault(record)"
+              >
+                设为默认
+              </a-doption>
+              <a-doption v-permission="['system:smsConfig:delete']" :title="record.disabled ? '不可删除' : '删除'">
+                <a-link status="danger" :disabled="record.disabled" @click="onDelete(record)">删除</a-link>
+              </a-doption>
+            </template>
+          </a-dropdown>
         </a-space>
       </template>
     </GiTable>
@@ -61,9 +76,16 @@
 </template>
 
 <script setup lang="tsx">
+import { Message, Modal } from '@arco-design/web-vue'
 import type { TableInstance } from '@arco-design/web-vue'
 import SmsConfigAddModal from './SmsConfigAddModal.vue'
-import { type SmsConfigQuery, type SmsConfigResp, deleteSmsConfig, listSmsConfig } from '@/apis/system/smsConfig'
+import {
+  type SmsConfigQuery,
+  type SmsConfigResp,
+  deleteSmsConfig,
+  listSmsConfig,
+  setDefaultSmsConfig,
+} from '@/apis/system/smsConfig'
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -72,7 +94,7 @@ import GiCellStatus from '@/components/GiCell/GiCellStatus.vue'
 
 defineOptions({ name: 'SystemSmsConfig' })
 
-const { sms_supplier_enum } = useDict('sms_supplier_enum')
+const { sms_supplier } = useDict('sms_supplier')
 
 const queryForm = reactive<SmsConfigQuery>({
   name: undefined,
@@ -97,7 +119,17 @@ const columns: TableInstance['columns'] = [
     fixed: !isMobile() ? 'left' : undefined,
   },
   { title: '名称', dataIndex: 'name', slotName: 'name', width: 120, fixed: !isMobile() ? 'left' : undefined },
-  { title: '厂商', dataIndex: 'supplier', slotName: 'supplier', width: 100 },
+  {
+    title: '厂商',
+    dataIndex: 'supplier',
+    slotName: 'supplier',
+    width: 100,
+    props: {
+      options: sms_supplier,
+      placeholder: '请选择厂商',
+    },
+  },
+  { title: '是否默认', dataIndex: 'isDefault', slotName: 'isDefault', width: 100, align: 'center' },
   { title: 'Access Key', dataIndex: 'accessKey', slotName: 'accessKey', width: 200, ellipsis: true, tooltip: true },
   { title: 'Secret Key', dataIndex: 'secretKey', slotName: 'secretKey', width: 200, ellipsis: true, tooltip: true },
   { title: '短信签名', dataIndex: 'signature', slotName: 'signature', width: 200, ellipsis: true, tooltip: true },
@@ -134,7 +166,7 @@ const columns: TableInstance['columns'] = [
     width: 200,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['system:smsLog:list', 'system:smsConfig:update', 'system:smsConfig:delete']),
+    show: has.hasPermOr(['system:smsLog:list', 'system:smsConfig:update', 'system:smsConfig:delete', 'system:smsConfig:setDefault']),
   },
 ]
 
@@ -149,8 +181,30 @@ const reset = () => {
 // 删除
 const onDelete = (record: SmsConfigResp) => {
   return handleDelete(() => deleteSmsConfig(record.id), {
-    content: `是否确定删除配置「${record.name}」？`,
+    content: `是否确定删除短信配置「${record.name}」？`,
     showModal: true,
+  })
+}
+
+// 设为默认
+const onSetDefault = (record: SmsConfigResp) => {
+  Modal.warning({
+    title: '提示',
+    content: `是否确定将短信配置「${record.name}」设为默认配置？`,
+    hideCancel: false,
+    maskClosable: false,
+    onBeforeOk: async () => {
+      try {
+        const res = await setDefaultSmsConfig(record.id)
+        if (res.success) {
+          Message.success('设置成功')
+          search()
+        }
+        return res.success
+      } catch (error) {
+        return false
+      }
+    },
   })
 }
 
@@ -169,7 +223,7 @@ const router = useRouter()
 // 发送记录
 const onLog = (record: SmsConfigResp) => {
   router.push({
-    path: '/system/sms/log',
+    name: 'SystemSmsLog',
     query: { configId: record.id },
   })
 }
