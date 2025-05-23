@@ -34,3 +34,15 @@ export function deleteDept(id: string) {
 export function exportDept(query: T.DeptQuery) {
   return http.download(`${BASE_URL}/export`, query)
 }
+
+export function downloadDeptImportTemplate() {
+  return http.download(`${BASE_URL}/import/template`)
+}
+
+export function parseImportDept(data: FormData) {
+  return http.post(`${BASE_URL}/import/parse`, data)
+}
+
+export function importDept(data: FormData) {
+  return http.post(`${BASE_URL}/import`, data)
+}

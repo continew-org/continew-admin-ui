@@ -130,6 +130,15 @@ export interface DeptResp {
   parentId: string
   children: DeptResp[]
 }
+
+export interface DeptImportResp {
+  importKey: string
+  totalRows: number
+  validRows: number
+  duplicateDeptRows: number
+  deficiencyParentDeptRows: number
+}
+
 export interface DeptQuery {
   description?: string
   status?: number

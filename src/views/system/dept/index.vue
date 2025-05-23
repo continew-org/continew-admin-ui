@@ -7,16 +7,16 @@
       </a-radio-group>
     </div>
     <GiTable
-      v-show="viewType === 'table'"
-      ref="tableRef"
-      row-key="id"
-      :data="dataList"
-      :columns="columns"
-      :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-      :pagination="false"
-      :disabled-column-keys="['name']"
-      @refresh="search"
+        v-show="viewType === 'table'"
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :columns="columns"
+        :loading="loading"
+        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+        :pagination="false"
+        :disabled-column-keys="['name']"
+        @refresh="search"
     >
       <template #expand-icon="{ expanded }">
         <IconDown v-if="expanded" />
@@ -40,6 +40,10 @@
           <template #icon><icon-download /></template>
           <template #default>导出</template>
         </a-button>
+        <a-button v-permission="['system:user:import']" @click="onImport">
+          <template #icon><icon-upload /></template>
+          <template #default>导入</template>
+        </a-button>
       </template>
       <template #status="{ record }">
         <GiCellStatus :status="record.status" />
@@ -52,11 +56,11 @@
         <a-space>
           <a-link v-permission="['system:dept:update']" title="修改" @click="onUpdate(record)">修改</a-link>
           <a-link
-            v-permission="['system:dept:delete']"
-            status="danger"
-            :disabled="record.isSystem"
-            :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
-            @click="onDelete(record)"
+              v-permission="['system:dept:delete']"
+              status="danger"
+              :disabled="record.isSystem"
+              :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+              @click="onDelete(record)"
           >
             删除
           </a-link>
@@ -69,25 +73,26 @@
       <a-card>
         <a-dropdown trigger="contextMenu">
           <Vue3TreeOrg
-            v-if="dataList.length"
-            :data="dataList[0]"
-            :collapsable="true"
-            :horizontal="false"
-            :define-menus="menus"
-            :expand-all="true"
-            :default-expand-level="999"
-            :props="{ id: 'id', parentId: 'parentId', label: 'name', children: 'children' }"
-            center
-            :node-add="handleAdd"
-            :node-delete="onDelete"
-            :node-edit="onUpdate"
-            @on-expand-all="bool => nodeExpandAll = bool"
+              v-if="dataList.length"
+              :data="dataList[0]"
+              :collapsable="true"
+              :horizontal="false"
+              :define-menus="menus"
+              :expand-all="true"
+              :default-expand-level="999"
+              :props="{ id: 'id', parentId: 'parentId', label: 'name', children: 'children' }"
+              center
+              :node-add="handleAdd"
+              :node-delete="onDelete"
+              :node-edit="onUpdate"
+              @on-expand-all="bool => nodeExpandAll = bool"
           >
           </Vue3TreeOrg>
         </a-dropdown>
       </a-card>
     </div>
     <DeptAddModal ref="DeptAddModalRef" :depts="dataList" @save-success="search" />
+    <DeptImportDrawer ref="DeptImportDrawerRef" @save-success="search" />
   </GiPageLayout>
 </template>
 
@@ -96,6 +101,7 @@ import 'vue3-tree-org/lib/vue3-tree-org.css'
 import { Vue3TreeOrg } from 'vue3-tree-org'
 import type { TableInstance } from '@arco-design/web-vue'
 import DeptAddModal from './DeptAddModal.vue'
+import DeptImportDrawer from './DeptImportDrawer.vue'
 import { type DeptQuery, type DeptResp, deleteDept, exportDept, listDept } from '@/apis/system/dept'
 import type GiTable from '@/components/GiTable/index.vue'
 import { useDownload, useTable } from '@/hooks'
@@ -194,6 +200,15 @@ const onDelete = (record: DeptResp) => {
 // 导出
 const onExport = () => {
   useDownload(() => exportDept(queryForm))
+}
+
+// 导入
+const DeptImportDrawerRef = ref<InstanceType<typeof DeptImportDrawer>>()
+const onImport = () => {
+  const result = DeptImportDrawerRef.value?.onOpen()
+  if (result) {
+    listDept(queryForm)
+  }
 }
 
 const DeptAddModalRef = ref<InstanceType<typeof DeptAddModal>>()
