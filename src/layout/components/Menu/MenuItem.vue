@@ -41,26 +41,26 @@ interface Props {
 }
 
 // 如果hidden: false那么代表这个路由项显示在左侧菜单栏中
-// 如果props.item的子项chidren只有一个hidden: false的子元素, 那么onlyOneChild就表示这个子元素
+// 如果props.item的子项children只有一个hidden: false的子元素, 那么onlyOneChild就表示这个子元素
 const onlyOneChild = ref<RouteRecordRaw | null>(null)
 const isOneShowingChild = ref(false)
 
 const handleFunction = () => {
-  const chidrens = props.item?.children?.length ? props.item.children : []
+  const children = props.item?.children?.length ? props.item.children : []
   // 判断是否只有一个显示的子项
-  const showingChildrens = chidrens.filter((i) => i.meta?.hidden === false)
-  if (showingChildrens.length) {
+  const showingChildren = children.filter((i) => i.meta?.hidden === false)
+  if (showingChildren.length) {
     // 保存子项最后一个hidden: false的元素
-    onlyOneChild.value = showingChildrens[showingChildrens.length - 1]
+    onlyOneChild.value = showingChildren[showingChildren.length - 1]
   }
 
   // 当只有一个要显示子路由时, 默认显示该子路由器
-  if (showingChildrens.length === 1) {
+  if (showingChildren.length === 1) {
     isOneShowingChild.value = true
   }
 
   // 如果没有要显示的子路由, 则显示父路由
-  if (showingChildrens.length === 0) {
+  if (showingChildren.length === 0) {
     onlyOneChild.value = { ...props.item, meta: { ...props.item.meta, noShowingChildren: true } } as any
     isOneShowingChild.value = true
   }
