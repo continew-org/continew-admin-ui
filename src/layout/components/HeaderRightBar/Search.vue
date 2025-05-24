@@ -107,15 +107,14 @@ const searchRoutes = (keyword: string) => {
   const result: SearchResult[] = []
   const loop = (routes: RouteRecordRaw[]) => {
     routes.forEach((route) => {
+      if (route.meta?.title?.toLowerCase().includes(keyword.toLowerCase()) && !route.meta?.hidden) {
+        result.push({
+          title: route.meta.title,
+          path: route.path,
+        })
+      }
       if (route.children && route.children.length > 0) {
         loop(route.children)
-      } else {
-        if (route.meta?.title?.toLowerCase().includes(keyword.toLowerCase())) {
-          result.push({
-            title: route.meta.title,
-            path: route.path,
-          })
-        }
       }
     })
   }
