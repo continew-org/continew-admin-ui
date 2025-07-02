@@ -5,7 +5,9 @@
       :style="appStore.menuDark ? appStore.themeCSSVar : undefined"
     >
       <Logo :collapsed="appStore.menuCollapse"></Logo>
-      <Menu :menus="leftMenus" :menu-style="{ width: '220px', flex: 1 }"></Menu>
+      <div class="menu-container">
+        <Menu :menus="leftMenus" :menu-style="{ width: '220px', flex: 1 }"></Menu>
+      </div>
       <WwAds class="ads" />
     </section>
 
@@ -178,6 +180,13 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    height: 100vh;
+
+    .menu-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
   }
 
   &-right {
