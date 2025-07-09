@@ -1,5 +1,6 @@
 <template>
   <GiTable
+    v-model:selected-keys="selectedKeys"
     row-key="id"
     :data="dataList"
     :columns="columns"
@@ -9,7 +10,6 @@
     :disabled-tools="['size', 'setting', 'fullscreen']"
     :disabled-column-keys="['nickname']"
     :row-selection="{ type: 'checkbox', showCheckedAll: true }"
-    :selected-keys="selectedKeys"
     @select="select"
     @select-all="selectAll"
     @refresh="reset"

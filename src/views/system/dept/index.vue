@@ -1,6 +1,6 @@
 <template>
   <GiPageLayout>
-    <div class="header-actions">
+    <div>
       <a-radio-group v-model="viewType" type="button" size="small" style="margin-bottom: 16px;">
         <a-radio value="table">表格视图</a-radio>
         <a-radio value="tree">组织架构图</a-radio>

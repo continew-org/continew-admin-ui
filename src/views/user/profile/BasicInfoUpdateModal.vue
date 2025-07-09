@@ -28,10 +28,10 @@ const userInfo = computed(() => userStore.userInfo)
 const visible = ref(false)
 const formRef = ref<InstanceType<typeof GiForm>>()
 
-const [form, resetForm] = useResetReactive({
+const [form, resetForm] = useResetReactive(() => ({
   nickname: userInfo.value.nickname,
   gender: userInfo.value.gender,
-})
+}))
 
 const columns: ColumnItem[] = reactive([
   {

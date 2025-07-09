@@ -4,15 +4,27 @@
       <a-affix :target="(containerRef as HTMLElement)">
         <a-page-header title="通知公告" :subtitle="title" @back="onBack">
           <template #extra>
-            <a-button type="primary" @click="save">
-              <template #icon>
-                <icon-save v-if="isUpdate" />
-                <icon-send v-else />
-              </template>
-              <template #default>
-                {{ isUpdate ? '保存' : '发布' }}
-              </template>
-            </a-button>
+            <a-space>
+              <a-button type="secondary" @click="onBack">
+                <template #icon>
+                  <icon-close />
+                </template>
+                <template #default>取消</template>
+              </a-button>
+              <a-button v-if="!isUpdate || (isUpdate && form.status !== 3)" type="primary" status="warning" @click="save(true)">
+                <template #icon>
+                  <icon-save />
+                </template>
+                <template #default>草稿</template>
+              </a-button>
+              <a-button type="primary" @click="save(false)">
+                <template #icon>
+                  <icon-save v-if="isUpdate && form.status === 3" />
+                  <icon-send v-else />
+                </template>
+                <template #default>{{ isUpdate && form.status === 3 ? '保存' : '发布' }}</template>
+              </a-button>
+            </a-space>
           </template>
         </a-page-header>
       </a-affix>
@@ -34,6 +46,9 @@
               </template>
             </a-button>
           </a-tooltip>
+        </template>
+        <template #noticeMethods>
+          <a-checkbox-group v-model="form.noticeMethods" :options="notice_method_enum" />
         </template>
       </GiForm>
       <div style="flex: 1;">
@@ -77,15 +92,18 @@ const isUpdate = computed(() => type === 'update')
 const title = computed(() => (isUpdate.value ? '修改' : '新增'))
 const containerRef = ref<HTMLElement | null>()
 const formRef = ref<InstanceType<typeof GiForm>>()
-const { notice_type } = useDict('notice_type')
+const { notice_type, notice_scope_enum, notice_method_enum } = useDict('notice_type', 'notice_scope_enum', 'notice_method_enum')
 
 const [form, resetForm] = useResetReactive({
   title: '',
   type: '',
-  effectiveTime: '',
-  terminateTime: '',
   content: '',
   noticeScope: 1,
+  noticeMethods: [1],
+  isTiming: false,
+  publishTime: undefined,
+  isTop: false,
+  status: 1,
 })
 
 const columns: ColumnItem[] = reactive([
@@ -93,6 +111,7 @@ const columns: ColumnItem[] = reactive([
     label: '标题',
     field: 'title',
     type: 'input',
+    span: 24,
     props: {
       maxLength: 150,
       showWordLimit: true,
@@ -100,36 +119,23 @@ const columns: ColumnItem[] = reactive([
     rules: [{ required: true, message: '请输入标题' }],
   },
   {
-    label: '类型',
+    label: '分类',
     field: 'type',
     type: 'select',
     props: {
       options: notice_type,
     },
-    rules: [{ required: true, message: '请输入类型' }],
-  },
-  {
-    label: '生效时间',
-    field: 'effectiveTime',
-    type: 'date-picker',
-    props: {
-      showTime: true,
-    },
-  },
-  {
-    label: '终止时间',
-    field: 'terminateTime',
-    type: 'date-picker',
-    props: {
-      showTime: true,
-    },
+    rules: [{ required: true, message: '请选择分类' }],
   },
   {
     label: '通知范围',
     field: 'noticeScope',
     type: 'radio-group',
+    disabled: () => {
+      return form.status === 3
+    },
     props: {
-      options: [{ label: '所有人', value: 1 }, { label: '指定用户', value: 2 }],
+      options: notice_scope_enum,
     },
     rules: [{ required: true, message: '请选择通知范围' }],
   },
@@ -142,6 +148,54 @@ const columns: ColumnItem[] = reactive([
     },
     rules: [{ required: true, message: '请选择指定用户' }],
   },
+  {
+    label: '通知方式',
+    field: 'noticeMethods',
+    type: 'checkbox',
+    disabled: () => {
+      return form.status === 3
+    },
+  },
+  {
+    label: '定时发布',
+    field: 'isTiming',
+    type: 'switch',
+    disabled: () => {
+      return form.status === 3
+    },
+    props: {
+      type: 'round',
+      checkedValue: true,
+      uncheckedValue: false,
+      checkedText: '是',
+      uncheckedText: '否',
+    },
+  },
+  {
+    label: '发布时间',
+    field: 'publishTime',
+    type: 'date-picker',
+    hide: () => {
+      return !form.isTiming
+    },
+    required: true,
+    props: {
+      showTime: true,
+      placeholder: '请选择发布时间',
+    },
+  },
+  {
+    label: '置顶',
+    field: 'isTop',
+    type: 'switch',
+    props: {
+      type: 'round',
+      checkedValue: true,
+      uncheckedValue: false,
+      checkedText: '是',
+      uncheckedText: '否',
+    },
+  },
 ])
 
 // 修改
@@ -153,17 +207,18 @@ const onUpdate = async (id: string) => {
 
 // 返回
 const onBack = () => {
-  router.back()
   tabsStore.closeCurrent(route.path)
+  router.push('/system/notice')
 }
 
 // 保存
-const save = async () => {
+const save = async (isDraft: boolean) => {
   const isInvalid = await formRef.value?.formRef?.validate()
   if (isInvalid) return false
   try {
     // 通知范围 所有人 去除指定用户
     form.noticeUsers = form.noticeScope === 1 ? null : form.noticeUsers
+    form.status = isDraft ? 1 : 3
     if (isUpdate.value) {
       await updateNotice(form, id as string)
       Message.success('修改成功')

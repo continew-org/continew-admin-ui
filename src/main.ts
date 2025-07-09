@@ -4,9 +4,6 @@ import '@/styles/arco-ui/index.less'
 // import '@arco-themes/vue-gi-demo/index.less'
 // import '@arco-design/web-vue/dist/arco.css'
 
-// 自动修复滚动类事件警告
-import 'default-passive-events'
-
 // 额外引入 Arco Design Icon图标库
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import App from './App.vue'

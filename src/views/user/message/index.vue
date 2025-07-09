@@ -18,9 +18,7 @@
         </a-tab-pane>
       </a-tabs>
     </template>
-    <transition name="fade-slide" mode="out-in" appear>
-      <component :is="menuList.find((item) => item.key === activeKey)?.value"></component>
-    </transition>
+    <component :is="menuList.find((item) => item.key === activeKey)?.value"></component>
   </GiPageLayout>
 </template>
 
@@ -29,7 +27,10 @@ import { useRoute, useRouter } from 'vue-router'
 import MyMessage from './components/MyMessage.vue'
 import MyNotice from './components/MyNotice.vue'
 import { useDevice } from '@/hooks'
-import { type MessageResp, type NoticeResp, listMessage, listNotice } from '@/apis'
+import {
+  getUnreadMessageCount,
+  getUnreadNoticeCount,
+} from '@/apis'
 import mittBus from '@/utils/mitt'
 
 defineOptions({ name: 'UserMessage' })
@@ -51,35 +52,22 @@ const TabPaneTitle = defineComponent({
 
 const { isDesktop } = useDevice()
 
-const messageList = ref<MessageResp[]>()
-const noticeList = ref<NoticeResp[]>()
+const unreadMessageCount = ref(0)
+const unreadNoticeCount = ref(0)
 
 const tabItems = computed(() => [
-  { key: 'msg', title: '我的消息', count: messageList.value?.length ?? 0 },
-  { key: 'notice', title: '我的公告' },
+  { key: 'msg', title: '我的消息', count: unreadMessageCount.value },
+  { key: 'notice', title: '我的公告', count: unreadNoticeCount.value },
 ])
 
-const messageQueryParam = reactive({
-  isRead: false,
-  sort: ['createTime,desc'],
-  page: 1,
-  size: 5,
-})
-
-const noticeQueryParam = reactive({
-  sort: ['createTime,desc'],
-  page: 1,
-  size: 5,
-})
-
 const getMessageData = async () => {
-  const { data } = await listMessage(messageQueryParam)
-  messageList.value = data.list.filter((item) => !item.isRead)
+  const { data } = await getUnreadMessageCount()
+  unreadMessageCount.value = data.total
 }
 
 const getNoticeData = async () => {
-  const { data } = await listNotice(noticeQueryParam)
-  noticeList.value = data.list
+  const { data } = await getUnreadNoticeCount()
+  unreadNoticeCount.value = data.total
 }
 
 onMounted(() => {
@@ -87,6 +75,7 @@ onMounted(() => {
   getNoticeData()
   mittBus.on('count-refresh', () => {
     getMessageData()
+    getNoticeData()
   })
 })
 

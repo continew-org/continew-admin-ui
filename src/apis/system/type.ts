@@ -178,17 +178,22 @@ export interface DictItemPageQuery extends DictItemQuery, PageQuery {
 export interface NoticeResp {
   id?: string
   title?: string
-  content: string
+  type: string
+  noticeScope: number
+  noticeMethods?: Array<number>
+  isTiming: boolean
+  publishTime?: string
+  isTop: boolean
   status?: number
-  type?: string
-  effectiveTime?: string
-  terminateTime?: string
-  noticeScope?: number
-  noticeUsers?: Array<string>
-  createUserString?: string
-  createTime?: string
-  updateUserString?: string
-  updateTime?: string
+}
+export type NoticeDetailResp = NoticeResp & {
+  createUserString: string
+  createTime: string
+  updateUserString: string
+  updateTime: string
+}
+export type NoticePreviewResp = NoticeDetailResp & {
+  content: string
 }
 export interface NoticeQuery {
   title?: string
@@ -437,6 +442,7 @@ export interface MessageResp {
   title: string
   content: string
   type: number
+  path: string
   isRead: boolean
   readTime?: string
   createUserString?: string

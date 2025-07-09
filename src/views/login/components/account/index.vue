@@ -124,12 +124,19 @@ const handleLogin = async () => {
     const { redirect, ...othersQuery } = router.currentRoute.value.query
     const { rememberMe } = loginConfig.value
     loginConfig.value.username = rememberMe ? form.username : ''
-    await router.push({
-      path: (redirect as string) || '/',
-      query: {
-        ...othersQuery,
-      },
-    })
+
+    // 如果有重定向参数，解码并直接跳转到完整路径
+    if (redirect) {
+      const redirectPath = decodeURIComponent(redirect as string)
+      await router.push(redirectPath)
+    } else {
+      await router.push({
+        path: '/',
+        query: {
+          ...othersQuery,
+        },
+      })
+    }
     Message.success('欢迎使用')
   } catch (error) {
     console.error(error)

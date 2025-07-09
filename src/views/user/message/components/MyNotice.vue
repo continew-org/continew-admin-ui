@@ -25,7 +25,7 @@
       </a-button>
     </template>
     <template #title="{ record }">
-      <a-link @click="onDetail(record)">
+      <a-link @click="onView(record)">
         <a-typography-paragraph
           class="link-text"
           :ellipsis="{
@@ -41,6 +41,11 @@
     <template #type="{ record }">
       <GiCellTag :value="record.type" :dict="notice_type" />
     </template>
+    <template #isRead="{ record }">
+      <a-tag :color="record.isRead ? '' : 'arcoblue'">
+        {{ record.isRead ? '已读' : '未读' }}
+      </a-tag>
+    </template>
   </GiTable>
 </template>
 
@@ -50,7 +55,7 @@ import { type NoticeQuery, type NoticeResp, listUserNotice } from '@/apis/system
 import { useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 
-defineOptions({ name: 'SystemMessage' })
+defineOptions({ name: 'UserMyNotice' })
 
 const { notice_type } = useDict('notice_type')
 
@@ -72,10 +77,11 @@ const columns: TableInstance['columns'] = [
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
   },
-  { title: '标题', dataIndex: 'title', slotName: 'title', ellipsis: true, tooltip: true },
-  { title: '类型', dataIndex: 'type', slotName: 'type', align: 'center' },
+  { title: '公告标题', dataIndex: 'title', slotName: 'title', ellipsis: true, tooltip: true },
+  { title: '分类', dataIndex: 'type', slotName: 'type', align: 'center' },
+  { title: '状态', dataIndex: 'isRead', slotName: 'isRead', align: 'center' },
   { title: '发布人', dataIndex: 'createUserString', ellipsis: true, tooltip: true },
-  { title: '发布时间', dataIndex: 'createTime', width: 180 },
+  { title: '发布时间', dataIndex: 'publishTime', width: 180 },
 ]
 
 // 重置
@@ -86,8 +92,8 @@ const reset = () => {
 }
 
 const router = useRouter()
-// 详情
-const onDetail = (record: NoticeResp) => {
+// 查看
+const onView = (record: NoticeResp) => {
   router.push({ path: '/user/notice', query: { id: record.id } })
 }
 </script>

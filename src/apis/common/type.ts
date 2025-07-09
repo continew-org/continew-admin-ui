@@ -11,6 +11,7 @@ export interface DashboardNoticeResp {
   id: number
   title: string
   type: number
+  isTop: boolean
 }
 
 /** 仪表盘访问趋势类型 */

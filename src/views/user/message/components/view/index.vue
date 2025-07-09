@@ -19,8 +19,7 @@
           <span>
             <icon-history class="icon" />
             <span class="label">发布时间：</span>
-            <span>{{ form?.effectiveTime ? form?.effectiveTime : form?.createTime
-            }}</span>
+            <span>{{ form?.publishTime }}</span>
           </span>
           <a-divider v-if="form?.updateTime" direction="vertical" />
           <span v-if="form?.updateTime">
@@ -39,9 +38,11 @@
 
 <script setup lang="ts">
 import AiEditor from './components/index.vue'
-import { getNotice } from '@/apis/system/notice'
+import { getUserNotice } from '@/apis/system/user-message'
 import { useTabsStore } from '@/stores'
 import { useResetReactive } from '@/hooks'
+
+defineOptions({ name: 'UserNotice' })
 
 const route = useRoute()
 const router = useRouter()
@@ -52,21 +53,20 @@ const containerRef = ref<HTMLElement | null>()
 const [form, resetForm] = useResetReactive({
   title: '',
   createUserString: '',
-  effectiveTime: '',
-  createTime: '',
+  publishTime: '',
   content: '',
 })
 
 // 回退
 const onBack = () => {
-  router.back()
   tabsStore.closeCurrent(route.path)
+  router.push({ path: '/user/message', query: { tab: 'notice' } })
 }
 
 // 打开
 const onOpen = async (id: string) => {
   resetForm()
-  const { data } = await getNotice(id)
+  const { data } = await getUserNotice(id)
   Object.assign(form, data)
 }
 

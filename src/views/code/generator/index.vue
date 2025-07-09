@@ -93,7 +93,7 @@ const columns: TableInstance['columns'] = [
   { title: '表名称', dataIndex: 'tableName', minWidth: 225, ellipsis: true, tooltip: true },
   { title: '描述', dataIndex: 'comment', ellipsis: true, tooltip: true },
   { title: '类名前缀', dataIndex: 'classNamePrefix', ellipsis: true, tooltip: true },
-  { title: '作者名称', dataIndex: 'author' },
+  { title: '作者名称', dataIndex: 'author', ellipsis: true, tooltip: true },
   { title: '所属模块', dataIndex: 'moduleName', ellipsis: true, tooltip: true },
   { title: '模块包名', dataIndex: 'packageName', ellipsis: true, tooltip: true },
   { title: '配置时间', dataIndex: 'createTime', width: 180 },

@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, isFunction } from 'lodash-es'
 
 export function useResetReactive<T extends object>(value: T) {
-  const getInitValue = () => cloneDeep(value)
+  const getInitValue = () => isFunction(value) ? value() : cloneDeep(value)
 
   const state = reactive(getInitValue())
 

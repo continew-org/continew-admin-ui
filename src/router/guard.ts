@@ -110,7 +110,7 @@ export const setupRouterGuard = (router: Router) => {
           } catch (error: any) {
             // 过程中发生任何错误，都直接重置 Token，并重定向到登录页面
             await userStore.logoutCallBack()
-            next(`/login?redirect=${to.path}`)
+            next(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
           }
         } else {
           next()
@@ -123,7 +123,7 @@ export const setupRouterGuard = (router: Router) => {
         next()
       } else {
         // 其他没有访问权限的页面将被重定向到登录页面
-        next('/login')
+        next(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
       }
     }
 

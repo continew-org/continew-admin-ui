@@ -157,6 +157,9 @@ const selectedKeys = ref()
 // 选择文件预览
 const onSelectPreview = (keys: (string | number)[]) => {
   if (typeof keys[0] === 'string') {
+    if (keys[0] === selectedKeys.value) {
+      return
+    }
     currentPreview.value = genPreviewList.value.filter((p) => p.fileName === keys[0])[0]
     selectedKeys.value = keys
   } else {

@@ -108,7 +108,8 @@ http.interceptors.response.use(
         async onOk() {
           const userStore = useUserStore()
           await userStore.logoutCallBack()
-          await router.replace('/login')
+          const currentPath = router.currentRoute.value.fullPath
+          await router.replace(`/login?redirect=${encodeURIComponent(currentPath)}`)
         },
       })
     } else {

@@ -3,13 +3,13 @@
     <a-list :loading="loading">
       <template #header>通知</template>
       <a-list-item v-for="item in messageList" :key="item.id">
-        <div class="content-wrapper" @click="open">
+        <div class="content-wrapper" @click="open(item.path)">
           <div class="content">{{ item.title }}</div>
           <div class="date">{{ item.createTime }}</div>
         </div>
       </a-list-item>
       <template #footer>
-        <a class="more-btn" @click="open">查看更多
+        <a class="more-btn" @click="open()">查看更多
           <icon-right />
         </a>
         <a class="read-all-btn" @click="readAll">全部已读</a>
@@ -48,7 +48,11 @@ const getMessageData = async () => {
 }
 
 // 打开消息中心
-const open = () => {
+const open = (path?: string) => {
+  if (path) {
+    router.push(path)
+    return
+  }
   router.push({ path: '/user/message', query: { tab: 'msg' } })
 }
 
@@ -104,6 +108,22 @@ onMounted(() => {
 
     .arco-list-content {
       max-height: 184px;
+      overflow-y: auto;
+      padding-right: 8px;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--color-text-4);
+        border-radius: 3px;
+
+        &:hover {
+          background-color: var(--color-text-3);
+        }
+      }
 
       .arco-list-item {
         padding: 6px;

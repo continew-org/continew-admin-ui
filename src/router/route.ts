@@ -63,8 +63,8 @@ export const systemRoutes: RouteRecordRaw[] = [
       {
         path: '/user/notice',
         name: 'UserNotice',
-        component: () => import('@/views/user/message/components/detail/index.vue'),
-        meta: { title: '公告详情' },
+        component: () => import('@/views/user/message/components/view/index.vue'),
+        meta: { title: '查看公告' },
       },
     ],
   },
@@ -78,7 +78,7 @@ export const systemRoutes: RouteRecordRaw[] = [
       {
         path: '/about/document/api',
         component: () => import('@/views/about/document/api/index.vue'),
-        meta: { title: '接口文档', icon: 'continew', hidden: false, keepAlive: true },
+        meta: { title: '接口文档', icon: 'swagger', hidden: false, keepAlive: true },
       },
       {
         path: 'https://continew.top',

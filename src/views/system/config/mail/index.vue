@@ -71,7 +71,7 @@
           </a-switch>
         </a-form-item>
         <a-form-item
-          v-if="form.MAIL_SSL_ENABLED === '1'"
+          v-if="form.MAIL_SSL_ENABLED === 1"
           field="MAIL_SSL_PORT"
           :label="mailConfig.MAIL_SSL_PORT.name"
           :help="mailConfig.MAIL_SSL_PORT.description"
@@ -123,7 +123,7 @@ const [form] = useResetReactive({
   MAIL_PORT: 0,
   MAIL_USERNAME: '',
   MAIL_PASSWORD: '',
-  MAIL_SSL_ENABLED: '',
+  MAIL_SSL_ENABLED: 0,
   MAIL_SSL_PORT: 0,
 })
 const rules: FormInstance['rules'] = {
@@ -152,7 +152,7 @@ const reset = () => {
   form.MAIL_PORT = mailConfig.value.MAIL_PORT.value || 0
   form.MAIL_USERNAME = mailConfig.value.MAIL_USERNAME.value || ''
   form.MAIL_PASSWORD = mailConfig.value.MAIL_PASSWORD?.value || ''
-  form.MAIL_SSL_ENABLED = mailConfig.value.MAIL_SSL_ENABLED.value || ''
+  form.MAIL_SSL_ENABLED = mailConfig.value.MAIL_SSL_ENABLED.value || 0
   form.MAIL_SSL_PORT = mailConfig.value.MAIL_SSL_PORT.value || 0
 }
 
@@ -176,7 +176,7 @@ const getDataList = async () => {
   loading.value = true
   const { data } = await listOption(queryForm)
   mailConfig.value = data.reduce((obj: MailConfig, option: OptionResp) => {
-    obj[option.code] = { ...option, value: ['MAIL_PORT', 'MAIL_SSL_PORT'].includes(option.code) ? Number.parseInt(option.value) : option.value }
+    obj[option.code] = { ...option, value: ['MAIL_PORT', 'MAIL_SSL_PORT', 'MAIL_SSL_ENABLED'].includes(option.code) ? Number.parseInt(option.value) : option.value }
     return obj
   }, {})
   handleCancel()

@@ -15,7 +15,7 @@
       <a-empty v-if="dataList.length === 0">暂无公告</a-empty>
       <div v-else>
         <div v-for="(item, idx) in dataList" :key="idx" class="item">
-          <GiCellTag :value="item.type" :dict="notice_type" />
+          <a-tag v-if="item.isTop" color="red">置顶</a-tag>
           <a-link class="item-content" @click="onDetail(item.id)">
             <a-typography-paragraph
               :ellipsis="{
@@ -35,9 +35,6 @@
 
 <script setup lang="ts">
 import { type DashboardNoticeResp, listDashboardNotice } from '@/apis'
-import { useDict } from '@/hooks/app'
-
-const { notice_type } = useDict('notice_type')
 
 const dataList = ref<DashboardNoticeResp[]>([])
 const loading = ref(false)

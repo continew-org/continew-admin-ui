@@ -12,7 +12,7 @@ export function listNotice(query: T.NoticePageQuery) {
 
 /** @desc 查询公告详情 */
 export function getNotice(id: string) {
-  return http.get<T.NoticeResp>(`${BASE_URL}/${id}`)
+  return http.get<T.NoticeDetailResp>(`${BASE_URL}/${id}`)
 }
 
 /** @desc 新增公告 */

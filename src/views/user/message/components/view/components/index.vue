@@ -45,7 +45,7 @@ watch(() => props.modelValue, (value) => {
     editorConfig.content = value
     init()
   }
-})
+}, { deep: true })
 watch(() => appStore.theme, (value) => {
   editorConfig.theme = value
   init()
@@ -54,6 +54,7 @@ watch(() => appStore.theme, (value) => {
 // 挂载阶段
 onMounted(() => {
   editorConfig.element = divRef.value
+  editorConfig.content = props.modelValue
   init()
 })
 // 销毁阶段

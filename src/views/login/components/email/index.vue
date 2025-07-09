@@ -72,12 +72,19 @@ const handleLogin = async () => {
     await userStore.emailLogin(form)
     tabsStore.reset()
     const { redirect, ...othersQuery } = router.currentRoute.value.query
-    await router.push({
-      path: (redirect as string) || '/',
-      query: {
-        ...othersQuery,
-      },
-    })
+
+    // 如果有重定向参数，解码并直接跳转到完整路径
+    if (redirect) {
+      const redirectPath = decodeURIComponent(redirect as string)
+      await router.push(redirectPath)
+    } else {
+      await router.push({
+        path: '/',
+        query: {
+          ...othersQuery,
+        },
+      })
+    }
     Message.success('欢迎使用')
   } catch (error) {
     form.captcha = ''
@@ -96,6 +103,8 @@ const onCaptcha = async () => {
   if (captchaLoading.value) return
   const isInvalid = await formRef.value?.validateField('email')
   if (isInvalid) return
+  // 重置行为参数
+  VerifyRef.value.instance.refresh()
   VerifyRef.value.show()
 }
 

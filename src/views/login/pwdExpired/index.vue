@@ -178,7 +178,12 @@ const logo = computed(() => appStore.getLogo())
         position: fixed;
         top: 20px;
         right: 30px;
-        z-index: 9999;
+        z-index: 999;
+    }
+
+    // 新增弹窗层级设置
+    .arco-modal-wrapper {
+      z-index: 1000;
     }
 
     .footer {
@@ -385,7 +390,12 @@ const logo = computed(() => appStore.getLogo())
         position: fixed;
         top: 20px;
         right: 30px;
-        z-index: 9999;
+        z-index: 999;
+    }
+
+    // 新增弹窗层级设置
+    .arco-modal-wrapper {
+      z-index: 1000;
     }
 
     .footer {
