@@ -8,7 +8,7 @@
     :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
     :pagination="false"
     :disabled-tools="['fullscreen', 'size', 'setting']"
-    :row-selection="{ type: 'checkbox', showCheckedAll, selectRowKeys: selectedKeys }"
+    :row-selection="disabled ? false : { type: 'checkbox', showCheckedAll: showCheckedAll && !disabled, selectRowKeys: selectedKeys }"
     @select="select"
     @select-all="selectAll"
     @refresh="refresh"
@@ -44,7 +44,7 @@
     </template>
     <template #permissions="{ record }">
       <div v-if="record.permissions && record.permissions.length > 0">
-        <a-checkbox-group v-model="record.checkedPermissions" :disabled="disabled" @change="selectPermission(record)">
+        <a-checkbox-group v-model="record.checkedPermissions" :disabled="disabled || record.disabled" @change="selectPermission(record)">
           <a-checkbox v-for="permission in record.permissions" :key="permission.id" :value="permission.id">
             {{ permission.title }}
           </a-checkbox>
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { Message, type TableInstance } from '@arco-design/web-vue'
 import { type MenuResp, listMenu } from '@/apis/system/menu'
 import { isMobile } from '@/utils'
@@ -70,6 +70,21 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface Props {
   roleId: string
+}
+
+interface PermissionItem {
+  id: string | number
+  title: string
+  parentId: string | number
+  permission?: string
+  isChecked?: boolean
+}
+
+interface ExtendedMenuResp extends MenuResp {
+  permissions?: PermissionItem[]
+  checkedPermissions?: (string | number)[]
+  isChecked?: boolean
+  disabled?: boolean
 }
 
 const tableRef = ref<InstanceType<typeof GiTable>>()
@@ -90,16 +105,17 @@ const onExpanded = () => {
  *
  * @param menus 菜单数据
  */
-const transformMenu = (menus: MenuResp[]) => {
-  return menus.map((item) => {
+const transformMenu = (menus: MenuResp[]): ExtendedMenuResp[] => {
+  return menus.map((item): ExtendedMenuResp => {
     // 如果当前项有子项，递归处理子项
     if (item.children && item.children.length > 0) {
       // 过滤出 type 为 3 的按钮权限
-      const permissions = item.children.filter((child) => child.type === 3 || child.permission).map((child) => ({
+      const permissions = item.children.filter((child) => child.type === 3 || child.permission).map((child): PermissionItem => ({
         id: child.id,
         title: child.title,
         parentId: child.parentId,
         permission: child.permission,
+        isChecked: false,
       }))
 
       // 过滤出 type 不为 3 的子项
@@ -107,8 +123,8 @@ const transformMenu = (menus: MenuResp[]) => {
 
       // 如果有权限，将其添加到当前项的 permissions 属性中
       if (permissions.length > 0) {
-        item.permissions = permissions
-        item.checkedPermissions = permissions.filter((permission) => permission.isChecked)
+        (item as ExtendedMenuResp).permissions = permissions
+        ;(item as ExtendedMenuResp).checkedPermissions = permissions.filter((permission) => permission.isChecked).map((permission) => permission.id)
       }
 
       // 递归处理剩余的子项
@@ -125,22 +141,45 @@ const transformMenu = (menus: MenuResp[]) => {
 }
 
 // 更新表格数据的选中状态
-const updateTableDataCheckedStatus = (data: MenuResp[], selectedKeys: (string | number)[]) => {
+const updateTableDataCheckedStatus = (data: ExtendedMenuResp[], selectedKeys: (string | number)[]) => {
   data.forEach((item) => {
     item.disabled = disabled.value
     // 设置菜单项的选中状态
     item.isChecked = selectedKeys.includes(item.id)
     // 设置权限的选中状态
     if (item.permissions) {
+      item.permissions.forEach((permission) => {
+        permission.isChecked = selectedKeys.includes(permission.id)
+      })
       item.checkedPermissions = item.permissions
         .filter((permission) => selectedKeys.includes(permission.id))
         .map((permission) => permission.id)
     }
     // 递归处理子菜单
     if (item.children) {
-      updateTableDataCheckedStatus(item.children, selectedKeys)
+      updateTableDataCheckedStatus(item.children as ExtendedMenuResp[], selectedKeys)
     }
   })
+}
+
+// 查找指定菜单 - 使用 Map 缓存优化查找性能
+const menuMap = ref<Map<string | number, ExtendedMenuResp>>(new Map())
+
+// 构建菜单映射缓存
+const buildMenuMap = (data: ExtendedMenuResp[]) => {
+  const map = new Map<string | number, ExtendedMenuResp>()
+
+  const traverse = (items: ExtendedMenuResp[]) => {
+    items.forEach((item) => {
+      map.set(item.id, item)
+      if (item.children?.length) {
+        traverse(item.children as ExtendedMenuResp[])
+      }
+    })
+  }
+
+  traverse(data)
+  menuMap.value = map
 }
 
 const selectedKeys = ref<Set<string | number>>(new Set())
@@ -151,110 +190,145 @@ const {
   search,
 } = useTable(() => listMenu(), {
   immediate: true,
-  formatResult(data) {
+  formatResult(data: MenuResp[]) {
     return transformMenu(data)
   },
   onSuccess: () => {
     nextTick(() => {
       tableRef.value?.tableRef?.expandAll(true)
     })
+    // 构建菜单映射缓存
+    buildMenuMap(tableData.value as ExtendedMenuResp[])
     // 初始加载时应用已选中的权限
     if (selectedKeys.value.size > 0) {
-      updateTableDataCheckedStatus(tableData.value, Array.from(selectedKeys.value))
+      updateTableDataCheckedStatus(tableData.value as ExtendedMenuResp[], Array.from(selectedKeys.value))
     }
   },
 })
 
 const columns: TableInstance['columns'] = [
-  { title: '菜单', dataIndex: 'title', slotName: 'title', width: 170, fixed: !isMobile() ? 'left' : undefined },
+  { title: '菜单', dataIndex: 'title', slotName: 'title', width: 170, ellipsis: true, tooltip: true, fixed: !isMobile() ? 'left' : undefined },
   { title: '权限', dataIndex: 'permissions', slotName: 'permissions' },
 ]
 
 // 级联选中子项
-const cascadeSelectChild = (record: MenuResp, isCascade: boolean) => {
-  if (isCascade && record.children && record.children.length > 0) {
+const cascadeSelectChild = (record: ExtendedMenuResp, isCascade: boolean) => {
+  if (!isCascade) return
+
+  // 批量处理子菜单
+  if (record.children && record.children.length > 0) {
     record.children.forEach((child) => {
-      child.isChecked = record.isChecked
-      tableRef.value?.tableRef?.select(child.id, child.isChecked)
-      child.isChecked
-        ? selectedKeys.value.add(child.id)
-        : selectedKeys.value.delete(child.id)
-      if ((child.children && child.children.length > 0) || (child.permissions && child.permissions.length > 0)) {
-        cascadeSelectChild(child, isCascade)
+      const extendedChild = child as ExtendedMenuResp
+      extendedChild.isChecked = record.isChecked
+      tableRef.value?.tableRef?.select(child.id, extendedChild.isChecked)
+
+      // 使用批量操作优化性能
+      if (extendedChild.isChecked) {
+        selectedKeys.value.add(child.id)
+      } else {
+        selectedKeys.value.delete(child.id)
+      }
+
+      // 递归处理子项
+      if (child.children?.length || extendedChild.permissions?.length) {
+        cascadeSelectChild(extendedChild, isCascade)
       }
     })
   }
-  // 递归选中权限
-  if (isCascade && record.permissions && record.permissions.length > 0) {
+
+  // 批量处理权限
+  if (record.permissions && record.permissions.length > 0) {
+    const checkedPermissions: (string | number)[] = []
     record.permissions.forEach((permission) => {
       permission.isChecked = record.isChecked
-      permission.isChecked
-        ? selectedKeys.value.add(permission.id)
-        : selectedKeys.value.delete(permission.id)
+      if (permission.isChecked) {
+        selectedKeys.value.add(permission.id)
+        checkedPermissions.push(permission.id)
+      } else {
+        selectedKeys.value.delete(permission.id)
+      }
     })
-    record.checkedPermissions = record.permissions.filter((permission) => permission.isChecked).map((permission) => permission.id)
+    record.checkedPermissions = checkedPermissions
   }
 }
 
 // 查找指定菜单
-const findItem = (id: string, data: MenuResp[]) => {
-  for (const item of data) {
-    if (item.id === id) return item
-    if (item.children?.length) {
-      const found = findItem(id, item.children)
-      if (found) return found
-    }
-  }
-  return null
+const findItem = (id: string | number): ExtendedMenuResp | null => {
+  return menuMap.value.get(id) || null
 }
 
 // 级联选中父项目
-const cascadeSelectParent = (record: MenuResp, isCascade: boolean) => {
-  if (isCascade && record.parentId && record.parentId !== '0') {
-    const parent = findItem(record.parentId, tableData.value)
-    if (parent) {
-      // 如果父项目的某个子项被选中了，它就依然保持选中状态
-      parent.isChecked = parent.children?.some((child) => child.isChecked)
-      tableRef.value?.tableRef?.select(parent.id, parent.isChecked)
-      if (!parent.isChecked && !record.isChecked) {
-        selectedKeys.value.delete(parent.id)
-      } else {
-        selectedKeys.value.add(parent.id)
-      }
-      if (parent.parentId && parent.parentId !== 0) {
-        cascadeSelectParent(parent, isCascade)
-      }
-    }
+const cascadeSelectParent = (record: ExtendedMenuResp, isCascade: boolean) => {
+  if (!isCascade || !record.parentId || record.parentId === '0') return
+
+  const parent = findItem(record.parentId)
+  if (!parent) return
+
+  // 检查父项目的所有子项是否有被选中的
+  const hasCheckedChildren = parent.children?.some((child) => (child as ExtendedMenuResp).isChecked)
+  parent.isChecked = hasCheckedChildren || false
+
+  // 更新表格选中状态
+  tableRef.value?.tableRef?.select(parent.id, parent.isChecked)
+
+  // 更新选中键集合
+  if (parent.isChecked) {
+    selectedKeys.value.add(parent.id)
+  } else {
+    selectedKeys.value.delete(parent.id)
+  }
+
+  // 递归处理父级的父级
+  if (parent.parentId && parent.parentId !== '0') {
+    cascadeSelectParent(parent, isCascade)
   }
 }
 
 // 选中
 const select: TableInstance['onSelect'] = (rowKeys, checked, record) => {
+  const extendedRecord = record as ExtendedMenuResp
+
+  // 如果处于禁用状态，直接返回，不执行任何逻辑
+  if (disabled.value || extendedRecord.disabled) {
+    return
+  }
+
   const isChecked = rowKeys.includes(checked)
   isChecked
-    ? selectedKeys.value.add(record.id)
-    : selectedKeys.value.delete(record.id)
-  record.isChecked = isChecked
+    ? selectedKeys.value.add(extendedRecord.id)
+    : selectedKeys.value.delete(extendedRecord.id)
+  extendedRecord.isChecked = isChecked
   // 级联选中子项
-  cascadeSelectChild(record, isCascade.value)
+  cascadeSelectChild(extendedRecord, isCascade.value)
   // 级联选中父项
-  cascadeSelectParent(record, isCascade.value)
+  cascadeSelectParent(extendedRecord, isCascade.value)
 }
 
 // 全选
 const selectAll: TableInstance['onSelectAll'] = (checked) => {
+  // 如果处于禁用状态，直接返回，不执行任何逻辑
+  if (disabled.value) {
+    return
+  }
+
   tableData.value.forEach((item) => {
-    item.isChecked = checked
+    const extendedItem = item as ExtendedMenuResp
+    extendedItem.isChecked = checked
     checked
-        ? selectedKeys.value.add(item.id)
-        : selectedKeys.value.delete(item.id)
-    cascadeSelectChild(item, true)
+      ? selectedKeys.value.add(item.id)
+      : selectedKeys.value.delete(item.id)
+    cascadeSelectChild(extendedItem, true)
   })
 }
 
 // 选中权限
-const selectPermission = (record) => {
-  const checkPermissions = record.checkedPermissions
+const selectPermission = (record: ExtendedMenuResp) => {
+  // 如果处于禁用状态，直接返回，不执行任何逻辑
+  if (disabled.value || record.disabled) {
+    return
+  }
+
+  const checkPermissions = record.checkedPermissions || []
   // 取消选中
   if (checkPermissions.length === 0) {
     if (isCascade.value) {
@@ -263,7 +337,7 @@ const selectPermission = (record) => {
       tableRef.value?.tableRef?.select(record.id, record.isChecked)
       cascadeSelectParent(record, isCascade.value)
     }
-    record.permissions.forEach((permission) => {
+    record.permissions?.forEach((permission) => {
       permission.isChecked = false
       selectedKeys.value.delete(permission.id)
     })
@@ -277,7 +351,7 @@ const selectPermission = (record) => {
       tableRef.value?.tableRef?.select(record.id, record.isChecked)
       cascadeSelectParent(record, isCascade.value)
     }
-    record.permissions.forEach((permission) => {
+    record.permissions?.forEach((permission) => {
       permission.isChecked = checkPermissions.includes(permission.id)
       permission.isChecked
         ? selectedKeys.value.add(permission.id)
@@ -309,8 +383,10 @@ const fetchRole = async (id: string) => {
     isCascade.value = data.menuCheckStrictly
     // 更新选中键集合
     selectedKeys.value = new Set(data.menuIds)
+    // 重新构建菜单映射缓存
+    buildMenuMap(tableData.value as ExtendedMenuResp[])
     // 更新表格数据的选中状态
-    updateTableDataCheckedStatus(tableData.value, data.menuIds)
+    updateTableDataCheckedStatus(tableData.value as ExtendedMenuResp[], data.menuIds)
     // 手动设置表格行的选中状态，确保组件响应
     await nextTick(() => {
       tableRef.value?.tableRef?.selectAll(false)
@@ -325,7 +401,9 @@ const fetchRole = async (id: string) => {
 // 刷新
 const refresh = () => {
   search()
-  fetchRole(props.roleId)
+  if (props.roleId) {
+    fetchRole(props.roleId)
+  }
 }
 
 // 监听 roleId 的变化

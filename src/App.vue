@@ -8,7 +8,7 @@
     </template>
     <a-watermark
       :content="appStore.isOpenWatermark ? (appStore.watermark || `${userStore.userInfo.nickname}(${userStore.userInfo.username})`) : ''"
-      z-index="9999"
+      :zindex="9999"
       class="admin-ui-main"
     >
       <router-view></router-view>
