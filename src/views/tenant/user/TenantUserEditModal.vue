@@ -45,6 +45,7 @@ const columns: Columns = reactive([
     label: '登陆用户',
     field: 'username',
     type: 'input',
+    span: 24,
     props: {
       placeholder: '请输入用户名',
       maxLength: 64,
@@ -56,6 +57,7 @@ const columns: Columns = reactive([
     label: '登陆密码',
     field: 'plaintextPwd',
     type: 'input-password',
+    span: 24,
     props: {
       placeholder: '请输入密码',
       maxLength: 32,
