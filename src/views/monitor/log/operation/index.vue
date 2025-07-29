@@ -89,7 +89,7 @@ const columns: TableInstance['columns'] = [
   { title: '所属模块', dataIndex: 'module', align: 'center', ellipsis: true, tooltip: true },
   {
     title: '状态',
-    dataIndex: 'status',
+    // dataIndex: 'status',
     slotName: 'status',
     align: 'center',
     filterable: {
