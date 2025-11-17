@@ -163,6 +163,8 @@ const queryForm = reactive<FileQuery>({
   sort: ['type,asc', 'updateTime,desc'],
 })
 
+const currentItem = ref<FileItem>()
+
 const paginationOption = reactive({
   defaultPageSize: 30,
   defaultSizeOptions: [30, 40, 50, 100, 120],
@@ -224,6 +226,7 @@ const handleDblclickFile = (item: FileItem) => {
     queryForm.parentPath = `${item.parentPath === '/' ? '' : item.parentPath}/${item.name}`
     search()
   }
+  currentItem.value = item
 }
 
 // 下载文件
@@ -347,7 +350,7 @@ const breadcrumbList = computed(() => {
   const parts = path.split('/').filter((p) => p !== '') // 分割路径并过滤空字符串
   return parts.map((part, index) => {
     const fullPath = parts.slice(0, index + 1).join('/')
-    return { name: part || '根目录', path: `/${fullPath}` }
+    return { name: currentItem.value?.originalName || '根目录', path: `/${fullPath}` }
   })
 })
 
