@@ -163,8 +163,6 @@ const queryForm = reactive<FileQuery>({
   sort: ['type,asc', 'updateTime,desc'],
 })
 
-const currentItem = ref<FileItem>()
-
 const paginationOption = reactive({
   defaultPageSize: 30,
   defaultSizeOptions: [30, 40, 50, 100, 120],
@@ -177,6 +175,9 @@ const {
   search,
 } = useTable((page) => listFile({ ...queryForm, ...page }), { immediate: false, paginationOption })
 const filePreviewRef = ref()
+
+const pathNameMap = ref<Map<string, string>>(new Map())
+
 // 点击文件
 const handleClickFile = (item: FileItem) => {
   if (ImageTypes.includes(item.extension)) {
@@ -223,10 +224,11 @@ const handleClickFile = (item: FileItem) => {
 // 双击文件
 const handleDblclickFile = (item: FileItem) => {
   if (item.type === 0) {
-    queryForm.parentPath = `${item.parentPath === '/' ? '' : item.parentPath}/${item.name}`
+    const path = `${item.parentPath === '/' ? '' : item.parentPath}/${item.name}`
+    pathNameMap.value.set(path, item.originalName)
+    queryForm.parentPath = path
     search()
   }
-  currentItem.value = item
 }
 
 // 下载文件
@@ -347,10 +349,32 @@ const handleCreateDir = async () => {
 // 解析路径生成面包屑列表
 const breadcrumbList = computed(() => {
   const path = queryForm.parentPath || '/'
-  const parts = path.split('/').filter((p) => p !== '') // 分割路径并过滤空字符串
+  if (path === '/') {
+    return []
+  }
+  const parts = path.split('/').filter((p) => p !== '')
+
   return parts.map((part, index) => {
-    const fullPath = parts.slice(0, index + 1).join('/')
-    return { name: currentItem.value?.originalName || '根目录', path: `/${fullPath}` }
+    const fullPath = `/${parts.slice(0, index + 1).join('/')}`
+    let displayName = pathNameMap.value.get(fullPath)
+
+    if (!displayName) {
+      const foundItem = fileList.value.find((item) => {
+        const itemPath = `${item.parentPath === '/' ? '' : item.parentPath}/${item.name}`
+        return itemPath === fullPath && item.type === 0
+      })
+
+      if (foundItem) {
+        displayName = foundItem.originalName
+        pathNameMap.value.set(fullPath, displayName)
+      }
+    }
+
+    if (!displayName) {
+      displayName = part
+    }
+
+    return { name: displayName, path: fullPath }
   })
 })
 
