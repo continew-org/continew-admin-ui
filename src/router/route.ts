@@ -16,7 +16,7 @@ export const systemRoutes: RouteRecordRaw[] = [
     name: 'Dashboard',
     component: Layout,
     redirect: '/dashboard/workplace',
-    meta: { title: '仪表盘', icon: 'dashboard', hidden: false },
+    meta: { title: '仪表盘', icon: 'dashboard', hidden: false, sort: 1 },
     children: [
       {
         path: '/dashboard/workplace',
@@ -65,6 +65,21 @@ export const systemRoutes: RouteRecordRaw[] = [
         name: 'UserNotice',
         component: () => import('@/views/user/message/components/view/index.vue'),
         meta: { title: '查看公告' },
+      },
+    ],
+  },
+  {
+    path: '/gpu',
+    name: 'Gpu',
+    component: Layout,
+    meta: { title: 'GPU调度', icon: 'server', hidden: false, sort: 10, alwaysShow: true },
+    redirect: '/gpu/training',
+    children: [
+      {
+        path: '/gpu/training',
+        name: 'GpuTraining',
+        component: () => import('@/views/gpu/index.vue'),
+        meta: { title: '训练大模型', icon: 'cpu', hidden: false },
       },
     ],
   },
