@@ -197,7 +197,7 @@ onMounted(() => {
 
 .captcha-container {
   position: relative;
-  display: inline-block;
+  display: flex;
   cursor: pointer;
 }
 
