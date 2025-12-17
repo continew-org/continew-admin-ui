@@ -1,6 +1,6 @@
 <template>
   <div class="json_pretty_container">
-    <JsonViewer expand-depth="5" :value="JSONObject" :theme="currentThemeClass" sort />
+    <JsonViewer :expand-depth="5" :value="JSONObject" :theme="currentThemeClass" sort />
     <icon-copy class="copy_icon" @click="onCopy(JSONObject)" />
   </div>
 </template>
