@@ -151,8 +151,9 @@ const onDownload = async (tableNames: Array<string>) => {
 
 // 生成
 const onGenerate = async (tableNames: Array<string>) => {
-  const res = await generateCode(tableNames)
-  if (res.code === 0) {
+  const {data} = await generateCode(tableNames)
+  //bugfix 生成代码后无提示问题：res为req响应而非接口返回，code为字符串不可用===判断
+  if (data.success) {
     Message.success('代码生成成功')
   }
 }
