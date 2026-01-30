@@ -418,42 +418,62 @@ export function useMultipartUploader(props: {
         // 确保parentPath不是空字符串，如果是则使用"/"
         const parentPath = task.parentPath && task.parentPath !== '' ? task.parentPath : '/'
 
-        const res = await initMultipartUpload({
-          fileName: task.fileName,
-          fileSize: task.fileSize,
-          fileMd5: task.fileMd5,
-          parentPath,
-          metaData: {
-            contentType: task.fileType,
-            originalName: task.fileName,
-          },
-        })
+        try {
+          const res = await initMultipartUpload({
+            fileName: task.fileName,
+            fileSize: task.fileSize,
+            fileMd5: task.fileMd5,
+            parentPath,
+            metaData: {
+              contentType: task.fileType,
+              originalName: task.fileName,
+            },
+          })
 
-        if (res && res.data) {
-          // eslint-disable-next-line no-console
-          console.log(`[Hooks] initMultipartUpload 成功: ${task.fileName}, uploadId: ${res.data.uploadId}`)
-          task.uploadId = res.data.uploadId
-          task.chunkSize = res.data.partSize
-          task.path = res.data.path
-
-          // 处理断点续传：如果后端返回了已上传的分片编号
-          if (res.data.uploadedPartNumbers && res.data.uploadedPartNumbers.length > 0) {
+          if (res && res.data) {
             // eslint-disable-next-line no-console
-            console.log(`[Hooks] 发现已上传分片: ${task.fileName}, 已上传分片: ${res.data.uploadedPartNumbers.join(',')}`)
-            // 将已上传的分片编号添加到任务中
-            task.uploadedChunks = [...res.data.uploadedPartNumbers]
+            console.log(`[Hooks] initMultipartUpload 成功: ${task.fileName}, uploadId: ${res.data.uploadId}`)
+            task.uploadId = res.data.uploadId
+            task.chunkSize = res.data.partSize
+            task.path = res.data.path
 
-            // 计算当前进度
-            const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
-            updateTaskProgress(task, totalChunks)
+            // 处理断点续传：如果后端返回了已上传的分片编号
+            if (res.data.uploadedPartNumbers && res.data.uploadedPartNumbers.length > 0) {
+              // eslint-disable-next-line no-console
+              console.log(`[Hooks] 发现已上传分片: ${task.fileName}, 已上传分片: ${res.data.uploadedPartNumbers.join(',')}`)
+              // 将已上传的分片编号添加到任务中
+              task.uploadedChunks = [...res.data.uploadedPartNumbers]
 
-            // eslint-disable-next-line no-console
-            console.log(`[Hooks] 断点续传进度: ${task.fileName}, 进度: ${(task.progress * 100).toFixed(1)}%`)
+              // 计算当前进度
+              const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
+              updateTaskProgress(task, totalChunks)
+
+              // eslint-disable-next-line no-console
+              console.log(`[Hooks] 断点续传进度: ${task.fileName}, 进度: ${(task.progress * 100).toFixed(1)}%`)
+            }
+          } else {
+            throw new Error('初始化分片上传失败：服务器返回数据为空')
           }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(`[Hooks] initMultipartUpload 失败: ${task.fileName}`)
-          task.status = 'failed'
+        } catch (error: any) {
+          // 处理特定错误类型
+          const errorMsg = error?.response?.data?.message || error?.message || '未知错误'
+
+          if (errorMsg.includes('文件名已存在')) {
+            task.status = 'failed'
+            task.errorMessage = '文件名已存在'
+            Message.error(`文件 "${task.fileName}" 已存在，请勿重复上传`)
+          } else if (errorMsg.includes('不支持的文件类型')) {
+            task.status = 'failed'
+            task.errorMessage = '不支持的文件类型'
+            Message.error(`文件 "${task.fileName}" 类型不支持`)
+          } else {
+            task.status = 'failed'
+            task.errorMessage = `初始化失败: ${errorMsg}`
+            Message.error(`文件 "${task.fileName}" 上传失败：${errorMsg}`)
+          }
+
+          task._uploading = false
+          startNextTasks()
           return
         }
       }
@@ -529,8 +549,18 @@ export function useMultipartUploader(props: {
           cancelUpload({ uploadId: task.uploadId })
         }
       }
-    } catch (e) {
-      task.status = 'failed'
+    } catch (error: any) {
+      // 捕获并处理所有未处理的异常
+      const errorMsg = error?.message || '未知错误'
+      // eslint-disable-next-line no-console
+      console.error(`[Hooks] 上传任务异常: ${task.fileName}, 错误: ${errorMsg}`, error)
+
+      if (task.status !== 'failed') {
+        task.status = 'failed'
+        task.errorMessage = `上传失败: ${errorMsg}`
+      }
+
+      task._uploading = false
       startNextTasks()
     }
   }
