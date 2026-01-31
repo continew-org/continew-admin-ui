@@ -40,6 +40,7 @@
     "mitt": "^3.0.0",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
+    "pdfjs-dist": "^4.0.379",
     "pinia": "^2.0.16",
     "pinia-plugin-persistedstate": "^3.1.0",
     "qs": "^6.11.2",
