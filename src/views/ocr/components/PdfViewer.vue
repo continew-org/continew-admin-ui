@@ -106,8 +106,14 @@
         </div>
 
         <div class="toolbar-right">
-          <!-- 其他操作 -->
+          <!-- OCR 操作 -->
           <a-space :size="8">
+            <a-button type="primary" size="small" :loading="ocrLoading" @click="startOcr">
+              <template #icon><icon-robot /></template>
+              {{ ocrLoading ? '识别中...' : '开始识别' }}
+            </a-button>
+            <a-divider direction="vertical" />
+            <!-- 其他操作 -->
             <a-tooltip content="旋转">
               <a-button size="small" @click="rotatePage">
                 <template #icon><icon-sync /></template>
@@ -179,6 +185,11 @@ const props = withDefaults(
   { pdfUrl: null, imageUrl: null },
 )
 
+const emit = defineEmits<{
+  (e: 'start-ocr', fileData: string | string[], fileType: number): void
+  (e: 'update-ocr-loading', loading: boolean): void
+}>()
+
 // 设置 PDF.js Worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
 
@@ -192,6 +203,7 @@ const inputPage = ref(1)
 const scale = ref(1)
 const rotation = ref(0)
 const isFullscreen = ref(false)
+const ocrLoading = ref(false)
 
 // DOM 引用
 const viewerContainer = ref<HTMLElement | null>(null)
@@ -513,6 +525,62 @@ const downloadPdf = async () => {
     link.click()
   }
 }
+
+// 开始 OCR 识别
+const startOcr = async () => {
+  // 处理图片
+  if (props.imageUrl) {
+    emit('start-ocr', props.imageUrl, 1)
+    return
+  }
+
+  // 处理 PDF：将所有页面转换为 Base64 图片
+  if (props.pdfUrl && pdfDocument.value) {
+    const pages: string[] = []
+    ocrLoading.value = true
+
+    try {
+      // 逐页转换为 Base64（去除 data:image/png;base64, 前缀）
+      for (let pageNum = 1; pageNum <= totalPages.value; pageNum++) {
+        const canvas = canvasRefs.get(pageNum)
+        if (!canvas) {
+          await renderPage(pageNum)
+          // 重新获取 canvas
+          const newCanvas = canvasRefs.get(pageNum)
+          if (!newCanvas) {
+            continue
+          }
+          const dataUrl = newCanvas.toDataURL('image/png')
+          pages.push(dataUrl.split(',')[1]) // 去除前缀，只保留纯 Base64
+        } else {
+          const dataUrl = canvas.toDataURL('image/png')
+          pages.push(dataUrl.split(',')[1]) // 去除前缀，只保留纯 Base64
+        }
+      }
+
+      if (pages.length > 0) {
+        emit('start-ocr', pages, 0) // 0 表示 PDF
+      } else {
+        Message.warning('PDF 页面未渲染完成，请稍后再试')
+      }
+    } catch (error: any) {
+      Message.error('PDF 转图片失败: ' + error.message)
+    } finally {
+      ocrLoading.value = false
+    }
+    return
+  }
+
+  Message.warning('请先选择要识别的文件')
+}
+
+// 监听 OCR 加载状态
+watch(
+  () => props.pdfUrl || props.imageUrl,
+  () => {
+    ocrLoading.value = false
+  },
+)
 
 // 全屏
 const toggleFullscreen = () => {
