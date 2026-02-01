@@ -139,8 +139,25 @@
         ref="viewerContainer"
         class="pdf-viewer__content"
         :class="{ 'pdf-viewer__content--fullscreen': isFullscreen }"
+        @scroll="onScroll"
       >
-        <canvas ref="pdfCanvas" class="pdf-viewer__canvas" />
+        <div class="pdf-viewer__pages">
+          <div
+            v-for="pageNum in totalPages"
+            :key="pageNum"
+            :ref="(el) => setPageRef(el as HTMLElement, pageNum)"
+            class="pdf-viewer__page-wrapper"
+          >
+            <canvas
+              :ref="(el) => setCanvasRef(el as HTMLCanvasElement, pageNum)"
+              class="pdf-viewer__canvas"
+            />
+            <div v-if="!renderedPages.has(pageNum)" class="pdf-viewer__page-loading">
+              <a-spin :size="24" />
+              <span>加载中...</span>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
   </div>
@@ -178,7 +195,22 @@ const isFullscreen = ref(false)
 
 // DOM 引用
 const viewerContainer = ref<HTMLElement | null>(null)
-const pdfCanvas = ref<HTMLCanvasElement | null>(null)
+const pageRefs = new Map<number, HTMLElement>()
+const canvasRefs = new Map<number, HTMLCanvasElement>()
+const renderedPages = ref<Set<number>>(new Set())
+
+// 设置页面和 canvas 引用
+const setPageRef = (el: HTMLElement | null, pageNum: number) => {
+  if (el) {
+    pageRefs.set(pageNum, el)
+  }
+}
+
+const setCanvasRef = (el: HTMLCanvasElement | null, pageNum: number) => {
+  if (el) {
+    canvasRefs.set(pageNum, el)
+  }
+}
 
 // Blob URL 管理
 const blobUrlRef = ref<string | null>(null)
@@ -228,13 +260,18 @@ async function fetchPdfAsBlob(url: string): Promise<string> {
 
 // 渲染指定页面
 async function renderPage(pageNum: number): Promise<void> {
-  if (!pdfDocument.value || !pdfCanvas.value) return
+  if (!pdfDocument.value) return
+
+  const canvas = canvasRefs.get(pageNum)
+  if (!canvas) return
+
+  // 如果已经渲染过，跳过
+  if (renderedPages.value.has(pageNum)) return
 
   try {
     const page: PDFPageProxy = await pdfDocument.value.getPage(pageNum)
     const viewport = page.getViewport({ scale: scale.value, rotation: rotation.value })
 
-    const canvas = pdfCanvas.value
     const context = canvas.getContext('2d')
     if (!context) return
 
@@ -248,102 +285,194 @@ async function renderPage(pageNum: number): Promise<void> {
     }
 
     await page.render(renderContext).promise
+    renderedPages.value.add(pageNum)
   } catch (error) {
     console.error('页面渲染失败:', error)
   }
 }
 
+// 重新渲染所有已渲染的页面（用于缩放/旋转后）
+async function reRenderAllPages(): Promise<void> {
+  if (!pdfDocument.value) return
+
+  // 清除渲染状态
+  renderedPages.value.clear()
+
+  // 优先渲染当前页
+  await renderPage(currentPage.value)
+
+  // 渲染其他页面
+  for (let i = 1; i <= totalPages.value; i++) {
+    if (i !== currentPage.value) {
+      await renderPage(i)
+    }
+  }
+}
+
+// 渲染所有页面（首次加载）
+async function renderAllPages(): Promise<void> {
+  if (!pdfDocument.value) return
+
+  // 等待 DOM 更新
+  await nextTick()
+
+  // 优先渲染第一页
+  await renderPage(1)
+
+  // 异步渲染其他页面
+  for (let i = 2; i <= totalPages.value; i++) {
+    // 使用 requestAnimationFrame 避免阻塞 UI
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(async () => {
+        await renderPage(i)
+        resolve()
+      })
+    })
+  }
+}
+
+// 滚动监听，更新当前页码
+let scrollTimeout: ReturnType<typeof setTimeout> | null = null
+const onScroll = () => {
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout)
+  }
+  scrollTimeout = setTimeout(() => {
+    updateCurrentPageFromScroll()
+  }, 100)
+}
+
+// 根据滚动位置更新当前页码
+function updateCurrentPageFromScroll(): void {
+  if (!viewerContainer.value) return
+
+  const container = viewerContainer.value
+  const containerTop = container.scrollTop
+  const containerHeight = container.clientHeight
+
+  let closestPage = 1
+  let closestDistance = Infinity
+
+  for (let i = 1; i <= totalPages.value; i++) {
+    const pageEl = pageRefs.get(i)
+    if (!pageEl) continue
+
+    const pageTop = pageEl.offsetTop - container.offsetTop
+    const pageCenter = pageTop + pageEl.clientHeight / 2
+    const viewCenter = containerTop + containerHeight / 2
+    const distance = Math.abs(pageCenter - viewCenter)
+
+    if (distance < closestDistance) {
+      closestDistance = distance
+      closestPage = i
+    }
+  }
+
+  if (currentPage.value !== closestPage) {
+    currentPage.value = closestPage
+    inputPage.value = closestPage
+  }
+}
+
+// 滚动到指定页面
+function scrollToPage(pageNum: number): void {
+  const pageEl = pageRefs.get(pageNum)
+  if (pageEl && viewerContainer.value) {
+    pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
 // 翻页操作
-const prevPage = async () => {
+const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--
     inputPage.value = currentPage.value
-    await renderPage(currentPage.value)
+    scrollToPage(currentPage.value)
   }
 }
 
-const nextPage = async () => {
+const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++
     inputPage.value = currentPage.value
-    await renderPage(currentPage.value)
+    scrollToPage(currentPage.value)
   }
 }
 
-const goToFirstPage = async () => {
+const goToFirstPage = () => {
   if (currentPage.value !== 1) {
     currentPage.value = 1
     inputPage.value = 1
-    await renderPage(1)
+    scrollToPage(1)
   }
 }
 
-const goToLastPage = async () => {
+const goToLastPage = () => {
   if (currentPage.value !== totalPages.value) {
     currentPage.value = totalPages.value
     inputPage.value = totalPages.value
-    await renderPage(totalPages.value)
+    scrollToPage(totalPages.value)
   }
 }
 
-const jumpToPage = async () => {
+const jumpToPage = () => {
   const page = Math.max(1, Math.min(Number(inputPage.value) || 1, totalPages.value))
   currentPage.value = page
   inputPage.value = page
-  await renderPage(page)
+  scrollToPage(page)
 }
 
 // 缩放操作
 const zoomIn = async () => {
   if (scale.value < 4) {
     scale.value = Math.min(4, scale.value + 0.25)
-    await renderPage(currentPage.value)
+    await reRenderAllPages()
   }
 }
 
 const zoomOut = async () => {
   if (scale.value > 0.25) {
     scale.value = Math.max(0.25, scale.value - 0.25)
-    await renderPage(currentPage.value)
+    await reRenderAllPages()
   }
 }
 
 const onScaleSelect = async (value: number) => {
   scale.value = value
-  await renderPage(currentPage.value)
+  await reRenderAllPages()
 }
 
 const fitWidth = async () => {
-  if (!pdfDocument.value || !pdfCanvas.value || !viewerContainer.value) return
+  if (!pdfDocument.value || !viewerContainer.value) return
 
   try {
     const page = await pdfDocument.value.getPage(currentPage.value)
     const viewport = page.getViewport({ scale: 1, rotation: rotation.value })
 
-    const containerWidth = viewerContainer.value.clientWidth - 40 // 减去 padding
+    const containerWidth = viewerContainer.value.clientWidth - 60 // 减去 padding 和滚动条
     scale.value = containerWidth / viewport.width
 
-    await renderPage(currentPage.value)
+    await reRenderAllPages()
   } catch (error) {
     console.error('适应宽度失败:', error)
   }
 }
 
 const fitPage = async () => {
-  if (!pdfDocument.value || !pdfCanvas.value || !viewerContainer.value) return
+  if (!pdfDocument.value || !viewerContainer.value) return
 
   try {
     const page = await pdfDocument.value.getPage(currentPage.value)
     const viewport = page.getViewport({ scale: 1, rotation: rotation.value })
 
-    const containerWidth = viewerContainer.value.clientWidth - 40
-    const containerHeight = viewerContainer.value.clientHeight - 40
+    const containerWidth = viewerContainer.value.clientWidth - 60
+    const containerHeight = viewerContainer.value.clientHeight - 60
 
     const scaleX = containerWidth / viewport.width
     const scaleY = containerHeight / viewport.height
     scale.value = Math.min(scaleX, scaleY)
 
-    await renderPage(currentPage.value)
+    await reRenderAllPages()
   } catch (error) {
     console.error('适应页面失败:', error)
   }
@@ -352,7 +481,7 @@ const fitPage = async () => {
 // 旋转操作
 const rotatePage = async () => {
   rotation.value = (rotation.value + 90) % 360
-  await renderPage(currentPage.value)
+  await reRenderAllPages()
 }
 
 // 打印
@@ -419,6 +548,11 @@ watch(
       blobUrlRef.value = null
     }
 
+    // 清理引用和渲染状态
+    pageRefs.clear()
+    canvasRefs.clear()
+    renderedPages.value.clear()
+
     if (!url) {
       pdfDocument.value = null
       loading.value = false
@@ -438,8 +572,8 @@ watch(
         scale.value = 1
         rotation.value = 0
 
-        // 首次渲染第一页
-        await renderPage(1)
+        // 渲染所有页面（优先第一页）
+        await renderAllPages()
       }
     } catch (error) {
       console.error('加载 PDF 失败:', error)
@@ -582,13 +716,35 @@ onMounted(() => {
 
   &__content {
     flex: 1;
+    min-height: 0; // 关键：确保 flex 子元素可以滚动
     overflow: auto;
+    overflow-y: scroll; // 始终显示垂直滚动条
     display: flex;
     align-items: flex-start;
     justify-content: center;
     padding: 20px;
     background: var(--color-fill-3);
     position: relative;
+
+    // 自定义滚动条样式
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--color-fill-2);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-neutral-5);
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--color-neutral-6);
+      }
+    }
 
     &--fullscreen {
       position: fixed;
@@ -604,6 +760,40 @@ onMounted(() => {
       align-items: center;
       justify-content: center;
     }
+  }
+
+  &__pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+  }
+
+  &__page-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__page-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: var(--color-text-3);
+    font-size: 12px;
+    min-height: 200px;
+    min-width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   &__canvas {

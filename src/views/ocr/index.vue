@@ -50,10 +50,12 @@ function onSelectFile(file: FileItem) {
   padding: $margin;
   overflow: hidden;
   min-height: 0;
+  height: 100%;
 
   .arco-col {
     min-height: 0;
     overflow: hidden;
+    height: 100%;
   }
 
   &__aside,
@@ -61,6 +63,8 @@ function onSelectFile(file: FileItem) {
   &__result {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
 }
 </style>
