@@ -22,22 +22,22 @@
             <a-button-group size="small">
               <a-tooltip content="第一页">
                 <a-button :disabled="currentPage <= 1" @click="goToFirstPage">
-                  <template #icon><icon-step-backward /></template>
+                  <template #icon><IconBackwardIcon /></template>
                 </a-button>
               </a-tooltip>
               <a-tooltip content="上一页">
                 <a-button :disabled="currentPage <= 1" @click="prevPage">
-                  <template #icon><icon-left /></template>
+                  <template #icon><IconLeftIcon /></template>
                 </a-button>
               </a-tooltip>
               <a-tooltip content="下一页">
                 <a-button :disabled="currentPage >= totalPages" @click="nextPage">
-                  <template #icon><icon-right /></template>
+                  <template #icon><IconRightIcon /></template>
                 </a-button>
               </a-tooltip>
               <a-tooltip content="最后一页">
                 <a-button :disabled="currentPage >= totalPages" @click="goToLastPage">
-                  <template #icon><icon-step-forward /></template>
+                  <template #icon><IconForwardIcon /></template>
                 </a-button>
               </a-tooltip>
             </a-button-group>
@@ -64,30 +64,30 @@
           <!-- OCR 操作 -->
           <a-space :size="8">
             <a-button type="primary" size="small" :loading="ocrLoading" @click="startOcr">
-              <template #icon><icon-robot /></template>
+              <template #icon><IconRobotIcon /></template>
               {{ ocrLoading ? '识别中...' : '开始识别' }}
             </a-button>
             <a-divider direction="vertical" />
             <!-- 其他操作 -->
             <a-tooltip content="旋转">
               <a-button size="small" @click="rotatePage">
-                <template #icon><icon-sync /></template>
+                <template #icon><IconSyncIcon /></template>
               </a-button>
             </a-tooltip>
             <a-tooltip content="打印">
               <a-button size="small" @click="printPdf">
-                <template #icon><icon-printer /></template>
+                <template #icon><IconPrinterIcon /></template>
               </a-button>
             </a-tooltip>
             <a-tooltip content="下载">
               <a-button size="small" @click="downloadPdf">
-                <template #icon><icon-download /></template>
+                <template #icon><IconDownloadIcon /></template>
               </a-button>
             </a-tooltip>
             <a-tooltip :content="isFullscreen ? '退出全屏' : '全屏'">
               <a-button size="small" @click="toggleFullscreen">
                 <template #icon>
-                  <component :is="isFullscreen ? 'icon-fullscreen-exit' : 'icon-fullscreen'" />
+                  <component :is="isFullscreen ? IconFullscreenExitIcon : IconFullscreenIcon" />
                 </template>
               </a-button>
             </a-tooltip>
@@ -129,6 +129,18 @@ import * as pdfjsLib from 'pdfjs-dist'
 import { Message } from '@arco-design/web-vue'
 import http from '@/utils/http'
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
+import {
+  IconBackward,
+  IconLeft,
+  IconRight,
+  IconForward,
+  IconRobot,
+  IconSync,
+  IconPrinter,
+  IconDownload,
+  IconFullscreen,
+  IconFullscreenExit,
+} from '@arco-design/web-vue/es/icon'
 
 defineOptions({ name: 'PdfViewer' })
 
@@ -139,6 +151,18 @@ const props = withDefaults(
   }>(),
   { pdfUrl: null, imageUrl: null },
 )
+
+// 注册图标组件
+const IconBackwardIcon = IconBackward
+const IconLeftIcon = IconLeft
+const IconRightIcon = IconRight
+const IconForwardIcon = IconForward
+const IconRobotIcon = IconRobot
+const IconSyncIcon = IconSync
+const IconPrinterIcon = IconPrinter
+const IconDownloadIcon = IconDownload
+const IconFullscreenIcon = IconFullscreen
+const IconFullscreenExitIcon = IconFullscreenExit
 
 const emit = defineEmits<{
   (e: 'start-ocr', fileData: string | string[], fileType: number): void
