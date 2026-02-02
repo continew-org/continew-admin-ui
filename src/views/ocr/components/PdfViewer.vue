@@ -58,52 +58,7 @@
           </a-space>
         </div>
 
-        <div class="toolbar-center">
-          <!-- 缩放控制 -->
-          <a-space :size="8">
-            <a-tooltip content="缩小">
-              <a-button size="small" :disabled="scale <= 0.25" @click="zoomOut">
-                <template #icon><icon-minus /></template>
-              </a-button>
-            </a-tooltip>
-            <a-tooltip content="缩放比例">
-              <a-dropdown @select="onScaleSelect">
-                <a-button size="small" style="min-width: 80px;">
-                  {{ Math.round(scale * 100) }}%
-                  <template #icon><icon-down /></template>
-                </a-button>
-                <template #content>
-                  <a-doption :value="0.25">25%</a-doption>
-                  <a-doption :value="0.5">50%</a-doption>
-                  <a-doption :value="0.75">75%</a-doption>
-                  <a-doption :value="1">100%</a-doption>
-                  <a-doption :value="1.25">125%</a-doption>
-                  <a-doption :value="1.5">150%</a-doption>
-                  <a-doption :value="2">200%</a-doption>
-                  <a-doption :value="3">300%</a-doption>
-                  <a-doption :value="4">400%</a-doption>
-                </template>
-              </a-dropdown>
-            </a-tooltip>
-            <a-tooltip content="放大">
-              <a-button size="small" :disabled="scale >= 4" @click="zoomIn">
-                <template #icon><icon-plus /></template>
-              </a-button>
-            </a-tooltip>
-            <a-button-group size="small">
-              <a-tooltip content="适应宽度">
-                <a-button @click="fitWidth">
-                  <template #icon><icon-expand /></template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip content="适应页面">
-                <a-button @click="fitPage">
-                  <template #icon><icon-shrink /></template>
-                </a-button>
-              </a-tooltip>
-            </a-button-group>
-          </a-space>
-        </div>
+
 
         <div class="toolbar-right">
           <!-- OCR 操作 -->
@@ -188,6 +143,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'start-ocr', fileData: string | string[], fileType: number): void
   (e: 'update-ocr-loading', loading: boolean): void
+  (e: 'update-page', page: number): void
 }>()
 
 // 设置 PDF.js Worker
@@ -383,6 +339,7 @@ function updateCurrentPageFromScroll(): void {
   if (currentPage.value !== closestPage) {
     currentPage.value = closestPage
     inputPage.value = closestPage
+    emit('update-page', closestPage)
   }
 }
 
@@ -400,6 +357,7 @@ const prevPage = () => {
     currentPage.value--
     inputPage.value = currentPage.value
     scrollToPage(currentPage.value)
+    emit('update-page', currentPage.value)
   }
 }
 
@@ -408,6 +366,7 @@ const nextPage = () => {
     currentPage.value++
     inputPage.value = currentPage.value
     scrollToPage(currentPage.value)
+    emit('update-page', currentPage.value)
   }
 }
 
@@ -416,6 +375,7 @@ const goToFirstPage = () => {
     currentPage.value = 1
     inputPage.value = 1
     scrollToPage(1)
+    emit('update-page', 1)
   }
 }
 
@@ -424,6 +384,7 @@ const goToLastPage = () => {
     currentPage.value = totalPages.value
     inputPage.value = totalPages.value
     scrollToPage(totalPages.value)
+    emit('update-page', totalPages.value)
   }
 }
 
@@ -432,64 +393,10 @@ const jumpToPage = () => {
   currentPage.value = page
   inputPage.value = page
   scrollToPage(page)
+  emit('update-page', page)
 }
 
 // 缩放操作
-const zoomIn = async () => {
-  if (scale.value < 4) {
-    scale.value = Math.min(4, scale.value + 0.25)
-    await reRenderAllPages()
-  }
-}
-
-const zoomOut = async () => {
-  if (scale.value > 0.25) {
-    scale.value = Math.max(0.25, scale.value - 0.25)
-    await reRenderAllPages()
-  }
-}
-
-const onScaleSelect = async (value: number) => {
-  scale.value = value
-  await reRenderAllPages()
-}
-
-const fitWidth = async () => {
-  if (!pdfDocument.value || !viewerContainer.value) return
-
-  try {
-    const page = await pdfDocument.value.getPage(currentPage.value)
-    const viewport = page.getViewport({ scale: 1, rotation: rotation.value })
-
-    const containerWidth = viewerContainer.value.clientWidth - 60 // 减去 padding 和滚动条
-    scale.value = containerWidth / viewport.width
-
-    await reRenderAllPages()
-  } catch (error) {
-    console.error('适应宽度失败:', error)
-  }
-}
-
-const fitPage = async () => {
-  if (!pdfDocument.value || !viewerContainer.value) return
-
-  try {
-    const page = await pdfDocument.value.getPage(currentPage.value)
-    const viewport = page.getViewport({ scale: 1, rotation: rotation.value })
-
-    const containerWidth = viewerContainer.value.clientWidth - 60
-    const containerHeight = viewerContainer.value.clientHeight - 60
-
-    const scaleX = containerWidth / viewport.width
-    const scaleY = containerHeight / viewport.height
-    scale.value = Math.min(scaleX, scaleY)
-
-    await reRenderAllPages()
-  } catch (error) {
-    console.error('适应页面失败:', error)
-  }
-}
-
 // 旋转操作
 const rotatePage = async () => {
   rotation.value = (rotation.value + 90) % 360
@@ -665,6 +572,17 @@ onUnmounted(() => {
   }
 })
 
+/** 暴露方法给父组件 */
+defineExpose({
+  goToPage: (page: number) => {
+    if (page >= 1 && page <= totalPages.value) {
+      currentPage.value = page
+      inputPage.value = page
+      scrollToPage(page)
+    }
+  },
+})
+
 // 键盘快捷键
 onMounted(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -679,14 +597,6 @@ onMounted(() => {
         e.preventDefault()
         nextPage()
         break
-      case 'ArrowUp':
-        e.preventDefault()
-        e.ctrlKey ? zoomIn() : goToFirstPage()
-        break
-      case 'ArrowDown':
-        e.preventDefault()
-        e.ctrlKey ? zoomOut() : goToLastPage()
-        break
       case 'Home':
         e.preventDefault()
         goToFirstPage()
@@ -694,15 +604,6 @@ onMounted(() => {
       case 'End':
         e.preventDefault()
         goToLastPage()
-        break
-      case '+':
-      case '=':
-        e.preventDefault()
-        zoomIn()
-        break
-      case '-':
-        e.preventDefault()
-        zoomOut()
         break
       case 'r':
       case 'R':

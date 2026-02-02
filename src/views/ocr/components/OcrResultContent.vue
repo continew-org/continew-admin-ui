@@ -1,17 +1,6 @@
 <template>
   <div class="ocr-result-content">
-    <!-- OCR 可视化图像 -->
-    <div v-if="data.ocrImage" class="ocr-image-section">
-      <div class="section-title">
-        <icon-image />
-        <span>OCR 识别结果图</span>
-      </div>
-      <div class="image-container">
-        <img :src="`data:image/jpeg;base64,${data.ocrImage}`" alt="OCR 结果" />
-      </div>
-    </div>
-
-    <!-- 文本识别结果列表 -->
+    <!-- 文本识别结果 - 基于坐标布局 -->
     <div v-if="hasTextResults" class="text-results-section">
       <div class="section-header">
         <div class="section-title">
@@ -19,53 +8,27 @@
           <span>文本识别结果</span>
           <a-tag size="small" color="arcoblue">{{ textCount }} 条</a-tag>
         </div>
-        <a-button size="small" @click="toggleSelectMode">
-          <template #icon><icon-check-circle /></template>
-          {{ selectMode ? '完成' : '选择文本' }}
-        </a-button>
-      </div>
-
-      <a-checkbox-group v-if="selectMode" v-model="selectedTexts" class="checkbox-group">
-        <div
-          v-for="(text, index) in textResults"
-          :key="index"
-          class="text-item selectable"
-          :class="{ selected: selectedTexts.includes(index) }"
-          @click="toggleTextSelection(index)"
-        >
-          <a-checkbox :value="index" />
-          <span class="text-index">{{ index + 1 }}.</span>
-          <span class="text-content">{{ text.text }}</span>
-          <a-tag size="small" :color="getScoreColor(text.score)">{{ (text.score * 100).toFixed(1) }}%</a-tag>
-        </div>
-      </a-checkbox-group>
-
-      <div v-else class="text-list">
-        <div
-          v-for="(text, index) in textResults"
-          :key="index"
-          class="text-item"
-          @click="handleTextClick(text, index)"
-        >
-          <span class="text-index">{{ index + 1 }}.</span>
-          <span class="text-content">{{ text.text || '(空)' }}</span>
-          <a-tag size="small" :color="getScoreColor(text.score)">{{ (text.score * 100).toFixed(1) }}%</a-tag>
+        <div class="confidence-badge">
+          <span class="confidence-label">平均置信度</span>
+          <span class="confidence-value" :style="{ color: avgConfidenceColor }">
+            {{ (avgConfidence * 100).toFixed(1) }}%
+          </span>
         </div>
       </div>
 
-      <!-- 选中操作栏 -->
-      <div v-if="selectMode && selectedTexts.length > 0" class="selection-actions">
-        <a-space>
-          <span class="selection-info">已选择 {{ selectedTexts.length }} 条</span>
-          <a-button size="small" type="primary" @click="copySelectedTexts">
-            <template #icon><icon-copy /></template>
-            复制选中
-          </a-button>
-          <a-button size="small" @click="selectedTexts = []">
-            <template #icon><icon-close-circle /></template>
-            取消选择
-          </a-button>
-        </a-space>
+      <!-- 文档容器 - 基于坐标绝对定位 -->
+      <div class="document-wrapper">
+        <div class="document-container" :style="containerStyle">
+          <div
+            v-for="(item, index) in layoutItems"
+            :key="index"
+            class="text-block"
+            :style="item.style"
+            :title="`置信度: ${(item.score * 100).toFixed(1)}%`"
+          >
+            {{ item.text }}
+          </div>
+        </div>
       </div>
     </div>
 
@@ -75,13 +38,12 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
 import type { OcrPageResult } from '@/apis/ocr'
 
-interface TextResult {
+interface LayoutItem {
   text: string
   score: number
-  index: number
+  style: Record<string, string>
 }
 
 defineOptions({ name: 'OcrResultContent' })
@@ -90,8 +52,7 @@ const props = defineProps<{
   data: OcrPageResult
 }>()
 
-const selectMode = ref(false)
-const selectedTexts = ref<number[]>([])
+const zoom = ref(1)
 
 /** 是否有文本结果 */
 const hasTextResults = computed(() => {
@@ -100,7 +61,7 @@ const hasTextResults = computed(() => {
 })
 
 /** 文本结果列表 */
-const textResults = computed<TextResult[]>(() => {
+const textResults = computed(() => {
   const texts = props.data.prunedResult.rec_texts || []
   const scores = props.data.prunedResult.rec_scores || []
   return texts.map((text: string, index: number) => ({
@@ -113,78 +74,107 @@ const textResults = computed<TextResult[]>(() => {
 /** 文本数量 */
 const textCount = computed(() => textResults.value.length)
 
-/** 根据置信度获取标签颜色 */
-function getScoreColor(score: number): string {
-  if (score >= 0.9) return 'green'
-  if (score >= 0.7) return 'blue'
-  if (score >= 0.5) return 'orange'
-  return 'red'
-}
+/** 平均置信度 */
+const avgConfidence = computed(() => {
+  const scores = textResults.value.map((item) => item.score)
+  if (scores.length === 0) return 0
+  return scores.reduce((a, b) => a + b, 0) / scores.length
+})
 
-/** 切换选择模式 */
-function toggleSelectMode() {
-  selectMode.value = !selectMode.value
-  if (!selectMode.value) {
-    selectedTexts.value = []
-  }
-}
+/** 平均置信度颜色 */
+const avgConfidenceColor = computed(() => {
+  const score = avgConfidence.value
+  if (score >= 0.9) return '#00b42a'
+  if (score >= 0.7) return '#165dff'
+  if (score >= 0.5) return '#ff7d00'
+  return '#f53f3f'
+})
 
-/** 切换文本选择 */
-function toggleTextSelection(index: number) {
-  const idx = selectedTexts.value.indexOf(index)
-  if (idx > -1) {
-    selectedTexts.value.splice(idx, 1)
+/** 基于坐标的布局项 */
+const layoutItems = computed(() => {
+  const texts = props.data.prunedResult.rec_texts || []
+  const scores = props.data.prunedResult.rec_scores || []
+  const polys = props.data.prunedResult.dt_polys as number[][][] | undefined || []
+
+  return texts.map((text: string, index: number): LayoutItem => {
+    const poly = polys[index]
+    const score = scores[index] || 0
+
+    if (!poly || poly.length < 4) {
+      return {
+        text: text || '',
+        score,
+        style: {
+          left: '0',
+          top: `${index * 24}px`,
+          position: 'relative',
+        },
+      }
+    }
+
+    // 计算边界框 (dt_polys 是 4 点坐标 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]])
+    const xCoords = poly.map((p) => p[0])
+    const yCoords = poly.map((p) => p[1])
+    const minX = Math.min(...xCoords)
+    const minY = Math.min(...yCoords)
+    const maxY = Math.max(...yCoords)
+
+  // 根据文本框高度分档设置字体大小
+  const boxHeight = maxY - minY
+  let fontSize = '13px'
+  if (boxHeight > 40) {
+    fontSize = '20px' // 大标题
+  } else if (boxHeight > 25) {
+    fontSize = '16px' // 小标题
   } else {
-    selectedTexts.value.push(index)
+    fontSize = '13px' // 正文
   }
-}
 
-/** 点击文本 */
-function handleTextClick(text: TextResult, index: number) {
-  if (selectMode.value) {
-    toggleTextSelection(index)
-  } else {
-    // 复制单条文本
-    copyText(text.text)
-  }
-}
-
-/** 复制文本 */
-function copyText(content: string) {
-  if (!content) {
-    Message.warning('文本内容为空')
-    return
-  }
-  navigator.clipboard.writeText(content).then(() => {
-    Message.success('已复制到剪贴板')
-  }).catch(() => {
-    Message.error('复制失败')
+    return {
+      text: text || '',
+      score,
+      style: {
+        left: `${minX}px`,
+        top: `${minY}px`,
+        position: 'absolute',
+        fontSize: `${fontSize}px`,
+        whiteSpace: 'nowrap',
+      },
+    }
   })
-}
+})
 
-/** 复制选中文本 */
-function copySelectedTexts() {
-  const texts = selectedTexts.value
-    .sort((a, b) => a - b)
-    .map((index) => textResults.value[index].text)
-    .filter((t) => t)
+/** 文档容器样式 */
+const containerStyle = computed(() => {
+  const polys = props.data.prunedResult.dt_polys as number[][][] | undefined || []
 
-  if (texts.length === 0) {
-    Message.warning('请选择要复制的文本')
-    return
+  let maxWidth = 800
+  let maxHeight = 1132
+
+  if (polys.length > 0) {
+    const allX = polys.flatMap((poly) => poly.map((p) => p[0]))
+    const allY = polys.flatMap((poly) => poly.map((p) => p[1]))
+    maxWidth = Math.max(...allX, 800)
+    maxHeight = Math.max(...allY, 1132)
   }
 
-  const content = texts.join('\n')
-  copyText(content)
-}
+  return {
+    width: `${maxWidth}px`,
+    height: `${maxHeight}px`,
+    transform: `scale(${zoom.value})`,
+    transformOrigin: 'top left',
+  }
+})
 </script>
 
 <style scoped lang="scss">
 .ocr-result-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   padding: 12px;
+  height: 100%;
+  min-height: 0;
 
   .section-title {
     display: flex;
@@ -192,96 +182,73 @@ function copySelectedTexts() {
     gap: 6px;
     font-weight: 600;
     color: var(--color-text-1);
-    margin-bottom: 8px;
   }
 
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: var(--color-fill-1);
+    border-radius: 4px;
   }
 
-  // OCR 图像区域
-  .ocr-image-section {
-    .image-container {
-      width: 100%;
-      border: 1px solid var(--color-border-2);
-      border-radius: 4px;
-      overflow: hidden;
-      background: var(--color-bg-2);
+  .confidence-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background: var(--color-bg-2);
+    border-radius: 12px;
 
-      img {
-        width: 100%;
-        height: auto;
-        display: block;
-        max-height: 300px;
-        object-fit: contain;
-      }
+    .confidence-label {
+      font-size: 12px;
+      color: var(--color-text-3);
+    }
+
+    .confidence-value {
+      font-size: 14px;
+      font-weight: 600;
     }
   }
 
   // 文本结果区域
   .text-results-section {
-    .text-list,
-    .checkbox-group {
-      .text-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: var(--color-bg-1);
-        border: 1px solid var(--color-border-2);
-        border-radius: 4px;
-        margin-bottom: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
 
-        &:hover {
-          background: var(--color-bg-2);
-          border-color: var(--color-primary-light-3);
-        }
+  // 文档容器
+  .document-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-border-2);
+    border-radius: 4px;
+    padding: 16px;
+  }
 
-        .text-index {
-          color: var(--color-text-3);
-          font-size: 12px;
-          min-width: 24px;
-        }
+  .document-container {
+    position: relative;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
-        .text-content {
-          flex: 1;
-          color: var(--color-text-1);
-          word-break: break-all;
-          line-height: 1.5;
-        }
+  // 文本块
+  .text-block {
+    position: absolute;
+    line-height: 1.2;
+    color: var(--color-text-1);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 2px;
+    transition: all 0.2s;
 
-        &.selectable {
-          padding: 6px 12px;
-
-          .arco-checkbox {
-            flex-shrink: 0;
-          }
-        }
-
-        &.selected {
-          background: var(--color-primary-light-1);
-          border-color: var(--color-primary-light-4);
-        }
-      }
-    }
-
-    .selection-actions {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 8px 0;
-      border-top: 1px solid var(--color-border-2);
-      margin-top: 8px;
-
-      .selection-info {
-        font-size: 13px;
-        color: var(--color-text-3);
-      }
+    &:hover {
+      background: var(--color-primary-light-1);
     }
   }
 }

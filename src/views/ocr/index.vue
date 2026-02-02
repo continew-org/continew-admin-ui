@@ -5,13 +5,20 @@
     </a-col>
     <a-col :xs="24" :sm="24" :md="24" :lg="10" :xl="9" :xxl="8" flex="40%" class="ocr-page__preview">
       <PdfViewer
+        ref="pdfViewerRef"
         :pdf-url="currentPdfUrl"
         :image-url="currentImageUrl"
         @start-ocr="handleStartOcr"
+        @update-page="handlePdfPageChange"
       />
     </a-col>
     <a-col :xs="24" :sm="24" :md="24" :lg="8" :xl="10" :xxl="12" flex="40%" class="ocr-page__result">
-      <OcrResultPanel ref="ocrResultRef" @update-loading="updateOcrLoading" />
+      <OcrResultPanel
+        ref="ocrResultRef"
+        :external-page="sharedPage"
+        @update-loading="updateOcrLoading"
+        @update-page="handleOcrPageChange"
+      />
     </a-col>
   </a-row>
 </template>
@@ -27,7 +34,10 @@ defineOptions({ name: 'Ocr' })
 
 const currentPdfUrl = ref<string | null>(null)
 const currentImageUrl = ref<string | null>(null)
+const pdfViewerRef = ref<InstanceType<typeof PdfViewer>>()
 const ocrResultRef = ref<InstanceType<typeof OcrResultPanel>>()
+const sharedPage = ref<number>(1)
+const isSyncing = ref(false)
 
 function onSelectFile(file: FileItem) {
   if (!file?.url) {
@@ -56,6 +66,27 @@ function handleStartOcr(fileData: string | string[], fileType: number) {
 
 function updateOcrLoading() {
   // 可以在这里添加全局加载状态的更新逻辑
+}
+
+/** PDF 页码变化 */
+function handlePdfPageChange(page: number) {
+  if (isSyncing.value) return
+  isSyncing.value = true
+  sharedPage.value = page
+  nextTick(() => {
+    isSyncing.value = false
+  })
+}
+
+/** OCR 结果页码变化 */
+function handleOcrPageChange(page: number) {
+  if (isSyncing.value) return
+  isSyncing.value = true
+  sharedPage.value = page
+  pdfViewerRef.value?.goToPage(page)
+  nextTick(() => {
+    isSyncing.value = false
+  })
 }
 </script>
 

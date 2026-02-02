@@ -7,6 +7,10 @@
             <template #icon><icon-download /></template>
             导出结果
           </a-button>
+          <a-button size="small" @click="exportRawData">
+            <template #icon><icon-download /></template>
+            导出原始数据
+          </a-button>
           <a-button size="small" @click="clearResult">
             <template #icon><icon-delete /></template>
             清空
@@ -21,7 +25,11 @@
 
         <div v-else class="result-content">
           <!-- 页签切换（多页 PDF） -->
-          <a-tabs v-if="ocrResults.length > 1" v-model:active-key="currentPage" type="line">
+          <a-tabs
+            v-if="ocrResults.length > 1"
+            v-model:active-key="currentPage"
+            type="line"
+          >
             <a-tab-pane v-for="(result, index) in ocrResults" :key="index" :title="`第 ${index + 1} 页`">
               <OcrResultContent :data="result" />
             </a-tab-pane>
@@ -50,8 +58,13 @@ import OcrResultContent from './OcrResultContent.vue'
 
 defineOptions({ name: 'OcrResultPanel' })
 
+const props = defineProps<{
+  externalPage?: number
+}>()
+
 const emit = defineEmits<{
   (e: 'update-loading', loading: boolean): void
+  (e: 'update-page', page: number): void
 }>()
 
 const loading = ref(false)
@@ -70,7 +83,7 @@ async function startOcr(fileData: string | string[], fileType: number) {
       const response = await ocrInfer({
         file: fileData as string,
         fileType: 1,
-        visualize: true,
+        visualize: false,
       })
 
       if (response.errorCode === 0 && response.result) {
@@ -91,7 +104,7 @@ async function startOcr(fileData: string | string[], fileType: number) {
           const response = await ocrInfer({
             file: pages[i],
             fileType: 1, // PDF 转换后的图片
-            visualize: true,
+            visualize: false,
           })
 
           if (response.errorCode === 0 && response.result && response.result.ocrResults.length > 0) {
@@ -151,6 +164,44 @@ function exportResult() {
   URL.revokeObjectURL(url)
   Message.success('导出成功')
 }
+
+/** 导出原始数据 */
+function exportRawData() {
+  if (ocrResults.value.length === 0) {
+    Message.warning('暂无识别结果')
+    return
+  }
+
+  const content = JSON.stringify(ocrResults.value, null, 2)
+  const blob = new Blob([content], { type: 'application/json;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `ocr_raw_data_${Date.now()}.json`
+  link.click()
+  URL.revokeObjectURL(url)
+  Message.success('导出成功')
+}
+
+/** 监听内部页码变化，同步到外部 */
+watch(
+  () => currentPage.value,
+  (newPage) => {
+    if (newPage >= 0) {
+      emit('update-page', newPage + 1) // 转换为 1-based index
+    }
+  },
+)
+
+/** 监听外部页码变化 */
+watch(
+  () => props.externalPage,
+  (newPage) => {
+    if (newPage !== undefined && newPage > 0 && newPage <= ocrResults.value.length) {
+      currentPage.value = newPage - 1 // 转换为 0-based index
+    }
+  },
+)
 
 /** 暴露方法给父组件 */
 defineExpose({
