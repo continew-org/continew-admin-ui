@@ -627,8 +627,9 @@ export function useMultipartUploader(props: {
     }
 
     // 检测文件名重复（同一目录下文件名不能重复）
-    const duplicateFiles: string[] = []
+    const duplicateFileKeys = new Set<string>()
     const newFileKeys = new Set<string>()
+    const fileKeyMap = new Map<File, string>()
 
     for (const file of validFiles) {
       const relativePath = (file as any).webkitRelativePath || '/'
@@ -658,6 +659,7 @@ export function useMultipartUploader(props: {
       }
 
       const fileKey = `${parent}/${file.name}`
+      fileKeyMap.set(file, fileKey)
 
       // 检查是否与已有任务重复
       const existsInTasks = fileTasks.value.some(
@@ -668,17 +670,18 @@ export function useMultipartUploader(props: {
       const existsInNewFiles = newFileKeys.has(fileKey)
 
       if (existsInTasks || existsInNewFiles) {
-        duplicateFiles.push(file.name)
+        duplicateFileKeys.add(fileKey)
       } else {
         newFileKeys.add(fileKey)
       }
     }
 
     // 如果有重复文件，提示用户并跳过
-    if (duplicateFiles.length > 0) {
-      Message.warning(`以下文件已存在，已跳过：${duplicateFiles.join(', ')}`)
-      // 过滤掉重复的文件
-      const uniqueFiles = validFiles.filter((file) => !duplicateFiles.includes(file.name))
+    if (duplicateFileKeys.size > 0) {
+      const duplicateNames = [...duplicateFileKeys].map((k) => k.split('/').pop()).join(', ')
+      Message.warning(`以下文件已存在，已跳过：${duplicateNames}`)
+      // 过滤掉重复的文件（基于完整路径）
+      const uniqueFiles = validFiles.filter((file) => !duplicateFileKeys.has(fileKeyMap.get(file)!))
       if (uniqueFiles.length === 0) {
         return
       }
