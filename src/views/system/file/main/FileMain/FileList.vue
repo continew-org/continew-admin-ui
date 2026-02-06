@@ -10,7 +10,7 @@
       :selected-keys="selectedFileIds"
       column-resizable
       @select="select"
-      @selectAll="selectAll"
+      @select-all="selectAll"
     >
       <template #columns>
         <a-table-column title="名称">
@@ -89,7 +89,7 @@ const emit = defineEmits<{
   (e: 'click', record: FileItem): void
   (e: 'dblclick', record: FileItem): void
   (e: 'select', record: FileItem): void
-  (e: 'selectAll', checked: boolean): void
+  (e: 'select-all', checked: boolean): void
   (e: 'right-menu-click', mode: string, item: FileItem): void
 }>()
 
@@ -127,7 +127,7 @@ const select: TableInstance['onSelect'] = (_rowKeys, _rowKey, record: unknown) =
 
 // 全选 - 点击表头全选复选框
 const selectAll: TableInstance['onSelectAll'] = (checked: boolean) => {
-  emit('selectAll', checked)
+  emit('select-all', checked)
 }
 
 // 单击事件

@@ -109,7 +109,7 @@
       <FileList
         v-show="fileList.length && mode === 'list'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
-        @selectAll="handleSelectAll"
+        @select-all="handleSelectAll"
         @right-menu-click="handleRightMenuClick" @dblclick="handleDblclickFile"
       ></FileList>
 
