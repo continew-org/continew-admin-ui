@@ -10,6 +10,7 @@
       :selected-keys="selectedFileIds"
       column-resizable
       @select="select"
+      @selectAll="selectAll"
     >
       <template #columns>
         <a-table-column title="名称">
@@ -88,6 +89,7 @@ const emit = defineEmits<{
   (e: 'click', record: FileItem): void
   (e: 'dblclick', record: FileItem): void
   (e: 'select', record: FileItem): void
+  (e: 'selectAll', checked: boolean): void
   (e: 'right-menu-click', mode: string, item: FileItem): void
 }>()
 
@@ -115,14 +117,22 @@ const calculateDirSize = async (record: FileItem) => {
   }
 }
 
-// 多选
-const select: TableInstance['onSelect'] = (rowKeys, rowKey, record) => {
-  emit('select', record as unknown as FileItem)
+// 多选 - 点击单个复选框
+const select: TableInstance['onSelect'] = (_rowKeys, _rowKey, record: unknown) => {
+  // 只有点击具体行的复选框时才触发（点击表头全选时 record 为 undefined）
+  if (record) {
+    emit('select', record as FileItem)
+  }
+}
+
+// 全选 - 点击表头全选复选框
+const selectAll: TableInstance['onSelectAll'] = (checked: boolean) => {
+  emit('selectAll', checked)
 }
 
 // 单击事件
-const handleClick = (record) => {
-  emit('click', record as unknown as FileItem)
+const handleClick = (record: unknown) => {
+  emit('click', record as FileItem)
 }
 
 // 双击事件

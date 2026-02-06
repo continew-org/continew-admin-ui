@@ -109,6 +109,7 @@
       <FileList
         v-show="fileList.length && mode === 'list'" :data="fileList" :is-batch-mode="isBatchMode"
         :selected-file-ids="selectedFileIds" @click="handleClickFile" @select="handleSelectFile"
+        @selectAll="handleSelectAll"
         @right-menu-click="handleRightMenuClick" @dblclick="handleDblclickFile"
       ></FileList>
 
@@ -154,7 +155,7 @@ const FilePreview = defineAsyncComponent(() => import('@/components/FilePreview/
 
 const FileList = defineAsyncComponent(() => import('./FileList.vue'))
 const route = useRoute()
-const { mode, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
+const { mode, selectedFileList, selectedFileIds, toggleMode, addSelectedFileItem } = useFileManage()
 const { width } = useWindowSize()
 const queryForm = reactive<FileQuery>({
   originalName: undefined,
@@ -269,6 +270,24 @@ const handleRightMenuClick = async (mode: string, fileInfo: FileItem) => {
 // 勾选文件
 const handleSelectFile = (item: FileItem) => {
   addSelectedFileItem(item)
+}
+
+// 全选/取消全选
+const handleSelectAll = (checked: boolean) => {
+  if (checked) {
+    // 全选：将当前页所有未选中的文件添加到选中列表
+    fileList.value.forEach((item) => {
+      if (!selectedFileIds.value.includes(item.id)) {
+        selectedFileList.value.push(item)
+      }
+    })
+  } else {
+    // 取消全选：移除当前页所有已选中的文件
+    const currentPageIds = new Set(fileList.value.map(item => item.id))
+    selectedFileList.value = selectedFileList.value.filter(
+      (item) => !currentPageIds.has(item.id)
+    )
+  }
 }
 
 // 批量删除
