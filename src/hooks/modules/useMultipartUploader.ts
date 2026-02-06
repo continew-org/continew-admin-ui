@@ -1,6 +1,7 @@
 // 分片上传通用 hooks，支持多文件/多分片并发、暂停、恢复、取消、重试等
 import { computed, onUnmounted, ref } from 'vue'
 import { throttle } from 'lodash-es'
+import { Message } from '@arco-design/web-vue'
 import {
   cancelUpload,
   completeMultipartUpload,
@@ -417,42 +418,62 @@ export function useMultipartUploader(props: {
         // 确保parentPath不是空字符串，如果是则使用"/"
         const parentPath = task.parentPath && task.parentPath !== '' ? task.parentPath : '/'
 
-        const res = await initMultipartUpload({
-          fileName: task.fileName,
-          fileSize: task.fileSize,
-          fileMd5: task.fileMd5,
-          parentPath,
-          metaData: {
-            contentType: task.fileType,
-            originalName: task.fileName,
-          },
-        })
+        try {
+          const res = await initMultipartUpload({
+            fileName: task.fileName,
+            fileSize: task.fileSize,
+            fileMd5: task.fileMd5,
+            parentPath,
+            metaData: {
+              contentType: task.fileType,
+              originalName: task.fileName,
+            },
+          })
 
-        if (res && res.data) {
-          // eslint-disable-next-line no-console
-          console.log(`[Hooks] initMultipartUpload 成功: ${task.fileName}, uploadId: ${res.data.uploadId}`)
-          task.uploadId = res.data.uploadId
-          task.chunkSize = res.data.partSize
-          task.path = res.data.path
-
-          // 处理断点续传：如果后端返回了已上传的分片编号
-          if (res.data.uploadedPartNumbers && res.data.uploadedPartNumbers.length > 0) {
+          if (res && res.data) {
             // eslint-disable-next-line no-console
-            console.log(`[Hooks] 发现已上传分片: ${task.fileName}, 已上传分片: ${res.data.uploadedPartNumbers.join(',')}`)
-            // 将已上传的分片编号添加到任务中
-            task.uploadedChunks = [...res.data.uploadedPartNumbers]
+            console.log(`[Hooks] initMultipartUpload 成功: ${task.fileName}, uploadId: ${res.data.uploadId}`)
+            task.uploadId = res.data.uploadId
+            task.chunkSize = res.data.partSize
+            task.path = res.data.path
 
-            // 计算当前进度
-            const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
-            updateTaskProgress(task, totalChunks)
+            // 处理断点续传：如果后端返回了已上传的分片编号
+            if (res.data.uploadedPartNumbers && res.data.uploadedPartNumbers.length > 0) {
+              // eslint-disable-next-line no-console
+              console.log(`[Hooks] 发现已上传分片: ${task.fileName}, 已上传分片: ${res.data.uploadedPartNumbers.join(',')}`)
+              // 将已上传的分片编号添加到任务中
+              task.uploadedChunks = [...res.data.uploadedPartNumbers]
 
-            // eslint-disable-next-line no-console
-            console.log(`[Hooks] 断点续传进度: ${task.fileName}, 进度: ${(task.progress * 100).toFixed(1)}%`)
+              // 计算当前进度
+              const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
+              updateTaskProgress(task, totalChunks)
+
+              // eslint-disable-next-line no-console
+              console.log(`[Hooks] 断点续传进度: ${task.fileName}, 进度: ${(task.progress * 100).toFixed(1)}%`)
+            }
+          } else {
+            throw new Error('初始化分片上传失败：服务器返回数据为空')
           }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(`[Hooks] initMultipartUpload 失败: ${task.fileName}`)
-          task.status = 'failed'
+        } catch (error: any) {
+          // 处理特定错误类型
+          const errorMsg = error?.response?.data?.message || error?.message || '未知错误'
+
+          if (errorMsg.includes('文件名已存在')) {
+            task.status = 'failed'
+            task.errorMessage = '文件名已存在'
+            Message.error(`文件 "${task.fileName}" 已存在，请勿重复上传`)
+          } else if (errorMsg.includes('不支持的文件类型')) {
+            task.status = 'failed'
+            task.errorMessage = '不支持的文件类型'
+            Message.error(`文件 "${task.fileName}" 类型不支持`)
+          } else {
+            task.status = 'failed'
+            task.errorMessage = `初始化失败: ${errorMsg}`
+            Message.error(`文件 "${task.fileName}" 上传失败：${errorMsg}`)
+          }
+
+          task._uploading = false
+          startNextTasks()
           return
         }
       }
@@ -528,8 +549,18 @@ export function useMultipartUploader(props: {
           cancelUpload({ uploadId: task.uploadId })
         }
       }
-    } catch (e) {
-      task.status = 'failed'
+    } catch (error: any) {
+      // 捕获并处理所有未处理的异常
+      const errorMsg = error?.message || '未知错误'
+      // eslint-disable-next-line no-console
+      console.error(`[Hooks] 上传任务异常: ${task.fileName}, 错误: ${errorMsg}`, error)
+
+      if (task.status !== 'failed') {
+        task.status = 'failed'
+        task.errorMessage = `上传失败: ${errorMsg}`
+      }
+
+      task._uploading = false
       startNextTasks()
     }
   }
@@ -593,6 +624,67 @@ export function useMultipartUploader(props: {
 
     if (validFiles.length === 0) {
       return
+    }
+
+    // 检测文件名重复（同一目录下文件名不能重复）
+    const duplicateFiles: string[] = []
+    const newFileKeys = new Set<string>()
+
+    for (const file of validFiles) {
+      const relativePath = (file as any).webkitRelativePath || '/'
+      let parent = ''
+
+      if (isFolder) {
+        if (relativePath && relativePath !== '/') {
+          parent = props.rootPath || parentPath || '/'
+          if (parent.length > 1 && parent.endsWith('/')) {
+            parent = parent.slice(0, -1)
+          }
+          const pathParts = relativePath.split('/')
+          pathParts.pop()
+          const folderPath = pathParts.join('/')
+          if (folderPath) {
+            parent = `${parent}/${folderPath}`
+          }
+        } else {
+          parent = props.rootPath || parentPath || '/'
+        }
+      } else {
+        parent = props.rootPath || parentPath || '/'
+      }
+
+      if (parent.length > 1 && parent.endsWith('/')) {
+        parent = parent.slice(0, -1)
+      }
+
+      const fileKey = `${parent}/${file.name}`
+
+      // 检查是否与已有任务重复
+      const existsInTasks = fileTasks.value.some(
+        (task) => task.parentPath === parent && task.fileName === file.name,
+      )
+
+      // 检查是否与本次添加的文件重复
+      const existsInNewFiles = newFileKeys.has(fileKey)
+
+      if (existsInTasks || existsInNewFiles) {
+        duplicateFiles.push(file.name)
+      } else {
+        newFileKeys.add(fileKey)
+      }
+    }
+
+    // 如果有重复文件，提示用户并跳过
+    if (duplicateFiles.length > 0) {
+      Message.warning(`以下文件已存在，已跳过：${duplicateFiles.join(', ')}`)
+      // 过滤掉重复的文件
+      const uniqueFiles = validFiles.filter((file) => !duplicateFiles.includes(file.name))
+      if (uniqueFiles.length === 0) {
+        return
+      }
+      // 继续处理不重复的文件
+      validFiles.length = 0
+      validFiles.push(...uniqueFiles)
     }
 
     for (const file of validFiles) {
