@@ -283,7 +283,7 @@ const handleSelectAll = (checked: boolean) => {
     })
   } else {
     // 取消全选：移除当前页所有已选中的文件
-    const currentPageIds = new Set(fileList.value.map(item => item.id))
+    const currentPageIds = new Set(fileList.value.map((item) => item.id))
     selectedFileList.value = selectedFileList.value.filter(
       (item) => !currentPageIds.has(item.id)
     )
