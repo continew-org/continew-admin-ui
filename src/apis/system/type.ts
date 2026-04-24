@@ -296,6 +296,8 @@ export interface ClientResp {
   timeout: string
   status: string
   isConcurrent: boolean
+  isEnableRefreshToken: boolean
+  refreshTokenTimeout: number
   replacedRange: string
   maxLoginCount: number
   overflowLogoutMode: string
@@ -316,6 +318,8 @@ export interface ClientDetailResp {
   timeout: string
   status: number
   isConcurrent: boolean
+  isEnableRefreshToken: boolean
+  refreshTokenTimeout: number
   maxLoginCount: number
   replacedRange: string
   overflowLogoutMode: string

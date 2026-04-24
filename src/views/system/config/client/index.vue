@@ -5,7 +5,7 @@
       :data="dataList"
       :columns="columns"
       :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 1400 }"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1760 }"
       :pagination="pagination"
       :disabled-tools="['size']"
       :disabled-column-keys="['clientKey']"
@@ -149,6 +149,8 @@ const columns: TableInstance['columns'] = [
   },
   { title: 'Token 最低活跃频率', dataIndex: 'activeTimeout', slotName: 'activeTimeout', width: 180, align: 'center', render: ({ record }) => `${record.activeTimeout} 秒` },
   { title: 'Token 有效期', dataIndex: 'timeout', slotName: 'timeout', width: 180, align: 'center', render: ({ record }) => `${record.timeout} 秒` },
+  { title: '启用Refresh Token', dataIndex: 'isEnableRefreshToken', slotName: 'isEnableRefreshToken', width: 180, align: 'center', render: ({ record }) => `${record.isEnableRefreshToken ? '是' : '否'}` },
+  { title: 'Refresh Token 有效期', dataIndex: 'refreshTokenTimeout', slotName: 'refreshTokenTimeout', width: 180, align: 'center', render: ({ record }) => `${record.refreshTokenTimeout} 秒` },
   {
     title: '状态',
     dataIndex: 'status',

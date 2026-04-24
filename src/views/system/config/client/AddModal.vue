@@ -39,6 +39,8 @@ const [form, resetForm] = useResetReactive({
   timeout: 86400,
   isConcurrent: true,
   maxLoginCount: -1,
+  isEnableRefreshToken: false,
+  refreshTokenTimeout: 2592000,
   status: 1,
 })
 
@@ -52,6 +54,18 @@ watch(
     } else if (newVal) {
       // 当 isConcurrent=true 时，清空 maxLoginCount
       form.maxLoginCount = -1
+    }
+  },
+)
+
+// 监听 isConcurrent 的变化，处理字段互斥逻辑
+watch(
+  () => form.isEnableRefreshToken,
+  (newVal) => {
+    if (newVal) {
+      form.refreshTokenTimeout = 2592000
+    }else{
+      form.refreshTokenTimeout = 0;
     }
   },
 )
@@ -117,6 +131,42 @@ const columns: ColumnItem[] = reactive([
       placeholder: '请输入 Token 有效期',
     },
     rules: [{ required: true, message: '请输入 Token 有效期' }],
+  },
+  {
+    label: '是否启用Refresh Token',
+    field: 'isEnableRefreshToken',
+    type: 'switch',
+    span: 12,
+    props: {
+      type: 'round',
+      checkedValue: true,
+      uncheckedValue: false,
+      checkedText: '启用',
+      uncheckedText: '禁用',
+    },
+  },
+  {
+    label: () => (
+      <a-tooltip content="小于0,则和 Token 有效期相同">
+        Refresh Token 有效期
+        <icon-question-circle />
+      </a-tooltip>
+    ),
+    field: 'refreshTokenTimeout',
+    type: 'input-number',
+    span: 12,
+    slots: {
+      append: () => (
+        <span style={{ width: '30px', textAlign: 'center' }}>秒</span>
+      ),
+    },
+    props: {
+      placeholder: '请输入 Refresh Token 有效期',
+    },
+    rules: [{ required: true, message: '请输入 Refresh Token 有效期' }],
+    disabled: () => {
+      return !form.isEnableRefreshToken
+    },
   },
   {
     label: '是否允许同一账号多地同时登录',

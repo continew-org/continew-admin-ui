@@ -13,6 +13,8 @@
       </a-descriptions-item>
       <a-descriptions-item label="Token最低活跃频率">{{ dataDetail?.activeTimeout }}</a-descriptions-item>
       <a-descriptions-item label="Token有效期">{{ dataDetail?.timeout }}</a-descriptions-item>
+      <a-descriptions-item label="启用Refresh Token">{{ dataDetail?.isEnableRefreshToken ? '是' : '否' }}</a-descriptions-item>
+      <a-descriptions-item label="Refresh Token 有效期">{{ dataDetail?.refreshTokenTimeout }}</a-descriptions-item>
       <a-descriptions-item label="状态" :span="2">
         <a-tag v-if="dataDetail?.status === 1" color="green">启用</a-tag>
         <a-tag v-else color="red">禁用</a-tag>
