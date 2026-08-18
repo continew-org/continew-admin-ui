@@ -1,4 +1,5 @@
-@import './var.scss';
+// var.scss 通过 vite.config.ts 的 additionalData 全局注入（已使用 @use "@/styles/var.scss" as *;），
+// 本文件未使用 var.scss 中的任何 Sass 变量，故无需在此显式 @use。
 
 body {
   --margin: 14px; // 通用外边距
