@@ -249,6 +249,32 @@ export interface FileStatisticsResp {
 export interface FileDirCalcSizeResp {
   size: number
 }
+export interface FileUploadResp {
+  id: string
+  url: string
+  thUrl: string
+  metadata: Record<string, string>
+}
+export type StorageType = 1 | 2
+export interface FileUploadConfigResp {
+  storageId: string | number
+  storageName: string
+  storageCode: string
+  storageType: StorageType
+  multipartUploadThreshold: number
+  multipartUploadPartSize: number
+  multipartTempDir?: string | null
+}
+export interface FileUploadProgressResp {
+  uploadTaskId: string
+  status: 'INIT' | 'UPLOADING' | 'FINALIZING' | 'COMPLETED' | 'FAILED' | 'NOT_FOUND'
+  percentage: number
+  bytesRead: number
+  totalBytes: number
+  fileId?: string
+  url?: string
+  message?: string
+}
 export interface FileQuery {
   originalName?: string
   type?: string
@@ -269,6 +295,9 @@ export interface StorageResp {
   endpoint: string
   bucketName: string
   domain: string
+  multipartUploadThreshold?: number | null
+  multipartUploadPartSize?: number | null
+  multipartTempDir?: string | null
   recycleBinEnabled: boolean
   recycleBinPath: string
   description: string

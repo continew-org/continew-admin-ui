@@ -1,5 +1,5 @@
 /* 全局样式 */
-@import './var.scss';
+@use './var.scss' as *;
 
 .w-full {
   width: 100%;

@@ -8,7 +8,7 @@
             <a-link href="https://gitee.com/charles7c" target="_blank" rel="noopener">Gitee</a-link>
           </a-doption>
           <a-doption>
-            <a-link href="https://gitcode.com/charles_7c" target="_blank" rel="noopener">GitCode</a-link>
+            <a-link href="https://atomgit.com/charles_7c" target="_blank" rel="noopener">GitCode</a-link>
           </a-doption>
           <a-doption>
             <a-link href="https://github.com/charles7c" target="_blank" rel="noopener">GitHub</a-link>

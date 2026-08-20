@@ -99,7 +99,7 @@ export const systemRoutes: RouteRecordRaw[] = [
             meta: { title: 'Gitee', icon: 'gitee', hidden: false },
           },
           {
-            path: 'https://gitcode.com/continew/continew-admin',
+            path: 'https://atomgit.com/continew/continew-admin',
             meta: { title: 'GitCode', icon: 'gitcode', hidden: false },
           },
           {

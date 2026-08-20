@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from 'axios'
 import type * as T from './type'
 import http from '@/utils/http'
 
@@ -7,8 +8,18 @@ const BASE_URL = '/system/file'
 const RECYCLE_URL = `${BASE_URL}/recycle`
 
 /** @desc 上传文件 */
-export function uploadFile(data: FormData) {
-  return http.post(`${BASE_URL}/upload`, data)
+export function uploadFile(data: FormData, config?: AxiosRequestConfig) {
+  return http.post<T.FileUploadResp>(`${BASE_URL}/upload`, data, config)
+}
+
+/** @desc 查询默认存储上传配置 */
+export function getDefaultUploadConfig() {
+  return http.get<T.FileUploadConfigResp>(`${BASE_URL}/upload/config/default`)
+}
+
+/** @desc 查询单文件上传进度 */
+export function getUploadProgress(uploadTaskId: string) {
+  return http.get<T.FileUploadProgressResp>(`${BASE_URL}/upload/progress/${uploadTaskId}`)
 }
 
 /** @desc 查询文件列表 */

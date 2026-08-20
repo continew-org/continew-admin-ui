@@ -16,6 +16,13 @@
         />
       </template>
     </GiForm>
+    <div class="advanced-toggle-wrap">
+      <a-button type="text" size="small" class="advanced-toggle-btn" @click="advancedVisible = !advancedVisible">
+        高级配置
+        <icon-right class="advanced-toggle-icon" :class="[{ 'advanced-toggle-icon--expanded': advancedVisible }]" />
+      </a-button>
+    </div>
+    <GiForm v-if="advancedVisible" v-model="form" :columns="advancedColumns" class="advanced-form" />
   </a-modal>
 </template>
 
@@ -40,10 +47,15 @@ const isUpdate = computed(() => !!dataId.value)
 const storageType = ref('')
 const title = computed(() => (isUpdate.value ? `修改${storageType.value}` : `新增${storageType.value}`))
 const formRef = ref<InstanceType<typeof GiForm>>()
+const advancedVisible = ref(false)
 const { storage_type_enum } = useDict('storage_type_enum')
+const MB = 1024 * 1024
 
 const [form, resetForm] = useResetReactive({
   type: 2,
+  multipartUploadThreshold: undefined,
+  multipartUploadPartSize: undefined,
+  multipartTempDir: '',
   recycleBinEnabled: true,
   recycleBinPath: '.RECYCLE.BIN/',
   isDefault: false,
@@ -183,10 +195,93 @@ const columns: ColumnItem[] = reactive([
   },
 ])
 
+const advancedColumns: ColumnItem[] = reactive([
+  {
+    label: '分片阈值（MB）',
+    field: 'multipartUploadThreshold',
+    type: 'input-number',
+    span: 24,
+    props: {
+      min: 1,
+      precision: 2,
+      placeholder: '为空则使用默认配置',
+      mode: 'button',
+    },
+  },
+  {
+    label: '分片大小（MB）',
+    field: 'multipartUploadPartSize',
+    type: 'input-number',
+    span: 24,
+    props: {
+      min: 1,
+      precision: 2,
+      placeholder: '为空则使用默认配置',
+      mode: 'button',
+    },
+  },
+  {
+    label: '分片临时地址',
+    field: 'multipartTempDir',
+    type: 'input',
+    span: 24,
+    props: {
+      maxLength: 255,
+      placeholder: '为空则使用默认配置',
+    },
+    show: () => form.type === 1,
+  },
+])
+
 // 重置
 const reset = () => {
   formRef.value?.formRef?.resetFields()
+  advancedVisible.value = false
   resetForm()
+}
+
+const toMb = (bytes?: number | null) => {
+  if (typeof bytes !== 'number' || bytes <= 0) return undefined
+  return Number((bytes / MB).toFixed(2))
+}
+
+const toBytes = (mb?: number | null) => {
+  const value = Number(mb)
+  if (!Number.isFinite(value) || value <= 0) return null
+  return Math.round(value * MB)
+}
+
+const validateAdvancedConfig = () => {
+  const thresholdMb = Number(form.multipartUploadThreshold)
+  const partSizeMb = Number(form.multipartUploadPartSize)
+  const hasThreshold = Number.isFinite(thresholdMb) && thresholdMb > 0
+  const hasPartSize = Number.isFinite(partSizeMb) && partSizeMb > 0
+
+  if (hasPartSize) {
+    const minPartSizeMb = form.type === 2 ? 5 : 1
+    if (partSizeMb < minPartSizeMb) {
+      Message.error(`分片大小不能小于 ${minPartSizeMb}MB`)
+      return false
+    }
+  }
+
+  if (hasThreshold && hasPartSize && thresholdMb < partSizeMb) {
+    Message.error('分片阈值不能小于分片大小')
+    return false
+  }
+
+  return true
+}
+
+const buildPayload = () => {
+  return {
+    ...form,
+    multipartUploadThreshold: toBytes(form.multipartUploadThreshold),
+    multipartUploadPartSize: toBytes(form.multipartUploadPartSize),
+    multipartTempDir: form.type === 1 && form.multipartTempDir?.trim()
+      ? form.multipartTempDir.trim()
+      : null,
+  }
 }
 
 // 保存
@@ -194,16 +289,18 @@ const save = async () => {
   try {
     const isInvalid = await formRef.value?.formRef?.validate()
     if (isInvalid) return false
+    if (!validateAdvancedConfig()) return false
+    const payload = buildPayload()
     if (isUpdate.value) {
       await updateStorage({
-        ...form,
-        secretKey: form.type === 2 && form.secretKey ? encryptByRsa(form.secretKey) || '' : null,
+        ...payload,
+        secretKey: payload.type === 2 && payload.secretKey ? encryptByRsa(payload.secretKey) || '' : null,
       }, dataId.value)
       Message.success('修改成功')
     } else {
       await addStorage({
-        ...form,
-        secretKey: form.type === 2 ? encryptByRsa(form.secretKey) || '' : form.secretKey,
+        ...payload,
+        secretKey: payload.type === 2 ? encryptByRsa(payload.secretKey) || '' : payload.secretKey,
       })
       Message.success('新增成功')
     }
@@ -228,10 +325,42 @@ const onUpdate = async (id: string) => {
   reset()
   dataId.value = id
   const { data } = await getStorage(id)
-  Object.assign(form, data)
+  Object.assign(form, {
+    ...data,
+    multipartUploadThreshold: toMb(data.multipartUploadThreshold),
+    multipartUploadPartSize: toMb(data.multipartUploadPartSize),
+  })
   storageType.value = storage_type_enum.value.find((item) => item.value === form.type)?.label || '本地存储'
   visible.value = true
 }
 
 defineExpose({ onAdd, onUpdate })
 </script>
+
+<style scoped lang="scss">
+.advanced-toggle-wrap {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.advanced-toggle-btn {
+  padding: 0;
+  color: var(--color-text-2);
+}
+
+.advanced-toggle-icon {
+  margin-left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.advanced-toggle-icon--expanded {
+  transform: rotate(90deg);
+}
+
+.advanced-form {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border-2);
+}
+</style>

@@ -8,7 +8,7 @@
             <a-link href="https://gitee.com/organizations/continew/events" target="_blank" rel="noopener">Gitee</a-link>
           </a-doption>
           <a-doption>
-            <a-link href="https://gitcode.com/org/continew/discussion" target="_blank" rel="noopener">GitCode</a-link>
+            <a-link href="https://atomgit.com/org/continew/discussion" target="_blank" rel="noopener">GitCode</a-link>
           </a-doption>
           <a-doption>
             <a-link href="https://github.com/orgs/continew-org/discussions" target="_blank" rel="noopener">GitHub</a-link>

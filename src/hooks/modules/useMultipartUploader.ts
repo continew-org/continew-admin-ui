@@ -8,6 +8,12 @@ import {
   initMultipartUpload,
   uploadPart,
 } from '@/apis/system/multipart-upload'
+import {
+  getDefaultUploadConfig,
+  getUploadProgress,
+  uploadFile,
+} from '@/apis/system/file'
+import type { FileUploadConfigResp } from '@/apis/system/type'
 
 // 文件上传任务对象类型
 export interface FileTask {
@@ -25,10 +31,13 @@ export interface FileTask {
   fileSize: number // 文件大小
   fileMd5?: string // 文件MD5
   uploadId?: string // 分片上传ID
+  uploadTaskId?: string // 单文件上传任务ID
   path?: string // 文件路径（由后端返回）
+  mode?: 'single' | 'multipart' // 上传模式（自动判定）
   partETags: Array<{ partNumber: number, eTag: string }> // 分片ETag列表
   errorMessage?: string // 错误信息
   abortController?: AbortController // 请求中断控制器
+  _progressPollTimer?: ReturnType<typeof setTimeout> // 单文件上传进度轮询计时器
   _uploading?: boolean // 标记是否正在上传（内部控制）
   _pause?: () => void // 暂停方法
   _resume?: () => void // 继续方法
@@ -36,13 +45,7 @@ export interface FileTask {
   _retryCount?: Map<number, number> // 分片重试次数记录
 }
 
-/**
- * useMultipartUploader - 通用分片上传 hooks
- * @param props.maxConcurrentFiles   最大同时上传文件数（全局并发）
- * @param props.maxConcurrentChunks  每个文件分片上传最大并发数
- * @param props.maxUploadWorkers     最大上传Worker数量（基于CPU核心数）
- * @returns 上传相关响应式状态与操作方法
- */
+// useMultipartUploader：通用上传 hooks（支持自动单文件/分片策略）
 export function useMultipartUploader(props: {
   maxConcurrentFiles?: number
   maxConcurrentChunks?: number
@@ -59,8 +62,8 @@ export function useMultipartUploader(props: {
 
   // 所有上传任务列表
   const fileTasks = ref<FileTask[]>([])
-  // 当前正在上传的文件数量
-  const uploadingCount = computed(() => fileTasks.value.filter((t) => t.status === 'uploading').length)
+  // 当前正在上传的文件数量（仅统计已被调度执行的任务）
+  const uploadingCount = computed(() => fileTasks.value.filter((t) => t.status === 'uploading' && t._uploading).length)
   // 最大并发上传文件数
   const maxConcurrent = computed(() => props.maxConcurrentFiles ?? getCpuCores())
   // 每个文件分片上传最大并发数
@@ -80,6 +83,8 @@ export function useMultipartUploader(props: {
     uploadEndTime: number
     totalTime: number
   } | null>(null)
+  const defaultUploadConfig = ref<FileUploadConfigResp | null>(null)
+  const loadingUploadConfig = ref(false)
 
   // MD5 Worker实例
   let md5Worker: Worker | null = null
@@ -199,6 +204,127 @@ export function useMultipartUploader(props: {
     })
   }
 
+  function createUploadTaskId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID()
+    }
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  }
+
+  async function loadDefaultUploadConfig(force = false) {
+    if (!force && defaultUploadConfig.value) {
+      return defaultUploadConfig.value
+    }
+    loadingUploadConfig.value = true
+    try {
+      const res = await getDefaultUploadConfig()
+      defaultUploadConfig.value = res.data
+      return defaultUploadConfig.value
+    } finally {
+      loadingUploadConfig.value = false
+    }
+  }
+
+  function resolveUploadMode(task: FileTask) {
+    const threshold = defaultUploadConfig.value?.multipartUploadThreshold ?? 0
+    return task.fileSize > threshold ? 'multipart' : 'single'
+  }
+
+  function stopSingleProgressPolling(task: FileTask) {
+    if (task._progressPollTimer) {
+      clearTimeout(task._progressPollTimer)
+      task._progressPollTimer = undefined
+    }
+  }
+
+  async function pollSingleUploadProgress(task: FileTask) {
+    if (!task.uploadTaskId || task.status !== 'uploading') {
+      return
+    }
+    const currentUploadTaskId = task.uploadTaskId
+    let shouldContinuePolling = true
+    let nextPollDelay = 350
+    try {
+      const res = await getUploadProgress(currentUploadTaskId)
+      // 轮询请求返回时，任务可能已完成/取消或切换了新 uploadTaskId，避免旧响应回写覆盖
+      if (task.status !== 'uploading' || task.uploadTaskId !== currentUploadTaskId) {
+        return
+      }
+      const progress = res.data
+      if (!progress) {
+        return
+      }
+      const percentage = Number(progress.percentage ?? 0)
+      const normalizedProgress = Number((Math.min(Math.max(percentage, 0), 100) / 100).toFixed(2))
+      task.progress = Math.max(task.progress, normalizedProgress)
+
+      if (progress.status === 'COMPLETED') {
+        task.progress = 1
+        shouldContinuePolling = false
+        stopSingleProgressPolling(task)
+      } else if (progress.status === 'FAILED') {
+        shouldContinuePolling = false
+        if (progress.message) {
+          task.errorMessage = progress.message
+        }
+      } else if (progress.status === 'FINALIZING' || normalizedProgress >= 1) {
+        // 文件字节传输已完成，后端进入收尾（查询文件信息/落库）阶段，改为低频轮询。
+        nextPollDelay = 1200
+      }
+    } catch (_error) {
+      // 进度轮询失败不打断上传主流程
+    } finally {
+      if (task.status === 'uploading' && shouldContinuePolling) {
+        task._progressPollTimer = setTimeout(() => {
+          pollSingleUploadProgress(task)
+        }, nextPollDelay)
+      }
+    }
+  }
+
+  async function uploadSingleFileTask(task: FileTask) {
+    if (!task.abortController) {
+      task.abortController = new AbortController()
+    }
+    if (!task.uploadTaskId) {
+      task.uploadTaskId = createUploadTaskId()
+    }
+    task.totalChunks = 1
+    task.chunkSize = task.fileSize
+    task.uploadedChunks = []
+    task.partETags = []
+    task.errorMessage = ''
+
+    const formData = new FormData()
+    formData.append('parentPath', task.parentPath && task.parentPath !== '' ? task.parentPath : '/')
+    formData.append('file', task.file)
+    formData.append('uploadTaskId', task.uploadTaskId)
+
+    stopSingleProgressPolling(task)
+    pollSingleUploadProgress(task)
+
+    try {
+      await uploadFile(formData, { signal: task.abortController.signal })
+      stopSingleProgressPolling(task)
+      task.progress = 1
+      task.uploadedChunks = [1]
+      task.status = 'completed'
+      startNextTasks()
+    } catch (error: any) {
+      stopSingleProgressPolling(task)
+      if (error?.name === 'AbortError' || error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED') {
+        if (task.status === 'uploading') {
+          task.status = 'cancelled'
+        }
+        startNextTasks()
+        return
+      }
+      task.status = 'failed'
+      task.errorMessage = error?.response?.data?.message || error?.message || '单文件上传失败'
+      startNextTasks()
+    }
+  }
+
   /**
    * 添加分片到上传队列
    */
@@ -307,7 +433,7 @@ export function useMultipartUploader(props: {
       }
     } catch (error) {
       // 检查是否是取消请求导致的错误
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && (error.name === 'AbortError' || error.name === 'CanceledError')) {
         // eslint-disable-next-line no-console
         console.log(`分片上传被取消: ${task.fileName} - 分片${chunkNumber}`)
         return
@@ -394,28 +520,73 @@ export function useMultipartUploader(props: {
   }
 
   /**
-   * 分片上传核心逻辑，处理单个文件的分片上传、并发、暂停、恢复、取消等
+   * 统一上传逻辑（自动判定单文件上传或分片上传）
    * @param task FileTask
    */
   async function uploadFileTask(task: FileTask) {
     try {
       // eslint-disable-next-line no-console
       console.log(`[Hooks] 开始上传任务: ${task.fileName}, 当前状态: ${task.status}`)
-      // 1. 初始化分片上传，获取 uploadId
+      await loadDefaultUploadConfig()
+
       if (!task.uploadId) {
-        // eslint-disable-next-line no-console
-        console.log(`[Hooks] 任务 ${task.fileName} 没有 uploadId，准备调用 initMultipartUpload`)
-        // 若没有MD5，先计算
+        task.mode = resolveUploadMode(task)
+      }
+
+      task._pause = () => {
+        task.status = 'paused'
+        if (task.mode === 'single') {
+          stopSingleProgressPolling(task)
+          task.abortController?.abort()
+          task.uploadTaskId = undefined
+          task.progress = 0
+        }
+        uploadQueue.value = uploadQueue.value.filter((item) => item.task.uid !== task.uid)
+        const activeChunkIds = Array.from(activeUploads.value).filter((id) => id.startsWith(task.uid))
+        activeChunkIds.forEach((id) => activeUploads.value.delete(id))
+      }
+
+      task._resume = () => {
+        if (task.status === 'paused') {
+          task.status = 'uploading'
+          if (task.mode === 'multipart') {
+            for (let i = 1; i <= task.totalChunks; i++) {
+              if (!task.uploadedChunks.includes(i)) {
+                addChunkToQueue(task, i)
+              }
+            }
+          } else {
+            task._uploading = false
+            startNextTasks()
+          }
+        }
+      }
+
+      task._cancel = () => {
+        task.status = 'cancelled'
+        stopSingleProgressPolling(task)
+        if (task.abortController) {
+          task.abortController.abort()
+        }
+        uploadQueue.value = uploadQueue.value.filter((item) => item.task.uid !== task.uid)
+        const activeChunkIds = Array.from(activeUploads.value).filter((id) => id.startsWith(task.uid))
+        activeChunkIds.forEach((id) => activeUploads.value.delete(id))
+        if (task.uploadId) {
+          cancelUpload({ uploadId: task.uploadId })
+        }
+      }
+
+      if (task.mode === 'single') {
+        await uploadSingleFileTask(task)
+        return
+      }
+
+      if (!task.uploadId) {
         if (!task.fileMd5) {
           // eslint-disable-next-line no-console
           console.log(`[Hooks] 任务 ${task.fileName} 没有 MD5，开始计算...`)
           task.fileMd5 = await calcFileMd5(task.file, task.uid)
         }
-
-        // eslint-disable-next-line no-console
-        console.log(`[Hooks] 调用 initMultipartUpload: ${task.fileName}, MD5: ${task.fileMd5}, 路径: ${task.parentPath}`)
-
-        // 确保parentPath不是空字符串，如果是则使用"/"
         const parentPath = task.parentPath && task.parentPath !== '' ? task.parentPath : '/'
 
         try {
@@ -431,33 +602,19 @@ export function useMultipartUploader(props: {
           })
 
           if (res && res.data) {
-            // eslint-disable-next-line no-console
-            console.log(`[Hooks] initMultipartUpload 成功: ${task.fileName}, uploadId: ${res.data.uploadId}`)
             task.uploadId = res.data.uploadId
             task.chunkSize = res.data.partSize
             task.path = res.data.path
-
-            // 处理断点续传：如果后端返回了已上传的分片编号
             if (res.data.uploadedPartNumbers && res.data.uploadedPartNumbers.length > 0) {
-              // eslint-disable-next-line no-console
-              console.log(`[Hooks] 发现已上传分片: ${task.fileName}, 已上传分片: ${res.data.uploadedPartNumbers.join(',')}`)
-              // 将已上传的分片编号添加到任务中
               task.uploadedChunks = [...res.data.uploadedPartNumbers]
-
-              // 计算当前进度
               const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
               updateTaskProgress(task, totalChunks)
-
-              // eslint-disable-next-line no-console
-              console.log(`[Hooks] 断点续传进度: ${task.fileName}, 进度: ${(task.progress * 100).toFixed(1)}%`)
             }
           } else {
             throw new Error('初始化分片上传失败：服务器返回数据为空')
           }
         } catch (error: any) {
-          // 处理特定错误类型
           const errorMsg = error?.response?.data?.message || error?.message || '未知错误'
-
           if (errorMsg.includes('文件名已存在')) {
             task.status = 'failed'
             task.errorMessage = '文件名已存在'
@@ -471,95 +628,34 @@ export function useMultipartUploader(props: {
             task.errorMessage = `初始化失败: ${errorMsg}`
             Message.error(`文件 "${task.fileName}" 上传失败：${errorMsg}`)
           }
-
           task._uploading = false
           startNextTasks()
           return
         }
       }
 
-      // 2. 计算总分片数
       const totalChunks = Math.ceil(task.fileSize / task.chunkSize)
       task.totalChunks = totalChunks
-
-      // eslint-disable-next-line no-console
-      console.log(`[Hooks] 计算总分片数: ${task.fileName}, 总分片数: ${totalChunks}, 分片大小: ${task.chunkSize}`)
-
-      // 检查是否有断点续传的分片
       const hasResumeData = task.uploadedChunks.length > 0
-
       if (!hasResumeData) {
-        // 如果没有断点续传数据，重新初始化
         task.uploadedChunks = []
         task.partETags = []
         task.progress = 0
       } else {
-        // 有断点续传数据，计算当前进度
-        // eslint-disable-next-line no-console
-        console.log(`[Hooks] 发现断点续传数据: ${task.fileName}, 已上传分片: ${task.uploadedChunks.join(',')}`)
         updateTaskProgress(task, task.totalChunks)
       }
-
-      // 将所有未完成的分片添加到队列
-      // eslint-disable-next-line no-console
-      console.log(`[Hooks] 开始添加分片到队列: ${task.fileName}`)
       for (let i = 1; i <= totalChunks; i++) {
-        // 只添加未上传的分片
         if (!task.uploadedChunks.includes(i)) {
           addChunkToQueue(task, i)
         }
       }
-      // eslint-disable-next-line no-console
-      console.log(`[Hooks] 分片添加完成: ${task.fileName}, 队列长度: ${uploadQueue.value.length}`)
-
-      // 挂载暂停/取消控制方法到 task
-      task._pause = () => {
-        task.status = 'paused'
-        // 暂停时清空队列中该任务的分片
-        uploadQueue.value = uploadQueue.value.filter((item) => item.task.uid !== task.uid)
-        // 清理正在上传的分片
-        const activeChunkIds = Array.from(activeUploads.value).filter((id) => id.startsWith(task.uid))
-        activeChunkIds.forEach((id) => activeUploads.value.delete(id))
-      }
-
-      task._resume = () => {
-        if (task.status === 'paused') {
-          task.status = 'uploading'
-          // 重新添加未完成的分片到队列
-          for (let i = 1; i <= task.totalChunks; i++) {
-            if (!task.uploadedChunks.includes(i)) {
-              addChunkToQueue(task, i)
-            }
-          }
-        }
-      }
-
-      task._cancel = () => {
-        task.status = 'cancelled'
-        // 中断所有正在进行的请求
-        if (task.abortController) {
-          task.abortController.abort()
-        }
-        // 清空队列中该任务的分片
-        uploadQueue.value = uploadQueue.value.filter((item) => item.task.uid !== task.uid)
-        // 清理正在上传的分片
-        const activeChunkIds = Array.from(activeUploads.value).filter((id) => id.startsWith(task.uid))
-        activeChunkIds.forEach((id) => activeUploads.value.delete(id))
-        if (task.uploadId) {
-          cancelUpload({ uploadId: task.uploadId })
-        }
-      }
     } catch (error: any) {
-      // 捕获并处理所有未处理的异常
       const errorMsg = error?.message || '未知错误'
-      // eslint-disable-next-line no-console
       console.error(`[Hooks] 上传任务异常: ${task.fileName}, 错误: ${errorMsg}`, error)
-
       if (task.status !== 'failed') {
         task.status = 'failed'
         task.errorMessage = `上传失败: ${errorMsg}`
       }
-
       task._uploading = false
       startNextTasks()
     }
@@ -572,7 +668,7 @@ export function useMultipartUploader(props: {
     let available = maxConcurrent.value - uploadingCount.value
     for (const task of fileTasks.value) {
       if (available <= 0) break
-      if ((task.status === 'waiting' || task.status === 'uploading') && !task._uploading) {
+      if (task.status === 'uploading' && !task._uploading) {
         task.status = 'uploading'
         task._uploading = true
         available--
@@ -592,10 +688,7 @@ export function useMultipartUploader(props: {
     for (const task of fileTasks.value) {
       if (task.status === 'waiting' || task.status === 'paused') {
         task._uploading = false // 标记尚未调度
-        // 如果是暂停状态，需要重新激活
-        if (task.status === 'paused') {
-          task.status = 'uploading'
-        }
+        task.status = 'uploading'
       }
     }
     startNextTasks()
@@ -770,13 +863,6 @@ export function useMultipartUploader(props: {
         _retryCount: new Map(), // 初始化重试计数器
       }
 
-      // 立即开始计算MD5，但不自动开始上传
-      calcFileMd5(file, task.uid).then((md5) => {
-        task.fileMd5 = md5
-      }).catch((_error) => {
-        task.status = 'failed'
-      })
-
       fileTasks.value.push(task)
     }
   }
@@ -828,6 +914,10 @@ export function useMultipartUploader(props: {
     if (task.status === 'failed') {
       task.status = 'uploading'
       task.progress = 0
+      if (task.mode === 'single') {
+        task.uploadedChunks = []
+        task.uploadTaskId = undefined
+      }
       // 重试时保留已上传的分片信息，支持断点续传
       // task.uploadedChunks = [] // 注释掉，保留断点续传数据
       // task.partETags = [] // 注释掉，保留断点续传数据
@@ -841,11 +931,18 @@ export function useMultipartUploader(props: {
 
   // 清空所有上传任务
   function clearAllTasks() {
+    fileTasks.value.forEach((task) => {
+      stopSingleProgressPolling(task)
+      if (task.status === 'uploading' || task.status === 'waiting' || task.status === 'paused') {
+        task._cancel?.()
+      }
+    })
     fileTasks.value = []
   }
 
   // 删除单个任务
   function removeTask(task: FileTask) {
+    stopSingleProgressPolling(task)
     // 先取消任务
     if (task.status === 'uploading' || task.status === 'waiting' || task.status === 'paused') {
       task._cancel?.()
@@ -868,9 +965,14 @@ export function useMultipartUploader(props: {
     return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
   }
 
+  async function refreshDefaultUploadConfig() {
+    return loadDefaultUploadConfig(true)
+  }
+
   // 组件销毁时，终止所有上传任务和Worker
   onUnmounted(() => {
     fileTasks.value.forEach((task) => {
+      stopSingleProgressPolling(task)
       if (task.status === 'uploading' || task.status === 'waiting' || task.status === 'paused') {
         pauseTask(task)
       }
@@ -887,6 +989,9 @@ export function useMultipartUploader(props: {
     uploadingCount,
     maxConcurrent,
     maxChunkConcurrent,
+    defaultUploadConfig,
+    loadingUploadConfig,
+    refreshDefaultUploadConfig,
     uploadFileTask,
     startNextTasks,
     startAllUpload,

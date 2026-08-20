@@ -12,41 +12,22 @@
     <a-row justify="space-between" class="file-main__search">
       <!-- 左侧区域 -->
       <a-space wrap>
-        <!-- 上传文件按钮改为下拉菜单，包含普通上传和分片上传 -->
-        <a-dropdown trigger="click">
-          <a-button type="primary" shape="round">
-            <icon-upload />
-            上传文件
-          </a-button>
-          <template #content>
-            <!-- 普通上传 -->
-            <a-upload v-permission="['system:file:upload']" :show-file-list="false" :custom-request="handleUpload" style="display: block;">
-              <template #upload-button>
-                <a-button type="text" style="width: 100%; text-align: left;">
-                  普通上传
-                </a-button>
-              </template>
-            </a-upload>
-            <!-- 分片上传 -->
-            <a-button type="text" style="width: 100%; text-align: left;" @click="visible = true">
-              分片上传
-            </a-button>
-            <!-- 新建文件夹 -->
-            <a-divider style="margin: 0;"></a-divider>
-            <a-button v-permission="['system:file:createDir']" type="text" style="width: 100%; text-align: left;" :disabled="!queryForm.parentPath" @click="createDirModalVisible = !createDirModalVisible">
-              <template #icon>
-                <icon-folder />
-              </template>
-              新建文件夹
-            </a-button>
+        <a-button v-permission="['system:file:upload']" type="primary" shape="round" @click="visible = true">
+          <icon-upload />
+          上传文件
+        </a-button>
+        <a-button v-permission="['system:file:createDir']" :disabled="!queryForm.parentPath" @click="createDirModalVisible = true">
+          <template #icon>
+            <icon-folder />
           </template>
-        </a-dropdown>
-        <a-modal v-model:visible="visible" title="分片上传" :width="width > 1350 ? 1350 : '100%'" :footer="false" @close="search">
+          新建文件夹
+        </a-button>
+        <a-modal v-model:visible="visible" title="文件上传" :width="width > 1350 ? 1350 : '100%'" :footer="false" @close="handleUploadModalClose">
           <MultipartUpload
             v-if="visible"
             :root-path="queryForm.parentPath"
-            :chunk-size="5 * 1024 * 1024"
-            :max-concurrent-files="3"
+            :max-concurrent-files="1"
+            :max-upload-workers="1"
           />
         </a-modal>
 
@@ -130,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { Message, Modal, type RequestOption } from '@arco-design/web-vue'
+import { Message, Modal } from '@arco-design/web-vue'
 import { api as viewerApi } from 'v-viewer'
 import { useWindowSize } from '@vueuse/core'
 import {
@@ -143,7 +124,7 @@ import FileGrid from './FileGrid.vue'
 import RecycleBinModal from './RecycleBinModal.vue'
 import useFileManage from './useFileManage'
 import { useTable } from '@/hooks'
-import { type FileItem, type FileQuery, createDir, deleteFile, listFile, uploadFile } from '@/apis/system/file'
+import { type FileItem, type FileQuery, createDir, deleteFile, listFile } from '@/apis/system/file'
 import { ImageTypes, OfficeTypes } from '@/constant/file'
 import 'viewerjs/dist/viewer.css'
 import { downloadByUrl } from '@/utils/downloadFile'
@@ -286,34 +267,12 @@ const handleMulDelete = () => {
     },
   })
 }
-// 上传
-const handleUpload = (options: RequestOption) => {
-  const controller = new AbortController()
-  ;(async function requestWrap() {
-    const { onProgress, onError, onSuccess, fileItem, name = 'file' } = options
-    onProgress(20)
-    const formData = new FormData()
-    formData.append('parentPath', queryForm.parentPath ?? '/')
-    formData.append(name as string, fileItem.file as Blob)
-    try {
-      const res = await uploadFile(formData)
-      Message.success('上传成功')
-      onSuccess(res)
-      search()
-    } catch (error) {
-      onError(error)
-    } finally {
-      mittBus.emit('file-total-refresh')
-    }
-  })()
-  return {
-    abort() {
-      controller.abort()
-    },
-  }
-}
-
 const visible = ref(false)
+
+const handleUploadModalClose = () => {
+  search()
+  mittBus.emit('file-total-refresh')
+}
 
 onBeforeRouteUpdate((to) => {
   if (!to.query.type) return

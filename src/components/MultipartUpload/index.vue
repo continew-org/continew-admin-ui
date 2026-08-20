@@ -21,10 +21,21 @@
             <a-button style="margin-left: 8px;" status="danger" @click="clearAllTasks">清空</a-button>
           </div>
         </div>
+        <div class="upload-config-overview">
+          <div class="upload-config-title">默认存储上传策略</div>
+          <a-spin :loading="loadingUploadConfig">
+            <div v-if="defaultUploadConfig" class="upload-config-grid">
+              <div class="upload-config-item"><span class="label">类型</span><span class="value">{{ storageTypeLabel }}</span></div>
+              <div class="upload-config-item"><span class="label">分片阈值</span><span class="value">{{ thresholdMb }} MB</span></div>
+              <div class="upload-config-item"><span class="label">分片大小</span><span class="value">{{ partSizeMb }} MB</span></div>
+              <div v-if="isLocalStorage" class="upload-config-item upload-config-item-full"><span class="label">本地分片临时目录</span><span class="value">{{ defaultUploadConfig.multipartTempDir || '-' }}</span></div>
+            </div>
+          </a-spin>
+        </div>
         <div style="margin-bottom: 8px; color: #888; font-size: 13px;">
           支持拖拽文件到此区域上传（文件夹请使用"选择文件夹"按钮）
           <br />
-          <small style="color: #999;">提示：拖拽上传时，所有文件将上传到根目录</small>
+          <small style="color: #999;">系统会根据默认存储分片阈值自动选择单文件上传或分片上传</small>
         </div>
         <!-- 表格区域 -->
         <div class="gi-table-flex-body">
@@ -33,6 +44,7 @@
               :data="fileTasks"
               :columns="columns"
               row-key="uid"
+              :scroll="{ y: '100%' }"
               :pagination="pagination"
               style="height: 100%; background: transparent;"
             >
@@ -47,7 +59,7 @@
               <template #status="{ record }">
                 <div>
                   <a-tag :color="statusColor(record.status)" size="small">{{ statusText(record.status) }}</a-tag>
-                  <div v-if="record.status === 'failed' && record.errorMessage" style="margin-top: 4px; font-size: 12px; color: #f56c6c;">
+                  <div v-if="record.status === 'failed' && record.errorMessage" class="upload-status-error">
                     {{ record.errorMessage }}
                   </div>
                 </div>
@@ -83,10 +95,11 @@
 </template>
 
 <script lang="ts" setup>
-import { h, ref, resolveComponent } from 'vue'
+import { computed, h, onMounted, ref, resolveComponent } from 'vue'
 import { IconClose, IconDelete, IconPause, IconPlayArrow, IconRefresh } from '@arco-design/web-vue/es/icon'
 import { useMultipartUploader } from '@/hooks/modules/useMultipartUploader'
 import { getFilesFromDataTransferItems, isFileSystemAccessAPISupported } from '@/utils/drag-drop-file-util'
+import type { StorageType } from '@/apis/system/type'
 
 // 组件props定义
 const props = defineProps<{
@@ -173,7 +186,7 @@ const columns = [
     width: 120,
   },
   { title: '进度', slotName: 'progress', width: 140 },
-  { title: '状态', slotName: 'status', width: 80 },
+  { title: '状态', slotName: 'status', width: 220 },
   { title: '操作', slotName: 'actions', width: 150 },
 ]
 
@@ -183,6 +196,9 @@ const {
   uploadingCount: _uploadingCount,
   maxConcurrent: _maxConcurrent,
   maxChunkConcurrent: _maxChunkConcurrent,
+  defaultUploadConfig,
+  loadingUploadConfig,
+  refreshDefaultUploadConfig,
   startAllUpload,
   addFiles,
   pauseTask,
@@ -199,6 +215,26 @@ const {
   maxConcurrentChunks: props.maxConcurrentChunks,
   maxUploadWorkers: props.maxUploadWorkers,
   rootPath: props.rootPath,
+})
+
+const toMb = (bytes?: number | null) => {
+  if (!bytes || bytes <= 0) return 0
+  return Number((bytes / 1024 / 1024).toFixed(2))
+}
+const STORAGE_TYPE_LOCAL: StorageType = 1
+const STORAGE_TYPE_OSS: StorageType = 2
+
+const thresholdMb = computed(() => toMb(defaultUploadConfig.value?.multipartUploadThreshold))
+const partSizeMb = computed(() => toMb(defaultUploadConfig.value?.multipartUploadPartSize))
+const isLocalStorage = computed(() => defaultUploadConfig.value?.storageType === STORAGE_TYPE_LOCAL)
+const storageTypeLabel = computed(() => {
+  if (defaultUploadConfig.value?.storageType === STORAGE_TYPE_LOCAL) return '本地存储'
+  if (defaultUploadConfig.value?.storageType === STORAGE_TYPE_OSS) return '对象存储'
+  return '未知'
+})
+
+onMounted(() => {
+  refreshDefaultUploadConfig()
 })
 
 // 触发文件选择
@@ -299,7 +335,8 @@ function statusColor(status: string) {
   box-shadow: 0 2px 8px #0000000d;
   border: 2px dashed #e5e6eb;
   transition: border-color 0.2s, background 0.2s;
-  min-width: 1000px;
+  width: 100%;
+  min-width: 0;
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -314,6 +351,40 @@ function statusColor(status: string) {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+}
+.upload-config-overview {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--color-fill-1);
+}
+.upload-config-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-1);
+  margin-bottom: 8px;
+}
+.upload-config-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+.upload-config-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-2);
+}
+.upload-config-item-full {
+  grid-column: 1 / -1;
+}
+.upload-config-item .label {
+  color: var(--color-text-3);
+}
+.upload-config-item .value {
+  color: var(--color-text-1);
+  word-break: break-all;
 }
 .upload-btns-left {
   display: flex;
@@ -353,30 +424,48 @@ function statusColor(status: string) {
   flex-direction: column;
 }
 :deep(.arco-table-th) {
-  min-width: 120px;
   font-weight: 500;
 }
 :deep(.arco-table-td) {
-  max-width: 400px;
-  min-width: 120px;
+  max-width: 320px;
+  min-width: 0;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 :deep(.arco-table-td:nth-child(1)),
 :deep(.arco-table-th:nth-child(1)) {
-  min-width: 200px;
-  max-width: 350px;
+  min-width: 150px;
+  max-width: 280px;
 }
 :deep(.arco-table-td:nth-child(2)),
 :deep(.arco-table-th:nth-child(2)) {
-  min-width: 180px;
-  max-width: 300px;
+  min-width: 130px;
+  max-width: 220px;
 }
 :deep(.arco-table-td:last-child),
 :deep(.arco-table-th:last-child) {
+  min-width: 120px;
+  max-width: 160px;
+}
+/* 状态列需要展示错误详情，允许换行并避免把整行撑宽 */
+:deep(.arco-table-td:nth-child(6)),
+:deep(.arco-table-th:nth-child(6)) {
   min-width: 160px;
-  max-width: 200px;
+  max-width: 220px;
+}
+:deep(.arco-table-td:nth-child(6)) {
+  white-space: normal;
+  overflow: visible;
+}
+.upload-status-error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #f56c6c;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 :deep(.arco-table-element):has(tbody .arco-table-tr-empty) {
   height: 100%;
@@ -424,6 +513,9 @@ function statusColor(status: string) {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+  .upload-config-grid {
+    grid-template-columns: 1fr;
   }
   .upload-btns-right {
     margin-left: 0;

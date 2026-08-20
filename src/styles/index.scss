@@ -1,17 +1,17 @@
 // 基础样式
-@import './base.scss';
+@use './base.scss';
 
 // 全局类名样式
-@import './global.scss';
+@use './global.scss';
 
 // 自定义原生滚动条样式
-@import './scrollbar-reset.scss';
+@use './scrollbar-reset.scss';
 
 // 自定义 nprogress 插件进度条颜色
-@import './nprogress.scss';
+@use './nprogress.scss';
 
 // 富文本的css主题颜色变量
-@import './editor.scss';
+@use './editor.scss';
 
 // 动画类名
-@import './animated.scss';
+@use './animated.scss';
