@@ -1,12 +1,42 @@
 # AGENTS.md
 
-This file provides guidance to AI agents when working with code in this repository.
+本文件为在本代码库中工作的 AI 智能体提供指引。
 
-`CLAUDE.md` and `AGENTS.md` are mirror files. Whenever either file changes, apply the identical change to the other file and verify that their contents remain byte-for-byte identical（标题文件名除外）.
+> **注意**：`CLAUDE.md` 是指向本文件的符号链接，`.claude/skills` 是指向 `.agents/skills` 的符号链接。
+> 请直接编辑本文件和 `.agents/skills/`，不要改动链接本身。
 
 ## 项目概述
 
 ContiNew Admin UI 是基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目，是一个高质量多租户中后台管理系统的前端部分。技术栈：Vue 3.5 + Arco Design Vue 2.57 + TypeScript 5 + Vite 5 + Pinia。后端对应项目为 continew-admin（Spring Boot 3 + Sa-Token），本前端通过 REST API 与之交互。
+
+## 仓库布局
+
+```
+config/          Vite 插件配置（config/plugins/）
+docs/            项目文档（原 docs/agents/ 技能文档已迁移至 .agents/skills/，勿再往 docs/agents 写入）
+public/          静态资源（原样拷贝到 dist 根目录）
+src/             前端源码
+  apis/          API 模块：<module>/index.ts（聚合）+ 资源文件 + type.ts
+  assets/        静态资源（icons/svg/ 等）
+  components/    Gi* 系列业务组件（unplugin-vue-components 自动导入）
+  config/        全局配置（setting.ts）
+  constant/      常量（common.ts、file.ts）
+  directives/    自定义指令（permission/：v-permission、v-role）
+  hooks/         组合式函数（hooks/modules/，由 hooks/index.ts 导出）
+  layout/        布局根组件 + components/ + hooks/（四套布局异步切换）
+  mock/          Mock 文件（vite-plugin-mock 加载）
+  router/        路由：route.ts、guard.ts、asyncModules.ts
+  stores/        Pinia stores（stores/modules/）
+  styles/        样式：var.scss、index.scss、arco-ui/
+  types/         全局类型：api.d.ts、router.d.ts、auto-imports.d.ts、components.d.ts
+  utils/         工具：http.ts、auth.ts、has.ts 等
+  views/         页面（文件路径即后端动态路由 component 字段值）
+.agents/
+  skills/        Agent 技能唯一事实源（.claude/skills 是指向它的符号链接）
+.env.development 开发环境变量（VITE_*）
+.env.production  生产环境变量
+.env.test        test 模式构建变量
+```
 
 ## 常用命令
 
@@ -19,6 +49,18 @@ ContiNew Admin UI 是基于 Gi Demo 前端模板开发的 ContiNew Admin 前端�
 - `pnpm bootstrap`：使用 npmmirror 源安装依赖（首次拉取项目用）。
 
 注：项目未配置单元测试框架；通过 `simple-git-hooks` + `lint-staged` 在 pre-commit 时对暂存文件执行 `eslint --fix`。依赖管理使用 pnpm（有 `pnpm.onlyBuiltDependencies` 白名单）。
+
+## 环境与配置
+
+三个环境文件，变量须以 `VITE_` 开头（`FILE` 前缀也会暴露到客户端）：
+- `VITE_API_PREFIX`：开发/测试环境的接口代理前缀（如 `/dev-api`），生产环境留空则直接用 `VITE_API_BASE_URL`。
+- `VITE_API_BASE_URL`：后端地址。
+- `VITE_API_WS_URL`：WebSocket 地址。
+- `VITE_BASE`：应用 base 路径。
+- `VITE_BUILD_MOCK`：生产构建是否打包 Mock。
+- `VITE_OPEN_DEVTOOLS`：是否开启 Vue DevTools。
+- `VITE_APP_SETTING`：是否显示应用配置面板。
+- `VITE_CLIENT_ID`：客户端认证 ID。
 
 ## 架构与核心约定
 
@@ -95,18 +137,6 @@ Store 位于 `src/stores/modules/`，通过 `src/stores/index.ts` 统一导出�
 
 `src/layout/index.vue` 根据 `appStore.layout` 动态切换四种布局（异步组件）：`LayoutMix`（混合，默认）、`LayoutTop`（顶部）、`LayoutDefault`（左侧）、`LayoutColumns`（分栏）。布局子组件位于 `src/layout/components/`，hooks 位于 `src/layout/hooks/`。
 
-### 环境变量
-
-三个环境文件，变量须以 `VITE_` 开头（`FILE` 前缀也会暴露到客户端）：
-- `VITE_API_PREFIX`：开发/测试环境的接口代理前缀（如 `/dev-api`），生产环境留空则直接用 `VITE_API_BASE_URL`。
-- `VITE_API_BASE_URL`：后端地址。
-- `VITE_API_WS_URL`：WebSocket 地址。
-- `VITE_BASE`：应用 base 路径。
-- `VITE_BUILD_MOCK`：生产构建是否打包 Mock。
-- `VITE_OPEN_DEVTOOLS`：是否开启 Vue DevTools。
-- `VITE_APP_SETTING`：是否显示应用配置面板。
-- `VITE_CLIENT_ID`：客户端认证 ID。
-
 ### Mock
 
 `src/mock/` 下放置 Mock 文件，由 `vite-plugin-mock` 加载。开发环境默认启用（`localEnabled: true`），生产构建按 `VITE_BUILD_MOCK` 决定（`prodEnabled`）。Mock 生产入口通过 `injectCode` 注入 `setupProdMockServer()`。
@@ -123,7 +153,7 @@ Store 位于 `src/stores/modules/`，通过 `src/stores/index.ts` 统一导出�
 
 插件配置位于 `config/plugins/`：`app-info`（启动时打印项目信息）、`vue`、`vue-jsx`、`devtools`、`auto-import`、`components`、`svg-icon`（SVG 雪碧图，图标放 `src/assets/icons/svg/`，用 `<gi-svg-icon name="xxx" />` 或 `icon-xxx` 引用）、`mock`。
 
-### 代码规范（ESLint）
+## 代码规范（ESLint）
 
 基于 `@antfu/eslint-config`，关键覆盖（`eslint.config.js`）：
 - Vue block 顺序：`[['script','template'],'style']`（script/template 可互换，style 必须最后）。
@@ -132,7 +162,7 @@ Store 位于 `src/stores/modules/`，通过 `src/stores/index.ts` 统一导出�
 - 忽略：`**/*.md`、`.github`、`.image`、`src/types/shims-vue.d.ts`。
 - 组件命名：使用 `defineOptions({ name: 'XxxYyy' })` 显式命名，便于 keep-alive 与 devtools 识别。
 
-### 新增业务模块的典型流程
+## 新增业务模块的典型流程
 
 1. `src/apis/<module>/`：新增 `xxx.ts`（API 函数）、`type.ts`（类型）、在 `index.ts` 聚合导出，并在 `src/apis/index.ts` 透传。
 2. `src/views/<module>/xxx/`：新增 `index.vue`（列表页，用 `GiPageLayout` + `GiTable` + `GiForm` + `useTable`）、`AddDrawer.vue`/`AddModal.vue`（新增/编辑）、`DetailDrawer.vue`（详情）等子组件。
@@ -142,14 +172,10 @@ Store 位于 `src/stores/modules/`，通过 `src/stores/index.ts` 统一导出�
 
 ## Agent skills
 
-### Issue tracker
+技能是各 agent 工具（Claude Code / Codex / dsh）共用的**唯一事实源**，统一存放在 `.agents/skills/`，每个技能一个目录、含 `SKILL.md`。
 
-Issues live as GitHub issues in `continew-org/continew-admin-ui`; use the `gh` CLI for all operations. See `docs/agents/issue-tracker.md`.
+## 编辑这些说明
 
-### Triage labels
+`CLAUDE.md` 是根目录 `AGENTS.md` 的符号链接，`.claude/skills` 是 `.agents/skills` 的符号链接——请编辑真实文件（本文件与 `.agents/skills/`），不要改动链接本身。保持每条规则自包含，必要时链接到更高层文档。
 
-Five canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+> **Windows 注意**：克隆后如需符号链接生效，需开启开发者模式（或以管理员运行 git），并执行 `git config core.symlinks true`，否则链接会被检出为普通文本文件。团队若以 Windows 为主且符号链接不可靠，可改用脚本同步（`cp AGENTS.md CLAUDE.md && cp -r .agents/skills/* .claude/skills/`）。
