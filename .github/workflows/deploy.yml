@@ -7,22 +7,24 @@ on:
   # 可手动执行
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy-web:
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v7
       # 2、安装 PNPM
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with: { version: 9 }
+        uses: pnpm/action-setup@v6
       # 3、安装 Node 环境
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 22
           cache: pnpm
           cache-dependency-path: ./pnpm-lock.yaml
       # 4、安装依赖
