@@ -1,21 +1,34 @@
 # AGENTS.md
 
-本文件为在本代码库中工作的 AI 智能体提供指引。
+本文件为在本代码库中工作的 AI 编程智能体（DeepSeek Harness、Claude Code、Codex、Cursor 等）提供指引。
 
-> **注意**：`CLAUDE.md` 是指向本文件的符号链接，`.claude/skills` 是指向 `.agents/skills` 的符号链接。
-> 请直接编辑本文件和 `.agents/skills/`，不要改动链接本身。
+## AI 贡献准则
+
+- **不得以 AI 身份在 Issue 或 PR 上发表评论**。讨论区只属于人类。
+- **先讨论再实现**：非平凡改动（如新功能、重构）开工前，先在 Issue 评论中与维护者就实现方向达成一致。
+- **新增依赖须先行讨论**：引入任何第三方依赖前，必须在 Issue 中说明用途、体积与维护活跃度，与维护者达成一致后再动手；运行时依赖优先使用已有依赖覆盖，禁止为单一小功能引入重量级库。
+- **版本只改 package.json**：所有依赖版本统一在根目录 `package.json` 中管理，禁止使用任何形式的补丁或 postinstall 脚本修改第三方包。
+- **披露 AI 使用**：当提交中较大部分由 AI 生成时，请在 commit message 末尾追加 trailer，注明实际使用的智能体，例如：
+
+  ```
+  Assisted-by: DeepSeek Harness
+  ```
+- 贡献流程遵循下方[「PR 约定」](#pr-约定)章节。
 
 ## 项目概述
 
-ContiNew Admin UI 是基于 Gi Demo 前端模板开发的 ContiNew Admin 前端适配项目，是一个高质量多租户中后台管理系统的前端部分。技术栈：Vue 3.5 + Arco Design Vue 2.57 + TypeScript 5 + Vite 5 + Pinia。后端对应项目为 continew-admin（Spring Boot 3 + Sa-Token），本前端通过 REST API 与之交互。
+ContiNew Admin UI 是 ContiNew Admin 的前端部分，基于 Gi Demo 前端模板适配开发的高质量多租户中后台管理系统。后端对应项目为 [continew-admin](https://github.com/continew-org/continew-admin)（Spring Boot 3 + Sa-Token），本前端通过 REST API 与之交互。
 
-## 仓库布局
+**技术栈**：Vue 3.5 + Arco Design Vue 2.57 + TypeScript 5 + Vite 5 + Pinia
+
+**当前版本**：4.2.0-SNAPSHOT | **主分支**：`dev` | **Node**：22 | **包管理**：pnpm 9（勿用 npm/yarn，勿混用 `package-lock.json` 与 `pnpm-lock.yaml`）
+
+## 核心架构
 
 ```
 config/          Vite 插件配置（config/plugins/）
-docs/            项目文档（原 docs/agents/ 技能文档已迁移至 .agents/skills/，勿再往 docs/agents 写入）
 public/          静态资源（原样拷贝到 dist 根目录）
-src/             前端源码
+src/
   apis/          API 模块：<module>/index.ts（聚合）+ 资源文件 + type.ts
   assets/        静态资源（icons/svg/ 等）
   components/    Gi* 系列业务组件（unplugin-vue-components 自动导入）
@@ -28,154 +41,124 @@ src/             前端源码
   router/        路由：route.ts、guard.ts、asyncModules.ts
   stores/        Pinia stores（stores/modules/）
   styles/        样式：var.scss、index.scss、arco-ui/
-  types/         全局类型：api.d.ts、router.d.ts、auto-imports.d.ts、components.d.ts
+  types/         全局类型：api.d.ts、router.d.ts、auto-imports.d.ts
   utils/         工具：http.ts、auth.ts、has.ts 等
   views/         页面（文件路径即后端动态路由 component 字段值）
-.agents/
-  skills/        Agent 技能唯一事实源（.claude/skills 是指向它的符号链接）
-.env.development 开发环境变量（VITE_*）
-.env.production  生产环境变量
-.env.test        test 模式构建变量
 ```
 
-## 常用命令
+关键机制：
 
-- `pnpm dev`：启动开发服务器（默认端口 5173，自动打开浏览器）。开发环境通过 Vite proxy 代理 `VITE_API_PREFIX` 到 `VITE_API_BASE_URL`。
-- `pnpm build`：类型检查（vue-tsc）+ 生产构建，输出到 `dist/`。生产构建会 drop console/debugger，静态资源按类型分目录（static/js、static/[ext]）。
-- `pnpm build:test`：以 test 模式构建（使用 `.env.test`，启用 Mock 打包）。
-- `pnpm preview`：预览构建产物，端口 5050。
-- `pnpm typecheck`：仅运行 `vue-tsc --noEmit` 类型检查，不产出文件。
-- `pnpm lint` / `pnpm lint:fix`：基于 `@antfu/eslint-config` 的 ESLint 检查 / 自动修复。配置见 `eslint.config.js`。
-- `pnpm bootstrap`：使用 npmmirror 源安装依赖（首次拉取项目用）。
+- **自动导入**：`unplugin-auto-import` 提供 Vue/Router API 自动导入（生成 `src/types/auto-imports.d.ts`）；`unplugin-vue-components` 将 `src/components` 下组件按需导入（生成 `src/types/components.d.ts`）。因此 `GiTable`、`GiForm`、`GiPageLayout`、`GiCell*` 等业务组件在模板中直接使用即可，**不要重复 import**（业务子组件如 `AddDrawer` 仍需显式导入）。
+- **动态路由**：登录后由 `useRouteStore.generateRoutes()` 拉取后端菜单树，经 `formatAsyncRoutes` 转换后 `router.addRoute` 注入；`src/router/asyncModules.ts` 用 `import.meta.glob('@/views/**/*.vue')` 收集页面模块——新增页面须放在 `src/views/` 下，文件路径即后端返回的 `component` 字段值（如 `system/user/index`）。≥3 层的多级路由会被 `flatMultiLevelRoutes` 降级为二级以兼容 keep-alive。
+- **状态管理**：Pinia store 位于 `src/stores/modules/`，经 `src/stores/index.ts` 统一导出，`pinia-plugin-persistedstate` 持久化（`app`/`route` 全量，`user` 仅 token/roles/permissions，`tenant` 持久化租户开关与 tenantId，`dict` 仅内存）。
+- **HTTP 请求层**：`src/utils/http.ts` 统一导出 `{ get, post, put, patch, del, request, requestNative, download }`；约定后端返回 `{ code, data, msg, success, timestamp }`（`ApiRes<T>`），`success=false` 时按 msg 长度自动选择提示组件，`code === '401'` 弹 Modal 引导重新登录；分页类型 `PageRes<T>`、查询类型 `PageQuery` 定义于 `src/types/api.d.ts`。API 函数典型签名：`http.get<PageRes<T.UserResp[]>>(BASE_URL, query)`。
+- **业务组件（Gi* 系列）**：`GiTable`（封装 Arco Table + 工具栏 + 分页，`#top` 放搜索表单、`#toolbar-left/right` 放按钮、`#<dataIndex>` 自定义列）、`GiForm`（columns 配置驱动，`ColumnItem[]` 描述字段）、`GiPageLayout`（`#left` 侧栏插槽）、`GiCell*`（单元格渲染）、`GiSvgIcon`（SVG 雪碧图，图标放 `src/assets/icons/svg/`）等。
+- **Hooks**：`src/hooks/modules/` 共 12 个组合式函数，经 `src/hooks/index.ts` 导出；核心是 `useTable`（分页、加载、多选、查询/刷新/删除），接收一个 `(page) => Promise<ApiRes<PageRes<T[]>>>` 的 API 函数。
+- **权限控制**：指令 `v-permission="['system:user:create']"`、`v-role="['admin']"`；编程式 `src/utils/has.ts`（`hasPerm`/`hasRole` 等）；超级管理员权限标识 `*:*:*`、超级角色 `role_admin`；权限标识格式 `模块:资源:操作`，与后端菜单表 `permission` 字段一致。路由级权限由后端按角色过滤后返回，前端不二次拦截。
+- **认证与多租户**：Token 存 localStorage（`src/utils/auth.ts`）；登录流程为 `useUserStore.accountLogin` → `setToken` + `setTenantId` → 路由守卫触发 `getInfo` + `generateRoutes`；请求头 `Authorization: Bearer <token>` 与 `X-Tenant-Id` 在 http 拦截器全局注入；客户端 ID 来自 `VITE_CLIENT_ID`。
+- **样式体系**：`src/styles/var.scss` 全局 SCSS 变量由 Vite `additionalData` 注入（`$color-theme` 等映射 Arco CSS 变量）；主题色经 `@arco-design/color` 动态生成 `--primary-1~10`；暗黑模式通过 `document.body` 设置 `arco-theme="dark"`；Arco 覆盖样式位于 `src/styles/arco-ui/`（less）。
+- **布局系统**：`src/layout/index.vue` 依据 `appStore.layout` 异步切换四种布局：`LayoutMix`（混合，默认）、`LayoutTop`、`LayoutDefault`、`LayoutColumns`。
+- **Vite 插件**：插件配置位于 `config/plugins/`（app-info、vue、auto-import、components、svg-icon、mock 等），根配置见 `vite.config.ts`。
 
-注：项目未配置单元测试框架；通过 `simple-git-hooks` + `lint-staged` 在 pre-commit 时对暂存文件执行 `eslint --fix`。依赖管理使用 pnpm（有 `pnpm.onlyBuiltDependencies` 白名单）。
+## 构建与测试命令
 
-## 环境与配置
+```bash
+# 启动开发服务器（端口 5173，Vite proxy 代理 VITE_API_PREFIX 到 VITE_API_BASE_URL）
+pnpm dev
 
-三个环境文件，变量须以 `VITE_` 开头（`FILE` 前缀也会暴露到客户端）：
-- `VITE_API_PREFIX`：开发/测试环境的接口代理前缀（如 `/dev-api`），生产环境留空则直接用 `VITE_API_BASE_URL`。
-- `VITE_API_BASE_URL`：后端地址。
-- `VITE_API_WS_URL`：WebSocket 地址。
-- `VITE_BASE`：应用 base 路径。
-- `VITE_BUILD_MOCK`：生产构建是否打包 Mock。
-- `VITE_OPEN_DEVTOOLS`：是否开启 Vue DevTools。
-- `VITE_APP_SETTING`：是否显示应用配置面板。
-- `VITE_CLIENT_ID`：客户端认证 ID。
+# 生产构建（类型检查 + 构建到 dist/，drop console/debugger，静态资源按类型分目录）
+pnpm build
 
-## 架构与核心约定
+# 以 test 模式构建（使用 .env.test，启用 Mock 打包）
+pnpm build:test
 
-### 路径别名与自动导入
+# 仅类型检查（vue-tsc --noEmit），不产出文件
+pnpm typecheck
 
-- 别名：`@` → `src/`，`~` → 项目根。tsconfig `paths` 仅声明 `@/*`。
-- `unplugin-auto-import`：Vue、Vue Router 的 API 及 Vue 3.5 新 API（`useTemplateRef`、`onWatcherCleanup`、`useId`）自动导入，无需手动 import。类型声明生成于 `src/types/auto-imports.d.ts`。
-- `unplugin-vue-components`：`src/components` 下的组件自动按需导入（含 `.vue` 与 `.tsx`），声明生成于 `src/types/components.d.ts`。因此 `GiTable`、`GiForm`、`GiPageLayout`、`GiCell*` 等业务组件在模板中直接使用即可，不要重复 import（业务子组件如 `AddDrawer` 仍需显式导入）。
-- SCSS 全局变量：`vite.config.ts` 配置 `additionalData: @use "@/styles/var.scss" as *;`，所有 `.scss` 文件可直接使用 `$color-theme`、`$color-text-1` 等变量。
+# ESLint 检查 / 自动修复
+pnpm lint
+pnpm lint:fix
 
-### 路由体系（动态路由 + 守卫）
+# 预览构建产物（端口 5050）
+pnpm preview
 
-路由分三类，定义于 `src/router/route.ts`：
-- `systemRoutes`：系统级固定路由（登录、仪表盘、个人中心、关于项目等），在 router 创建时即注册。
-- `constantRoutes`：兜底路由（redirect 中转页、403/404）。
-- 动态路由：登录后由 `useRouteStore.generateRoutes()` 调用 `getUserRoute()` 从后端拉取菜单树，经 `formatAsyncRoutes` 转换（component 字符串 → 真实模块）后 `router.addRoute` 注入。
+# 使用 npmmirror 源安装依赖（首次拉取项目用）
+pnpm bootstrap
+```
 
-关键机制（`src/router/`）：
-- `asyncModules.ts`：用 `import.meta.glob('@/views/**/*.vue')` 收集所有 views 下的页面模块为映射表，供动态路由的 `component` 字符串匹配。新增页面须放在 `src/views/` 下，文件路径即对应后端返回的 component 字段值（如 `system/user/index`）。
-- `guard.ts`：`setupRouterGuard` 处理登录态校验、白名单（`/login`、`/social/callback`、`/pwdExpired`）、动态路由生成、密码过期跳转；生产环境还会比对首页 ETag/Last-Modified 检测版本更新并弹窗提示。`hasRouteFlag` 防止重复生成路由，`resetHasRouteFlag()` 在登出时重置。
-- `route.ts` 中 `Layout` 为布局根组件，动态路由的 `component: 'Layout'` 或 `'ParentView'` 会映射到对应组件（见 `stores/modules/route.ts` 的 `layoutComponentMap`）。
-- 多级路由（≥3 层）会被 `flatMultiLevelRoutes` 降级为二级，以兼容 keep-alive。
-- `RouteMeta`（`src/types/router.d.ts`）扩展了 `title`、`icon`、`hidden`、`keepAlive`、`affix`、`showInTabs`、`activeMenu`、`sort` 等字段，控制菜单/页签/缓存行为。
+本项目暂无单元测试框架，代码改动的验证方式是完整执行下方三道门禁。
 
-### 状态管理（Pinia）
+### 提交前门禁（必须通过）
 
-Store 位于 `src/stores/modules/`，通过 `src/stores/index.ts` 统一导出，使用 `pinia-plugin-persistedstate` 持久化：
-- `app`：主题（light/dark）、主题色、布局模式（mix/top/default/columns）、页签、动画、菜单折叠等；`persist: true`（全量持久化，默认 localStorage）。负责 `initTheme()` 与 `initSiteConfig()`（从后端拉站点配置：title/logo/favicon/版权/备案）。
-- `user`：用户信息、token、roles、permissions。仅持久化 `token`、`roles`、`permissions`、`pwdExpiredShow`（localStorage）。登录方式：account/email/phone/social，均带 `clientId`（来自 `VITE_CLIENT_ID`）。
-- `route`：动态路由表，`persist: true`。
-- `tenant`：多租户开关与 tenantId，持久化到 localStorage。请求头 `X-Tenant-Id` 在 http 拦截器注入。
-- `dict`：字典缓存（内存，不持久化）。
-- `tabs`：多页签管理。
+提交代码前，AI 智能体**必须**让门禁通过：
 
-### HTTP 请求层
+1. `pnpm lint`——ESLint 代码规范检查；
+2. `pnpm typecheck`——vue-tsc 全量类型检查；
+3. `pnpm build`——生产构建（内含一次类型检查，验证可构建性）。
 
-`src/utils/http.ts` 是统一请求入口，默认导出 `{ get, post, put, patch, del, request, requestNative, download }`：
-- `baseURL` 取 `VITE_API_PREFIX`（开发用代理前缀）或 `VITE_API_BASE_URL`。
-- 请求拦截器：注入 `Authorization: Bearer <token>` 与 `X-Tenant-Id`（当租户启用）。
-- 响应拦截器：约定后端返回 `{ code, data, msg, success, timestamp }`（`ApiRes<T>`）。`success=false` 时按 msg 长度自动选择 Message（短）或 Notification（长）提示；`code === '401'` 弹 Modal 引导重新登录；blob 响应单独处理（下载错误时解析 JSON）。
-- `download` 方法返回原始 `AxiosResponse`，配合 `useDownload` hook 处理文件下载。
-- API 模块组织于 `src/apis/<module>/`，每个模块含 `index.ts`（聚合导出）、具体资源文件、`type.ts`（请求/响应类型）。典型 API 函数签名：`http.get<PageRes<T.UserResp[]>>(BASE_URL, query)`。全局类型 `ApiRes`、`PageRes`、`PageQuery` 定义于 `src/types/api.d.ts`。
+被 lint 拦截时执行 `pnpm lint:fix` 自动修复，再重跑 `pnpm lint` 确认。三道门禁全部通过后才能提交。
 
-### 业务组件体系（Gi* 系列）
+开发环境通过 Vite proxy 代理后端接口（`VITE_API_PREFIX` → `VITE_API_BASE_URL`），Mock 默认启用（`vite-plugin-mock`，`src/mock/`）；生产构建是否打包 Mock 由 `VITE_BUILD_MOCK` 决定。
 
-`src/components/` 下以 `Gi` 前缀的业务组件是列表页开发核心，均自动导入：
-- `GiTable`：封装 Arco Table，集成工具栏（列设置、密度、刷新）、分页、插槽（`#top` 放搜索表单、`#toolbar-left/right` 放操作按钮、`#<dataIndex>` 自定义列）。配合 `useTable` hook 使用。
-- `GiForm`：基于 columns 配置驱动的表单，`ColumnItem[]` 描述字段（type/field/label/span/props）。常作为 `GiTable` 的 `#top` 搜索区。
-- `GiPageLayout`：页面布局容器，支持 `#left` 侧栏插槽（如部门树）。
-- `GiCell*`（Avatar/Gender/Status/Tags 等）：表格单元格渲染组件。
-- `GiSplitPane`、`GiLeftRightPane`、`GiIframe`、`GiCodeView`、`GiEditTable`、`GiIconSelector`、`GiSvgIcon`、`GiDot`、`GiTag`、`GiSpace`、`GiFooter`、`GiOption*`、`GiThemeBtn` 等。
+## 代码风格
 
-### Hooks
+遵循 **[@antfu/eslint-config](https://github.com/antfu/eslint-config)**，ESLint 即代码格式的唯一事实源（**不使用 Prettier**，请勿在项目中引入）。
 
-`src/hooks/modules/` 提供 12 个组合式函数，经 `src/hooks/index.ts` 导出：
-- `useTable`：列表页核心，封装分页、加载、多选、查询（search 重置页码为 1）、刷新（refresh 保留页码）、删除（handleDelete 带二次确认 + 自动页码修正）。接收一个 `(page) => Promise<ApiRes<PageRes<T[]>>>` 的 API 函数。
-- `usePagination`、`useDownload`、`useResetReactive`（返回 `[state, reset]` 元组）、`useRequest`、`useLoading`、`useChart`、`useDevice`、`useBreakpoint`、`useMultipartUploader`、`useRouteListener`（配合 `setRouteEmitter` 通知路由变化）。
+### AI 智能体关键规则
 
-### 权限控制
-
-- 指令：`v-permission="['system:user:create']"`、`v-role="['admin']"`（`src/directives/permission/`），无权限元素从 DOM 移除。
-- 编程式：`src/utils/has.ts` 默认导出对象，提供 `hasPerm`、`hasPermOr`、`hasPermAnd`、`hasRole`、`hasRoleOr`、`hasRoleAnd`。超级管理员权限标识 `*:*:*`，超级角色 `role_admin`。
-- 权限标识格式：`模块:资源:操作`（如 `system:user:create`），与后端菜单表 `permission` 字段一致。
-- 路由级权限：动态路由由后端按用户角色过滤后返回，前端不二次拦截。
-
-### 认证与多租户
-
-- Token 存 localStorage（`src/utils/auth.ts` 的 `TOKEN_KEY = 'token'`）。
-- 登录流程：`useUserStore.accountLogin` 等 → 后端返回 token + tenantId → `setToken` + `setTenantId` → 路由守卫触发 `getInfo` 拉用户信息 + `generateRoutes` 生成动态路由。
-- 租户：`useTenantStore.needInputTenantCode` 判断是否需要登录页输入租户编码；请求头 `X-Tenant-Id` 全局注入。
-- 客户端 ID：`VITE_CLIENT_ID` 环境变量，登录时透传后端（多端认证管理）。
-
-### 布局系统
-
-`src/layout/index.vue` 根据 `appStore.layout` 动态切换四种布局（异步组件）：`LayoutMix`（混合，默认）、`LayoutTop`（顶部）、`LayoutDefault`（左侧）、`LayoutColumns`（分栏）。布局子组件位于 `src/layout/components/`，hooks 位于 `src/layout/hooks/`。
-
-### Mock
-
-`src/mock/` 下放置 Mock 文件，由 `vite-plugin-mock` 加载。开发环境默认启用（`localEnabled: true`），生产构建按 `VITE_BUILD_MOCK` 决定（`prodEnabled`）。Mock 生产入口通过 `injectCode` 注入 `setupProdMockServer()`。
-
-### 样式体系
-
-- `src/styles/var.scss`：全局 SCSS 变量（颜色映射到 Arco CSS 变量，如 `$color-theme: rgb(var(--primary-6))`），由 Vite `additionalData` 全局注入。
-- `src/styles/arco-ui/`：Arco Design 组件样式覆盖（less）。
-- `src/styles/index.scss`：全局样式入口，在 `main.ts` 中 import。
-- 主题色通过 `@arco-design/color` 的 `generate` 动态生成 `--primary-1` ~ `--primary-10` CSS 变量，由 `useAppStore.setThemeColor` 写入 `document.body`。
-- 暗黑模式：`document.body` 设置 `arco-theme="dark"` 属性。
-
-### Vite 插件
-
-插件配置位于 `config/plugins/`：`app-info`（启动时打印项目信息）、`vue`、`vue-jsx`、`devtools`、`auto-import`、`components`、`svg-icon`（SVG 雪碧图，图标放 `src/assets/icons/svg/`，用 `<gi-svg-icon name="xxx" />` 或 `icon-xxx` 引用）、`mock`。
-
-## 代码规范（ESLint）
-
-基于 `@antfu/eslint-config`，关键覆盖（`eslint.config.js`）：
-- Vue block 顺序：`[['script','template'],'style']`（script/template 可互换，style 必须最后）。
-- `defineOptions`、`defineModel`、`defineProps`、`defineEmits`、`defineSlots` 宏顺序固定，`defineExpose` 必须最后。
-- 箭头函数参数必须加括号；大括号风格 1tbs（允许单行）。
-- 忽略：`**/*.md`、`.github`、`.image`、`src/types/shims-vue.d.ts`。
-- 组件命名：使用 `defineOptions({ name: 'XxxYyy' })` 显式命名，便于 keep-alive 与 devtools 识别。
+| 规则 | 值 |
+|------|-----|
+| 缩进 | **2 空格**（禁用 Tab） |
+| 引号/分号 | 单引号，**无分号** |
+| Vue block 顺序 | `[['script','template'],'style']`（script/template 可互换，style 必须最后） |
+| 编译器宏顺序 | `defineOptions`、`defineModel`、`defineProps`、`defineEmits`、`defineSlots` 固定顺序，`defineExpose` 必须最后 |
+| 组件命名 | 使用 `defineOptions({ name: 'XxxYyy' })` 显式命名，便于 keep-alive 与 devtools 识别 |
+| 箭头函数 | 参数必须加括号；大括号风格 1tbs（允许单行） |
+| 表达式语句 | 禁止短路调用（`x && y()`）与三元语句，使用 `if` 表达控制流 |
+| 未使用变量 | 捕获错误变量（空处理 catch）与 `^_` 前缀变量/参数不检查 |
+| 无用 import | 禁止（`pnpm lint:fix` 自动清理） |
+| 忽略范围 | `**/*.md`、`.github`、`.image`、`src/types/shims-vue.d.ts` |
 
 ## 新增业务模块的典型流程
 
 1. `src/apis/<module>/`：新增 `xxx.ts`（API 函数）、`type.ts`（类型）、在 `index.ts` 聚合导出，并在 `src/apis/index.ts` 透传。
-2. `src/views/<module>/xxx/`：新增 `index.vue`（列表页，用 `GiPageLayout` + `GiTable` + `GiForm` + `useTable`）、`AddDrawer.vue`/`AddModal.vue`（新增/编辑）、`DetailDrawer.vue`（详情）等子组件。
-3. 路由与菜单由后端菜单管理配置（component 字段对应 views 路径），前端无需手动改路由文件。
+2. `src/views/<module>/xxx/`：新增 `index.vue`（列表页）、`AddDrawer.vue`/`AddModal.vue`（新增/编辑）、`DetailDrawer.vue`（详情）等子组件。
+3. 路由与菜单由后端菜单管理配置（`component` 字段对应 views 路径），前端无需手动改路由文件。
 4. 权限标识遵循 `模块:资源:操作` 格式，在按钮上加 `v-permission`。
 5. 列表页参考 `src/views/system/user/index.vue` 的写法（queryForm + columns + useTable + 子组件 ref 调用）。
 
-## Agent skills
+## 环境与配置
 
-技能是各 agent 工具（Claude Code / Codex / dsh）共用的**唯一事实源**，统一存放在 `.agents/skills/`，每个技能一个目录、含 `SKILL.md`。
+三个环境文件（`.env.development` / `.env.production` / `.env.test`），变量须以 `VITE_` 开头（`FILE` 前缀也会暴露到客户端）：
 
-## 编辑这些说明
+| 变量 | 说明 |
+|------|------|
+| `VITE_API_PREFIX` | 开发/测试环境的接口代理前缀（如 `/dev-api`），生产环境留空则直接用 `VITE_API_BASE_URL` |
+| `VITE_API_BASE_URL` | 后端地址 |
+| `VITE_API_WS_URL` | WebSocket 地址 |
+| `VITE_BASE` | 应用 base 路径 |
+| `VITE_BUILD_MOCK` | 生产构建是否打包 Mock |
+| `VITE_OPEN_DEVTOOLS` | 是否开启 Vue DevTools |
+| `VITE_APP_SETTING` | 是否显示应用配置面板 |
+| `VITE_CLIENT_ID` | 客户端认证 ID |
 
-`CLAUDE.md` 是根目录 `AGENTS.md` 的符号链接，`.claude/skills` 是 `.agents/skills` 的符号链接——请编辑真实文件（本文件与 `.agents/skills/`），不要改动链接本身。保持每条规则自包含，必要时链接到更高层文档。
+## PR 约定
 
-> **Windows 注意**：克隆后如需符号链接生效，需开启开发者模式（或以管理员运行 git），并执行 `git config core.symlinks true`，否则链接会被检出为普通文本文件。团队若以 Windows 为主且符号链接不可靠，可改用脚本同步（`cp AGENTS.md CLAUDE.md && cp -r .agents/skills/* .claude/skills/`）。
+所有 PR 必须提交到 `dev` 分支（新功能与功能优化）；维护分支 `x.x.x` 仅接受 bug 修复。请基于目标分支创建特性分支（如 `feat/new-feature`），不要直接修改源分支。遵循 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)。
+
+**提交格式**：[Conventional Commits（约定式提交）1.0.0](https://www.conventionalcommits.org/zh-hans/v1.0.0/)规范，`<类型>[可选作用域]: <描述>`，破坏性变更在类型或作用域后追加 `!`，如 `feat(user): 新增 xxx`、`feat!:`。作用域可取值：`apis` `views` `components` `hooks` `layout` `router` `stores` `directives` `styles` `utils` `mock` `types` `config` `constant`。
+
+**提交前检查**：
+
+```bash
+pnpm lint && pnpm typecheck && pnpm build    # 三道门禁必须全部通过（被 lint 拦截时使用 pnpm lint:fix）
+```
+
+## 安全漏洞
+
+不得通过 GitHub Issue 报告安全漏洞，请通过 GitHub 私有漏洞报告（Security Advisories）负责任地披露。
+
+## Agent Skills
+
+各 agent 工具（DeepSeek Harness / Claude Code / Codex）共用的技能统一存放在 `.agents/skills/` 作为唯一事实源——每个技能一个目录、含 `SKILL.md`。
+
