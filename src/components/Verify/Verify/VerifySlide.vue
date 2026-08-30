@@ -303,21 +303,21 @@ export default {
             }
             passFlag.value = true
             tipWords.value = `${(
-                (endMovetime.value - startMoveTime.value)
-                / 1000
+              (endMovetime.value - startMoveTime.value)
+              / 1000
             ).toFixed(2)}s验证成功`
             const captchaVerification = secretKey.value
               ? encryptByAes(
-                    `${backToken.value}---${JSON.stringify({
-                      x: moveLeftDistance,
-                      y: 5.0,
-                    })}`,
-                    secretKey.value,
+                  `${backToken.value}---${JSON.stringify({
+                    x: moveLeftDistance,
+                    y: 5.0,
+                  })}`,
+                  secretKey.value,
               )
               : `${backToken.value}---${JSON.stringify({
-                  x: moveLeftDistance,
-                  y: 5.0,
-                })}`
+                x: moveLeftDistance,
+                y: 5.0,
+              })}`
             setTimeout(() => {
               tipWords.value = ''
               proxy.$parent.closeBox()

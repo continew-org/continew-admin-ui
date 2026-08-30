@@ -16,7 +16,7 @@
         <div class="login-right">
           <h3 v-if="isEmailLogin" class="login-right__title">邮箱登录</h3>
           <EmailLogin v-if="isEmailLogin" />
-          <a-tabs v-else v-model:activeKey="activeTab" class="login-right__form">
+          <a-tabs v-else v-model:active-key="activeTab" class="login-right__form">
             <a-tab-pane key="1" title="账号登录">
               <component :is="AccountLogin" v-if="activeTab === '1'" />
             </a-tab-pane>
@@ -65,7 +65,7 @@
         <div class="login-right">
           <h3 v-if="isEmailLogin" class="login-right__title">邮箱登录</h3>
           <EmailLogin v-if="isEmailLogin" />
-          <a-tabs v-else v-model:activeKey="activeTab" class="login-right__form">
+          <a-tabs v-else v-model:active-key="activeTab" class="login-right__form">
             <a-tab-pane key="1" title="账号登录">
               <component :is="AccountLogin" v-if="activeTab === '1'" />
             </a-tab-pane>

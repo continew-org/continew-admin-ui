@@ -15,7 +15,7 @@ function checkRole(el: HTMLElement, binding: DirectiveBinding) {
       return super_admin === role || roleValues.includes(role)
     })
     if (!hasRole) {
-      el.parentNode && el.parentNode.removeChild(el)
+      el.parentNode?.removeChild(el)
     }
   } else {
     throw new Error(`need role! Like v-hasRole="['admin','user']"`)

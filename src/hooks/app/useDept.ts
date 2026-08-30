@@ -12,7 +12,7 @@ export function useDept(options?: { onSuccess?: () => void }) {
       loading.value = true
       const res = await listDeptDictTree({ description: name })
       deptList.value = res.data
-      options?.onSuccess && options.onSuccess()
+      options?.onSuccess?.()
     } finally {
       loading.value = false
     }

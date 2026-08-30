@@ -3,7 +3,7 @@
     <a-row :gutter="16">
       <a-col :span="24" :md="17">
         <GiTable
-          v-model:selectedKeys="selectedKeys"
+          v-model:selected-keys="selectedKeys"
           row-key="id"
           :data="dataList"
           :columns="listColumns"

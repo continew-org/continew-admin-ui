@@ -219,7 +219,11 @@ const onDownload = async (fileInfo: FileItem) => {
     target: '_self',
     fileName: fileInfo.originalName,
   })
-  res ? Message.success('下载成功') : Message.error('下载失败')
+  if (res) {
+    Message.success('下载成功')
+  } else {
+    Message.error('下载失败')
+  }
   search()
 }
 

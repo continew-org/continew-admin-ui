@@ -21,12 +21,12 @@ export function usePagination(callback: Callback, options: Options = { defaultPa
     simple: false,
     onChange: (size: number) => {
       pagination.current = size
-      callback && callback()
+      callback?.()
     },
     onPageSizeChange: (size: number) => {
       pagination.current = 1
       pagination.pageSize = size
-      callback && callback()
+      callback?.()
     },
   })
 

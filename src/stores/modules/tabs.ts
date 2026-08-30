@@ -13,7 +13,9 @@ const storeSetup = () => {
   const addTabItem = (item: RouteLocationNormalized) => {
     const index = tabList.value.findIndex((i) => i.path === item.path)
     if (index >= 0) {
-      tabList.value[index].fullPath !== item.fullPath && (tabList.value[index] = item)
+      if (tabList.value[index].fullPath !== item.fullPath) {
+        tabList.value[index] = item
+      }
     } else {
       if (item.meta?.showInTabs ?? true) {
         tabList.value.push(item)
@@ -81,7 +83,9 @@ const storeSetup = () => {
   // 关闭当前
   const closeCurrent = (path: string) => {
     const item = tabList.value.find((i) => i.path === path)
-    item?.name && deleteCacheItem(item.name)
+    if (item?.name) {
+      deleteCacheItem(item.name)
+    }
     deleteTabItem(path)
   }
 
@@ -90,7 +94,9 @@ const storeSetup = () => {
     const arr = tabList.value.filter((i) => i.path !== path)
     arr.forEach((item) => {
       deleteTabItem(item.path)
-      item?.name && deleteCacheItem(item.name)
+      if (item?.name) {
+        deleteCacheItem(item.name)
+      }
     })
   }
 
@@ -101,7 +107,9 @@ const storeSetup = () => {
     const arr = tabList.value.filter((i, n) => n < index)
     arr.forEach((item) => {
       deleteTabItem(item.path)
-      item?.name && deleteCacheItem(item.name)
+      if (item?.name) {
+        deleteCacheItem(item.name)
+      }
     })
   }
 
@@ -112,7 +120,9 @@ const storeSetup = () => {
     const arr = tabList.value.filter((i, n) => n > index)
     arr.forEach((item) => {
       deleteTabItem(item.path)
-      item?.name && deleteCacheItem(item.name)
+      if (item?.name) {
+        deleteCacheItem(item.name)
+      }
     })
   }
 

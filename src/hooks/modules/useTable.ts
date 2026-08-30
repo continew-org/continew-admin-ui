@@ -28,7 +28,7 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
       tableData.value = formatResult ? formatResult(data) : data
       const total = !Array.isArray(res.data) ? res.data.total : data.length
       setTotal(total)
-      onSuccess && onSuccess()
+      onSuccess?.()
     } finally {
       loading.value = false
     }
@@ -36,7 +36,9 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
 
   // 是否立即触发
   const isImmediate = immediate ?? true
-  isImmediate && getTableData()
+  if (isImmediate) {
+    getTableData()
+  }
 
   // 多选
   const selectedKeys = ref<(string | number)[]>([])
@@ -80,7 +82,9 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
           if (pagination.current > totalPage) {
             pagination.current = totalPage > 0 ? totalPage : 1
           }
-          options?.multiple && (selectedKeys.value = [])
+          if (options?.multiple) {
+            selectedKeys.value = []
+          }
           Message.success(options?.successTip || '删除成功')
           await getTableData()
         }

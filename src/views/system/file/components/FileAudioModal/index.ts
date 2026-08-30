@@ -18,7 +18,7 @@ function createModal<T extends { callback?: () => void }>(component: Component, 
       setTimeout(() => {
         instance.unmount()
         document.body.removeChild(el)
-        options?.callback && options?.callback()
+        options?.callback?.()
       }, 350)
     },
   })

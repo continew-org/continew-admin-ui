@@ -12,7 +12,7 @@ export function useRole(options?: { onSuccess?: () => void }) {
       loading.value = true
       const res = await listRoleDict()
       roleList.value = res.data
-      options?.onSuccess && options.onSuccess()
+      options?.onSuccess?.()
     } finally {
       loading.value = false
     }

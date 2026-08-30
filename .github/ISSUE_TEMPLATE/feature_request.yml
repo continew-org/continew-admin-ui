@@ -1,0 +1,54 @@
+name: ✨ 功能建议
+description: 为 ContiNew Admin UI 提出新功能或改进建议
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢建议！较复杂的功能建议先在此描述使用场景与设计方案，与维护者达成共识后再动手实现。
+
+        > ContiNew Admin 后端功能需求请先提交至 [ContiNew Admin](https://github.com/continew-org/continew-admin/issues/new/choose)；UI 组件库自身的功能请提交至对应组件仓库。
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我确认已搜索 Issue 广场与已有 Feature，不存在重复建议
+          required: true
+        - label: 我确认该功能具有通用性，而非特定业务场景的定制需求
+          required: true
+        - label: 我确认这是 ContiNew Admin UI 自身的需求，而非后端或组件库的需求
+          required: true
+        - label: 我确认已在最新版本上验证该功能暂不存在
+          required: true
+        - label: 我愿意提交 PR 实现该功能
+          required: false
+  - type: textarea
+    id: problem
+    attributes:
+      label: 功能描述
+      description: 希望增加什么功能？解决什么问题？请描述具体的使用场景。
+      placeholder: 我在使用 xxx 时，希望 ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 建议方案
+      description: 期望的使用方式或实现思路，如交互形式、页面效果等。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 备选方案
+      description: 你考虑过的其他解决方案或替代思路。
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: 附加信息
+      description: 其他有助于理解功能建议的上下文、截图或参考链接。
+    validations:
+      required: false

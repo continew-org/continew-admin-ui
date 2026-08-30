@@ -43,6 +43,16 @@ export default antfu(
       'node/prefer-global/process': 'off',
       'antfu/top-level-function': 'off',
       'antfu/if-newline': 'off',
+      // ESLint 9 起 no-unused-vars 的 caughtErrors 默认值由 none 变为 all，
+      // 空处理 catch（尽力而为的容错写法）属项目既有惯用法，此处对齐 antfu 上游配置显式关闭
+      'unused-imports/no-unused-vars': ['error', {
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        caughtErrors: 'none',
+      }],
     },
   },
 )

@@ -78,7 +78,7 @@ const audioStyle = computed(() => {
 
 const close = () => {
   visible.value = false
-  props.onClose && props.onClose()
+  props.onClose?.()
 }
 </script>
 

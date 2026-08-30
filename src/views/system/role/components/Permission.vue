@@ -284,9 +284,11 @@ const select: TableInstance['onSelect'] = (rowKeys, checked, record) => {
   }
 
   const isChecked = rowKeys.includes(checked)
-  isChecked
-    ? selectedKeys.value.add(extendedRecord.id)
-    : selectedKeys.value.delete(extendedRecord.id)
+  if (isChecked) {
+    selectedKeys.value.add(extendedRecord.id)
+  } else {
+    selectedKeys.value.delete(extendedRecord.id)
+  }
   extendedRecord.isChecked = isChecked
   // 级联选中子项
   cascadeSelectChild(extendedRecord, isCascade.value)
@@ -304,9 +306,11 @@ const selectAll: TableInstance['onSelectAll'] = (checked) => {
   tableData.value.forEach((item) => {
     const extendedItem = item as ExtendedRolePermissionResp
     extendedItem.isChecked = checked
-    checked
-      ? selectedKeys.value.add(item.id)
-      : selectedKeys.value.delete(item.id)
+    if (checked) {
+      selectedKeys.value.add(item.id)
+    } else {
+      selectedKeys.value.delete(item.id)
+    }
     cascadeSelectChild(extendedItem, true)
   })
 }
@@ -343,9 +347,11 @@ const selectPermission = (record: ExtendedRolePermissionResp) => {
     }
     record.permissions?.forEach((permission) => {
       permission.isChecked = checkPermissions.includes(permission.id)
-      permission.isChecked
-        ? selectedKeys.value.add(permission.id)
-        : selectedKeys.value.delete(permission.id)
+      if (permission.isChecked) {
+        selectedKeys.value.add(permission.id)
+      } else {
+        selectedKeys.value.delete(permission.id)
+      }
     })
   }
 }

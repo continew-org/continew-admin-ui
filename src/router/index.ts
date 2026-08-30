@@ -22,7 +22,9 @@ export function resetRouter() {
     routeStore.asyncRoutes.forEach((route) => {
       const { name } = route
       if (name) {
-        router.hasRoute(name) && router.removeRoute(name)
+        if (router.hasRoute(name)) {
+          router.removeRoute(name)
+        }
       }
     })
   } catch (error) {

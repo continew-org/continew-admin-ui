@@ -1,7 +1,7 @@
 <template>
   <GiPageLayout>
     <GiTable
-      v-model:selectedKeys="selectedKeys"
+      v-model:selected-keys="selectedKeys"
       row-key="tableName"
       :data="dataList"
       :columns="columns"

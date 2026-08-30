@@ -4,7 +4,7 @@
       <RoleTree @node-click="handleSelectRole" />
     </template>
     <template #header>
-      <a-tabs v-model:activeKey="activeTab" class="gi_tabs" hide-content size="large">
+      <a-tabs v-model:active-key="activeTab" class="gi_tabs" hide-content size="large">
         <a-tab-pane key="1" title="功能权限"></a-tab-pane>
         <a-tab-pane key="2" title="角色用户"></a-tab-pane>
       </a-tabs>

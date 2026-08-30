@@ -13,7 +13,7 @@ export function useMenu(options?: { onSuccess?: () => void }) {
       loading.value = true
       const res = await listMenuDictTree({ description: name })
       menuList.value = res.data
-      options?.onSuccess && options.onSuccess()
+      options?.onSuccess?.()
     } finally {
       loading.value = false
     }
@@ -25,7 +25,7 @@ export function useMenu(options?: { onSuccess?: () => void }) {
       loading.value = true
       const res = await listTenantPackageMenu()
       menuList.value = res.data
-      options?.onSuccess && options.onSuccess()
+      options?.onSuccess?.()
     } finally {
       loading.value = false
     }
