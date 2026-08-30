@@ -42,3 +42,4 @@ lerna-debug.log*
 !.codebuddy/skills/
 !.codebuddy/skills/**
 !.codebuddy/.mcp.json
+.mindfs
