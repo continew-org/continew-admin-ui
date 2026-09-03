@@ -30,13 +30,24 @@
 
       <!-- 列拖拽排序区域 -->
       <div class="gi-table__draggable">
-        <VueDraggable v-model="localColumns" :animation="150" @end="handleDragEnd">
+        <VueDraggable
+          v-model="localColumns"
+          :animation="150"
+          handle=".gi-table__draggable-item-move"
+          filter=".gi-table__draggable-item--fixed"
+          :prevent-on-filter="true"
+          @end="handleDragEnd"
+        >
           <div
             v-for="item in localColumns"
             :key="item.key"
             class="gi-table__draggable-item"
+            :class="{ 'gi-table__draggable-item--fixed': !!item.fixed }"
           >
-            <div class="gi-table__draggable-item-move">
+            <div
+              class="gi-table__draggable-item-move"
+              :class="{ 'gi-table__draggable-item-move--disabled': !!item.fixed }"
+            >
               <icon-drag-dot-vertical />
             </div>
             <a-checkbox
@@ -377,8 +388,17 @@ const handleOpen = () => {
   }
 }
 
+/** 将列设置列表恢复为 左固定 | 未固定 | 右固定，避免拖拽打乱固定列分组 */
+const normalizeLocalColumnOrder = () => {
+  const leftColumns = localColumns.value.filter((col) => col.fixed === 'left')
+  const centerColumns = localColumns.value.filter((col) => !col.fixed)
+  const rightColumns = localColumns.value.filter((col) => col.fixed === 'right')
+  localColumns.value = [...leftColumns, ...centerColumns, ...rightColumns]
+}
+
 // 处理拖拽结束
 const handleDragEnd = () => {
+  normalizeLocalColumnOrder()
   emitColumnsChange()
 }
 
@@ -506,9 +526,21 @@ defineExpose({
       background-color: var(--color-fill-2);
     }
 
+    &--fixed {
+      .gi-table__draggable-item-move {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+    }
+
     &-move {
       padding: 0 4px;
       cursor: move;
+
+      &--disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
     }
 
     &-fixed {
