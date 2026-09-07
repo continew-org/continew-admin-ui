@@ -30,13 +30,26 @@
 
       <!-- 列拖拽排序区域 -->
       <div class="gi-table__draggable">
-        <VueDraggable v-model="localColumns" :animation="150" @end="handleDragEnd">
+        <VueDraggable
+          v-model="localColumns"
+          :animation="150"
+          handle=".gi-table__draggable-item-move"
+          draggable=".gi-table__draggable-item:not(.gi-table__draggable-item--fixed)"
+          filter=".gi-table__draggable-item--fixed"
+          :prevent-on-filter="true"
+          :move="handleMove"
+          @end="handleDragEnd"
+        >
           <div
             v-for="item in localColumns"
             :key="item.key"
             class="gi-table__draggable-item"
+            :class="{ 'gi-table__draggable-item--fixed': !!item.fixed }"
           >
-            <div class="gi-table__draggable-item-move">
+            <div
+              class="gi-table__draggable-item-move"
+              :class="{ 'gi-table__draggable-item-move--disabled': !!item.fixed }"
+            >
               <icon-drag-dot-vertical />
             </div>
             <a-checkbox
@@ -137,6 +150,15 @@ const sortColumnsByLocalOrder = (columns: TableColumnData[]) => {
   })
 }
 
+/** 按本地顺序排列后，再强制归并为 左固定 | 未固定 | 右固定 */
+const groupColumnsByFixed = (columns: TableColumnData[]) => {
+  const sortedColumns = sortColumnsByLocalOrder(columns)
+  const leftFixedColumns = sortedColumns.filter((col) => col.fixed === 'left')
+  const unfixedColumns = sortedColumns.filter((col) => !col.fixed)
+  const rightFixedColumns = sortedColumns.filter((col) => col.fixed === 'right')
+  return [...leftFixedColumns, ...unfixedColumns, ...rightFixedColumns]
+}
+
 // 更新列变化
 const emitColumnsChange = () => {
   // 将当前列设置应用到原始列
@@ -145,20 +167,20 @@ const emitColumnsChange = () => {
     const localCol = localColumns.value.find((col) => col.key === key)
 
     if (localCol) {
+      const width = localCol.width || originalCol.width
+        || (localCol.fixed ? originalCol.minWidth : undefined)
       return {
         ...originalCol,
         show: localCol.show,
         fixed: localCol.fixed,
-        width: localCol.width || originalCol.width,
+        // Arco 固定列 left/right 偏移只认 width/_resizeWidth，不认 minWidth
+        ...(width !== undefined ? { width } : {}),
       }
     }
     return originalCol
   })
 
-  // 根据拖拽后的顺序重新排序列
-  const sortedColumns = sortColumnsByLocalOrder(updatedColumns)
-
-  emit('update:columns', sortedColumns)
+  emit('update:columns', groupColumnsByFixed(updatedColumns))
 }
 
 // 缓存可选列
@@ -212,25 +234,18 @@ const visibleColumns = computed(() => {
       const localCol = localColumns.value.find((item) => item.key === key)
 
       if (localCol) {
+        const width = localCol.width || col.width
+          || (localCol.fixed ? col.minWidth : undefined)
         return {
           ...col,
           fixed: localCol.fixed,
-          width: localCol.width || col.width,
+          ...(width !== undefined ? { width } : {}),
         }
       }
       return col
     })
 
-  // 根据拖拽后的顺序重新排序列
-  const sortedShowColumns = sortColumnsByLocalOrder(showColumns)
-
-  // 然后根据固定状态进行排序（左固定 -> 未固定 -> 右固定）
-  const leftFixedColumns = sortedShowColumns.filter((col) => col.fixed === 'left')
-  const unfixedColumns = sortedShowColumns.filter((col) => !col.fixed)
-  const rightFixedColumns = sortedShowColumns.filter((col) => col.fixed === 'right')
-
-  // 返回排序后的列
-  return [...leftFixedColumns, ...unfixedColumns, ...rightFixedColumns]
+  return groupColumnsByFixed(showColumns)
 })
 
 // 监听本地列变化，发出可见列变化事件
@@ -274,6 +289,35 @@ const transformColumns = (columns = props.columns) => {
 
   // 组合列表：左固定 + 中间 + 右固定
   return [...leftColumns, ...centerColumns, ...rightColumns]
+}
+
+/** 原始列顺序（用于固定列相对次序回正；Arco 固定列偏移依赖该次序与 width） */
+const getOriginalColumnIndex = (key: string) => {
+  const index = originalColumns.value.findIndex((column) => {
+    const columnKey = column.dataIndex || (typeof column.title === 'string' ? column.title : '')
+    return columnKey === key
+  })
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index
+}
+
+/** 将列设置列表恢复为 左固定 | 未固定 | 右固定，且左右固定列相对次序回退到原始配置 */
+const normalizeLocalColumnOrder = () => {
+  const leftColumns = localColumns.value
+    .filter((col) => col.fixed === 'left')
+    .sort((a, b) => getOriginalColumnIndex(a.key) - getOriginalColumnIndex(b.key))
+  const centerColumns = localColumns.value.filter((col) => !col.fixed)
+  const rightColumns = localColumns.value
+    .filter((col) => col.fixed === 'right')
+    .sort((a, b) => getOriginalColumnIndex(a.key) - getOriginalColumnIndex(b.key))
+  localColumns.value = [...leftColumns, ...centerColumns, ...rightColumns]
+}
+
+/** 禁止拖拽已固定列（与 draggable/filter 双保险） */
+const handleMove = (evt: { dragged?: Element }) => {
+  if (evt.dragged?.classList.contains('gi-table__draggable-item--fixed')) {
+    return false
+  }
+  return true
 }
 
 // 从localStorage恢复设置
@@ -346,6 +390,8 @@ const loadSettingsFromStorage = () => {
       localColumns.value = [...localColumns.value, ...newColumns]
     }
 
+    // 回正左右固定列相对次序，修复历史错误缓存导致的叠层
+    normalizeLocalColumnOrder()
     // 发送更新事件
     emitColumnsChange()
     return true
@@ -379,6 +425,7 @@ const handleOpen = () => {
 
 // 处理拖拽结束
 const handleDragEnd = () => {
+  normalizeLocalColumnOrder()
   emitColumnsChange()
 }
 
@@ -399,14 +446,15 @@ const handleFixedColumn = (item: ColumnItem, position: 'left' | 'right') => {
   // 检查列是否已经固定在当前位置，是则取消固定
   const isCurrentlyFixed = item.fixed === position
 
-  // 只修改当前列的固定状态，不改变位置
+  // 切换固定状态；随后 normalize 归并分组并回正固定列相对次序
   item.fixed = isCurrentlyFixed ? undefined : position
 
-  // 如果被固定但没有宽度，设置默认宽度100
+  // 如果被固定但没有宽度，设置默认宽度100（Arco 固定列偏移计算依赖 width）
   if (item.fixed && !item.width) {
     item.width = 100
   }
 
+  normalizeLocalColumnOrder()
   // 发出列变更事件
   emitColumnsChange()
 }
@@ -447,6 +495,8 @@ const handleReset = () => {
 const handleSave = () => {
   if (!getStorageKey.value) return
   try {
+    normalizeLocalColumnOrder()
+    emitColumnsChange()
     const settings = {
       columns: localColumns.value,
     }
@@ -506,9 +556,21 @@ defineExpose({
       background-color: var(--color-fill-2);
     }
 
+    &--fixed {
+      .gi-table__draggable-item-move {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+    }
+
     &-move {
       padding: 0 4px;
       cursor: move;
+
+      &--disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
     }
 
     &-fixed {
