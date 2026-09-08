@@ -11,6 +11,6 @@ export function listOnlineUser(query: T.OnlineUserPageQuery) {
 }
 
 /** @desc 强退在线用户 */
-export function kickout(token: string) {
-  return http.del(`${BASE_URL}/${token}`)
+export function kickout(sessionId: string) {
+  return http.del(`${BASE_URL}/${sessionId}`)
 }

@@ -150,6 +150,12 @@ const columns: TableInstance['columns'] = [
   { title: 'Token 最低活跃频率', dataIndex: 'activeTimeout', slotName: 'activeTimeout', width: 180, align: 'center', render: ({ record }) => `${record.activeTimeout} 秒` },
   { title: 'Token 有效期', dataIndex: 'timeout', slotName: 'timeout', width: 180, align: 'center', render: ({ record }) => `${record.timeout} 秒` },
   {
+    title: 'Refresh Token 传输模式',
+    dataIndex: 'refreshTokenMode',
+    align: 'center',
+    render: ({ record }) => record.refreshTokenMode === 'COOKIE' ? 'Cookie（Web）' : '响应体（App / 小程序）',
+  },
+  {
     title: '状态',
     dataIndex: 'status',
     slotName: 'status',

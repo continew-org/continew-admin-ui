@@ -37,6 +37,8 @@ const { client_type, auth_type_enum, replaced_range_enum, logout_mode_enum } = u
 const [form, resetForm] = useResetReactive({
   activeTimeout: 1800,
   timeout: 86400,
+  refreshTokenTimeout: 2592000,
+  refreshTokenMode: 'COOKIE',
   isConcurrent: true,
   maxLoginCount: -1,
   status: 1,
@@ -117,6 +119,41 @@ const columns: ColumnItem[] = reactive([
       placeholder: '请输入 Token 有效期',
     },
     rules: [{ required: true, message: '请输入 Token 有效期' }],
+  },
+  {
+    label: () => (
+      <a-tooltip content="轮换不会延长该绝对有效期；单位：秒">
+        Refresh Token 有效期&nbsp;
+        <icon-question-circle />
+      </a-tooltip>
+    ),
+    field: 'refreshTokenTimeout',
+    type: 'input-number',
+    span: 12,
+    slots: {
+      append: () => (
+        <span style={{ width: '30px', textAlign: 'center' }}>秒</span>
+      ),
+    },
+    props: {
+      min: 60,
+      placeholder: '请输入 Refresh Token 有效期',
+    },
+    rules: [{ required: true, message: '请输入 Refresh Token 有效期' }],
+  },
+  {
+    label: 'Refresh Token 传输模式',
+    field: 'refreshTokenMode',
+    type: 'select',
+    span: 12,
+    props: {
+      options: [
+        { label: 'Cookie（Web）', value: 'COOKIE' },
+        { label: '响应体（App / 小程序）', value: 'BODY' },
+      ],
+      placeholder: '请选择 Refresh Token 传输模式',
+    },
+    rules: [{ required: true, message: '请选择 Refresh Token 传输模式' }],
   },
   {
     label: '是否允许同一账号多地同时登录',
