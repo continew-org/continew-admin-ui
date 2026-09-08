@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        提问前建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)、[常见问题](https://continew.top/docs/admin/faq.html)并询问 [DeepWiki](https://deepwiki.com/continew-org/continew-admin-ui)，多数使用问题都能快速找到答案。
+        提问前建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)、[常见问题](https://continew.top/docs/admin/faq.html)，多数使用问题都能快速找到答案。
 
         > 后端接口相关的问题（如接口报错、权限配置）请提交至 [ContiNew Admin](https://github.com/continew-org/continew-admin/issues/new/choose)。
   - type: checkboxes

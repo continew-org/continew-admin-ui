@@ -9,7 +9,7 @@ body:
 
         1. 请在[最新版本](https://github.com/continew-org/continew-admin-ui/releases)上验证问题是否仍然存在，项目仅维护最新版本；
         2. 请搜索 [Issue 广场](https://continew.top/docs/admin/issue-hub.html) 与[已有 Issue](https://github.com/continew-org/continew-admin-ui/issues)，避免重复提交；
-        3. 使用与配置问题建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)、[常见问题](https://continew.top/docs/admin/faq.html)或询问 [DeepWiki](https://deepwiki.com/continew-org/continew-admin-ui)。
+        3. 使用与配置问题建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)、[常见问题](https://continew.top/docs/admin/faq.html)。
 
         > ContiNew Admin 后端接口相关问题请先提交至 [ContiNew Admin](https://github.com/continew-org/continew-admin/issues/new/choose)；UI 组件库（Arco Design Vue）自身的问题请提交至对应组件仓库。
 

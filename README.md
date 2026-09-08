@@ -38,7 +38,7 @@
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=dark" alt="Gitee Forks" />
 </a>
 
-📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/docs/admin/guide/demo.html) | 💬 [吐槽广场（你就是 Talk King!）](https://continew.top/docs/admin/issue-hub.html) | [![问 DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/continew-org/continew-admin-ui)
+📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/docs/admin/guide/demo.html) | 💬 [吐槽广场（你就是 Talk King!）](https://continew.top/docs/admin/issue-hub.html)
 
 ## 简介
 
