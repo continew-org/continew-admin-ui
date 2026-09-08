@@ -7,6 +7,7 @@ on:
     types: [opened]
 
 permissions:
+  contents: read
   issues: write
   pull-requests: write
 
@@ -16,7 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # actions/first-interaction 无法区分维护者与外部贡献者，这里先放行仓库协作者（含组织/团队成员）
+      - name: Check whether the contributor is a collaborator
+        id: collaborator
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/${{ github.repository }}/collaborators/${{ github.actor }}" >/dev/null 2>&1; then
+            echo "is_collaborator=true" >> "$GITHUB_OUTPUT"
+            echo "Collaborator @${{ github.actor }} detected, skip greeting."
+          else
+            echo "is_collaborator=false" >> "$GITHUB_OUTPUT"
+            echo "External contributor @${{ github.actor }} detected, proceed with greeting."
+          fi
+
       - name: Greet first-time contributor
+        if: steps.collaborator.outputs.is_collaborator == 'false'
         uses: actions/first-interaction@v3
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
