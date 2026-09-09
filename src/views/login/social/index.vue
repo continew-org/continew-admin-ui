@@ -9,7 +9,7 @@ import { Message } from '@arco-design/web-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { bindSocialAccount } from '@/apis/system'
 import { useTabsStore, useUserStore } from '@/stores'
-import { isLogin } from '@/utils/auth'
+import { isLogin } from '@/features/auth-session/access-token'
 
 const route = useRoute()
 const router = useRouter()

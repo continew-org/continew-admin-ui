@@ -321,8 +321,10 @@ export interface ClientResp {
   clientId: string
   clientType: string
   authType: string
-  activeTimeout: string
-  timeout: string
+  activeTimeout: number
+  timeout: number
+  refreshTokenTimeout: number
+  refreshTokenMode: 'COOKIE' | 'BODY'
   status: string
   isConcurrent: boolean
   replacedRange: string
@@ -341,8 +343,10 @@ export interface ClientDetailResp {
   clientId: string
   clientType: string
   authType: string
-  activeTimeout: string
-  timeout: string
+  activeTimeout: number
+  timeout: number
+  refreshTokenTimeout: number
+  refreshTokenMode: 'COOKIE' | 'BODY'
   status: number
   isConcurrent: boolean
   maxLoginCount: number

@@ -82,48 +82,75 @@ import SettingDrawer from './SettingDrawer.vue'
 import Search from './Search.vue'
 import { getUnreadMessageCount } from '@/apis'
 import { useUserStore } from '@/stores'
-import { getToken } from '@/utils/auth'
+import { getAccessToken, onAccessTokenChange } from '@/features/auth-session/access-token'
 import { useBreakpoint, useDevice } from '@/hooks'
 
 defineOptions({ name: 'HeaderRight' })
 
 const { isDesktop } = useDevice()
 const { breakpoint } = useBreakpoint()
-let socket: WebSocket
+let socket: WebSocket | undefined
+let socketToken: string | undefined
+
+const unreadMessageCount = ref(0)
+// 初始化 WebSocket
+const initWebSocket = (token: string) => {
+  if (socketToken === token
+    && socket
+    && (socket.readyState === WebSocket.CONNECTING || socket.readyState === WebSocket.OPEN)) {
+    return
+  }
+  const previousSocket = socket
+  const currentSocket = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/websocket?token=${token}`)
+  socket = currentSocket
+  socketToken = token
+  if (previousSocket) {
+    previousSocket.close()
+  }
+  currentSocket.onopen = () => {
+    // console.log('WebSocket connection opened')
+  }
+
+  currentSocket.onmessage = (event) => {
+    unreadMessageCount.value = Number.parseInt(event.data)
+  }
+
+  currentSocket.onerror = () => {
+    // console.error('WebSocket error:', error)
+  }
+
+  currentSocket.onclose = () => {
+    if (socket === currentSocket) {
+      socket = undefined
+      socketToken = undefined
+    }
+    // console.log('WebSocket connection closed')
+  }
+}
+
+const stopAccessTokenListener = onAccessTokenChange((token) => {
+  if (token) {
+    initWebSocket(token)
+  } else if (socket) {
+    socket.close()
+    socket = undefined
+    socketToken = undefined
+  }
+})
 onBeforeUnmount(() => {
+  stopAccessTokenListener()
   if (socket) {
     socket.close()
   }
 })
 
-const unreadMessageCount = ref(0)
-// 初始化 WebSocket
-const initWebSocket = (token: string) => {
-  socket = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/websocket?token=${token}`)
-  socket.onopen = () => {
-    // console.log('WebSocket connection opened')
-  }
-
-  socket.onmessage = (event) => {
-    unreadMessageCount.value = Number.parseInt(event.data)
-  }
-
-  socket.onerror = () => {
-    // console.error('WebSocket error:', error)
-  }
-
-  socket.onclose = () => {
-    // console.log('WebSocket connection closed')
-  }
-}
-
 // 查询未读消息数量
 const getMessageCount = async () => {
   const { data } = await getUnreadMessageCount()
   unreadMessageCount.value = data.total
-  const token = getToken()
-  if (token) {
-    initWebSocket(token)
+  const accessToken = getAccessToken()
+  if (accessToken) {
+    initWebSocket(accessToken)
   }
 }
 

@@ -1,8 +1,9 @@
 import { Button, Message, Notification, Space } from '@arco-design/web-vue'
 import NProgress from 'nprogress'
 import type { Router } from 'vue-router'
+import { START_LOCATION } from 'vue-router'
 import { useRouteStore, useUserStore } from '@/stores'
-import { getToken } from '@/utils/auth'
+import { getAccessToken } from '@/features/auth-session/access-token'
 import { isHttp } from '@/utils/validate'
 import 'nprogress/nprogress.css'
 import { setRouteEmitter } from '@/hooks'
@@ -75,8 +76,47 @@ const whiteList = ['/login', '/social/callback', '/pwdExpired']
 
 /** 是否已经生成过路由表 */
 let hasRouteFlag = false
+let sessionRestoreAttempted = false
+let sessionRestorePromise: null | Promise<boolean> = null
+let sessionRestoreRecoverableFailure = false
 export const resetHasRouteFlag = () => {
   hasRouteFlag = false
+}
+
+const restoreSessionOnce = (userStore: ReturnType<typeof useUserStore>) => {
+  if (sessionRestorePromise) return sessionRestorePromise
+  if (getAccessToken()) {
+    sessionRestoreRecoverableFailure = false
+    return Promise.resolve(true)
+  }
+  if (sessionRestoreAttempted) return Promise.resolve(false)
+  sessionRestoreAttempted = true
+  sessionRestorePromise = userStore.restoreSession()
+    .then((restored) => {
+      sessionRestoreRecoverableFailure = !restored
+      return restored
+    })
+    .catch((error: unknown) => {
+      const status = (error as { response?: { status?: number } })?.response?.status
+      // 只有明确 401 才记住“本次页面已确认无会话”。限流、网络和服务端
+      // 临时故障不删除 Cookie，并允许后续进入受保护页面时重新恢复。
+      if (status !== 401) {
+        sessionRestoreAttempted = false
+        sessionRestoreRecoverableFailure = true
+      } else {
+        sessionRestoreRecoverableFailure = false
+        // 恢复失败跳转登录页前用后端给出的失效提示直接告诉用户发生了什么。
+        const data = (error as { response?: { data?: { msg?: string } } })?.response?.data
+        if (data?.msg) {
+          Message.error(data.msg)
+        }
+      }
+      return false
+    })
+    .finally(() => {
+      sessionRestorePromise = null
+    })
+  return sessionRestorePromise
 }
 
 /** 初始化路由守卫 */
@@ -85,11 +125,16 @@ export const setupRouterGuard = (router: Router) => {
     NProgress.start()
     const userStore = useUserStore()
     const routeStore = useRouteStore()
+    // Access Token 不持久化。首次进入受保护页面时必须先尝试用 HttpOnly Cookie 恢复，
+    // 再决定是否跳转登录页，避免浏览器刷新页面后误判为未登录。
+    if (!getAccessToken() && (!whiteList.includes(to.path) || to.path === '/social/callback')) {
+      await restoreSessionOnce(userStore)
+    }
     // 判断该用户是否登录
-    if (getToken()) {
+    if (getAccessToken()) {
       if (to.path === '/login') {
         // 如果已经登录，并准备进入 Login 页面，则重定向到主页
-        next()
+        next('/')
       } else {
         if (!hasRouteFlag) {
           try {
@@ -123,6 +168,18 @@ export const setupRouterGuard = (router: Router) => {
         // 如果在免登录的白名单中，则直接进入
         next()
       } else {
+        if (sessionRestoreRecoverableFailure) {
+          Message.warning('登录状态恢复失败，请稍后重试')
+          if (from === START_LOCATION) {
+            // 首屏导航直接中止会停留在空白页；跳转登录页并保留目标地址，
+            // 服务恢复后用户可重新登录回到原页面。
+            next(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
+          } else {
+            // 应用内导航保留当前页面，用户稍后重试即可恢复。
+            next(false)
+          }
+          return
+        }
         // 其他没有访问权限的页面将被重定向到登录页面
         next(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
       }

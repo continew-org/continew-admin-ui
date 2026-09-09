@@ -6,6 +6,7 @@ import {
   type AccountLoginReq,
   AuthTypeConstants,
   type EmailLoginReq,
+  type LoginResp,
   type PhoneLoginReq,
   type UserInfo,
   accountLogin as accountLoginApi,
@@ -13,10 +14,16 @@ import {
   getUserInfo as getUserInfoApi,
   logout as logoutApi,
   phoneLogin as phoneLoginApi,
+  refreshToken as refreshTokenApi,
   socialLogin as socialLoginApi,
 } from '@/apis'
-import { clearToken, getToken, setToken } from '@/utils/auth'
+import {
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+} from '@/features/auth-session/access-token'
 import { resetHasRouteFlag } from '@/router/guard'
+import { withAuthLifecycleLock } from '@/features/auth-session/lifecycle'
 
 const storeSetup = () => {
   const tenantStore = useTenantStore()
@@ -40,47 +47,68 @@ const storeSetup = () => {
   const username = computed(() => userInfo.username)
   const avatar = computed(() => userInfo.avatar)
 
-  const token = ref(getToken() || '')
+  const accessToken = ref(getAccessToken() || '')
   const pwdExpiredShow = ref<boolean>(true)
   const roles = ref<string[]>([]) // 当前用户角色
   const permissions = ref<string[]>([]) // 当前角色权限标识集合
-  // 重置token
-  const resetToken = () => {
-    token.value = ''
-    clearToken()
+  // 只清理短期 Access Token；Refresh Token 在 HttpOnly Cookie 中，前端脚本无法读取。
+  const resetAccessToken = () => {
+    accessToken.value = ''
+    clearAccessToken()
     resetHasRouteFlag()
+  }
+
+  const updateAccessToken = (token: string) => {
+    setAccessToken(token)
+    accessToken.value = token
+  }
+
+  const saveLoginState = (data: LoginResp) => {
+    updateAccessToken(data.accessToken)
+    tenantStore.setTenantId(data.tenantId)
+  }
+
+  // 页面重载后，使用浏览器自动携带的 HttpOnly Cookie 恢复短期 Access Token。
+  const restoreSession = async () => {
+    if (getAccessToken()) return true
+    await withAuthLifecycleLock(async () => {
+      if (getAccessToken()) return
+      const res = await refreshTokenApi()
+      saveLoginState(res.data)
+    })
+    return true
   }
 
   // 登录
   const accountLogin = async (req: AccountLoginReq, tenantCode?: string) => {
-    const res = await accountLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.ACCOUNT }, tenantCode)
-    setToken(res.data.token)
-    tenantStore.setTenantId(res.data.tenantId)
-    token.value = res.data.token
+    await withAuthLifecycleLock(async () => {
+      const res = await accountLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.ACCOUNT }, tenantCode)
+      saveLoginState(res.data)
+    })
   }
 
   // 邮箱登录
   const emailLogin = async (req: EmailLoginReq, tenantCode?: string) => {
-    const res = await emailLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.EMAIL }, tenantCode)
-    setToken(res.data.token)
-    tenantStore.setTenantId(res.data.tenantId)
-    token.value = res.data.token
+    await withAuthLifecycleLock(async () => {
+      const res = await emailLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.EMAIL }, tenantCode)
+      saveLoginState(res.data)
+    })
   }
 
   // 手机号登录
   const phoneLogin = async (req: PhoneLoginReq, tenantCode?: string) => {
-    const res = await phoneLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.PHONE }, tenantCode)
-    setToken(res.data.token)
-    tenantStore.setTenantId(res.data.tenantId)
-    token.value = res.data.token
+    await withAuthLifecycleLock(async () => {
+      const res = await phoneLoginApi({ ...req, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.PHONE }, tenantCode)
+      saveLoginState(res.data)
+    })
   }
 
   // 三方账号登录
   const socialLogin = async (source: string, req: any) => {
-    const res: any = await socialLoginApi({ ...req, source, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.SOCIAL })
-    setToken(res.data.token)
-    tenantStore.setTenantId(res.data.tenantId)
-    token.value = res.data.token
+    await withAuthLifecycleLock(async () => {
+      const res: any = await socialLoginApi({ ...req, source, clientId: import.meta.env.VITE_CLIENT_ID, authType: AuthTypeConstants.SOCIAL })
+      saveLoginState(res.data)
+    })
   }
 
   // 退出登录回调
@@ -88,20 +116,18 @@ const storeSetup = () => {
     roles.value = []
     permissions.value = []
     pwdExpiredShow.value = true
-    resetToken()
+    resetAccessToken()
     resetRouter()
     tenantStore.resetTenantId()
   }
 
   // 退出登录
   const logout = async () => {
-    try {
+    await withAuthLifecycleLock(async () => {
       await logoutApi()
       await logoutCallBack()
-      return true
-    } catch (error) {
-      return false
-    }
+    })
+    return true
   }
 
   // 获取用户信息
@@ -120,7 +146,7 @@ const storeSetup = () => {
     nickname,
     username,
     avatar,
-    token,
+    accessToken,
     roles,
     permissions,
     pwdExpiredShow,
@@ -131,10 +157,12 @@ const storeSetup = () => {
     logout,
     logoutCallBack,
     getInfo,
-    resetToken,
+    resetAccessToken,
+    restoreSession,
+    updateAccessToken,
   }
 }
 
 export const useUserStore = defineStore('user', storeSetup, {
-  persist: { paths: ['token', 'roles', 'permissions', 'pwdExpiredShow'], storage: localStorage },
+  persist: { paths: ['roles', 'permissions', 'pwdExpiredShow'], storage: localStorage },
 })

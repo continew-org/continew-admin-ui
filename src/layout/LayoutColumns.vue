@@ -39,7 +39,7 @@ import { useAppStore } from '@/stores'
 import { useLevelMenu } from '@/layout/hooks/useLevelMenu'
 import { useDevice } from '@/hooks'
 import NoticePopup from '@/views/user/message/components/NoticePopup.vue'
-import { getToken } from '@/utils/auth'
+import { getAccessToken } from '@/features/auth-session/access-token'
 
 defineOptions({ name: 'LayoutColumns' })
 
@@ -59,10 +59,10 @@ const noticePopupRef = ref<InstanceType<typeof NoticePopup>>()
 
 // 检查并显示未读公告
 const checkAndShowNotices = () => {
-  const token = getToken()
+  const accessToken = getAccessToken()
 
   // 如果有token，检查未读公告
-  if (token) {
+  if (accessToken) {
     setTimeout(() => {
       noticePopupRef.value?.open()
     }, 1000) // 延迟1秒显示，让页面先加载完成

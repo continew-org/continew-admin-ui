@@ -8,8 +8,8 @@ export const useTenantStore = defineStore('tenant', () => {
   const setTenantEnable = (status: boolean) => {
     tenantEnabled.value = status
   }
-  const setTenantId = (id: string) => {
-    tenantId.value = id
+  const setTenantId = (id?: string | number | null) => {
+    tenantId.value = id == null ? undefined : String(id)
   }
 
   // 判断是否需要用户输入租户编码
