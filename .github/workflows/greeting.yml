@@ -7,6 +7,7 @@ on:
     types: [opened]
 
 permissions:
+  contents: read
   issues: write
   pull-requests: write
 
@@ -16,8 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # actions/first-interaction 无法区分维护者与外部贡献者，这里先放行仓库协作者（含组织/团队成员）
+      - name: Check whether the contributor is a collaborator
+        id: collaborator
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/${{ github.repository }}/collaborators/${{ github.actor }}" >/dev/null 2>&1; then
+            echo "is_collaborator=true" >> "$GITHUB_OUTPUT"
+            echo "Collaborator @${{ github.actor }} detected, skip greeting."
+          else
+            echo "is_collaborator=false" >> "$GITHUB_OUTPUT"
+            echo "External contributor @${{ github.actor }} detected, proceed with greeting."
+          fi
+
       - name: Greet first-time contributor
-        uses: actions/first-interaction@v3
+        if: steps.collaborator.outputs.is_collaborator == 'false'
+        uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3.1.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           issue_message: |-
@@ -27,6 +43,6 @@ jobs:
           pr_message: |-
             🎉 恭喜 @${{ github.actor }}，这是您对 ContiNew Admin UI 仓库的首次贡献！我们衷心感谢您付出的努力。
 
-            为了保证代码库的完整性和可读性，请您在合并代码之前，确认您的代码符合项目既定的格式规范。关于代码风格和门禁检查的详细说明，请查看仓库中的 [AGENTS.md](AGENTS.md)。
+            为了保证代码库的完整性和可读性，请您在合并代码之前，确认您的代码符合项目既定的格式规范。关于代码风格和门禁检查的详细说明，请查看仓库中的 [AGENTS.md](https://github.com/continew-org/continew-admin-ui/blob/dev/AGENTS.md)。
 
             如有任何疑问，或希望获得更详细的说明，欢迎随时留言交流。此外，诚挚邀请您加入官方交流群，与项目维护团队及其他大佬用户实时交流探讨、获取第一手项目动态（入群方式详见 [continew.top/discussion.html](https://continew.top/discussion.html)）。再次感谢您的宝贵贡献！
