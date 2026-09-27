@@ -35,6 +35,13 @@ export function socialLogin(req: any) {
   return http.post<T.LoginResp>(`${BASE_URL}/login`, req)
 }
 
+/** @desc 使用 HttpOnly Cookie 中的 Refresh Token 换取新的 Access Token */
+export function refreshToken() {
+  return http.post<T.LoginResp>(`${BASE_URL}/refresh`, undefined, {
+    withCredentials: true,
+  })
+}
+
 /** @desc 三方账号登录授权 */
 export function socialAuth(source: string) {
   return http.get<T.SocialAuthAuthorizeResp>(`${BASE_URL}/${source}`)

@@ -80,8 +80,16 @@ export interface EmailLoginReq extends AuthReq {
 
 /** 登录响应类型 */
 export interface LoginResp {
-  token: string
-  tenantId: string
+  /** 短期访问令牌，前端仅持久化该字段。 */
+  accessToken: string
+  tokenType: 'Bearer'
+  expiresIn: number
+  /** Refresh Token 剩余有效期。 */
+  refreshExpiresIn: number
+  /** 仅 BODY 模式（App / 小程序）返回，浏览器由 HttpOnly Cookie 承载。 */
+  refreshToken?: string
+  /** 后端根据登录/刷新会话返回的租户 ID。 */
+  tenantId?: string | number | null
 }
 
 /** 第三方登录授权类型 */
