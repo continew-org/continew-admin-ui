@@ -10,49 +10,34 @@ on:
 permissions:
   contents: read
 
+# 部署不可中途取消，连续触发时排队执行
+concurrency:
+  group: deploy-web
+  cancel-in-progress: false
+
 jobs:
   deploy-web:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
+    timeout-minutes: 20
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@v7
-      # 2、安装 PNPM
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v6
-      # 3、安装 Node 环境
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: ./pnpm-lock.yaml
-      # 4、安装依赖
-      - name: Install Dependencies
-        run: pnpm i --frozen-lockfile
-      # 5、打包
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # 2、安装依赖并打包（容器内执行：pnpm install 会运行依赖与仓库的生命周期脚本，
+      #    是构建流程最大的代码执行面，容器隔离其触达范围——不挂 docker.sock、
+      #    不注入 job secrets；pnpm 版本由 packageManager 字段经 corepack 解析）
       - name: Build
-        run: pnpm build
-      # 6、拷贝到服务器
+        run: >
+          docker run --rm
+          --memory=4g --cpus=4
+          -v "$PWD":/ws -w /ws
+          -v /root/.local/share/pnpm:/root/.local/share/pnpm
+          -v /root/.cache:/root/.cache
+          node:22
+          bash -c "corepack enable && pnpm i --frozen-lockfile && pnpm build"
+      # 3、同步部署文件（runner 与部署机同机，rsync 直接落到 nginx 站点目录，
+      #    等效于原 rm -rf + mv 且无中间空窗）
       - name: Copy
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          source: ./dist/*
-          target: ${{ secrets.SERVER_TMP_PATH }}
-          strip_components: 1
-      # 7、更新部署文件
-      - name: Restart
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            rm -rf ${{ secrets.SERVER_PATH }}/*
-            mv ${{ secrets.SERVER_TMP_PATH }}/* ${{ secrets.SERVER_PATH }}
-            chmod -R 777 ${{ secrets.SERVER_PATH }}
+        run: |
+          rsync -a --delete dist/ ${{ secrets.SERVER_PATH }}/
+          chmod -R 777 ${{ secrets.SERVER_PATH }}
