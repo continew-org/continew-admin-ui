@@ -67,6 +67,7 @@ const {
   loading,
   pagination,
   search,
+  refresh,
 } = useTable((page) => listOnlineUser({ ...queryForm, ...page }), { immediate: true })
 const columns: TableInstance['columns'] = [
   {
@@ -102,7 +103,8 @@ const reset = () => {
 // 强退
 const handleKickout = (sessionId: string) => {
   kickout(sessionId).then(() => {
-    search()
+    // search() 仅在页码变化时重新查询；当前已在第 1 页时必须直接拉取数据才会移除被踢行
+    refresh()
     Message.success('强退成功')
   })
 }

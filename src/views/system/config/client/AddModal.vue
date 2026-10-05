@@ -47,14 +47,10 @@ const [form, resetForm] = useResetReactive({
 // 监听 isConcurrent 的变化，处理字段互斥逻辑
 watch(
   () => form.isConcurrent,
-  (newVal) => {
-    if (!newVal) {
-      form.maxLoginCount = -1
-      // replacedRange 只有在 isConcurrent=false 时才有意义
-    } else if (newVal) {
-      // 当 isConcurrent=true 时，清空 maxLoginCount
-      form.maxLoginCount = -1
-    }
+  () => {
+    form.maxLoginCount = -1
+    // 开关切换后 Arco 不会自动重跑校验，主动清除残留的错误提示
+    formRef.value?.formRef?.clearValidate('replacedRange')
   },
 )
 
@@ -180,6 +176,17 @@ const columns: ColumnItem[] = reactive([
     disabled: () => {
       return form.isConcurrent
     },
+    rules: [
+      {
+        validator: (value: string, callback: (errorMessage?: string) => void) => {
+          if (!form.isConcurrent && !value) {
+            callback('不允许并发登录时必须选择顶人下线的范围')
+            return
+          }
+          callback()
+        },
+      },
+    ],
   },
   {
     label: () => (
@@ -208,6 +215,7 @@ const columns: ColumnItem[] = reactive([
         validator: (value: number, callback: (errorMessage?: string) => void) => {
           if (value <= 0 && value !== -1) {
             callback('最大登录数量只能为 -1 或正整数')
+            return
           }
           callback()
         },
