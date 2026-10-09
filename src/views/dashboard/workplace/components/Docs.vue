@@ -25,12 +25,12 @@
 
 <script setup lang="ts">
 const links = [
-  { text: '项目简介', url: 'https://continew.top/docs/admin/guide/introduction.html' },
-  { text: '快速开始', url: 'https://continew.top/docs/admin/guide/quick-start.html' },
-  { text: '常见问题', url: 'https://continew.top/docs/admin/faq.html' },
-  { text: '更新日志', url: 'https://continew.top/docs/admin/changelog/' },
-  { text: '贡献指南', url: 'https://continew.top/about/contributing.html' },
-  { text: '赞助支持 💖', url: 'https://continew.top/sponsor/' },
+  { text: '项目简介', url: 'https://continew.top/docs/admin/introduction' },
+  { text: '快速开始', url: 'https://continew.top/docs/admin' },
+  { text: '常见问题', url: 'https://continew.top/docs/admin/reference/faq' },
+  { text: '更新日志', url: 'https://continew.top/docs/admin/reference/changelog' },
+  { text: '贡献指南', url: 'https://github.com/continew-org/continew-admin/blob/dev/CONTRIBUTING.md' },
+  { text: '赞助支持 💖', url: 'https://continew.top/sponsor' },
 ]
 </script>
 

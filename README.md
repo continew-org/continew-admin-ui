@@ -38,7 +38,7 @@
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=dark" alt="Gitee Forks" />
 </a>
 
-📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/docs/admin/guide/demo.html) | 💬 [吐槽广场（你就是 Talk King!）](https://continew.top/docs/admin/issue-hub.html)
+📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/demo) | 💬 [问题反馈](https://github.com/continew-org/continew-admin/issues)
 
 ## 简介
 
@@ -82,7 +82,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 ## 为什么选我们？
 
 > [!TIP]
-> 更为完整的图文描述请查阅[《在线文档》](https://continew.top/docs/admin/guide/why-choose-us.html)。
+> 更为完整的图文描述请查阅[《在线文档》](https://continew.top/docs/admin/why-choose-us)。
 
 **AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
 
@@ -136,8 +136,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ##  系统功能
 
 > [!TIP]
-> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或查看 [吐槽广场](https://continew.top/docs/admin/issue-hub.html) 和 [更新日志](https://continew.top/docs/admin/changelog/)。
-> 功能不会用？请查看 [功能手册](https://continew.top/docs/admin/function/tenant/management.html)。
+> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或查看 [问题反馈](https://github.com/continew-org/continew-admin/issues) 和 [更新日志](https://continew.top/docs/admin/reference/changelog)。
+> 功能不会用？请查看 [功能手册](https://continew.top/docs/admin/manual/tenant/management)。
 
 - 仪表盘：提供工作台、分析页，工作台提供功能快捷导航入口、最新公告、动态；分析页提供全面数据可视化能力
 - 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑（微信登录）、头像裁剪上传
@@ -236,7 +236,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ## 快速开始
 
 > **Note**
-> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/docs/admin/guide/quick-start.html)。
+> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/docs/admin)。
 
 ```
 # 1.克隆本项目
@@ -359,14 +359,14 @@ ContiNew（Continue New）系列项目致力于通过持续迭代，为开发者
 
 ### 分支说明
 
-ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序进行。提交 PR 前，请确认目标分支是否处于活跃维护状态，版本支持情况请查看 [更新日志#版本支持](https://continew.top/docs/admin/changelog/)。
+ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序进行。提交 PR 前，请确认目标分支是否处于活跃维护状态，版本支持情况请查看 [更新日志#版本支持](https://continew.top/docs/admin/reference/changelog)。
 
 | 分支  | 说明                                                         |
 | ----- | ------------------------------------------------------------ |
 | dev   | 开发分支，用于下个大版本的 SNAPSHOT 开发，接受新功能或功能优化 PR |
 | x.x.x | 维护分支，用于特定版本（如 vx.x.x）的 bug 修复，仅接受已有功能的修复 PR，不接受新功能 |
 
-详细贡献流程请查阅 [贡献指南](https://continew.top/about/contributing.html)。欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/discussion.html) 讨论或认领任务。
+详细贡献流程请查阅 [贡献指南](https://github.com/continew-org/continew-admin/blob/dev/CONTRIBUTING.md)。欢迎各位感兴趣的小伙伴儿，[添加微信](#反馈交流) 讨论或认领任务。
 
 ## 反馈交流
 

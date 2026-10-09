@@ -31,13 +31,13 @@ export interface DataItem {
 const images = ref<DataItem[]>([
   {
     name: '公众号',
-    img: `https://continew.top/images/sponsor/ads/cn-qrcode.jpg?${new Date().getTime()}`,
-    url: 'https://continew.top/discussion.html',
+    img: `https://continew.top/images/home/join-group.webp?${new Date().getTime()}`,
+    url: 'https://continew.top',
   },
   {
     name: '赞助',
-    img: `https://continew.top/images/sponsor/ads/cn-sponsor.jpg?${new Date().getTime()}`,
-    url: 'https://continew.top/sponsor/',
+    img: `https://continew.top/images/qrcode/wxpay.webp?${new Date().getTime()}`,
+    url: 'https://continew.top/sponsor',
   },
 ])
 
@@ -58,7 +58,7 @@ const getDataList = async () => {
         }
         dataList.value.push({
           name: item.name,
-          img: isHttp(item.img) ? item.img : `${base}/images/sponsor/ads/${item.img}`,
+          img: isHttp(item.img) ? item.img : `${base}/images/sponsor/partners/${item.img}`,
           url: item.url,
         })
       })
