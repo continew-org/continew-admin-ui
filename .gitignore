@@ -43,3 +43,5 @@ lerna-debug.log*
 !.codebuddy/skills/**
 !.codebuddy/.mcp.json
 .mindfs
+# pnpm 项目勿混用 lockfile（AGENTS.md 约定）
+package-lock.json
