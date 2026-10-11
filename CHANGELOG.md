@@ -3,14 +3,14 @@
 ### ✨ 新特性
 
 - 【system/auth】新增 Refresh Token 支持 ([4bc497e8](https://github.com/continew-org/continew-admin-ui/commit/4bc497e887ea79e9bf8561fcbd3c21a13e5988c4)) (GitHub#89@luoqiz)
-- 【system/file】新增分片上传高级配置选项，支持自动单文件或分片上传策略 ([e08fb8a3](https://github.com/continew-org/continew-admin-ui/commit/e08fb8a34fd81ad7e3d9d0681ad3d802e6bc928f)) @liquor
+- 【system/file】新增分片上传高级配置选项，支持自动单文件或分片上传策略 ([e08fb8a3](https://github.com/continew-org/continew-admin-ui/commit/e08fb8a34fd81ad7e3d9d0681ad3d802e6bc928f)) Gitee@liquor
 - 【system/file】新增上传前重复文件检测，避免同一目录下重复上传相同文件 ([dc8b35de](https://github.com/continew-org/continew-admin-ui/commit/dc8b35deb5976c9f1eff3bf324700909cb2f2112)) @fjwupeng
-- 【system/client】客户端管理扩展登录配置 ([7f982b8b](https://github.com/continew-org/continew-admin-ui/commit/7f982b8b539f5c9900110e1f917033af12e9fc9f)) @KAI
+- 【system/client】客户端管理扩展登录配置 ([7f982b8b](https://github.com/continew-org/continew-admin-ui/commit/7f982b8b539f5c9900110e1f917033af12e9fc9f)) Gitee@KAI
 
 ### 💎 功能优化
 
 - 清零 ESLint 存量问题并校准 caughtErrors 规则口径 ([9f3ce625](https://github.com/continew-org/continew-admin-ui/commit/9f3ce6258823b09b8b67ffec1379b20955fd6fd3)) @Charles7c
-- 【layout】更新 LayoutTop 组件，优化菜单样式和交互逻辑（同步 Gi-Demo） ([effcea20](https://github.com/continew-org/continew-admin-ui/commit/effcea209bf5f56b944160b9be08e30eb5797490)) @KAI
+- 【layout】更新 LayoutTop 组件，优化菜单样式和交互逻辑（同步 Gi-Demo） ([effcea20](https://github.com/continew-org/continew-admin-ui/commit/effcea209bf5f56b944160b9be08e30eb5797490)) Gitee@KAI
 - 优化客户端配置代码 ([8c3dc809](https://github.com/continew-org/continew-admin-ui/commit/8c3dc80909e64ce8371d17c1d0a4bc13d40218d9)) @Charles7c
 
 ### 🐛 问题修复
@@ -19,8 +19,8 @@
 - 【views】修复代码生成后无成功提示的问题 ([945f463b](https://github.com/continew-org/continew-admin-ui/commit/945f463bb41120a1e20137a72672838961269095)) @Charles7c
 - 【components】修复 GiTable 固定列拖拽后叠层 ([1d14a1c4](https://github.com/continew-org/continew-admin-ui/commit/1d14a1c4d6cf24e1f3f291d44165ff7f741b0a0b)) (GitHub#88@MoLi-MoChou)
 - 【styles】迁移 SCSS @import 到 @use 消除 Dart Sass 3.0 弃用警告 ([e8fcbe7a](https://github.com/continew-org/continew-admin-ui/commit/e8fcbe7aa447f7d8adeb6b57d3eacd547ba05b2b)) @Charles7c
-- 修复菜单切换面包屑展示异常 ([c81be19d](https://github.com/continew-org/continew-admin-ui/commit/c81be19d08615adf4ea5b6bbe3d4b900573ee6f7)) @KAI
-- 修复切换页签不切换菜单激活状态问题 ([96108434](https://github.com/continew-org/continew-admin-ui/commit/9610843425c5482f67b8f89b83d79a6f27b5db8c)) @KAI
+- 修复菜单切换面包屑展示异常 ([c81be19d](https://github.com/continew-org/continew-admin-ui/commit/c81be19d08615adf4ea5b6bbe3d4b900573ee6f7)) Gitee@KAI
+- 修复切换页签不切换菜单激活状态问题 ([96108434](https://github.com/continew-org/continew-admin-ui/commit/9610843425c5482f67b8f89b83d79a6f27b5db8c)) Gitee@KAI
 - 修复 JsonViewer 参数类型错误的问题 ([7d014d6d](https://github.com/continew-org/continew-admin-ui/commit/7d014d6d946d66f6ba83c2de39f53862464f5ae9)) @ali-pay
 - 修复图片验证码不居中显示的问题 ([ca30f95e](https://github.com/continew-org/continew-admin-ui/commit/ca30f95e67e5288cc744690de0bc67f4bb7be988)) @ali-pay
 - 优化圆角标签栏上下边距（PR By Gitee@bigtomato1） ([48e6eccd](https://github.com/continew-org/continew-admin-ui/commit/48e6eccd1a94bb71d187cd1defd796bb65c922e4)) @Charles7c
