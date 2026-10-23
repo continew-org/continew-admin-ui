@@ -203,6 +203,25 @@ const handleError = (msg: string) => {
   })
 }
 
+/** 密码已过期的稳定错误码，与后端 PasswordExpiredException.CODE 保持一致 */
+const PWD_EXPIRED_CODE = '428'
+
+/** 是否正在跳转密码过期页，避免并发请求重复跳转 */
+let pwdExpiredRedirecting = false
+
+const redirectToPwdExpired = () => {
+  if (pwdExpiredRedirecting) return
+  if (router.currentRoute.value.path === '/pwdExpired') return
+  pwdExpiredRedirecting = true
+  router.replace('/pwdExpired').finally(() => {
+    setTimeout(() => {
+      pwdExpiredRedirecting = false
+    }, 300)
+  })
+}
+
+const isPwdExpiredResponse = (code?: string) => code === PWD_EXPIRED_CODE
+
 // 请求拦截器
 http.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -243,7 +262,12 @@ http.interceptors.response.use(
         const reader = new FileReader()
         reader.readAsText(data)
         reader.onload = () => {
-          const { success, msg } = JSON.parse(reader.result as string)
+          const { success, code, msg } = JSON.parse(reader.result as string)
+          // 导出、下载类接口同样可能被密码过期拦截，必须一起跳转
+          if (isPwdExpiredResponse(code)) {
+            redirectToPwdExpired()
+            return
+          }
           if (!success) {
             handleError(msg)
           }
@@ -259,6 +283,18 @@ http.interceptors.response.use(
         authFailureShown = false
       }
       return response
+    }
+
+    // 密码已过期：直接跳转修改密码页，不再弹重复的错误提示
+    if (isPwdExpiredResponse(code)) {
+      if (router.currentRoute.value.path === '/pwdExpired') {
+        // 已经在改密页仍被判过期，说明放行名单没生效；必须给出可见提示，
+        // 否则用户点「立即修改」会毫无反应
+        handleError(msg || '密码已过期，请先修改密码')
+      } else {
+        redirectToPwdExpired()
+      }
+      return Promise.reject(new Error(msg || '密码已过期，请先修改密码'))
     }
 
     handleError(msg)

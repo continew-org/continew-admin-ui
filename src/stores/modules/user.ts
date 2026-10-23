@@ -37,6 +37,8 @@ const storeSetup = () => {
     avatar: '',
     pwdResetTime: '',
     pwdExpired: false,
+    pwdExpireDays: null,
+    pwdWarningDays: null,
     registrationDate: '',
     deptName: '',
     roles: [],
