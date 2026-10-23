@@ -26,6 +26,7 @@
 import { type FormInstance, Message } from '@arco-design/web-vue'
 import { updateUserPassword } from '@/apis/system'
 import { encryptByRsa } from '@/utils/encrypt'
+import { useUserStore } from '@/stores'
 
 interface Form {
   oldPassword: string
@@ -78,10 +79,11 @@ const onModify = async () => {
       newPassword: encryptByRsa(form.newPassword) || '',
     }
     await updateUserPassword(params)
-    router.push({
-      path: '/login',
-    })
-    Message.success('修改成功')
+    Message.success('密码修改成功，请使用新密码重新登录')
+    // 后端改密后会踢出全部会话，必须清理本地登录态再跳转，
+    // 否则会带着已失效的 Access Token 触发一轮 401
+    await useUserStore().logoutCallBack()
+    await router.replace('/login')
   } catch (error) {
 
   } finally {
