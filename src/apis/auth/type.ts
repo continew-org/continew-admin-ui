@@ -9,6 +9,10 @@ export interface UserInfo {
   avatar: string
   pwdResetTime: string
   pwdExpired: boolean
+  /** 距密码过期的剩余天数：null 表示策略关闭或未设置密码，0 表示已过期 */
+  pwdExpireDays: number | null
+  /** 密码到期前提醒天数：null 或 0 表示不提醒 */
+  pwdWarningDays: number | null
   registrationDate: string
   deptName: string
   roles: string[]

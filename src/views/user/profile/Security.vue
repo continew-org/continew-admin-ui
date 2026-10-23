@@ -1,5 +1,17 @@
 <template>
   <a-card title="安全设置" bordered class="gradient-card">
+    <a-alert
+      v-if="pwdExpired"
+      class="pwd-alert"
+      type="error"
+      title="密码已过期，请立即修改密码"
+    />
+    <a-alert
+      v-else-if="pwdExpiring"
+      class="pwd-alert"
+      type="warning"
+      :title="`密码将在 ${userInfo.pwdExpireDays} 天后过期，建议尽快修改`"
+    />
     <div v-for="item in modeList" :key="item.title">
       <div class="item">
         <div class="icon-wrapper"><GiSvgIcon :name="item.icon" :size="26" /></div>
@@ -42,6 +54,21 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
 
+/** 密码是否已过期（正常流程下会被路由守卫拦走，这里作为兜底提示） */
+const pwdExpired = computed(() => userInfo.value.pwdExpired)
+/** 是否进入到期前提醒窗口 */
+const pwdExpiring = computed(() => {
+  const expireDays = userInfo.value.pwdExpireDays
+  const warningDays = userInfo.value.pwdWarningDays
+  // 注意：JS 中 null <= 7 为 true，必须先判 null，否则策略关闭时会给所有用户提示
+  return !pwdExpired.value
+    && typeof expireDays === 'number'
+    && expireDays >= 1
+    && typeof warningDays === 'number'
+    && warningDays > 0
+    && expireDays <= warningDays
+})
+
 const modeList = ref<ModeItem[]>([])
 modeList.value = [
   {
@@ -82,4 +109,8 @@ const onUpdate = (type: string) => {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.pwd-alert {
+  margin-bottom: 12px;
+}
+</style>
