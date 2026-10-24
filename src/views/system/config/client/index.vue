@@ -5,7 +5,7 @@
       :data="dataList"
       :columns="columns"
       :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 1400 }"
+      :scroll="{ x: '100%', y: '100%', minWidth: 2100 }"
       :pagination="pagination"
       :disabled-tools="['size']"
       :disabled-column-keys="['clientKey']"
@@ -127,6 +127,7 @@ const columns: TableInstance['columns'] = [
     title: '客户端类型',
     dataIndex: 'clientType',
     slotName: 'clientType',
+    width: 110,
     ellipsis: true,
     tooltip: true,
     align: 'center',
@@ -138,6 +139,7 @@ const columns: TableInstance['columns'] = [
     title: '认证类型',
     dataIndex: 'authType',
     slotName: 'authType',
+    width: 160,
     ellipsis: true,
     tooltip: true,
     align: 'center',
@@ -150,9 +152,11 @@ const columns: TableInstance['columns'] = [
   { title: 'Token 最低活跃频率', dataIndex: 'activeTimeout', slotName: 'activeTimeout', width: 180, align: 'center', render: ({ record }) => `${record.activeTimeout} 秒` },
   { title: 'Token 有效期', dataIndex: 'timeout', slotName: 'timeout', width: 180, align: 'center', render: ({ record }) => `${record.timeout} 秒` },
   { title: 'Refresh Token 有效期', dataIndex: 'refreshTokenTimeout', width: 180, align: 'center', render: ({ record }) => `${record.refreshTokenTimeout} 秒` },
+  { title: 'Refresh Token 闲置失效', dataIndex: 'refreshTokenIdleTimeout', width: 190, align: 'center', render: ({ record }) => record.refreshTokenIdleTimeout ? `${record.refreshTokenIdleTimeout} 秒` : '不限制' },
   {
     title: 'Refresh Token 传输模式',
     dataIndex: 'refreshTokenMode',
+    width: 190,
     align: 'center',
     render: ({ record }) => record.refreshTokenMode === 'COOKIE' ? 'Cookie（Web）' : '响应体（App / 小程序）',
   },
@@ -160,6 +164,7 @@ const columns: TableInstance['columns'] = [
     title: '状态',
     dataIndex: 'status',
     slotName: 'status',
+    width: 90,
     align: 'center',
     render: ({ record }) => {
       return <GiCellStatus status={record.status} />
@@ -168,6 +173,7 @@ const columns: TableInstance['columns'] = [
   {
     title: '多地登录',
     dataIndex: 'isConcurrent',
+    width: 110,
     align: 'center',
     render: ({ record }) => {
       return <Tag>{record.isConcurrent ? '允许' : '不允许'}</Tag>
@@ -176,6 +182,7 @@ const columns: TableInstance['columns'] = [
   {
     title: '下线范围',
     dataIndex: 'replacedRange',
+    width: 150,
     align: 'center',
     render: ({ record }) => {
       return <GiCellTag value={record.replacedRange} dict={replaced_range_enum.value} />
@@ -184,6 +191,7 @@ const columns: TableInstance['columns'] = [
   {
     title: '登录数量',
     dataIndex: 'maxLoginCount',
+    width: 110,
     align: 'center',
     render: ({ record }) => {
       return record.maxLoginCount === -1 ? '不限制' : record.maxLoginCount
@@ -192,6 +200,7 @@ const columns: TableInstance['columns'] = [
   {
     title: '溢出处理',
     dataIndex: 'overflowLogoutMode',
+    width: 130,
     align: 'center',
     render: ({ record }) => {
       return <GiCellTag value={record.overflowLogoutMode} dict={logout_mode_enum.value} />

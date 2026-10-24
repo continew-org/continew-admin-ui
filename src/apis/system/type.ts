@@ -324,6 +324,8 @@ export interface ClientResp {
   activeTimeout: number
   timeout: number
   refreshTokenTimeout: number
+  /** Refresh Token 闲置失效（单位：秒，0 表示不限制） */
+  refreshTokenIdleTimeout: number
   refreshTokenMode: 'COOKIE' | 'BODY'
   status: string
   isConcurrent: boolean
@@ -346,6 +348,8 @@ export interface ClientDetailResp {
   activeTimeout: number
   timeout: number
   refreshTokenTimeout: number
+  /** Refresh Token 闲置失效（单位：秒，0 表示不限制） */
+  refreshTokenIdleTimeout: number
   refreshTokenMode: 'COOKIE' | 'BODY'
   status: number
   isConcurrent: boolean

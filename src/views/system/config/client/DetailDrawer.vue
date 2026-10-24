@@ -14,6 +14,9 @@
       <a-descriptions-item label="Token最低活跃频率">{{ dataDetail?.activeTimeout }}</a-descriptions-item>
       <a-descriptions-item label="Token有效期">{{ dataDetail?.timeout }}</a-descriptions-item>
       <a-descriptions-item label="Refresh Token有效期">{{ dataDetail?.refreshTokenTimeout }} 秒</a-descriptions-item>
+      <a-descriptions-item label="Refresh Token闲置失效">
+        {{ dataDetail?.refreshTokenIdleTimeout ? `${dataDetail.refreshTokenIdleTimeout} 秒` : '不限制' }}
+      </a-descriptions-item>
       <a-descriptions-item label="Refresh Token传输模式">
         {{ dataDetail?.refreshTokenMode === 'COOKIE' ? 'Cookie（Web）' : '响应体（App / 小程序）' }}
       </a-descriptions-item>

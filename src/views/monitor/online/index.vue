@@ -5,13 +5,23 @@
       :data="dataList"
       :columns="columns"
       :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1700 }"
       :pagination="pagination"
       :disabled-tools="['size']"
       @refresh="search"
     >
       <template #toolbar-left>
         <a-input-search v-model="queryForm.nickname" placeholder="搜索用户名/昵称" allow-clear @search="search" />
+        <a-select
+          v-model="queryForm.online"
+          placeholder="全部状态"
+          allow-clear
+          style="width: 130px"
+          @change="handleOnlineChange"
+        >
+          <a-option :value="true">在线</a-option>
+          <a-option :value="false">闲置</a-option>
+        </a-select>
         <DateRangePicker v-model="queryForm.loginTime" @change="search" />
         <a-button @click="reset">
           <template #icon><icon-refresh /></template>
@@ -19,6 +29,20 @@
         </a-button>
       </template>
       <template #nickname="{ record }">{{ record.nickname }}({{ record.username }})</template>
+      <template #lastActiveTime="{ record }">
+        {{ record.activeTimeExact ? record.lastActiveTime : `约 ${record.lastActiveTime}` }}
+      </template>
+      <template #expireTime="{ record }">
+        <a-tooltip v-if="record.idleExpired" :content="`会话已于 ${record.idleExpireTime} 超出闲置阈值，下一次刷新时撤销`">
+          <span style="color: var(--color-danger-light-4)">已超时</span>
+        </a-tooltip>
+        <template v-else>{{ record.idleExpireTime || record.sessionExpireTime }}</template>
+      </template>
+      <template #status="{ record }">
+        <a-tag v-if="record.idleExpired" color="red">闲置超时待失效</a-tag>
+        <a-tag v-else-if="record.online" color="green">在线</a-tag>
+        <a-tag v-else color="orange">闲置</a-tag>
+      </template>
       <template #action="{ record }">
         <a-space>
           <a-popconfirm
@@ -76,13 +100,16 @@ const columns: TableInstance['columns'] = [
     align: 'center',
     render: ({ rowIndex }) => h('span', {}, rowIndex + 1 + (pagination.current - 1) * pagination.pageSize),
   },
-  { title: '用户昵称', dataIndex: 'nickname', slotName: 'nickname', ellipsis: true, tooltip: true },
-  { title: '登录 IP', dataIndex: 'ip', ellipsis: true, tooltip: true },
-  { title: '登录地点', dataIndex: 'address', ellipsis: true, tooltip: true },
-  { title: '浏览器', dataIndex: 'browser', ellipsis: true, tooltip: true },
-  { title: '终端系统', dataIndex: 'os', ellipsis: true, tooltip: true },
+  { title: '用户昵称', dataIndex: 'nickname', slotName: 'nickname', width: 200, ellipsis: true, tooltip: true },
+  { title: '登录 IP', dataIndex: 'ip', width: 150, ellipsis: true, tooltip: true },
+  { title: '登录地点', dataIndex: 'address', width: 130, ellipsis: true, tooltip: true },
+  { title: '浏览器', dataIndex: 'browser', width: 140, ellipsis: true, tooltip: true },
+  { title: '终端系统', dataIndex: 'os', width: 120, ellipsis: true, tooltip: true },
   { title: '登录时间', dataIndex: 'loginTime', width: 180 },
-  { title: '最后刷新时间', dataIndex: 'lastRefreshTime', width: 180 },
+  { title: '最后活跃', dataIndex: 'lastActiveTime', slotName: 'lastActiveTime', width: 200 },
+  { title: '预计失效', dataIndex: 'idleExpireTime', slotName: 'expireTime', width: 180 },
+  { title: '状态', dataIndex: 'online', slotName: 'status', width: 150, align: 'center' },
+  { title: '最近令牌刷新', dataIndex: 'lastRefreshTime', width: 180 },
   {
     title: '操作',
     dataIndex: 'action',
@@ -97,7 +124,17 @@ const columns: TableInstance['columns'] = [
 const reset = () => {
   queryForm.nickname = undefined
   queryForm.loginTime = undefined
+  queryForm.online = undefined
   search()
+}
+
+// 切换在线状态筛选：当前已在第 1 页时页码不会变化，必须直接刷新，否则会停在旧的查询结果上
+const handleOnlineChange = () => {
+  if (pagination.current === 1) {
+    refresh()
+  } else {
+    search()
+  }
 }
 
 // 强退
