@@ -38,6 +38,7 @@ const [form, resetForm] = useResetReactive({
   activeTimeout: 1800,
   timeout: 86400,
   refreshTokenTimeout: 2592000,
+  refreshTokenIdleTimeout: 0,
   refreshTokenMode: 'COOKIE',
   isConcurrent: true,
   maxLoginCount: -1,
@@ -136,6 +137,40 @@ const columns: ColumnItem[] = reactive([
       placeholder: '请输入 Refresh Token 有效期',
     },
     rules: [{ required: true, message: '请输入 Refresh Token 有效期' }],
+  },
+  {
+    label: () => (
+      <a-tooltip content="超过该时长没有业务请求即需要重新登录；只统计业务请求，页面挂机不算活跃。单位：秒，0 表示不限制">
+        Refresh Token 闲置失效&nbsp;
+        <icon-question-circle />
+      </a-tooltip>
+    ),
+    field: 'refreshTokenIdleTimeout',
+    type: 'input-number',
+    span: 12,
+    slots: {
+      append: () => (
+        <span style={{ width: '30px', textAlign: 'center' }}>秒</span>
+      ),
+    },
+    rules: [
+      {
+        // 与后端 ClientServiceImpl 保持一致：1~59 秒会把客户端锁死，提交前就拦下来
+        validator: (value: number | undefined, callback: (error?: string) => void) => {
+          if (typeof value === 'number' && value > 0 && value < 60) {
+            callback('需为 0（不限制）或不小于 60 秒')
+            return
+          }
+          callback()
+        },
+      },
+    ],
+    props: {
+      min: 0,
+      max: 315360000,
+      precision: 0,
+      placeholder: '0 表示不限制',
+    },
   },
   {
     label: 'Refresh Token 传输模式',
